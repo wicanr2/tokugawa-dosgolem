@@ -26,7 +26,10 @@
 | remake | 排除 | 使用者明確指定原版與 dosgolem 整合 |
 | 後續功能範圍 | CDDA 裝置與 PCM 已實作；桌面播放、繁中／簡中／英文／日文與可切換 HD 素材包待後續切片 | 已確認範圍與驗收見 [WORKLIST.md](WORKLIST.md) |
 | 後續使用介面 | 桌面版；瀏覽器排除 | 使用者明確表示「不考慮瀏覽器」；桌面作業系統與打包驗收清單尚未定案 |
-| private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 已建立；CD-TRACE 的修正與正常路徑驗收通過，CDDA 後續限制與桌面音訊待辦記於 #2、#3 | [CD-TRACE #1](https://github.com/wicanr2/tokugawa-dosgolem/issues/1)、[CDDA #2](https://github.com/wicanr2/tokugawa-dosgolem/issues/2)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)；Issue 即時狀態直接查 GitHub |
+| HD 風格試作 | 使用者已選 B 戰國手繪風。第一張 A-0 家康肖像已重繪，並以已證實矩形製作離線畫面預覽。外框與文字保持原版；尚未接入桌面執行中切換 | [HD 預覽](workplace/hd-prototype/A-0-hd-preview-v1.png)、[單張素材](workplace/hd-prototype/A-0-hd-b-v1.png)、[完整提示詞](workplace/hd-prototype/A-0-hd-b-v1.prompt.txt)、`prototype.json`；內建 image_gen 生成，原圖及衍生圖只留本機 |
+| HD 素材定位 | DAT 201 筆資源包含 112 個 OZM，目錄欄位已連到讀寫端。唯讀觀測的開／關及完整路徑驗證通過，記錄 19 次載入、17 個來源，原版全部 RAM、畫面與 PCM 不變；正式 HD 圖層尚未實作 | [觀測](tools/hd-trace.go)、[完整核對](workplace/hd-prototype/normal-path-verification.json)；完整收據 SHA-256 `31f8b5b7e96d9007047feff195624ae0dd806692a1a9e62d019964e8bda8201e`，證據見 RESEARCH-LOG |
+| HD 首張素材驗證 | A-0.OZM 的四平面與 320×150 原圖全部 48,000 像素一致；IDA 繪圖使用端確認 `(160,50)`、來源偏移 0、無透明遮罩。離線原圖／HD／缺圖驗證通過，矩形外零變動 | [擷取收據](workplace/hd-prototype/asset-capture/A-0-extraction.json)、[預覽工具](tools/hd-preview.go)、`workplace/hd-prototype/preview-test.log`；缺圖與原圖 PNG SHA-256 相同 |
+| private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 已建立；#2 技術切片驗收後已關閉，HD 接續 #5，桌面與聽覺驗收留 #3 | [CDDA 完成記錄](https://github.com/wicanr2/tokugawa-dosgolem/issues/2#issuecomment-6121828738)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)、[HD #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5)；Issue 即時狀態直接查 GitHub |
 | Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試與文件；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
 | Docker 收尾 | 本輪原生重跑與驗證容器均已結束，無本專案殘留；未建新 image | `docker ps -a --filter name=tokugawa` 為空；擁有權檢查通過 |
@@ -77,7 +80,8 @@
 
 - 原版 DOS 程式繼續負責玩法、狀態與存檔。本次沒有改成 remake。
 - 使用者選擇可切換 HD 素材包，逐項替換人物、場景與介面。原版顯示保留作對照與缺圖備援；單純放大原圖不作為 HD 素材包完成標準。
+- 使用者已選 B 戰國手繪風，依同場景比較的自然地形與手繪人物、介面方向製作。生成概念圖不作正式版面或幾何來源，原版邏輯座標仍為 640×400。
 - 第一批語言為繁中、簡中、英文與日文。原文與譯文均以 UTF-8 TSV catalog 管理，穩定 key 的規則依 `/home/anr2/.codex/knowledge-base/local/localization-display-semantic-isolation.md`；翻譯只進顯示路徑，不改原版比較、資源名稱或存檔欄位。
 - 桌面版為本次目標。瀏覽器與 WebAssembly 不列入規劃或後備路線。
 - 使用者指定完成 CD 音訊後先執行 HD 化。四語需求保留，實作順序移到 HD 首個場景之後；桌面畫面與音訊試作作為必要依賴一起推進。
-- 使用者已授權依 [WORKLIST.md](WORKLIST.md) 的功能範圍開工。MCB 與 CDDA 切片已有 READY 契約並實作；桌面工具版本、完整文字／繪圖擷取位置、HD 美術風格與顯示比例仍待可行性驗證或 prototype。
+- 使用者已授權依 [WORKLIST.md](WORKLIST.md) 的功能範圍開工。MCB 與 CDDA 切片已有 READY 契約並實作；HD 美術風格已選 B。桌面工具版本、完整文字／繪圖擷取位置與顯示比例仍待可行性驗證或 prototype。

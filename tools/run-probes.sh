@@ -37,6 +37,8 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/cmd/leprobe/cdrom_test.go":"/project/tools/cdrom_test.go",
   "/dosgolem/cmd/leprobe/cdda.go":"/project/tools/cdda.go",
   "/dosgolem/cmd/leprobe/cdda_test.go":"/project/tools/cdda_test.go",
+  "/dosgolem/cmd/leprobe/hd_trace.go":"/project/tools/hd-trace.go",
+  "/dosgolem/cmd/leprobe/hd_trace_test.go":"/project/tools/hd-trace_test.go",
   "/dosgolem/cmd/leprobe/video.go":"/project/tools/video.go",
   "/dosgolem/cmd/leprobe/video_test.go":"/project/tools/video_test.go",
   "/dosgolem/cmd/leprobe/vbe.go":"/project/tools/vbe.go",

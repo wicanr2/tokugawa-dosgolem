@@ -801,3 +801,52 @@ dosgolem 以 `tools/player-path.json` 的原樣事件前綴重跑 150,000,000 �
 正式正常玩家路徑重跑 750,000,000 步、390 筆普通滑鼠事件，零 FD2 攔截、零未支援 DPMI、零音訊拒絕及零事件丟棄。收據 SHA-256 為 `c6b33e27450f09a6668cf77d848a13774c8e2780f7d96126b266da773570e075`，保存於 `workplace/startup-probe/latest.json` 及同雜湊的 receipts 檔。第 10、5、10、5、5、10、2、6 軌的選曲保持一致。重新獨立解析 CUE，以事件間虛擬微秒計算樣本數，再逐段讀 BIN 比較全部 79,274,912 bytes，通過。PCM 仍為 `d81c04498183d8cf64ef3409f50b51aeb0c10047cbe1049f13cf0a4ae9e9320a`，戰場 PNG 仍為 `b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846`。
 
 `workplace/startup-probe/cdda-verification.json` SHA-256 `1398449174fabc42480fa667eca98e38603a56cf775198c09d823c3f4f8cfa72` 記錄逐段曲目、時間、樣本數、完整收據與測試雜湊。邊界測試 log SHA-256 `c54294c99d323b33b8b14548ddccea41b4251bf7549c5a3c3978de23394614b2`；四套件 log SHA-256 `11d01dd523da1734c75118690c840b2059d801eb83a6ce5281e05575a0affb4b`。原版 lead-out 表格損壞仍保留；裝置依映像末端停止，不冒稱 TOC 已修復。桌面播放與人耳確認繼續留在 Issue #3，`listening_verified=false`。
+## 2026-10-12：HD 首個素材入口與唯讀觀測契約
+
+路由命中資產考古與 IDA，已載入 `reverse-engineer-retro-game-remake` 的 `references/evidence-and-re.md`、`use-ida-pro-9-4` 及 `/home/anr2/ida_94_official/knowledge-base/ida-94-tools.md`。沿用已驗證的 IDA 9.4 image 與 UID，在正式 DB 的一次性副本查詢，原版及正式 DB 唯讀。輸入沿用本文件固定 DX5.EXE、DX5.DAT 雜湊。
+
+| 推論等級 | 原始定位 | 證據 |
+|---|---|---|
+| 已證實 | DAT 檔案偏移 0、8、12 | `Ken Lin\0`、DWORD 201、201 筆各 21 bytes 的記錄；名稱欄 13 bytes，DWORD 長度在記錄 +13，DWORD 檔案起點在 +17。第一個 payload 位於 4233，全部連續至檔案結尾 3,908,861。`asset-inventory.json` 逐項保存原始記錄及雜湊 |
+| 已證實 | IDA `sub_1D510`，線性 `0x1D56B–0x1D66F`／檔案偏移 `0x18D6B–0x18E6F` | 讀 12-byte 標頭，比較 `Ken Lin`，從標頭 +8 取數量，乘 `15h` 配置及讀取目錄。`asset-xrefs.json` 保留 bytes 與原名 |
+| 已證實 | IDA `sub_1D6B0`，線性 `0x1D714–0x1D778`／檔案偏移 `0x18F14–0x18F78` | 以 21-byte stride 比對名稱；記錄 +17 轉成資源起點，+13 轉成長度。`sub_1D800` 於線性 `0x1D831–0x1D855`／檔案偏移 `0x19031–0x19055` 以起點加資源內偏移執行 lseek/read。證據 `range-1d6af-1db25.json` |
+| 已證實 | IDA `sub_1BF44`，線性 `0x1BF49–0x1BF68`／檔案偏移 `0x17749–0x17768` | 唯一參數為資源名稱指標；以 80-byte pitch、零偏移與四個緩衝區呼叫 `sub_28689`。證據 `range-1bf38-1bf73.json` |
+| 已證實 | IDA `sub_28689`，線性 `0x286AE–0x28760`／檔案偏移 `0x23EAE–0x23F60` | 透過 `sub_1496E` 讀資源，取前兩個 WORD 至 `dword_5B1B8`、`dword_5B1B4`，再分別呼叫四次 `sub_2ADC8`。四個目的緩衝區來源保留 `dword_38C00`、`dword_38BF8`、`dword_38C04`、`dword_38BFC` 原名 |
+| 強推論 | IDA `sub_2ADC8`、`sub_2AEB2`，線性 `0x2ADC8–0x2AEE0`／檔案偏移 `0x265C8–0x266E0` | 兩個 WORD 用作欄數及列數，寫入以 pitch 跳列。壓縮碼包含讀取 VGA 當前內容的分支；不能只憑靜態檔案大小宣稱所有 OZM 可獨立解碼。尚未實作正式 OZM 解碼器或 HD 圖層 |
+
+唯讀觀測子集狀態：DRAFT → 證據審查 → READY。只適用固定 EXE 與現有零基底 LE 研究探針，不作通用繪圖 API 或正式素材包格式。
+
+- 預設關閉的 `-hd-trace` 在原版 `sub_1BF44` 的入口及相同堆疊返回處，從 backing RAM 複製有界參數。入口名稱限制 64 bytes；事件上限 256，待返回深度上限 16。超界只記觀測錯誤，不改 guest 狀態。
+- 返回時保存原始兩個 WORD 值、四個目的指標，以及各緩衝區按 80-byte pitch 擷取的 SHA-256。只有 1–80 欄、1–400 列、完整 RAM 界限內且不重疊 VGA aperture `0xA0000–0xBFFFF` 的資料才計算，不讀 VGA 埠、不修改暫存器、VRAM、記憶體或指令步進。
+- 入口與返回均附成功指令數及原始線性定位。資源名稱與 DAT 雜湊對照另由研究盤點完成。載入事件不能當作目的畫面矩形、遮擋、素材已替換或 HD 已可用的證據。
+- 驗收為記憶體不變、錯誤界限與事件上限測試，再以相同原始輸入比較觀測開／關的停止點、暫存器 trace、全部 RAM、原生畫面與音訊。美術風格仍待使用者確認，這個觀測切片不依賴風格。
+
+10,000,000 步的開／關驗證通過。兩側全部 RAM SHA-256 均為 `98bc27be6addc922a0485de03826cf766738a27fc13b9146d39e01136ed61a68`，停止點、trace、中斷計數、DPMI 呼叫、畫面與 PCM 一致。開啟時記錄 WINDOW.OZM、MAP_WAKU.OZM、MAP_CHIP.OZM、OP1.OZM 的四組入口與返回；原始尺寸分別為 18×16、48×120、80×400、80×400，全部符合 DAT payload 前兩個 WORD。四個目的緩衝區均位於 backing RAM，沒有觀測錯誤、事件丟棄或待返回項。收據 `trace-off.json` SHA-256 `a79085f5c53651664c14ee6dd2522665504fa368bfe05f844de84b8c62cb1691`、`trace-on.json` SHA-256 `4a2e606177888a5b5c4b4bdf186e38df02f981459c322dc14ecb2bbd32a5c9fb`；`invariance.json` SHA-256 `f4602a57fb2eaa54a36d165b1b7b20dac91b546b68e71f93a164cc21dc54eb82`。均在 `workplace/hd-prototype/`。
+
+HD 風格使用內建 image_gen 產生一次可丟棄比較圖，原始參考是已驗收戰場 PNG `b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846`。本機 `style-comparison-v1.png` 為 1586×992，SHA-256 `906216c9e8bf00cb303b2e8ee956d5626b106cf3fc8a7e9f7eeafd120a8ceab1`；完整提示詞 `style-comparison-v1.prompt.txt` SHA-256 `20d3b4bec3e1e8d977eaa8b40c13a382eac1404beb78de30fc0498e4c680134a`。A 為原作漫畫風精修，B 為戰國手繪風，尚待使用者選擇。生成圖是 `layout-only` 風格示意，面板幾何、字形及人物細節不當作同狀態、正式規格或素材已接入的證據。圖像含原版參考的衍生內容，只留本機。
+
+盤點 `asset-inventory.json` SHA-256 `947be34a477ab73056d1c480c05f2f712340a7c5c4b1dadbc4e6e2126f2be3b7`；IDA 錨點 `asset-xrefs.json` SHA-256 `678dd0d763ec4ccf6a8eb107032ab06feae9ac5694dd967f30155085c2a27d9a`；目錄查找 `range-1d6af-1db25.json` SHA-256 `4cd4ab0bb26ea2e289565568dc87a2e0366aeacbc44af4de041057c54b048ead`；載入包裝 `range-1bf38-1bf73.json` SHA-256 `27a9fede105d65874d2dc48f4a831c83db11b59dccc0c719d9c39379c997e068`。其餘窄範圍、提示詞與概念圖雜湊由 `prototype.json` 索引。盤點收據在靜態證據審查前產生，當時的 `strong inference` 標記保留，目錄欄位的升級依本節讀寫端證據。
+
+完整原版入口至戰場重跑 750,000,000 步、390 筆普通滑鼠事件通過，唯讀觀測子集達 CONFORMED。記錄 19 次載入、17 個不同來源，零錯誤、零丟棄、零待返回。每次尺寸均符合來源標頭，四個原版解碼緩衝區均成功保存雜湊。與 CDDA 完成收據比較，全部 RAM、停止點、trace、中斷、普通輸入、畫面與 CD 裝置及 PCM 一致。RAM SHA-256 `4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9`；完整觀測收據 SHA-256 `31f8b5b7e96d9007047feff195624ae0dd806692a1a9e62d019964e8bda8201e`。`workplace/hd-prototype/normal-path-verification.json` SHA-256 `a4c8ab544ca6419621ba990eb2fd1a6724c3d5d6a7e11ace556d3fd891c8115f` 保存逐項來源、時間、尺寸與平面雜湊。正式 CDDA 收據未被診斷輸出取代。
+
+使用者在完整觀測驗證後選定 B 戰國手繪風。採用此方向製作人物、地形與介面，原版玩法及邏輯座標不變。這項決定只定美術風格，未定正式素材包格式、顯示比例或繪圖擷取 API。下一切片為單項原版素材擷取、手繪試作及實際繪圖使用端的定位。
+
+### 第一張劇情素材的擷取契約
+
+路由沿用資產考古、IDA 與文件職責。擷取工具子集狀態：DRAFT → 證據審查 → READY。只處理本機試作，不加入正式呈現路徑或定義 HD 素材包格式。
+
+- 使用相同正常玩家輸入前綴執行 150,000,000 步。輸出另存 `workplace/hd-prototype/asset-capture/`，保留完整戰場收據。最後載入必須為 A-0.OZM、40-byte 欄寬、150 列、80-byte pitch；四個平面在停止時仍須與載入返回的 SHA-256 相符。
+- 依 IDA `sub_1C084` 的四次 VGA plane 選擇與複製順序，將四個緩衝區合成 320×150 色號。以原生畫面候選矩形 `(160,50,320,150)` 逐點建立色號與 RGB 對照。任何色號對應多個顏色即拒絕輸出，不猜調色盤或補缺色。
+- 驗收保存 RAM、原生 PNG、輸入、工具與 DAT 資源的 SHA-256、四平面 SHA-256、色號與候選矩形。PNG 的每個像素須與候選矩形一致。這只確認本次畫面上的素材位置，實際繪圖呼叫參數與遮擋仍另查證。
+
+擷取子集達 CONFORMED。正常前綴 33 筆滑鼠事件、150,000,000 步，最後載入 A-0.OZM。全部 48,000 個像素匹配 `(160,50,320,150)`。來源 payload 檔案偏移 566,431、長度 15,505、SHA-256 `9c4a2d83ccf6be585b09d10a761f3d05920805887aeea509885c9126afee0a81`。收據 SHA-256 `2a72776a2cabb6a2769287cc0902821003d3e3e664a4b6ab294e0460de64c4e7`；RAM `0d9123e52923ba852b125ea04918e1007138a33e0a8e4d856b078865cb33562f`。擷取 PNG `0b7a25670a568f2e8e61ecfdf4d7ea264dac13caf67dea7ddf9218b370f1239c`，`A-0-extraction.json` 為 `df4958895a97ae730cce3a824682867a8fa4964c0fd6eb547abcf85c040ee6c0`，均在 `workplace/hd-prototype/asset-capture/`。未出現的色號 0、13 保留「未觀測」，不補猜 RGB。
+
+補充繪圖使用端的已證實靜態證據：IDA 原始 `sub_18002` 在線性 `0x18018–0x18038`、檔案偏移 `0x13818–0x13838` 將劇情圖編號加 20，交給 `sub_1BF73` 載入，接著以來源偏移 0、寬 40 bytes、高 150、目的 pitch 80、目的線性 `0xA0FB4` 呼叫 `sub_1C1BC`。目的減 VGA aperture 起點 `0xA0000` 等於 `50*80+20`，對應像素 `(160,50)`。`sub_1C1BC` 依序選四平面，再由原始 `sub_1C26D` 按列 `rep movsb` 複製，這條路徑沒有透明遮罩。`range-17fb0-180a0.json`、`range-1bf73-1c550.json` 保存 bytes、原名、檔案偏移與交叉參照；本次像素驗證與靜態矩形相符。其他素材的遮擋與繪圖路徑仍未知。
+
+單張離線呈現試作契約：DRAFT → 證據審查 → READY。只用於檢查第一張 HD 素材能否留在原版已證實矩形，不定正式素材包或桌面架構。輸入原生 640×400 PNG、320×150 原素材及可選 HD PNG；必須先核對整個原素材與畫面矩形一致。HD 關閉、缺圖、來源不符、透明或比例明顯不符時保留原圖。輸出暫用邏輯座標等比放大，原版外框、文字及矩形外像素必須保持一致。驗收包含缺圖與錯誤來源備援、開關、輸入像素不變、界限與實際擷取畫面。這是離線 preview，不能宣稱桌面執行中切換已完成。
+
+第一張 B 風格素材以內建 image_gen 參考 `A-0-original.png` 及比較圖的 B 區域生成，完整提示詞存 `workplace/hd-prototype/A-0-hd-b-v1.prompt.txt`。生成 PNG 為 1832×858，SHA-256 `503bbecf951fe5f8a8c30e797304433c62657d1906f461018440a9207f11a225`；提示詞 SHA-256 `3ac001b76201e555117ff650b524c9754f64d4bbb5a92b8e67ed7f1798534fac`。原圖內容與裁切作參考，生成細節是美術試作，不能當原版行為證據。圖像及提示詞留本機，由 `prototype.json` 索引，未加入 Git。
+
+離線呈現子集達 CONFORMED。原生畫面 640×400 暫以兩倍邏輯座標輸出 1280×800，沿用包內 `dosbox.conf` 的 `aspect=false`，沒有另定 CRT 或桌面顯示模式。生成素材的比例因整數尺寸相差約 0.09%，僅在試作映射至已證實矩形，正式包尚未定規格。HD 預覽共 192,000 個像素變動，全部位於兩倍肖像矩形，矩形外零變動。原圖及缺圖輸出的 PNG SHA-256 同為 `4517ea850104f4b7e6b6a5589ad5f8ff746cbada976ce1f89ebc3858dde203bd`；HD 預覽為 `86dfb08019d186852a69d43996dbae326de8d6512f35cf7eb9288a33c06947a7`。手動目視確認只替換肖像，外框、徽章與下方原文保持原版。
+
+預覽測試涵蓋關閉、缺圖、錯誤來源、比例不符、透明圖、畫面／倍率界限、輸入不變及完整矩形外核對。`preview-test.log` SHA-256 `2ea3c38d89344e1cc130a9a223a49c4d702b257a692123c6b4e2be2502e5de03`。IDA 指標交叉參照 `range-38bf0-38c10.json` SHA-256 `2d8c0b4fde99935634248353b28c96d4c1d988e4931b304f30534807891661e6`；複製端 `range-1bf73-1c550.json` 為 `d50027225833948b080dce1207902e09caea3e09b3d7b01490d4775cc3e6b1f8`；劇情圖呼叫端 `range-17fb0-180a0.json` 為 `4b78a751a88fc1c60c38fce399b8ddcbfe0ec2f35f92df03c283b4b0e76466f2`。桌面呈現、執行中切換、游標／更新範圍及正式素材包仍待後續 READY 契約。

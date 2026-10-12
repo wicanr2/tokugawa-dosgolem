@@ -24,6 +24,13 @@
 | [tools/le-entry-probe.go](tools/le-entry-probe.go) | 不帶 runtime 的原始 LE 入口有界探針 |
 | [tools/startup-probe.go](tools/startup-probe.go) | 原版指令自然執行的 DOS/4G 啟動研究探針 |
 | [tools/ida-entry.py](tools/ida-entry.py) | 保留原名與位址的 IDA 入口證據；可傳入 `起點:終點` 匯出至多 16 KiB 的窄範圍 |
+| [tools/hd-asset-probe.py](tools/hd-asset-probe.py) | 唯讀盤點 DAT 的候選資源目錄；保存原始欄位、檔案偏移與逐項雜湊，不作正式 HD 識別器 |
+| [tools/ida-asset-probe.py](tools/ida-asset-probe.py) | IDA 9.4 的資源字串、直接交叉參照及有界函式證據；保留原名與位址 |
+| [tools/hd-trace.go](tools/hd-trace.go)、[tools/hd-trace_test.go](tools/hd-trace_test.go) | 固定 EXE 的唯讀素材載入觀測及記憶體不變、錯誤界限、事件上限測試；不替換素材 |
+| [tools/hd-extract.go](tools/hd-extract.go) | 從正常路徑 RAM 擷取 A-0.OZM，核對四平面雜湊與原生畫面矩形，輸出本機 PNG 及收據；不是正式素材包格式 |
+| [tools/hd-preview.go](tools/hd-preview.go)、[tools/hd-preview_test.go](tools/hd-preview_test.go) | 單張 A-0 的離線原圖／HD／缺圖預覽與範圍保護測試；不接管遊戲或代表桌面執行中切換 |
+| `workplace/hd-prototype/` | 可丟棄 HD 風格概念圖、完整提示詞、候選資源盤點及 IDA 證據；不作已接入遊戲的證明 |
+| `workplace/hd-prototype/asset-capture/` | 正常玩家輸入前綴的原版素材 RAM、畫面與獨立擷取收據；與完整路徑收據分開保存 |
 | [tools/dosgolem.patch](tools/dosgolem.patch) | 固定 dosgolem 基準的通用平台修正，尚未回填外部工作樹 |
 | [tools/dpmi-mcb.go](tools/dpmi-mcb.go) | 可明確啟用的 32 位 DPMI MCB 配置、釋放重用與縮放；契約見 RESEARCH-LOG 的 DOS MCB 節 |
 | [tools/dpmi-mcb_test.go](tools/dpmi-mcb_test.go) | MCB 標頭、重用、合併、界限、錯誤與描述子耗盡測試 |
@@ -168,6 +175,26 @@ timeout 630s docker run --rm --name tokugawa-repro-probe --network none \
 命令最後的 `tools/run-probes.sh` 可接 `-steps 100000000`，保留原版等待並跑到主選單。普通滑鼠輸入用 `-mouse '<JSON>'` 傳入事件陣列，每筆含 `step`、`x`、`y`、`buttons`。`step` 是成功指令數，與虛擬微秒一致；`buttons` 的 bit0 為左鍵、bit1 為右鍵、bit2 為中鍵。按下與放開分兩筆，時間嚴格遞增，全部落在預算內。實際套用結果保存在 `latest.json` 的 `mouse_input_events`。輸入只走 dosgolem 的 MoveMouse／PressMouse／ReleaseMouse，不帶遊戲位址。目視核對與已測操作見 RESEARCH-LOG。
 
 查證 CD 資料流可加 `-cd-trace`，記錄有界的 DPMI 配置與 INT 2Fh 轉送前後資料。診斷只讀 backing memory，預設關閉。將上述 Docker 命令的 `/output` 掛載改為已存在的 `workplace/cd-trace/`，以隔離診斷輸出；正式啟動收據仍留原目錄。開關對照與資料流結論見 RESEARCH-LOG 的「CD 只讀診斷切片」。
+
+HD 素材載入觀測可加 `-hd-trace`，契約見 RESEARCH-LOG 的「HD 首個素材入口與唯讀觀測契約」。以同一 Go Docker 命令將 `/output` 改掛已存在的 `workplace/hd-prototype/`，其他隔離及資源限制保持相同；輸出 `startup-probe/latest.json` 的 `hd_asset_trace`。只記原版載入入口、返回、指標與平面雜湊，不替換素材。`-steps 10000000` 可核對啟動前四次載入；完整路徑沿用 `-steps 750000000 -mouse-file /project/tools/player-path.json -hd-trace`。CD 正式收據仍留原輸出目錄。
+
+DAT 盤點沿用固定 Python Docker 命令，唯讀掛專案及 `original/game/`，後者掛 `/original`；將已存在的 `workplace/hd-prototype/` 掛為可寫 `/output`，執行 `python3 /project/tools/hd-asset-probe.py`。輸出是研究用候選目錄，不是正式 HD 素材包。
+
+首張素材擷取的完整輸入、位址、尺寸與雜湊見 RESEARCH-LOG 的「第一張劇情素材的擷取契約」。重生時在固定 Python Docker 內，唯讀掛專案為 `/project`、可寫掛已存在的 `workplace/hd-prototype/asset-capture/` 為 `/output`，由 `tools/player-path.json` 篩選 `step < 150000000` 的事件，以 `json.dumps(events, ensure_ascii=False, indent=2) + "\n"` 寫出 `player-prefix.json`。寫入前核對原時間表 SHA-256 `f621bd1f66e0d4bb492570317ec82b898ec95d3a1f4139a6ee5c451011b30395`；前綴必須有 33 筆，SHA-256 為 `cc23a9dc6353d066e12a1097224c1c8472940ade33365f880d01aff5ba6fe736`。拒絕覆寫既有檔案。
+
+再沿用 Go Docker 的完整隔離命令，以該目錄掛 `/output`，執行 `sh /project/tools/run-probes.sh -steps 150000000 -mouse-file /output/player-prefix.json -hd-trace`。完成後用相同 Go image、原版唯讀掛 `/original`、專案唯讀掛 `/project`、擷取目錄可寫掛 `/output`，執行 `go run /project/tools/hd-extract.go -input /output`。工具拒絕覆寫既有擷取檔，不能用完整戰場的 RAM 代替 A-0 擷取。
+
+離線預覽則將整個 `workplace/hd-prototype/` 掛為 `/output`，在同一 Go Docker 執行：
+
+```sh
+go test /project/tools/hd-preview.go /project/tools/hd-preview_test.go
+go run /project/tools/hd-preview.go \
+  -frame /output/asset-capture/startup-probe/frame-f8b23041cc0ab4866e40dd4d14eb92489b8c3896d2595ea5cba11f1338f0db62.png \
+  -source /output/asset-capture/A-0-original.png \
+  -hd /output/A-0-hd-b-v1.png -out /output/A-0-hd-preview-v1.png
+```
+
+Go 預覽工作設定 `GOMAXPROCS=2` 與 `GOFLAGS=-p=2`，配合 2 CPU／64 程序限制。`-hd` 留空顯示原圖，指向不存在的 PNG 驗證缺圖備援；輸出檔名必須尚未存在。生成美術不隨 Git 提供，須先核對本機 `prototype.json` 的圖像與提示詞雜湊。以上只驗證離線呈現，未實作桌面執行中切換。
 
 要重跑保存的正常玩家路徑，在同一 Docker 命令最後使用 `tools/run-probes.sh -steps 750000000 -mouse-file /project/tools/player-path.json`。`-mouse-file` 與 `-mouse` 擇一，輸入雜湊記入 `mouse_input_sha256`。路徑的驗證進度以 CONTEXT 為準，不以輸入檔存在宣稱通過。
 
