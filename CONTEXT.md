@@ -16,16 +16,17 @@
 | 通用平台修正 | 在隔離副本實作 CPU 指令形式與 DPMI 實模式主機服務轉接；外部 dosgolem 工作樹未改 | [dosgolem.patch](tools/dosgolem.patch)、[回歸測試](tools/cpu386-integration_test.go) |
 | 平台回歸 | CPU386、machine、dosfile、研究入口四個套件通過；每次修改後重跑 | [platform-test.log](workplace/startup-probe/platform-test.log) |
 | 原版時間等待 | DOS 時間與 VGA 回掃共用一微秒／成功指令的虛擬時間；原版自行校準等待迴圈 | 最新收據 `virtual_clock`；[回掃契約](RESEARCH-LOG.md)；未略過指令 |
-| 光碟 | 真實 CUE/BIN 掛載與 TOC 子集已測；只讀診斷確認 DPMI 段號被原版當作平面指標，TOC 與請求緩衝區因此重疊；與零長度 PLAY 的因果關係仍待確認，正長度音訊未支援 | [cdrom.go](tools/cdrom.go)、[RESEARCH-LOG.md](RESEARCH-LOG.md)；`workplace/cd-trace/trace-on.json` |
+| 光碟 | 真實 CUE/BIN 掛載與 TOC 子集已測；第一筆零長度 PLAY 已確認來自緩衝區重疊、31 次錯誤音軌查詢及原版長度相減；正長度音訊未支援 | [cdrom.go](tools/cdrom.go)、[因果鏈](RESEARCH-LOG.md)；`workplace/cd-trace/first-play.json` 與完整記憶體 |
 | CD 只讀診斷 | 開關對照通過；同一 3,000,000 步的完整記憶體、畫面、停止位置、中斷計數與原始 trace 一致；未修改原版或 DPMI 回傳契約 | [startup-probe.go](tools/startup-probe.go) 的 `-cd-trace`；`workplace/cd-trace/trace-on.json`、`trace-off.json` |
 | 滑鼠與 BIOS | 普通滑鼠已推進選單、角色建立與敘事；已接原版遮罩與畫面游標層，未實作 TSR 的 VRAM 背景讀回 | [video.go](tools/video.go)；`latest.json` 的輸入與邊界畫面 |
 | VGA／VESA 顯示 | 原版模式 12h 與 CRTC 自行設定 640×400，開場、標題與主選單已目視確認；VBE 分頁子集另有測試 | [原生標題與選單](workplace/startup-probe/frame-7df7211c989bca30c3e82077011a96e7ef7142c9029c515aeb5dda5e461697e7.png)、[video.go](tools/video.go) |
-| DOSBox 輔助基準 | 可顯示原版標題；DOSBox-X 搭配包內 DOS/4GW 也確認段號被誤用為指標，兩個 MCB 配置讓段號相差 2；只作輔助證據，未作音訊驗證 | [25s.png](workplace/dosbox-aux/25s.png)、[aux-cd-trace.py](tools/aux-cd-trace.py)、`workplace/cd-trace/aux-debug/manifest.json`；詳見 RESEARCH-LOG |
+| DOSBox 輔助基準 | 可顯示原版標題；實際 DOS/4GW 的 MCB 配置可重用，段號相差 2。第 1、2 軌 MSF 起點保留，控制欄位仍遭重疊覆蓋；未作音訊驗證 | [25s.png](workplace/dosbox-aux/25s.png)、[aux-cd-trace.py](tools/aux-cd-trace.py)、`workplace/cd-trace/aux-toc/manifest.json`；詳見 RESEARCH-LOG |
 | 正常玩家路徑、存讀檔與音訊 | 部分驗證；選單、角色建立、敘事、選項與出陣確認通過，地形、人物單位與小地圖已目視確認；單位操作、戰鬥與存讀檔未驗證，CD 正長度音訊未支援 | [普通輸入時間表](tools/player-path.json)；精確畫面雜湊與操作見 RESEARCH-LOG |
 | remake | 排除 | 使用者明確指定原版與 dosgolem 整合 |
 | 後續功能範圍 | 已確認 CD 音樂、繁中／簡中／英文／日文，以及可切換的 HD 素材包；已授權在 repo 與 Issues 建立後開工，尚未實作 | 本次使用者選擇；階段與待送出 Issue 內容見 [WORKLIST.md](WORKLIST.md) |
 | 後續使用介面 | 桌面版；瀏覽器排除 | 使用者明確表示「不考慮瀏覽器」；桌面作業系統與打包驗收清單尚未定案 |
 | private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 均已存在且開啟；從 [CD-TRACE #1](https://github.com/wicanr2/tokugawa-dosgolem/issues/1) 開工 | 2026-10-12 主機 `gh auth status`、`repo view` 與分頁 Issues API；不重複建立 |
+| Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試與文件；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
 | Docker 收尾 | 本輪原生重跑與驗證容器均已結束，無本專案殘留；未建新 image | `docker ps -a --filter name=tokugawa` 為空；擁有權檢查通過 |
 
@@ -41,7 +42,7 @@
 來源頁、API 回應、最終下載網址與其餘檔案雜湊集中在 `original/source.json`，不以遊戲名稱辨認 binary 版本。
 
 - 已證實：`DX5.EXE` 與 `.BAK` 在檔案偏移 `0x17459`、`0x17582` 分別為 `3F` 與 `15`，以及調色盤範圍 `0x2FAD4–0x2FBF3` 存在差異。包內 UTF-8 修正說明記載亮度調整方法。保留網站使用的 EXE 作為此次基準。
-- 已證實：檔案偏移 `0x19395` 的 active／BAK bytes 為 `EB`／`74`。語意未知，不宣稱所有差異只有亮度修正。
+- 已證實：檔案偏移 `0x19395` 的 active／BAK bytes 為 `EB`／`74`。IDA 新證據確認網站 EXE 在此無條件略過 TOC 末軌是否等於 16 的失敗出口；勘誤與原始定位見 RESEARCH-LOG。不宣稱所有差異只有亮度修正，也不切換 `.BAK`。
 - 已證實：`DX5.cue` 宣告 16 軌，第一軌 `MODE1/2352`，其餘 15 軌 `AUDIO`。尚未驗證實際音軌播放與遊戲的選曲行為。
 - 未知：`.BAK` 的版本來源、額外差異用途，以及尚未測到的戰鬥、存讀檔與音訊相容性。
 

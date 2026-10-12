@@ -39,7 +39,7 @@
 | [tools/player-path.json](tools/player-path.json) | 原版入口、角色建立與敘事推進的普通滑鼠時間表；已驗證範圍見 RESEARCH-LOG |
 | [tools/setup-github.sh](tools/setup-github.sh) | 主機 gh 建立 private repo 與六筆 Issues；Docker 擷取本文，`--prepare` 不存取 GitHub |
 | `workplace/github-setup/` | 從 WORKLIST 重生的待送出 Issue 本文，不作遠端狀態台帳 |
-| `workplace/cd-trace/` | CD TOC／PLAY 的隔離診斷收據、IDA 窄範圍證據與可重生工具副本 |
+| `workplace/cd-trace/` | CD TOC／PLAY 的隔離診斷收據、IDA 窄範圍證據與可重生工具副本；`aux-toc/` 保存額外 TOC 查詢的 DOSBox-X 輔助證據 |
 | [tools/dos_test.go](tools/dos_test.go) | DOS EXEC 缺檔錯誤與不假執行測試 |
 | [RESEARCH-LOG.md](RESEARCH-LOG.md) | 輸入雜湊、位址空間、平台契約與研究證據 |
 | [README.md](README.md) | 專案用途、穩定入口與執行方式摘要 |
@@ -80,13 +80,15 @@ PLAY.BAT
 - `DX5.cue` 宣告一軌 `MODE1/2352` 資料與十五軌 CD 音樂。實際映像檔名是 `DX5.bin`，CUE 引用 `DX5.BIN`。保留下載原樣；若工具要求大小寫一致，在可寫工作副本處理並記錄，不改原始資料。
 - CD 音樂不以 Sound Blaster 或 AdLib 合成代替。光碟掛載、資料讀取與音軌播放各自驗證，不能用其中一項代表全部支援。
 - 使用包內 `DX5.EXE` 作為網站版本基準。它與 `DX5.EXE.BAK` 不同；包內附畫面亮度修正說明。未確認之前，不把 `.BAK` 稱為未修改的出廠原版，不切換版本或再次套補丁。
-- 已發現的差異包含亮度修正區，以及**檔案偏移** `0x19395` 的 `EB`／`74` 差異。後者語意未知，不從名稱或可玩結果猜測用途。位址與完整雜湊見 CONTEXT。
+- 已發現的差異包含亮度修正區，以及**檔案偏移** `0x19395` 的 `EB`／`74` 差異。IDA 已確認網站 EXE 在此略過 TOC 末軌為 16 的檢查；原始定位與勘誤見 RESEARCH-LOG，完整雜湊見 CONTEXT。這不證明 `.BAK` 的來源或其餘差異。
 
 ## Docker 邊界
 
 輔助 DOSBox 基準腳本為 [tools/aux-dosbox.sh](tools/aux-dosbox.sh)。只在既有 `san5-dosbox-xvfb:bookworm-20261009-r1` 容器內執行，輸入掛在 `/original` 唯讀，工作樹唯讀掛在 `/project`，`workplace/` 掛在 `/output`。使用 UID/GID 1000、`--network none`、1 GiB、2 CPU、128 程序與 `timeout 55s sh /project/tools/aux-dosbox.sh`。輸出 `workplace/dosbox-aux/`，用途只限輔助查證。
 
 CD 配置的輔助除錯使用 [tools/aux-cd-trace.py](tools/aux-cd-trace.py)，沿用既有 DOSBox-X image `psychicwar-dosboxx@sha256:79a3e2df79738a5821a7a168d15e73894ad3ce7e7c6e2d4cdd53c09550316d46`。實際程式版本為 2026.06.02、commit `d75a57c72a74a6d87250e4b2556e70ea02995e51`，不能由 image tag 推定版本。只觀測第一次 0100h 配置與 0300h TOC 回寫，不注入滑鼠、不改 guest 記憶體或暫存器。執行前確認 `original/game/`、`workplace/cd-trace/` 與腳本存在，再以同樣資源限制啟動容器；工作樹掛 `/project` 唯讀、原版掛 `/original` 唯讀、`workplace/cd-trace/` 掛 `/output` 可寫，執行 `timeout -k 5s 90s python3 /project/tools/aux-cd-trace.py`。輸出在 `workplace/cd-trace/aux-debug/`，含前後記憶體、暫存器、原始終端、記錄檔及雜湊 manifest；這些不能充當 dosgolem 原版收據。Xvfb 與 debugger 由腳本有界管理並清理。
+
+額外 TOC 查詢使用同一掛載與 image，執行 `timeout -k 5s 180s python3 /project/tools/aux-cd-trace.py --toc-queries 2`，外層期限設為 190 秒。兩筆查詢各保存實模式封包、請求與傳輸緩衝區的前後 bytes；輸出在 `workplace/cd-trace/aux-toc/`。數量限 0 至 16，擴大範圍前須相應調整有界期限。
 
 下載、分析、解包、建置、測試、遊戲執行與抓圖都在 Docker。主機只作 Docker／Git 控制、檔案編輯與必要狀態檢查。不把主機 Python、Go、Wine 或 DOSBox 當成替代工具鏈。
 

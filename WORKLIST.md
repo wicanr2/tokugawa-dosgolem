@@ -46,7 +46,7 @@ CD 音樂優先完成，文字擷取與 HD 素材定位可在不依賴播放修�
 
 ### CD 音樂的首個切片
 
-- 已知一軌資料與十五軌 AUDIO；目前八次原版 PLAY 都是零長度，正長度播放未支援。只讀診斷與實際 DOS/4GW 的 DOSBox-X 輔助執行均確認段號被當作平面指標，TOC 與請求緩衝區重疊。兩個執行器的配置段號差分別為 1 與 2，受覆蓋欄位不同；下一步查證 MCB 回收／重配、音軌查詢至 PLAY 的資料流，不以額外空隙遮住錯誤。
+- 已知一軌資料與十五軌 AUDIO；目前八次原版 PLAY 都是零長度，正長度播放未支援。第一筆 PLAY 已連回緩衝區重疊、31 次失敗音軌查詢、起點表與長度相減。實際 DOS/4GW 會重用含 MCB 的配置，前兩軌 MSF 起點保留，但控制欄位仍被覆蓋。證據與雜湊見 RESEARCH-LOG；下一步建立含回收、合併、resize、錯誤及界限的通用 DOS 配置契約，不以額外空隙遮住錯誤。
 - `-cd-trace` 的開／關對照通過，同一 3,000,000 步的完整記憶體、畫面與中斷計數一致。證據與限制見 RESEARCH-LOG；沒有為修音訊改寫原版 bytes、配置器或段號回傳。
 - 對照實際 DPMI 封包、段號／selector、實模式地址、TOC 回寫及播放長度資料流。DOSBox 只補交叉驗證；最終由 dosgolem 重生原版選曲收據。不直接換 EXE、改軌號或把零長度當整軌播放。
 - 以 [Microsoft MSCDEX 規格存檔](https://www.phatcode.net/articles.php?id=220)與[固定 DOSBox Staging v0.82.2 的光碟實作](https://raw.githubusercontent.com/dosbox-staging/dosbox-staging/v0.82.2/src/dos/cdrom_image.cpp)作平台契約。BIN AUDIO 流式讀取為 44.1 kHz、16-bit、雙聲道 PCM；驗證來源位元組順序、PREGAP、起訖位置與跨軌邊界，不先轉成有損素材。

@@ -683,3 +683,47 @@ IDA Pro 9.4 匯出 `workplace/ida/range-20500-20640.json` 確認相同 bytes，I
 - 限制：找到指定 Big5 bytes 只證明這些片段存在，不證明整份字串表、控制碼、字模、所有繪字呼叫或完整翻譯入口已解出。「重新開始」的指定 Big5 bytes 在兩檔均未找到，也不能據此宣稱所有選單都是圖片。
 - 已證實：cpu386 已有 IntHook 與可取代指令步進的 StepHook；既有 `oracle/call.go` 的 Call 使用 16-bit CPU 與 far 呼叫約定。不能把其他遊戲的 OnCall／Call 能力直接當成本作 LE 的文字與 HD 事件擷取已完成。觀測功能須另有不略過原版指令的契約與測試。
 - 已證實：Ebitengine 的[官方能力表](https://ebitengine.org/en/documents/features.html)列出桌面圖形、滑鼠與音訊支援。這只是桌面試作候選的依據，不證明本作相容性或任何打包平台已驗收。瀏覽器已由使用者明確排除。
+
+### 2026-10-12：TOC 至第一筆零長度 PLAY 的因果鏈
+
+路由再次核對 dosgolem、IDA 與平台規格優先入口。輸入沿用本文件固定雜湊的 DX5.EXE、DOS4GW.EXE 與 CUE/BIN。工具為 Go 1.24.13、CONTEXT 的 dosgolem HEAD 與 IDA Pro 9.4。DOSBox-X 沿用前節固定版本與 image，只作輔助證據。沒有切換 `.BAK` 或修改原版。
+
+`--toc-queries 2` 額外擷取後續兩次查詢。首次工具刪錯斷點，斷言拒絕輸出；固定版本 debugger 使用 `push_front` 新增斷點，0100h 在此時的索引為 1。依既有原始碼修正索引並核對 BPLIST 後，以同一 image、命令與原版輸入乾淨重跑，退出 0，manifest 為 `completed=true`，逐檔雜湊通過。這是驗證工具修正。
+
+| 推論等級 | DOSBox-X 輔助定位 | 原始觀測 |
+|---|---|---|
+| 已證實 | `aux-toc/queries.json`；兩次 `CS=0160h, EIP=001E36F8h` 的 0300h | 兩次都重用請求線性 `0x7F3`、傳輸線性 `0x7F1`；MCB dump 仍為 `07F0h`、`07F2h`。配置不會像目前 dosgolem 一路向後 |
+| 已證實 | `toc-00-query-before.bin`／`after.bin` | 第 1 軌：`0b011a00030000` → `0b010002000001`；MSF 起點四 bytes 為 `00020000`，換算 LBA 0 |
+| 已證實 | `toc-01-query-before.bin`／`after.bin` | 第 2 軌：`0b021a00030000` → `0b023d27000001`；MSF 起點四 bytes 為 `3d270000`，換算 LBA 2836，符合 CUE 幾何 |
+| 已證實 | query 與 `request-after.bin` | 請求狀態 `0100h` 覆蓋查詢最後兩 bytes，控制欄位變成 `01h`。只確認起點保留，不能宣稱完整 TOC 回寫正確 |
+
+dosgolem 以 `tools/player-path.json` 的原樣事件前綴重跑 150,000,000 步，共 33 筆普通滑鼠事件。只保留步數小於預算的事件，沒有改座標或時間。診斷保存 102 次呼叫、丟棄零次；無未支援 DPMI、無 FD2 攔截，停止原因為 `instruction_budget`。收據與完整 backing RAM 另存為 `first-play.json`、`first-play-memory.bin`，沒有取代正式戰場驗收收據。
+
+| 推論等級 | 原始定位與位址空間 | 因果證據 |
+|---|---|---|
+| 已證實 | dosgolem 成功步數 2,017,319 至 2,032,004，0300h 前後快照 | 31 次音軌查詢的軌號皆被請求長度 `1Ah` 覆蓋，全部回報 `8108h`。查詢前綴由 `0b1a0003000000` 變成 `0b1a0003088100`，起點四 bytes 成為 `00030881` |
+| 已證實 | IDA 線性 `0x29607–0x2960D`，檔案偏移起於 `0x24E07` | 原始 `sub_295D1` 直接把查詢 bytes 2 至 5 複製給呼叫者，沒有依裝置錯誤狀態拒絕這份起點 |
+| 已證實 | IDA 線性 `0x1DBDC`／`0x1DBF7`，檔案偏移 `0x193DC`／`0x193F7` | 原版對當前軌及下一軌各查一次，解釋 16 軌共 31 次查詢；尾軌改用 lead-out |
+| 已證實 | IDA `sub_1DA75`，線性 `0x1DA75–0x1DAC7`／檔案偏移 `0x19275–0x192C7` | 公式為 `minute*4500 + second*75 + frame - 150`。同一錯誤起點得到同一值；最高 byte 不參與公式 |
+| 已證實 | IDA 線性 `0x1DC03–0x1DC1B`，檔案偏移起於 `0x19403` | 原版換算兩個起點後以 `sub ebx,eax` 取得長度。原始表格寫入端為 `dword_3ACD4`、`dword_3AE64`，位於 IDA `0x1DC48`／`0x1DC57`，檔案偏移 `0x19448`／`0x19457` |
+| 已證實 | 150,000,000 步的 dosgolem backing RAM，線性 `0x3ACD4`、`0x3AE64` | 軌 1 至 16 的起點均為 `81080300h`；軌 1 至 15 長度均為 0，軌 16 為 `FFFF844Dh`。尾軌的損壞 lead-out 尚未修正 |
+| 已證實 | IDA 線性 `0x1DCF3`／`0x1DCFF`／`0x1DD05`，檔案偏移 `0x194F3`／`0x194FF`／`0x19505` | 原版直接從兩張表取長度及起點，呼叫原始 `sub_29716` 建立 PLAY 封包 |
+| 已證實 | dosgolem 成功步數 136,777,435，請求線性 `0x5CF2` | 第一筆 PLAY 為模式 1、起點 `81080300h`、長度 0，回報 `8000h`。完整記憶體的原始 `dword_358AC` 位於線性 `0x358AC`，值為 10；第 10 軌的表格值逐項與封包一致 |
+
+結論：本次第一筆零長度 PLAY 已連回失敗 TOC 的回寫、原版無條件取值、起點表、長度相減與 PLAY 封包。其餘七次 PLAY 尚未逐次補完整資料流；沒有宣稱全部選曲已查清或音訊已修復。
+
+勘誤：前節將檔案偏移 `0x19395` 的 `EB`／`74` 用途列為未知。本次 IDA 確認前一指令在 IDA 線性 `0x1DB91` 比較 TOC 末軌是否等於 16。網站 EXE 的 `EB 18` 無條件跳至 `0x1DBAF`，略過「Please put Game CD」失敗出口；`.BAK` 的 `74 18` 是相同目標的條件跳躍。這只證實此處靜態控制流，不證明 `.BAK` 的版本來源或其他差異，兩份雜湊不變。
+
+下一個切片尚未達 READY：依 [FreeDOS ke2046 的 MCB 定義](https://raw.githubusercontent.com/FDOS/kernel/ke2046/hdr/mcb.h)與[配置器](https://raw.githubusercontent.com/FDOS/kernel/ke2046/kernel/memmgr.c)，建立包含 paragraph 標頭、first-fit、釋放重用、合併、resize、錯誤與界限的通用 DOS 記憶體契約，並核對 dosgolem 現有配置測試。這些是公開平台語意，不另開遊戲 RE。尚未改配置器、DPMI 回傳、原版 EXE、音軌或播放長度，不能宣稱只加 MCB 即可完成 CD 音樂。
+
+| 收據或工具 | SHA-256 |
+|---|---|
+| `tools/aux-cd-trace.py` | `74c0b21d706f064abfb3e174c17f558cbe985bbb570198952656f40ae6f35070` |
+| `workplace/cd-trace/aux-toc/manifest.json` | `86912374bad33dbc12fdd976b5641f07534f1cbd2dbd122c40b0c741136a26eb` |
+| `workplace/cd-trace/aux-toc/queries.json` | `343e2c0579cfdbbe99a636ee5e02fd974d364be91df75ed800296ba399b07793` |
+| `workplace/cd-trace/first-play-input.json` | `cc23a9dc6353d066e12a1097224c1c8472940ade33365f880d01aff5ba6fe736` |
+| `workplace/cd-trace/first-play.json` | `398fa89669bcf3e64ef3f207bd677e9931be01d1cfb808211f9c83b58ff12159` |
+| `workplace/cd-trace/first-play-memory.bin` | `3862c326fa4679e92df16b3d8fb7f194f9f19ac73792b5abc1fb94cac06189d1` |
+| `workplace/cd-trace/range-29400-29a00.json` | `d94c4d8aeff7b8d4aa34eab50b67b41c317a99d2098802bcf1373339e414386f` |
+| `workplace/cd-trace/range-1db50-1dd30.json` | `d15b3a916e2b2d075d3678dfff6ad7a121a86498bad33af68461a9a5be0a5bb7` |
+| `workplace/cd-trace/range-1da75-1dac8.json` | `d22e3aae67bd11de7cf70a1d05569e5f741ebb88655266ff9a9b06335e14953c` |

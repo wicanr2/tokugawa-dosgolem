@@ -14,8 +14,14 @@ import subprocess
 import termios
 import time
 import tty
+import argparse
 
 assert pathlib.Path('/.dockerenv').exists()
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--toc-queries', type=int, default=0,
+                    help='額外擷取 0 至 16 次 TOC 查詢；不更動原版狀態')
+args = parser.parse_args()
+assert 0 <= args.toc_queries <= 16
 expected = {
     'DX5.EXE': '2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a',
     'DOS4GW.EXE': 'b8265123ac8a189637448618409ef3ecd2e9f3e1a47062c685a02240f688dec1',
@@ -24,7 +30,7 @@ expected = {
 }
 for name, digest in expected.items():
     assert hashlib.file_digest(open('/original/' + name, 'rb'), 'sha256').hexdigest() == digest, name
-out = pathlib.Path('/output/aux-debug')
+out = pathlib.Path('/output/aux-toc' if args.toc_queries else '/output/aux-debug')
 out.mkdir(exist_ok=True)
 assert out.stat().st_uid == os.getuid() == 1000
 for path in out.rglob('*'):
@@ -55,14 +61,14 @@ cycles=fixed 30000
 [mixer]
 nosound=true
 [log]
-logfile=/output/aux-debug/debug.log
+logfile=OUTPUT/debug.log
 debuggerrun=debugger
 [autoexec]
-mount c /output/aux-debug/game
+mount c OUTPUT/game
 c:
 imgmount d DX5.cue -t iso
 DX5.EXE
-''')
+'''.replace('OUTPUT', str(out)))
 env = dict(os.environ, DISPLAY=':93', SDL_AUDIODRIVER='dummy', TERM='xterm', HOME='/tmp', ESCDELAY='25')
 xlog = (out / 'xvfb.log').open('wb')
 xvfb = subprocess.Popen(['Xvfb', ':93', '-screen', '0', '1024x768x24'], stdout=xlog, stderr=subprocess.STDOUT)
@@ -72,6 +78,8 @@ fcntl = __import__('fcntl')
 fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack('HHHH', 60, 180, 0, 0))
 log = (out / 'terminal.raw').open('wb')
 proc = None
+completed = False
+queries = []
 
 def stop(signum, frame):
     raise SystemExit(128 + signum)
@@ -156,7 +164,38 @@ try:
     dump('DS:' + format(query_ax, 'X'), 'query-at-segment-after.bin')
     dump('DS:' + format(request_ax, 'X'), 'request-at-segment-after.bin')
     (out / 'registers.json').write_text(json.dumps(rows, indent=2))
+    if args.toc_queries:
+        # 固定版本以 push_front 新增斷點，0100h 此時是索引 1。
+        command('BPDEL 1')
+        command('BPLIST')
+        listing = (out / 'debug.log').read_text(errors='replace').rsplit('Breakpoint list:', 1)[1]
+        assert 'BPINT 31 AH=03 AL=00' in listing and 'BPINT 31 AH=01 AL=00' not in listing
+        for index in range(args.toc_queries):
+            key(b'\x1b[15~')
+            before = ev('toc-%02d-before' % index)
+            assert before['EAX'] == 0x300 and before['EBX'] == 0x2f
+            prefix = 'toc-%02d-' % index
+            dump('ES:EDI', prefix + 'real-before.bin')
+            real = (out / (prefix + 'real-before.bin')).read_bytes()
+            assert struct.unpack_from('<H', real, 28)[0] == 0x1510
+            assert struct.unpack_from('<H', real, 24)[0] == 3
+            request = struct.unpack_from('<H', real, 34)[0] * 16 + struct.unpack_from('<H', real, 16)[0]
+            dump('DS:%X' % request, prefix + 'request-before.bin')
+            packet = (out / (prefix + 'request-before.bin')).read_bytes()
+            assert packet[0] == 26 and packet[2] == 3
+            transfer = struct.unpack_from('<H', packet, 16)[0] * 16 + struct.unpack_from('<H', packet, 14)[0]
+            count = struct.unpack_from('<H', packet, 18)[0]
+            assert count == 7
+            dump('DS:%X' % transfer, prefix + 'query-before.bin')
+            key(b'\x1b[21~')
+            after = ev('toc-%02d-after' % index)
+            dump('DS:%X' % transfer, prefix + 'query-after.bin')
+            dump('DS:%X' % request, prefix + 'request-after.bin')
+            queries.append(dict(before=before, after=after,
+                                request_linear=request, transfer_linear=transfer, count=count))
+            (out / 'queries.json').write_text(json.dumps(queries, indent=2))
     command('DOS MCBS', 0.5)
+    completed = True
     print(json.dumps(rows, indent=2))
     print((out / 'debug.log').read_text(errors='replace')[-2500:])
 finally:
@@ -175,6 +214,8 @@ finally:
                for p in out.iterdir() if p.is_file() and p.name != 'manifest.json'}
     manifest = {
         'classification': 'DOSBox-X auxiliary evidence; not a dosgolem receipt',
+        'completed': completed,
+        'extra_toc_queries': args.toc_queries,
         'image': 'psychicwar-dosboxx@sha256:79a3e2df79738a5821a7a168d15e73894ad3ce7e7c6e2d4cdd53c09550316d46',
         'executable_sha256': hashlib.file_digest(open('/usr/local/bin/dosbox-x', 'rb'), 'sha256').hexdigest(),
         'script_sha256': hashlib.file_digest(open(__file__, 'rb'), 'sha256').hexdigest(),
