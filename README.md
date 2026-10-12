@@ -6,7 +6,7 @@ GitHub 儲存庫：[wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokuga
 
 已下載並核對 jsdos。dosgolem 能從原版入口，經主選單、角色建立、敘事與出陣確認，顯示戰場地形、人物單位及小地圖，並持續接收滑鼠查詢；普通滑鼠能推進對話並選取劇情選項。單位操作、戰鬥與存讀檔仍待驗證。
 
-CDDA 裝置已支援原版 PLAY／STOP／RESUME 與本機 BIN 的 PCM 串流。正常入口至首場戰場的選曲、換曲與 PCM 已驗證，無頭收據保存事件、樣本數與音訊雜湊；桌面輸出及人耳確認待驗。含顯式 PREGAP 的播放範圍目前拒絕，原版末軌長度另有緩衝區重疊限制，詳見 CONTEXT。
+CDDA 裝置已支援原版 PLAY／STOP／RESUME、本機 BIN 的 PCM 串流、PREGAP 靜音與映像結尾停止。十五條音軌及正常入口至首場戰場的選曲、換曲與 PCM 已驗證，無頭收據保存事件、樣本數與音訊雜湊；桌面輸出及人耳確認待驗。後續優先製作可切換的 HD 素材包，現況見 CONTEXT。
 
 - [工作規則與重跑命令](AGENTS.md)
 - [目前狀態](CONTEXT.md)

@@ -2,7 +2,10 @@ package main
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/binary"
+	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"testing"
@@ -104,7 +107,7 @@ func TestCDDAPauseResumeReplaceAndBounds(t *testing.T) {
 	if !bytes.Equal(out.Bytes()[735*4:], pcm[4*2352:5*2352]) {
 		t.Fatal("replace did not seek to new source")
 	}
-	for _, v := range [][3]uint32{{0, 0, 1}, {0, 2, 3}, {0, 7, 2}, {0, 0xffffffff, 2}, {1, 0x02004b, 1}, {2, 4, 1}} {
+	for _, v := range [][3]uint32{{0, 0, 1}, {0, 1, 5}, {0, 8, 2}, {0, 0xffffffff, 2}, {1, 0x02004b, 1}, {2, 4, 1}} {
 		if d.playAudio(byte(v[0]), v[1], v[2]) != 0x8108 {
 			t.Fatalf("invalid range accepted %v", v)
 		}
@@ -122,6 +125,104 @@ func TestCDDAPauseResumeReplaceAndBounds(t *testing.T) {
 	}
 	if err := d.advanceAudio(0); err == nil {
 		t.Fatal("backwards clock accepted")
+	}
+}
+
+func TestCDDAPregapSilenceAndPause(t *testing.T) {
+	for _, chunked := range []bool{false, true} {
+		d, pcm, out := syntheticAudio(t)
+		// 第二段間隙驗證音訊 → 靜音 → 音訊，不讀取不存在的 BIN bytes。
+		d.Tracks[2].Pregap, d.Tracks[2].DiscSector, d.LeadOut = 2, 8, 10
+		if d.playAudio(0, 2, 8) != 0x300 {
+			t.Fatal("pregap start rejected")
+		}
+		advanceCD(t, d, 10001)
+		d.stopAudio()
+		advanceCD(t, d, 1010001)
+		if d.Audio.Frames != 441 || d.Audio.NonzeroSamples != 0 || d.Audio.Fraction != 44100 {
+			t.Fatal("pregap pause state")
+		}
+		if d.resumeAudio() != 0x300 {
+			t.Fatal("pregap resume")
+		}
+		if chunked {
+			for us := uint64(1010002); us < 1200000; us += 137 {
+				advanceCD(t, d, us)
+			}
+		}
+		advanceCD(t, d, 1200000)
+		want := append(make([]byte, 2*2352), pcm[2*2352:4*2352]...)
+		want = append(want, make([]byte, 2*2352)...)
+		want = append(want, pcm[4*2352:]...)
+		if !bytes.Equal(out.Bytes(), want) || d.Audio.Playing || d.Audio.Frames != 8*588 {
+			t.Fatal("pregap PCM or duration")
+		}
+		e := d.Audio.Events[len(d.Audio.Events)-1]
+		if e["kind"] != "complete" || e["virtual_us"] != uint64(1106667) {
+			t.Fatalf("pregap completion %+v", e)
+		}
+	}
+}
+
+func TestCDDAOversizedRequestStopsAtLeadOut(t *testing.T) {
+	d, pcm, out := syntheticAudio(t)
+	if d.playAudio(0, 7, 0xffffffff) != 0x300 || !d.Audio.ClippedAtEnd {
+		t.Fatal("valid last-sector start rejected")
+	}
+	if d.Audio.End != 8*588 || d.Audio.RequestedEnd != (uint64(7)+0xffffffff)*588 || d.Audio.RequestSectors != 0xffffffff {
+		t.Fatal("request overflow or original length lost")
+	}
+	if !bytes.Equal(d.audioStatusInfo()[7:], redBook(8)) {
+		t.Fatal("status did not report effective endpoint")
+	}
+	advanceCD(t, d, 1000000)
+	if !bytes.Equal(out.Bytes(), pcm[5*2352:]) || d.Audio.Frames != 588 || d.Audio.Playing {
+		t.Fatal("read past source EOF")
+	}
+	if d.Audio.Events[1]["virtual_us"] != uint64(13334) || d.Audio.Events[0]["request_sectors"] != uint32(0xffffffff) {
+		t.Fatal("effective duration or request receipt")
+	}
+}
+
+func TestCDDAOriginalAllTracks(t *testing.T) {
+	if _, err := os.Stat("/original/DX5.cue"); os.IsNotExist(err) {
+		t.Skip("original disc not mounted")
+	}
+	d, err := openCueDisc("/original/DX5.cue")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer d.File.Close()
+	for i, track := range d.Tracks {
+		if track.Kind != "AUDIO" {
+			continue
+		}
+		t.Run(fmt.Sprintf("track-%02d", track.Number), func(t *testing.T) {
+			end := d.LeadOut
+			if i+1 < len(d.Tracks) {
+				end = d.Tracks[i+1].DiscSector - d.Tracks[i+1].Pregap
+			}
+			sectors := end - track.DiscSector
+			request := sectors
+			if i+1 == len(d.Tracks) {
+				request = 0xffffffff // 受控裝置界限測試，並非原版正常選曲證據。
+			}
+			sum := sha256.New()
+			d.Audio = cdAudio{Sink: sum}
+			if d.playAudio(0, track.DiscSector, request) != 0x300 {
+				t.Fatal("track rejected")
+			}
+			frames := uint64(sectors) * cdFramesPerSector
+			advanceCD(t, d, (frames*1000000+cdSampleRate-1)/cdSampleRate)
+			want := sha256.New()
+			if _, err := io.Copy(want, io.NewSectionReader(d.File, int64(track.FileSector)*2352, int64(sectors)*2352)); err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(sum.Sum(nil), want.Sum(nil)) || d.Audio.Frames != frames || d.Audio.Playing || d.Audio.NonzeroSamples == 0 {
+				t.Fatal("whole track source mapping, duration or completion")
+			}
+			t.Logf("sectors=%d frames=%d pcm_sha256=%x clipped=%t", sectors, frames, sum.Sum(nil), d.Audio.ClippedAtEnd)
+		})
 	}
 }
 

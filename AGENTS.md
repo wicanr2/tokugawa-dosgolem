@@ -31,8 +31,9 @@
 | [tools/run-probes.sh](tools/run-probes.sh) | 在 Docker 中套用修正、跑平台測試並重生啟動收據 |
 | [tools/cdrom.go](tools/cdrom.go) | 真實 CUE/BIN 掛載與 MSCDEX 查詢子集 |
 | [tools/cdrom_test.go](tools/cdrom_test.go) | 光碟幾何、來源雜湊與傳輸界限測試 |
-| [tools/cdda.go](tools/cdda.go) | 依虛擬時間推進的 CDDA 播放狀態與有界 PCM 串流；不支援含顯式 PREGAP 的播放範圍 |
-| [tools/cdda_test.go](tools/cdda_test.go) | 播放／停止／續播、換曲、自然結束、分塊獨立性、PCM 與軌道界限測試 |
+| [tools/cdda.go](tools/cdda.go) | 依虛擬時間推進的 CDDA 狀態與 PCM 串流，包含 PREGAP 靜音與 lead-out 停止 |
+| [tools/cdda_test.go](tools/cdda_test.go) | 播放／停止／續播、換曲、自然結束、分塊獨立性、間隙、超長請求與十五軌 BIN 測試 |
+| `workplace/startup-probe/cdda-boundary-test.log`、`cdda-verification.json` | 十五軌界限測試與正常流程全部 PCM 的獨立來源核對；驗證範圍及雜湊見 RESEARCH-LOG |
 | [tools/aux-cd-trace.py](tools/aux-cd-trace.py) | 固定 DOSBox-X image 中查證包內 DOS/4GW 的配置與 TOC 回寫，只作輔助證據 |
 | [tools/video.go](tools/video.go) | 標準 VGA 埠轉接、模式切換、擴充索引隔離與原生畫面擷取 |
 | [tools/video_test.go](tools/video_test.go) | VGA 暫存器隔離與 DAC 回歸測試 |
@@ -162,7 +163,7 @@ timeout 630s docker run --rm --name tokugawa-repro-probe --network none \
 
 先核對 `workplace/startup-probe/platform-test.log`，再看 `latest.json` 的停止原因。未支援服務與指令保持失敗即停止。`instruction_budget` 也不能解讀成可玩。`fd2_startup_calls` 必須為零；探針沒有安裝 FD2 函式攔截。歷次收據在 `workplace/startup-probe/receipts/`。
 
-探針明確啟用 [MCB 配置模式](tools/dpmi-mcb.go)，既有 dosgolem 預設不變。光碟音訊由 [CDDA 裝置](tools/cdda.go) 依虛擬時間串流，收據 `cd_pcm` 記錄路徑、樣本框數與 SHA-256，`mounted_disc.audio.events` 記錄播放、換曲、停止與續播。含顯式 PREGAP、資料軌或 lead-out 越界的 PLAY 回錯誤；不補造音訊。解碼通過與人耳確認分開記錄，後者目前未通過。
+探針明確啟用 [MCB 配置模式](tools/dpmi-mcb.go)，既有 dosgolem 預設不變。光碟音訊由 [CDDA 裝置](tools/cdda.go) 依虛擬時間串流，收據 `cd_pcm` 記錄路徑、樣本框數與 SHA-256，`mounted_disc.audio.events` 記錄播放、換曲、停止、續播與原始請求。顯式 AUDIO PREGAP 輸出等長靜音；有效起點的超長請求在 lead-out 停止，保存請求與實際終點。資料軌或 lead-out 以後的起點回錯誤。契約及驗證見 RESEARCH-LOG 的「CDDA 靜音間隙與映像結尾契約」。解碼通過與人耳確認分開記錄，後者目前未通過。
 
 命令最後的 `tools/run-probes.sh` 可接 `-steps 100000000`，保留原版等待並跑到主選單。普通滑鼠輸入用 `-mouse '<JSON>'` 傳入事件陣列，每筆含 `step`、`x`、`y`、`buttons`。`step` 是成功指令數，與虛擬微秒一致；`buttons` 的 bit0 為左鍵、bit1 為右鍵、bit2 為中鍵。按下與放開分兩筆，時間嚴格遞增，全部落在預算內。實際套用結果保存在 `latest.json` 的 `mouse_input_events`。輸入只走 dosgolem 的 MoveMouse／PressMouse／ReleaseMouse，不帶遊戲位址。目視核對與已測操作見 RESEARCH-LOG。
 

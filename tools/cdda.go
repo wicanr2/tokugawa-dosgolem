@@ -14,6 +14,11 @@ type cdAudio struct {
 	Position       uint64           `json:"disc_sample_frame"`
 	End            uint64           `json:"end_sample_frame"`
 	LastStart      uint64           `json:"last_start_sample_frame"`
+	RequestMode    byte             `json:"request_address_mode"`
+	RequestStart   uint32           `json:"request_raw_start"`
+	RequestSectors uint32           `json:"request_sectors"`
+	RequestedEnd   uint64           `json:"requested_end_sample_frame"`
+	ClippedAtEnd   bool             `json:"clipped_at_lead_out"`
 	Playing        bool             `json:"playing"`
 	Paused         bool             `json:"paused"`
 	Fraction       uint64           `json:"fractional_sample_millionths"`
@@ -30,14 +35,20 @@ func (a *cdAudio) event(kind string) {
 		a.DroppedEvents++
 		return
 	}
-	a.Events = append(a.Events, map[string]any{"kind": kind, "virtual_us": a.NowUS, "output_frame": a.Frames, "disc_sample_frame": a.Position, "end_sample_frame": a.End})
+	a.Events = append(a.Events, map[string]any{"kind": kind, "virtual_us": a.NowUS, "output_frame": a.Frames, "disc_sample_frame": a.Position, "end_sample_frame": a.End,
+		"request_address_mode": a.RequestMode, "request_raw_start": a.RequestStart, "request_sectors": a.RequestSectors,
+		"requested_end_sample_frame": a.RequestedEnd, "clipped_at_lead_out": a.ClippedAtEnd})
 }
 
 // 音軌邊界以 disc sector 計算，檔案位址以 file sector 計算。
-// 顯式 PREGAP 沒有來源 bytes，這個子集保持拒絕。
+// offset=-1 表示顯式 AUDIO PREGAP，依 CUE 契約輸出靜音。
 func (d *cueDisc) audioSpan(frame uint64) (offset int64, available uint64, ok bool) {
 	for i, t := range d.Tracks {
 		start := uint64(t.DiscSector) * cdFramesPerSector
+		gapStart := uint64(t.DiscSector-t.Pregap) * cdFramesPerSector
+		if t.Kind == "AUDIO" && frame >= gapStart && frame < start {
+			return -1, start - frame, true
+		}
 		endSector := d.LeadOut
 		if i+1 < len(d.Tracks) {
 			endSector = d.Tracks[i+1].DiscSector - d.Tracks[i+1].Pregap
@@ -77,11 +88,11 @@ func (d *cueDisc) advanceAudio(now uint64) error {
 	}
 	delta := now - a.NowUS
 	previousUS, previousFraction := a.NowUS, a.Fraction
-	remaining := a.End - a.Position
 	a.NowUS = now
 	if !a.Playing {
 		return nil
 	}
+	remaining := a.End - a.Position
 	if delta > (^uint64(0)-a.Fraction)/cdSampleRate {
 		return fmt.Errorf("CD clock overflow")
 	}
@@ -105,8 +116,12 @@ func (d *cueDisc) advanceAudio(now uint64) error {
 			count = uint64(len(buffer) / 4)
 		}
 		pcm := buffer[:int(count)*4]
-		if _, err := d.File.ReadAt(pcm, offset); err != nil {
-			return err
+		if offset < 0 {
+			clear(pcm)
+		} else {
+			if _, err := d.File.ReadAt(pcm, offset); err != nil {
+				return err
+			}
 		}
 		if a.Sink != nil {
 			written, err := a.Sink.Write(pcm)
@@ -161,7 +176,11 @@ func (d *cueDisc) playAudio(mode byte, raw, sectors uint32) uint16 {
 		}
 		start = m*4500 + s*75 + f - 150
 	}
-	end := start + uint64(sectors)
+	requestedEnd := start + uint64(sectors)
+	end := requestedEnd
+	if end > uint64(d.LeadOut) {
+		end = uint64(d.LeadOut)
+	}
 	if !d.validAudioRange(start*cdFramesPerSector, end*cdFramesPerSector) {
 		return 0x8108
 	}
@@ -172,6 +191,9 @@ func (d *cueDisc) playAudio(mode byte, raw, sectors uint32) uint16 {
 	a.Position = start * cdFramesPerSector
 	a.LastStart = a.Position
 	a.End = end * cdFramesPerSector
+	a.RequestMode, a.RequestStart, a.RequestSectors = mode, raw, sectors
+	a.RequestedEnd = requestedEnd * cdFramesPerSector
+	a.ClippedAtEnd = requestedEnd != end
 	a.Playing = true
 	a.Paused = false
 	a.Fraction = 0

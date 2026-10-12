@@ -785,3 +785,19 @@ dosgolem 以 `tools/player-path.json` 的原樣事件前綴重跑 150,000,000 �
 | 712967868 | 6 | 24836 | 7064 |
 
 完成範圍：MCB 平台錯誤與零長度 PLAY 的因果修正、正常入口至首場戰場的原版選曲／換曲、裝置狀態及無頭 PCM。限制：顯式 PREGAP 播放未支援；末軌長度受原版 lead-out 重疊破壞，尚未走到該玩家路徑。兩者接續 Issue #2 查公開裝置契約，不猜補長度；桌面與人耳確認接續 Issue #3。單位操作、戰鬥與存讀檔維持未驗證。
+## 2026-10-12：CDDA 靜音間隙與映像結尾契約
+
+知識路由命中 `local/retro-platform-spec-first.md`。狀態：DRAFT → 證據審查 → READY。本節補充既有 CDDA 子集，不改原版 EXE、TOC 表格或 PLAY 封包。
+
+- [GNU libcdio 的 track pre-gaps 文件](https://libcdio.github.io/libcdio.html)第 6.3 節明定 CUE `PREGAP` 在音軌前插入靜音；`INDEX 00` 才可能指向有來源音訊的間隙。本子集仍不支援 `INDEX 00`，顯式 AUDIO PREGAP 依宣告長度輸出零值 PCM，並消耗相同虛擬播放時間。
+- 固定 [DOSBox Staging v0.82.2](https://github.com/dosbox-staging/dosbox-staging/blob/v0.82.2/src/dos/cdrom_image.cpp) 的 `PlayAudioSector` 先驗證起點；`BinaryFile::decode` 依實際可讀 bytes 解碼，`CDAudioCallBack` 在 EOF 嘗試接續，起點到 lead-out 時停止。因此有效音訊起點搭配超過映像末端的長度，不必拒絕整個請求。這是成熟模擬器的相容性依據，不宣稱實體光碟機皆採同一錯誤處理。
+- `workplace/dosbox-staging-v0.82.2-cdrom_image.cpp` SHA-256 為 `0c6b238c3576a1a3dd8725a6e8d38d90264ae4eaa3f736c8cec8adad6a6215e0`。本節採 CUE 的靜音長度，與該版本 DOSBox Staging 會略過起點 PREGAP 的策略有明示差異。
+- PLAY 使用 64 位計算請求終點。起點在資料軌或 lead-out 以後仍回 `8108h`；零長度維持既有 `8000h`。有效音訊範圍的請求終點超過 lead-out 時，以 lead-out 作實際終點。收據同時保存原始模式、起點、磁區數、請求終點、實際終點與是否裁止，不猜補遊戲的末軌長度。
+- 靜音、檔案音訊及相鄰音軌可連續播放。暫停與續播保留分數樣本時間；自然結束回到閒置。狀態查詢回實際播放終點。時間換算仍標為 `hardware-spec approximation`。
+- 驗收涵蓋起點位於 PREGAP、跨入／跨出 PREGAP、暫停續播、分塊獨立性、極大長度、非法起點及全部十五軌的 BIN 位元組核對，再由正常入口重生八次選曲與戰場收據。受控裝置測試不冒充正常玩家已走到末軌。
+
+驗證結果：本節子集達 CONFORMED。Go 1.24.13 與既定 dosgolem HEAD 的四套件回歸通過。`workplace/startup-probe/cdda-boundary-test.log` 保存十五條 AUDIO 軌的磁區數、樣本數與 PCM SHA-256，逐軌與 BIN 的獨立區段讀取相符。末軌接受受控 `FFFFFFFFh` 長度，實際輸出 6,452 個磁區、3,793,776 個立體聲樣本框，並在 lead-out 自然停止。PREGAP 的零值 PCM、跨兩段靜音、暫停續播及分塊獨立性均通過。這些是裝置測試，沒有注入原版遊戲的選曲狀態。
+
+正式正常玩家路徑重跑 750,000,000 步、390 筆普通滑鼠事件，零 FD2 攔截、零未支援 DPMI、零音訊拒絕及零事件丟棄。收據 SHA-256 為 `c6b33e27450f09a6668cf77d848a13774c8e2780f7d96126b266da773570e075`，保存於 `workplace/startup-probe/latest.json` 及同雜湊的 receipts 檔。第 10、5、10、5、5、10、2、6 軌的選曲保持一致。重新獨立解析 CUE，以事件間虛擬微秒計算樣本數，再逐段讀 BIN 比較全部 79,274,912 bytes，通過。PCM 仍為 `d81c04498183d8cf64ef3409f50b51aeb0c10047cbe1049f13cf0a4ae9e9320a`，戰場 PNG 仍為 `b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846`。
+
+`workplace/startup-probe/cdda-verification.json` SHA-256 `1398449174fabc42480fa667eca98e38603a56cf775198c09d823c3f4f8cfa72` 記錄逐段曲目、時間、樣本數、完整收據與測試雜湊。邊界測試 log SHA-256 `c54294c99d323b33b8b14548ddccea41b4251bf7549c5a3c3978de23394614b2`；四套件 log SHA-256 `11d01dd523da1734c75118690c840b2059d801eb83a6ce5281e05575a0affb4b`。原版 lead-out 表格損壞仍保留；裝置依映像末端停止，不冒稱 TOC 已修復。桌面播放與人耳確認繼續留在 Issue #3，`listening_verified=false`。
