@@ -8,6 +8,7 @@ test "$(git -C /dosgolem rev-parse HEAD)" = a9714ebdab2ad6b529f81225472680f2b11f
 test "$(sha256sum /dosgolem/internal/cpu386/cpu.go | cut -d ' ' -f 1)" = 932441d673ed5af723ff0b44db2fbf928072831750a1eccf85f41cb07cbdce20
 test "$(sha256sum /dosgolem/internal/cpu386/cpu_test.go | cut -d ' ' -f 1)" = 0f34a8ef87f6f369e784699fad035525391a5eede6f9ef2ab6f34a6c5f0bd4b5
 test "$(sha256sum /dosgolem/internal/machine/dpmi_real_mode.go | cut -d ' ' -f 1)" = b936e3b415d1e3b2b6da53737500992a949d2e400dee36979ac545df8d6b03e0
+test "$(sha256sum /dosgolem/internal/machine/dpmi.go | cut -d ' ' -f 1)" = f0b579ae477e767c3ada50a68a123f8839c5062e6b741a2864cd1143e37805cc
 mkdir -p /output/engine/internal/cpu386 /output/engine/internal/machine /output/startup-probe/receipts
 if test -s /output/startup-probe/latest.json; then
   receipt_hash=$(sha256sum /output/startup-probe/latest.json | cut -d ' ' -f 1)
@@ -17,19 +18,25 @@ cp /dosgolem/internal/cpu386/cpu.go /output/engine/internal/cpu386/cpu.go
 cp /dosgolem/internal/cpu386/cpu_test.go /output/engine/internal/cpu386/cpu_test.go
 cp /project/tools/cpu386-integration_test.go /output/engine/internal/cpu386/integration_test.go
 cp /dosgolem/internal/machine/dpmi_real_mode.go /output/engine/internal/machine/dpmi_real_mode.go
+cp /dosgolem/internal/machine/dpmi.go /output/engine/internal/machine/dpmi.go
 cd /output/engine
 git apply --check /project/tools/dosgolem.patch
 git apply /project/tools/dosgolem.patch
-gofmt -w /output/engine/internal/cpu386/cpu.go /output/engine/internal/cpu386/integration_test.go /output/engine/internal/machine/dpmi_real_mode.go
+gofmt -w /output/engine/internal/cpu386/cpu.go /output/engine/internal/cpu386/integration_test.go /output/engine/internal/machine/dpmi_real_mode.go /output/engine/internal/machine/dpmi.go
 cat > /output/startup-probe/repro-overlay.json <<'JSON'
 {"Replace":{
   "/dosgolem/internal/cpu386/cpu.go":"/output/engine/internal/cpu386/cpu.go",
   "/dosgolem/internal/cpu386/cpu_test.go":"/output/engine/internal/cpu386/cpu_test.go",
   "/dosgolem/internal/cpu386/integration_test.go":"/output/engine/internal/cpu386/integration_test.go",
   "/dosgolem/internal/machine/dpmi_real_mode.go":"/output/engine/internal/machine/dpmi_real_mode.go",
+  "/dosgolem/internal/machine/dpmi.go":"/output/engine/internal/machine/dpmi.go",
+  "/dosgolem/internal/machine/dpmi_mcb.go":"/project/tools/dpmi-mcb.go",
+  "/dosgolem/internal/machine/dpmi_mcb_test.go":"/project/tools/dpmi-mcb_test.go",
   "/dosgolem/cmd/leprobe/main.go":"/project/tools/startup-probe.go",
   "/dosgolem/cmd/leprobe/cdrom.go":"/project/tools/cdrom.go",
   "/dosgolem/cmd/leprobe/cdrom_test.go":"/project/tools/cdrom_test.go",
+  "/dosgolem/cmd/leprobe/cdda.go":"/project/tools/cdda.go",
+  "/dosgolem/cmd/leprobe/cdda_test.go":"/project/tools/cdda_test.go",
   "/dosgolem/cmd/leprobe/video.go":"/project/tools/video.go",
   "/dosgolem/cmd/leprobe/video_test.go":"/project/tools/video_test.go",
   "/dosgolem/cmd/leprobe/vbe.go":"/project/tools/vbe.go",

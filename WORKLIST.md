@@ -11,15 +11,15 @@
 | 原生 C runtime | 啟動範圍通過 | 配置器、初始化與資料解碼照常執行；後續正式遊戲遇到的新平台缺口另開窄切片 |
 | DOS 檔案與光碟 | 進行中 | 真實光碟掛載與 MSCDEX TOC 子集通過；原版正常資料讀取與音軌仍待驗證 |
 | 顯示與滑鼠輸入 | 開場至戰場範圍通過 | 原生標題、角色建立、敘事、出陣確認、地形、人物單位及小地圖已目視核對；普通滑鼠可推進，戰場持續查詢按鍵，時間表與畫面雜湊可重播 |
-| 音訊 | 待實作 | 零長度播放回報真實錯誤；正長度播放仍停止，不能以此宣稱 CD 音樂支援 |
+| 音訊 | 裝置、PCM 與首場流程通過 | 原版正常流程八筆 PLAY 及換曲通過，PCM 逐段核對 BIN；桌面、人耳、含 PREGAP 的播放及末軌異常長度待驗 |
 | 正常玩家路徑 | 部分通過 | 原版入口、角色建立、選項效果與出陣確認已通過，戰場人物單位已顯示；後續驗證單位操作、戰鬥與存讀檔，不將本輪啟動驗收當成全遊戲相容 |
-| private GitHub repository 與 Issues | 遠端核對完成 | 2026-10-12 主機 gh 確認 private 與六筆開啟的 Issues；從 [CD-TRACE #1](https://github.com/wicanr2/tokugawa-dosgolem/issues/1) 開工，最新狀態仍查 GitHub |
+| private GitHub repository 與 Issues | 遠端核對完成 | 主機 gh 確認 private 與六筆 Issues；CD-TRACE 修正與首場流程通過，後續由 [CDDA #2](https://github.com/wicanr2/tokugawa-dosgolem/issues/2)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3) 接續，最新狀態查 GitHub |
 
 平台每次修正依序核對 bytes 與資料流、記錄 READY 契約、實作、跑回歸、重跑自然啟動。上一份停止收據保存在 `workplace/startup-probe/receipts/`，不依指令步數單獨宣稱完成。
 
 ## CD 音樂、四語與 HD 素材包規劃
 
-使用者已確認桌面版、四種語言與可切換 HD 素材包，並授權建立 private repo、登記 Issues 後開工。功能範圍已確認；各切片的技術契約仍須由 DRAFT 經證據審查成為 READY。瀏覽器排除。現有啟動驗收保持有效，新功能尚未實作。
+使用者已確認桌面版、四種語言與可切換 HD 素材包，並授權建立 private repo、登記 Issues 後開工。MCB 與 CDDA 裝置已有 READY 契約及實作，其餘切片仍須審查。瀏覽器排除，現有啟動驗收保持有效。
 
 ### 建議分層
 
@@ -46,12 +46,12 @@ CD 音樂優先完成，文字擷取與 HD 素材定位可在不依賴播放修�
 
 ### CD 音樂的首個切片
 
-- 已知一軌資料與十五軌 AUDIO；目前八次原版 PLAY 都是零長度，正長度播放未支援。第一筆 PLAY 已連回緩衝區重疊、31 次失敗音軌查詢、起點表與長度相減。實際 DOS/4GW 會重用含 MCB 的配置，前兩軌 MSF 起點保留，但控制欄位仍被覆蓋。證據與雜湊見 RESEARCH-LOG；下一步建立含回收、合併、resize、錯誤及界限的通用 DOS 配置契約，不以額外空隙遮住錯誤。
+- 第一筆零長度因果已查清；MCB 配置池已有契約、實作及回歸。修正後前 15 筆長度正確，第 10 軌 PLAY 已輸出 PCM。末軌 lead-out 仍被原版緩衝區重疊破壞，不換 EXE 或猜補長度。完整正常流程與後續曲目結果以 CONTEXT 為準。
 - `-cd-trace` 的開／關對照通過，同一 3,000,000 步的完整記憶體、畫面與中斷計數一致。證據與限制見 RESEARCH-LOG；沒有為修音訊改寫原版 bytes、配置器或段號回傳。
 - 對照實際 DPMI 封包、段號／selector、實模式地址、TOC 回寫及播放長度資料流。DOSBox 只補交叉驗證；最終由 dosgolem 重生原版選曲收據。不直接換 EXE、改軌號或把零長度當整軌播放。
 - 以 [Microsoft MSCDEX 規格存檔](https://www.phatcode.net/articles.php?id=220)與[固定 DOSBox Staging v0.82.2 的光碟實作](https://raw.githubusercontent.com/dosbox-staging/dosbox-staging/v0.82.2/src/dos/cdrom_image.cpp)作平台契約。BIN AUDIO 流式讀取為 44.1 kHz、16-bit、雙聲道 PCM；驗證來源位元組順序、PREGAP、起訖位置與跨軌邊界，不先轉成有損素材。
-- 已開始播放後，STOP 必須操作實際播放狀態，取代目前只接受閒置停止的子集。測試播放中替換曲目、停止、續播、自然結束、錯誤邊界與靜音輸出。
-- 無頭測試保存音訊事件、樣本數與輸出雜湊；桌面另做聽覺確認。測試通過不宣稱原版硬體逐週期一致。
+- PLAY／STOP／RESUME、播放中替換曲目、Audio Status、自然結束、分塊獨立性與非法邊界已測。包含顯式 PREGAP 的播放範圍目前拒絕；後續需求另開平台切片，不把沒有來源 bytes 的空隙當音訊讀取。
+- 無頭正常入口至戰場已保存八筆播放及換曲事件、樣本數與輸出雜湊，逐段與 BIN 核對通過。接續 #2 查末軌異常長度及 PREGAP 的公開裝置契約，#3 接桌面串流與人耳確認。測試通過不宣稱原版硬體逐週期一致。
 
 ### 四語與 HD 共用的呈現驗證
 
@@ -70,7 +70,7 @@ CD 音樂優先完成，文字擷取與 HD 素材定位可在不依賴播放修�
 
 ## GitHub 建立設定與待送出 Issue
 
-以下保留建立工具使用的標題與本文範本。2026-10-12 已用主機 gh 核對 private repository 與六筆 Issues，無須重建。本節不作遠端狀態鏡像；重跑建立工具前仍須讀取遠端現況。
+以下保留建立工具使用的標題與本文範本。主機 gh 已核對 private repository 與六筆 Issues，無須重建。本節不作遠端狀態鏡像；重跑建立工具前仍須讀取遠端現況。
 
 工作入口：[CD-TRACE #1](https://github.com/wicanr2/tokugawa-dosgolem/issues/1)、[CDDA #2](https://github.com/wicanr2/tokugawa-dosgolem/issues/2)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)、[I18N #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)、[HD #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5)、[ACCEPTANCE #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)。
 

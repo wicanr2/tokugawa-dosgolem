@@ -88,8 +88,12 @@ func TestCDZeroLengthPlayError(t *testing.T) {
 			if !handled || binary.LittleEndian.Uint16(packet[3:]) != 0x8000 || len(d.AudioRejections) != 1 {
 				t.Fatal("zero-length play did not report a real error")
 			}
+		} else if reject >= 3 {
+			if !handled || binary.LittleEndian.Uint16(packet[3:]) != 0x8108 || len(d.AudioRejections) != 1 {
+				t.Fatal("invalid audio range did not return an error")
+			}
 		} else if handled || packet[3] != 0 || packet[4] != 0 || len(d.AudioRejections) != 0 {
-			t.Fatal("unimplemented or invalid play was consumed")
+			t.Fatal("invalid packet was consumed")
 		}
 		if c.R != before || c.EFlags != cpu386.IF|cpu386.CF || m.Mem[58] != 0xaa || binary.LittleEndian.Uint32(packet[14:]) != 0x81080300 {
 			t.Fatal("play failure changed unrelated state")

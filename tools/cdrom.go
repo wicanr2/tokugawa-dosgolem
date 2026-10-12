@@ -34,6 +34,7 @@ type cueDisc struct {
 	AudioRejections     []map[string]any `json:"audio_rejections"`
 	AudioRejectionCount uint64           `json:"audio_rejection_count"`
 	AudioIdleStopCount  uint64           `json:"audio_idle_stop_count"`
+	Audio               cdAudio          `json:"audio"`
 }
 
 func cueFrames(value string) (uint32, error) {
@@ -242,7 +243,7 @@ func (d *cueDisc) request(c *cpu386.CPU) bool {
 		}
 		packet[i] = v
 	}
-	if packet[1] != 0 || !(packet[0] == 26 && packet[2] == 3 || packet[0] == 22 && packet[2] == 0x84 || packet[0] == 13 && packet[2] == 0x85) {
+	if packet[1] != 0 || !(packet[0] == 26 && packet[2] == 3 || packet[0] == 22 && packet[2] == 0x84 || packet[0] == 13 && (packet[2] == 0x85 || packet[2] == 0x88)) {
 		return false
 	}
 	desc, ok := c.Descriptors[seg]
@@ -263,28 +264,28 @@ func (d *cueDisc) request(c *cpu386.CPU) bool {
 		packet[i] = v
 	}
 	if packet[2] == 0x85 {
-		// Positive-length PLAY remains unhandled, so this subset is always idle.
-		// When playback is added, STOP must operate on its actual state.
-		if !c.WriteSegmentBytes(seg, base+3, []byte{0, 1}) {
-			return false
-		}
-		d.AudioIdleStopCount++
-		return true
+		status := d.stopAudio()
+		return c.WriteSegmentBytes(seg, base+3, []byte{byte(status), byte(status >> 8)})
+	}
+	if packet[2] == 0x88 {
+		status := d.resumeAudio()
+		return c.WriteSegmentBytes(seg, base+3, []byte{byte(status), byte(status >> 8)})
 	}
 	if packet[2] == 0x84 {
 		count := binary.LittleEndian.Uint32(packet[18:])
-		if count != 0 || packet[13] > 1 {
+		status := d.playAudio(packet[13], binary.LittleEndian.Uint32(packet[14:]), count)
+		if !c.WriteSegmentBytes(seg, base+3, []byte{byte(status), byte(status >> 8)}) {
 			return false
 		}
-		if !c.WriteSegmentBytes(seg, base+3, []byte{0, 0x80}) {
-			return false
+		if status&0x8000 == 0 {
+			return true
 		}
 		d.AudioRejectionCount++
 		if len(d.AudioRejections) == 64 {
 			copy(d.AudioRejections, d.AudioRejections[1:])
 			d.AudioRejections = d.AudioRejections[:63]
 		}
-		d.AudioRejections = append(d.AudioRejections, map[string]any{"command": 0x84, "addressing_mode": packet[13], "start_raw": binary.LittleEndian.Uint32(packet[14:]), "sectors": count, "status": 0x8000, "reason": "zero-length PLAY AUDIO; DOSBox Staging v0.82.2 compatibility error; no audio produced"})
+		d.AudioRejections = append(d.AudioRejections, map[string]any{"command": 0x84, "addressing_mode": packet[13], "start_raw": binary.LittleEndian.Uint32(packet[14:]), "sectors": count, "status": status, "reason": "unsupported audio range or zero-length PLAY AUDIO; no replacement playback"})
 		return true
 	}
 	address := uint32(binary.LittleEndian.Uint16(packet[14:])) + 16*uint32(binary.LittleEndian.Uint16(packet[16:]))
@@ -330,13 +331,18 @@ func (d *cueDisc) request(c *cpu386.CPU) bool {
 			attr = 0x40
 		}
 		output = append(output, attr)
+	case 15:
+		if count != 11 {
+			return false
+		}
+		output = d.audioStatusInfo()
 	default:
 		return false
 	}
 	if !c.WriteSegmentBytes(target, 0, output) {
 		return false
 	}
-	return c.WriteSegmentBytes(seg, base+3, []byte{0, 1})
+	return c.WriteSegmentBytes(seg, base+3, d.audioStatusWord())
 }
 
 type realModeBus struct{ bus cpu.Bus }

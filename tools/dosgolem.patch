@@ -1578,3 +1578,33 @@
  	}
  	seg, off := h.RealModeVector(tr.Interrupt)
  	tr.Entry = fmt.Sprintf("%04X:%04X", seg, off)
+--- a/internal/machine/dpmi.go
++++ b/internal/machine/dpmi.go
+@@ -83,6 +83,7 @@
+ 	// DOS 記憶體（`AX=0100h`）的游標與帳本，鍵是 selector。
+ 	dosBrk    uint32
+ 	dosBlocks map[uint16]*DOSBlock
++	dosMCB    *dosMCBArena
+ 	dosLast   uint16 // 最後配出去的那一塊，`AX=0102h` 只有它能原地長大
+ 
+ 	Locks             []DPMILock
+@@ -171,6 +172,9 @@
+ 
+ // allocDOS 從640KiB以下的傳統記憶體切一塊，回線性位址。
+ func (h *DPMIHost) allocDOS(paras uint16) (uint32, bool) {
++	if h.dosMCB != nil {
++		return h.allocDOSMCB(paras)
++	}
+ 	size := uint32(paras) * 16
+ 	base := h.dosBrk
+ 	end := uint64(base) + uint64(size)
+@@ -232,6 +236,9 @@
+ 	h.Calls[fn]++
+ 	if h.m == nil && needsMachine(fn) {
+ 		return h.fail(c, 0x8013) // 還沒有記憶體可以配
++	}
++	if h.dosMCB != nil && fn >= 0x0100 && fn <= 0x0102 {
++		return h.handleDOSMCB(c, fn)
+ 	}
+ 	switch fn {
+ 	case 0x0000: // 配置 LDT 描述子：CX ＝ 個數 → AX ＝ 第一個 selector

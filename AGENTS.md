@@ -25,10 +25,14 @@
 | [tools/startup-probe.go](tools/startup-probe.go) | 原版指令自然執行的 DOS/4G 啟動研究探針 |
 | [tools/ida-entry.py](tools/ida-entry.py) | 保留原名與位址的 IDA 入口證據；可傳入 `起點:終點` 匯出至多 16 KiB 的窄範圍 |
 | [tools/dosgolem.patch](tools/dosgolem.patch) | 固定 dosgolem 基準的通用平台修正，尚未回填外部工作樹 |
+| [tools/dpmi-mcb.go](tools/dpmi-mcb.go) | 可明確啟用的 32 位 DPMI MCB 配置、釋放重用與縮放；契約見 RESEARCH-LOG 的 DOS MCB 節 |
+| [tools/dpmi-mcb_test.go](tools/dpmi-mcb_test.go) | MCB 標頭、重用、合併、界限、錯誤與描述子耗盡測試 |
 | [tools/cpu386-integration_test.go](tools/cpu386-integration_test.go) | 平台修正的獨立回歸測試 |
 | [tools/run-probes.sh](tools/run-probes.sh) | 在 Docker 中套用修正、跑平台測試並重生啟動收據 |
 | [tools/cdrom.go](tools/cdrom.go) | 真實 CUE/BIN 掛載與 MSCDEX 查詢子集 |
 | [tools/cdrom_test.go](tools/cdrom_test.go) | 光碟幾何、來源雜湊與傳輸界限測試 |
+| [tools/cdda.go](tools/cdda.go) | 依虛擬時間推進的 CDDA 播放狀態與有界 PCM 串流；不支援含顯式 PREGAP 的播放範圍 |
+| [tools/cdda_test.go](tools/cdda_test.go) | 播放／停止／續播、換曲、自然結束、分塊獨立性、PCM 與軌道界限測試 |
 | [tools/aux-cd-trace.py](tools/aux-cd-trace.py) | 固定 DOSBox-X image 中查證包內 DOS/4GW 的配置與 TOC 回寫，只作輔助證據 |
 | [tools/video.go](tools/video.go) | 標準 VGA 埠轉接、模式切換、擴充索引隔離與原生畫面擷取 |
 | [tools/video_test.go](tools/video_test.go) | VGA 暫存器隔離與 DAC 回歸測試 |
@@ -47,6 +51,7 @@
 | [workplace/](workplace/) | 探針、快取、截圖、實驗與其他中間產物 |
 | `workplace/startup-probe/state-*` | 各次執行的可寫檔案副本；由既有 DirectoryOverlayFiles 建立，不回寫原版 |
 | `workplace/startup-probe/frame-<SHA-256>.png` | dosgolem 原生 VRAM 與 DAC 生成的畫面；是否為遊戲畫面須另行核對 |
+| `workplace/startup-probe/audio-<SHA-256>.pcm` | 本機 CDDA 原始 PCM，44.1 kHz、16-bit little-endian、雙聲道；閒置區間依收據事件還原，不加入 Git |
 | `workplace/fdos-int33.lst` | FreeDOS mouse 專案的滑鼠介面參考快照；來源與 SHA-256 見 RESEARCH-LOG |
 | `workplace/mscdex21.txt`、`workplace/dosbox-staging-v0.82.2-*.cpp` | MSCDEX 規格及固定版本的光碟平台參考快照；來源與 SHA-256 見 RESEARCH-LOG |
 | [workplace/leprobe/stdout.log](workplace/leprobe/stdout.log) | 本次 dosgolem LE 格式與 relocation preview 收據 |
@@ -156,6 +161,8 @@ timeout 630s docker run --rm --name tokugawa-repro-probe --network none \
 ```
 
 先核對 `workplace/startup-probe/platform-test.log`，再看 `latest.json` 的停止原因。未支援服務與指令保持失敗即停止。`instruction_budget` 也不能解讀成可玩。`fd2_startup_calls` 必須為零；探針沒有安裝 FD2 函式攔截。歷次收據在 `workplace/startup-probe/receipts/`。
+
+探針明確啟用 [MCB 配置模式](tools/dpmi-mcb.go)，既有 dosgolem 預設不變。光碟音訊由 [CDDA 裝置](tools/cdda.go) 依虛擬時間串流，收據 `cd_pcm` 記錄路徑、樣本框數與 SHA-256，`mounted_disc.audio.events` 記錄播放、換曲、停止與續播。含顯式 PREGAP、資料軌或 lead-out 越界的 PLAY 回錯誤；不補造音訊。解碼通過與人耳確認分開記錄，後者目前未通過。
 
 命令最後的 `tools/run-probes.sh` 可接 `-steps 100000000`，保留原版等待並跑到主選單。普通滑鼠輸入用 `-mouse '<JSON>'` 傳入事件陣列，每筆含 `step`、`x`、`y`、`buttons`。`step` 是成功指令數，與虛擬微秒一致；`buttons` 的 bit0 為左鍵、bit1 為右鍵、bit2 為中鍵。按下與放開分兩筆，時間嚴格遞增，全部落在預算內。實際套用結果保存在 `latest.json` 的 `mouse_input_events`。輸入只走 dosgolem 的 MoveMouse／PressMouse／ReleaseMouse，不帶遊戲位址。目視核對與已測操作見 RESEARCH-LOG。
 

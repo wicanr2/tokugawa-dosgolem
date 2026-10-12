@@ -2,6 +2,7 @@
 package main
 
 import (
+	"bufio"
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
@@ -94,11 +95,22 @@ func main() {
 	services := machine.NewFD2StartupDOS(files)
 	services.AttachMachine(m)
 	defer services.Close()
+	if err := services.DPMI.EnableDOSMCBMemory(0x0800); err != nil {
+		panic(err)
+	}
 	disc, err := openCueDisc("/original/DX5.cue")
 	if err != nil {
 		panic(err)
 	}
 	defer disc.File.Close()
+	audioFile, err := os.CreateTemp("/output/startup-probe", "cdda-*.pcm")
+	if err != nil {
+		panic(err)
+	}
+	defer audioFile.Close()
+	audioHash := sha256.New()
+	audioWriter := bufio.NewWriterSize(io.MultiWriter(audioFile, audioHash), 64*1024)
+	disc.Audio.Sink = audioWriter
 	screen := newBankVideo()
 	m.CPU.Bus = videoBus{m, screen}
 	mouseMachine := machine.New()
@@ -156,6 +168,11 @@ func main() {
 	cdTrace := []map[string]any{}
 	cdTraceDropped := 0
 	m.CPU.IntHook = func(c *cpu386.CPU, number uint8) bool {
+		if number == 0x2f || number == 0x31 && uint16(c.R[cpu386.EAX]) == 0x0300 && byte(c.R[cpu386.EBX]) == 0x2f {
+			if err := disc.advanceAudio(uint64(steps)); err != nil {
+				panic(err)
+			}
+		}
 		before := c.R
 		beforeFlags := c.EFlags
 		function := uint16(c.R[cpu386.EAX])
@@ -247,6 +264,11 @@ func main() {
 	inputFrames := []map[string]any{}
 	nextMouse := 0
 	for steps < *budget {
+		if steps&1023 == 0 {
+			if err := disc.advanceAudio(uint64(steps)); err != nil {
+				panic(err)
+			}
+		}
 		video.advance(uint64(steps))
 		if nextMouse < len(mouseEvents) && mouseEvents[nextMouse].Step == steps {
 			e := mouseEvents[nextMouse]
@@ -286,6 +308,20 @@ func main() {
 			break
 		}
 	}
+	if err := disc.advanceAudio(uint64(steps)); err != nil {
+		panic(err)
+	}
+	if err := audioWriter.Flush(); err != nil {
+		panic(err)
+	}
+	if err := audioFile.Close(); err != nil {
+		panic(err)
+	}
+	audioDigest := fmt.Sprintf("%x", audioHash.Sum(nil))
+	audioPath := "/output/startup-probe/audio-" + audioDigest + ".pcm"
+	if err := os.Rename(audioFile.Name(), audioPath); err != nil {
+		panic(err)
+	}
 	trace := []map[string]any{}
 	first := traceCount - len(traceRing)
 	if first < 0 {
@@ -308,7 +344,7 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
-	for _, name := range []string{"tools/startup-probe.go", "tools/cdrom.go", "tools/cdrom_test.go", "tools/video.go", "tools/video_test.go", "tools/vbe.go", "tools/vbe_test.go", "tools/keyboard.go", "tools/keyboard_test.go", "tools/dos_test.go", "tools/dosgolem.patch", "tools/cpu386-integration_test.go", "tools/run-probes.sh"} {
+	for _, name := range []string{"tools/startup-probe.go", "tools/cdrom.go", "tools/cdrom_test.go", "tools/cdda.go", "tools/cdda_test.go", "tools/video.go", "tools/video_test.go", "tools/vbe.go", "tools/vbe_test.go", "tools/keyboard.go", "tools/keyboard_test.go", "tools/dos_test.go", "tools/dosgolem.patch", "tools/dpmi-mcb.go", "tools/dpmi-mcb_test.go", "tools/cpu386-integration_test.go", "tools/run-probes.sh"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)
@@ -323,7 +359,8 @@ func main() {
 		"dosgolem_head": "a9714ebdab2ad6b529f81225472680f2b11f2842", "integration_input_sha256": toolHashes,
 		"input_file": "DX5.EXE", "input_sha256": digest,
 		"file_state_directory": fileState, "original_read_only": true,
-		"tool": "dosgolem native LE + bounded DOS4G-compatible startup research probe", "go_version": runtime.Version(),
+		"dos_memory_model": "explicit 32-bit DPMI MCB arena; first fit, reusable; owner PSP 0800h",
+		"tool":             "dosgolem native LE + bounded DOS4G-compatible startup research probe", "go_version": runtime.Version(),
 		"probe_sha256": fmt.Sprintf("%x", sha256.Sum256(script)), "address_space": "dosgolem relocated flat linear memory; selectors are host labels",
 		"patch_sha256": fmt.Sprintf("%x", sha256.Sum256(patch)), "cpu_source_sha256": fmt.Sprintf("%x", sha256.Sum256(cpuSource)),
 		"successful_steps": steps, "instruction_budget": *budget, "stop_instruction_linear_eip": fmt.Sprintf("0x%X", before), "stop": stop,
@@ -341,7 +378,8 @@ func main() {
 		"fd2_startup_calls": services.Calls(), "native_runtime_instructions_skipped": false,
 		"virtual_clock": map[string]any{"initial_time": "00:00:00.00", "microseconds_per_successful_instruction": 1, "elapsed_microseconds": steps, "classification": "hardware-spec approximation"},
 		"mounted_disc":  disc, "cd_supported_functions": []string{"1500", "150C", "150D"}, "cd_audio_verified": false,
-		"cd_supported_requests":       []string{"1510/IOCTL INPUT/10", "1510/IOCTL INPUT/11", "1510/zero-length PLAY AUDIO error", "1510/idle STOP AUDIO"},
+		"cd_supported_requests":       []string{"1510/IOCTL INPUT/10", "1510/IOCTL INPUT/11", "1510/IOCTL INPUT/15", "1510/PLAY AUDIO", "1510/STOP AUDIO", "1510/RESUME AUDIO"},
+		"cd_pcm":                      map[string]any{"path": audioPath, "sha256": audioDigest, "sample_rate": 44100, "channels": 2, "format": "s16le", "stereo_frames": disc.Audio.Frames, "nonzero_channel_samples": disc.Audio.NonzeroSamples, "absolute_sample_peak": disc.Audio.Peak, "idle_intervals": "omitted from PCM; reconstruct from virtual_us events", "timing": "hardware-spec approximation", "listening_verified": false},
 		"test_environment":            map[string]any{"dos_version": "6.22", "command_line": "", "program_name": "C:\\DX5.EXE", "dos4g_detection": "AX=FFFFh, GS=0; compatible host, not original extender emulation"},
 		"normal_player_path_verified": false, "game_screen_verified": false,
 		"vbe_mode": screen.Mode, "vbe_width": screen.Width, "vbe_height": screen.Height, "vbe_bank": screen.Bank,

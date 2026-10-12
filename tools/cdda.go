@@ -1,0 +1,231 @@
+package main
+
+import (
+	"encoding/binary"
+	"fmt"
+	"io"
+)
+
+const cdSampleRate = uint64(44100)
+const cdFramesPerSector = uint64(588)
+
+type cdAudio struct {
+	NowUS          uint64           `json:"virtual_us"`
+	Position       uint64           `json:"disc_sample_frame"`
+	End            uint64           `json:"end_sample_frame"`
+	LastStart      uint64           `json:"last_start_sample_frame"`
+	Playing        bool             `json:"playing"`
+	Paused         bool             `json:"paused"`
+	Fraction       uint64           `json:"fractional_sample_millionths"`
+	Sink           io.Writer        `json:"-"`
+	Frames         uint64           `json:"output_stereo_frames"`
+	NonzeroSamples uint64           `json:"nonzero_channel_samples"`
+	Peak           uint32           `json:"absolute_sample_peak"`
+	Events         []map[string]any `json:"events"`
+	DroppedEvents  uint64           `json:"dropped_events"`
+}
+
+func (a *cdAudio) event(kind string) {
+	if len(a.Events) >= 256 {
+		a.DroppedEvents++
+		return
+	}
+	a.Events = append(a.Events, map[string]any{"kind": kind, "virtual_us": a.NowUS, "output_frame": a.Frames, "disc_sample_frame": a.Position, "end_sample_frame": a.End})
+}
+
+// 音軌邊界以 disc sector 計算，檔案位址以 file sector 計算。
+// 顯式 PREGAP 沒有來源 bytes，這個子集保持拒絕。
+func (d *cueDisc) audioSpan(frame uint64) (offset int64, available uint64, ok bool) {
+	for i, t := range d.Tracks {
+		start := uint64(t.DiscSector) * cdFramesPerSector
+		endSector := d.LeadOut
+		if i+1 < len(d.Tracks) {
+			endSector = d.Tracks[i+1].DiscSector - d.Tracks[i+1].Pregap
+		}
+		end := uint64(endSector) * cdFramesPerSector
+		if frame >= start && frame < end {
+			if t.Kind != "AUDIO" {
+				return 0, 0, false
+			}
+			return int64(uint64(t.FileSector)*2352 + (frame-start)*4), end - frame, true
+		}
+	}
+	return 0, 0, false
+}
+
+func (d *cueDisc) validAudioRange(start, end uint64) bool {
+	if start >= end || end > uint64(d.LeadOut)*cdFramesPerSector {
+		return false
+	}
+	for start < end {
+		_, n, ok := d.audioSpan(start)
+		if !ok {
+			return false
+		}
+		if n > end-start {
+			n = end - start
+		}
+		start += n
+	}
+	return true
+}
+
+func (d *cueDisc) advanceAudio(now uint64) error {
+	a := &d.Audio
+	if now < a.NowUS {
+		return fmt.Errorf("CD virtual clock moved backwards")
+	}
+	delta := now - a.NowUS
+	previousUS, previousFraction := a.NowUS, a.Fraction
+	remaining := a.End - a.Position
+	a.NowUS = now
+	if !a.Playing {
+		return nil
+	}
+	if delta > (^uint64(0)-a.Fraction)/cdSampleRate {
+		return fmt.Errorf("CD clock overflow")
+	}
+	units := delta*cdSampleRate + a.Fraction
+	n := units / 1000000
+	a.Fraction = units % 1000000
+	if n > a.End-a.Position {
+		n = a.End - a.Position
+	}
+	var buffer [16384]byte
+	for n > 0 {
+		offset, span, ok := d.audioSpan(a.Position)
+		if !ok {
+			return fmt.Errorf("CD position outside supported audio span")
+		}
+		count := n
+		if count > span {
+			count = span
+		}
+		if count > uint64(len(buffer)/4) {
+			count = uint64(len(buffer) / 4)
+		}
+		pcm := buffer[:int(count)*4]
+		if _, err := d.File.ReadAt(pcm, offset); err != nil {
+			return err
+		}
+		if a.Sink != nil {
+			written, err := a.Sink.Write(pcm)
+			if err != nil {
+				return err
+			}
+			if written != len(pcm) {
+				return io.ErrShortWrite
+			}
+		}
+		for i := 0; i < len(pcm); i += 2 {
+			v := int32(int16(binary.LittleEndian.Uint16(pcm[i:])))
+			if v != 0 {
+				a.NonzeroSamples++
+			}
+			if v < 0 {
+				v = -v
+			}
+			if uint32(v) > a.Peak {
+				a.Peak = uint32(v)
+			}
+		}
+		a.Position += count
+		a.Frames += count
+		n -= count
+	}
+	if a.Position == a.End {
+		a.NowUS = previousUS + (remaining*1000000-previousFraction+cdSampleRate-1)/cdSampleRate
+		a.event("complete")
+		a.NowUS = now
+		a.Playing = false
+		a.Paused = false
+		a.LastStart = 0
+		a.End = 0
+		a.Fraction = 0
+	}
+	return nil
+}
+
+func (d *cueDisc) playAudio(mode byte, raw, sectors uint32) uint16 {
+	start := uint64(raw)
+	if mode > 1 {
+		return 0x8108
+	}
+	if sectors == 0 {
+		return 0x8000
+	}
+	if mode == 1 {
+		f, s, m := uint64(byte(raw)), uint64(byte(raw>>8)), uint64(byte(raw>>16))
+		if f >= 75 || s >= 60 || m*4500+s*75+f < 150 {
+			return 0x8108
+		}
+		start = m*4500 + s*75 + f - 150
+	}
+	end := start + uint64(sectors)
+	if !d.validAudioRange(start*cdFramesPerSector, end*cdFramesPerSector) {
+		return 0x8108
+	}
+	a := &d.Audio
+	if a.Playing || a.Paused {
+		a.event("replace")
+	}
+	a.Position = start * cdFramesPerSector
+	a.LastStart = a.Position
+	a.End = end * cdFramesPerSector
+	a.Playing = true
+	a.Paused = false
+	a.Fraction = 0
+	a.event("play")
+	return 0x0300
+}
+
+func (d *cueDisc) stopAudio() uint16 {
+	a := &d.Audio
+	if a.Playing {
+		a.Playing = false
+		a.Paused = true
+		a.LastStart = a.Position
+		a.event("pause")
+	} else {
+		a.Paused = false
+		a.LastStart = 0
+		a.End = 0
+		a.Fraction = 0
+		d.AudioIdleStopCount++
+		a.event("idle_stop")
+	}
+	return 0x0100
+}
+
+func (d *cueDisc) resumeAudio() uint16 {
+	a := &d.Audio
+	if !a.Paused {
+		return 0x810c
+	}
+	a.Playing = true
+	a.Paused = false
+	a.event("resume")
+	return 0x0300
+}
+
+func (d *cueDisc) audioStatusWord() []byte {
+	status := byte(1)
+	if d.Audio.Playing {
+		status |= 2
+	}
+	return []byte{0, status}
+}
+
+func (d *cueDisc) audioStatusInfo() []byte {
+	a := &d.Audio
+	out := make([]byte, 11)
+	out[0] = 15
+	if a.Paused {
+		out[1] = 1
+	}
+	if a.Playing || a.Paused {
+		copy(out[3:], redBook(uint32(a.LastStart/cdFramesPerSector)))
+		copy(out[7:], redBook(uint32(a.End/cdFramesPerSector)))
+	}
+	return out
+}

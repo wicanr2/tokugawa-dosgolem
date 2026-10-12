@@ -727,3 +727,61 @@ dosgolem 以 `tools/player-path.json` 的原樣事件前綴重跑 150,000,000 �
 | `workplace/cd-trace/range-29400-29a00.json` | `d94c4d8aeff7b8d4aa34eab50b67b41c317a99d2098802bcf1373339e414386f` |
 | `workplace/cd-trace/range-1db50-1dd30.json` | `d15b3a916e2b2d075d3678dfff6ad7a121a86498bad33af68461a9a5be0a5bb7` |
 | `workplace/cd-trace/range-1da75-1dac8.json` | `d22e3aae67bd11de7cf70a1d05569e5f741ebb88655266ff9a9b06335e14953c` |
+## 2026-10-12：DOS MCB 配置模式契約
+
+狀態：DRAFT → 證據審查 → READY。本節規範通用平台子集，不改原版 EXE 或 MSCDEX 的指標契約。
+
+- 來源：[DPMI 1.0](https://docs.pcjs.org/specs/dpmi/1991_03_12-DPMI_Spec_v10.pdf) 第 72–74 頁、[FreeDOS ke2046 MCB 定義](https://github.com/FDOS/kernel/blob/ke2046/hdr/mcb.h)、[FreeDOS ke2046 記憶體管理](https://github.com/FDOS/kernel/blob/ke2046/kernel/memmgr.c)，以及 dosgolem `docs/spec/012-mcb-chain.md`。規格沒有遊戲位址。
+- `EnableDOSMCBMemory(ownerPSP)` 在掛接機器後、首次 DOS 配置前啟用。既有診斷用單向配置維持預設。新模式只管理映像尾端對齊後至 `0xA0000` 的連續區間，不冒充完整 DOS PSP／系統 MCB 鏈。
+- 每個 MCB 占 16 bytes。資料區起點為 MCB 段加一；標頭含 M／Z、owner PSP、資料段數、保留零與空白名稱。首次適合配置、分割、釋放重用及相鄰自由區合併都須實作。原始映像與低位記憶體不作配置用途。
+- 配置與縮放拒絕零段，回 `8021h`。32 位客戶端每塊只配置一個描述子，基底為實模式段乘 16，界限為資料 bytes 減一。這個模式不支援 16 位客戶端、UMB 或配置策略切換。
+- `0100h` 空間不足回 `0008h`，BX 為最大自由資料段數；描述子耗盡回 `8011h` 且不消耗區塊。`0101h/0102h` 未登錄選擇子回 `8022h`。MCB 標頭與主機帳本不一致回 `0007h`，不繼續改寫。
+- 縮放保持資料起點，只吃相鄰自由區。採 FreeDOS 的 DOS resize 行為：成長不足時先擴至可用上限，再回 `0008h` 與最大段數；主機帳本及描述子界限同步更新。這是明示的平台相容性選擇，不宣稱 DPMI 規格規定失敗後記憶體必須改變。
+- 實模式預設堆疊也從同一配置池取得；線性配置仍位於 1 MiB 以上。釋放同步撤銷描述子及清除引用它的資料段暫存器。保留其他既有 DPMI 簡化，例如未模型化 RPL／TI。
+- 證據審查：MCB 尺寸、重用與原版 TOC 重疊的因果已具備；本節範圍可由公開平台契約實作。驗收包含標頭／界限、重用、合併、縮放失敗、損壞與描述子耗盡，並以同一原版入口重跑 TOC 和第一個 PLAY。正長度 PLAY 的音訊能力另依 Issue #2，不以接受空請求假裝播放成功。
+
+驗證：上述子集達 CONFORMED。四套件回歸通過。`workplace/cd-trace/mcb-toc.json` SHA-256 `a604c71736540a30df797e973e21d0361fdc978fc0a5dbdafe64b8dc8424c581` 為 3,000,000 步收據；MCB 讓一段／兩段配置固定重用 `5C60h`／`5C62h`。原版 1–15 筆長度為 `2836,6967,3667,3771,7595,7064,5974,6999,6642,6811,7595,6807,5509,6375,7094`，與掛載 CUE 的相鄰軌起點差一致。末軌長度仍因原版 lead-out 緩衝區重疊而無效，不宣稱全部 TOC 正確。
+
+同一普通滑鼠前綴在第 136,777,435 步送出第 10 軌 PLAY：MSF `41 1C 0B 00`，LBA 51,515，長度 6,811。正長度服務尚未實作，因此如實停在 `INT 31h/0300h`。收據 `workplace/cd-trace/mcb-first-play.json` SHA-256 `07a8cba6c5224566230ea2de6ccaf57b3d82c6b13c79adf4163daa6c39774883`，完整記憶體 `mcb-first-play-memory.bin` SHA-256 `5e4b23af96a94a9d6716a41e9623a502dae472d75d2b75f04d85551a6c4137fe`。這證明第一筆零長度的原因已修正；完整玩家路徑待 CDDA 接入後再驗證。
+
+## CDDA 裝置與 PCM 切片契約（2026-10-12）
+
+知識路由命中通用平台規格，沿用 `local/retro-platform-spec-first.md`。狀態：DRAFT → 證據審查 → READY。來源為本地固定 `workplace/mscdex21.txt` 的 PLAY／STOP／RESUME／Audio Status 與固定 [DOSBox Staging v0.82.2 BinaryFile](https://github.com/dosbox-staging/dosbox-staging/blob/v0.82.2/src/dos/cdrom_image.cpp)；來源雜湊已記於既有光碟研究節。
+
+- MSCDEX `84h` 接受 HSG／MSF 起點及磁區數；`85h` 暫停播放；`88h` 只從暫停續播。第二次閒置 STOP 清除續播位置，自然結束清除播放／暫停狀態。新 PLAY 替換目前曲目，非法範圍回錯誤，不延伸成整軌。
+- 成功請求狀態為 `0100h`，播放中附 busy `0200h`。保留零長度 PLAY 的既有 `8000h` 相容性錯誤；無效地址與資料軌回 `8108h`，無可續播狀態回 `810Ch`。未知服務仍停止。
+- 新增 IOCTL INPUT `15` 的 11-byte Audio Status，包含暫停旗標及最後 PLAY／下次 RESUME 的 MSF 起訖。既有 TOC 回寫與狀態覆蓋順序不變。
+- 裝置以虛擬微秒推進，44,100 Hz、16-bit little-endian、雙聲道，每磁區 588 個立體聲樣本框。時間換算為 `floor(播放微秒 × 44100 / 1000000)`，保留分數餘量；不以主機音訊時鐘驅動原版。標為 `hardware-spec approximation`。
+- 只接受已掛載 CUE 的 AUDIO 範圍；資料軌、lead-out 越界與算術溢位拒絕。CUE 顯式 PREGAP 沒有 BIN bytes，這個子集拒絕包含該空隙的 PLAY，不把資料當音訊或猜補靜音。跨相鄰 AUDIO 軌可讀，依各軌 file/disc sector 轉址。PREGAP 播放支援保留為未實作能力。
+- PCM 串流逐塊讀取，不載入整個 BIN。無頭輸出只串接實際播放的樣本，事件記錄虛擬時間、輸出樣本位置、起訖、停止與換曲，供還原靜止間隔；樣本數、非零樣本數、峰值與 SHA-256 進收據。輸出留本機。
+- 證據審查：第一筆合法 PLAY 已定位，公開介面及 BIN 位元組序已有來源；不需繼續逆向音訊 driver。測試覆蓋換曲、STOP／RESUME、自然結束、分塊獨立性、邊界、跨軌、PREGAP 拒絕及真實 BIN 抽樣。人耳確認留待桌面驗收，不由非零 PCM 取代。
+
+### 實作與正常玩家路徑驗證
+
+本切片的裝置狀態與 PCM 子集達 CONFORMED，時間仍屬 `hardware-spec approximation`。原版 EXE、DAT 與 BIN、外部 dosgolem 工作樹維持原樣。四套件回歸通過，包含描述子耗盡、MCB 損壞、分塊獨立性、STOP／RESUME、自然結束與真實 BIN 位元組抽樣。
+
+| 收據與輸入 | 結果 |
+|---|---|
+| 固定 EXE／BIN／dosgolem／Go | 沿用本文的固定雜湊、HEAD 與 Go 1.24.13；工具逐檔 SHA-256 在收據 `integration_input_sha256`，已與本輪檔案核對 |
+| 首筆播放收據 | `workplace/cd-trace/cdda-first-play.json` SHA-256 `96cf81ae4caba97ce3a74cd213fcef6e7559c624dbbaf3208725b19a13985068`；150,000,000 步，583,115 個立體聲樣本框 |
+| 正常玩家路徑 | `tools/player-path.json` SHA-256 `f621bd1f66e0d4bb492570317ec82b898ec95d3a1f4139a6ee5c451011b30395`；390 筆普通滑鼠事件全部套用 |
+| 正式完整收據 | `workplace/startup-probe/latest.json` SHA-256 `06971d5bca19eb5103dd7c6b6a6c7bd759c5a2ed3b3b361d21fb79d26d6b2e36`；750,000,000 步，只因預算結束；`fd2_startup_calls=0`、DPMI 未支援為空 |
+| 原生畫面 | PNG SHA-256 `b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846`，與先前已目視確認的戰場畫面相同；原始色號 SHA-256 `eac8871b05cc4a25ded2be4fb5f25baf0ef0f51f291b68fd11412d4f207cfb82` |
+| 完整記憶體 | `workplace/startup-memory.bin` SHA-256 `4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9`；包含新平台記憶體狀態，不要求與單向配置器逐位元相同 |
+| PCM | 44.1 kHz、s16le、雙聲道；19,818,728 個立體聲樣本框，79,274,912 bytes；SHA-256 `d81c04498183d8cf64ef3409f50b51aeb0c10047cbe1049f13cf0a4ae9e9320a` |
+| 音訊統計 | 39,066,917 個非零聲道樣本，絕對峰值 32,768；8 筆 PLAY、零拒絕，事件零丟棄。只證明技術輸出，不宣稱聽覺已確認 |
+
+八筆 PLAY 均來自原版執行，不注入曲目。以每筆播放到下一次停止、完成或預算結束的虛擬時間獨立計算樣本數，再逐段讀取 BIN，比較全部 79,274,912 bytes；樣本數與 SHA-256 一致。
+
+| 虛擬微秒 | 原版軌號 | 起點 LBA | 請求磁區數 |
+|---:|---:|---:|---:|
+| 136777435 | 10 | 51515 | 6811 |
+| 375607684 | 5 | 17241 | 7595 |
+| 430614148 | 10 | 51515 | 6811 |
+| 535614121 | 5 | 17241 | 7595 |
+| 595614159 | 5 | 17241 | 7595 |
+| 605110706 | 10 | 51515 | 6811 |
+| 657220321 | 2 | 2836 | 6967 |
+| 712967868 | 6 | 24836 | 7064 |
+
+完成範圍：MCB 平台錯誤與零長度 PLAY 的因果修正、正常入口至首場戰場的原版選曲／換曲、裝置狀態及無頭 PCM。限制：顯式 PREGAP 播放未支援；末軌長度受原版 lead-out 重疊破壞，尚未走到該玩家路徑。兩者接續 Issue #2 查公開裝置契約，不猜補長度；桌面與人耳確認接續 Issue #3。單位操作、戰鬥與存讀檔維持未驗證。

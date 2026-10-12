@@ -12,20 +12,21 @@
 | 網站啟動契約 | 掛載 C: 工作目錄、D: CUE 光碟，再由 `PLAY.BAT` 呼叫 `DX5.EXE` | `original/game/.jsdos/dosbox.conf`、`PLAY.BAT` |
 | 執行檔格式 | 已證實為 MZ 內嵌 LE；LE header 檔案偏移 `0x2C90` | 原始 bytes；[LE 探針](workplace/leprobe/stdout.log) |
 | dosgolem 格式解析 | 完成；40 pages、2 objects、4,831 fixup records；relocation preview 成功 | `workplace/leprobe/stdout.log`，stderr 為空，exit 0 |
-| dosgolem 執行本作 | 整合啟動驗收通過；原版由 LE 入口走通出陣，顯示地形與人物單位，持續執行戰場滑鼠查詢。750,000,000 步只因預算結束，沒有未支援指令或 DPMI 服務 | [完整收據](workplace/startup-probe/receipts/307f83bf8ffcf8c9d85a61710443b02c29db94145401c74b05189b98bdabefb4.json)、[原生戰場畫面](workplace/startup-probe/frame-b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846.png)、[驗收範圍](RESEARCH-LOG.md) |
-| 通用平台修正 | 在隔離副本實作 CPU 指令形式與 DPMI 實模式主機服務轉接；外部 dosgolem 工作樹未改 | [dosgolem.patch](tools/dosgolem.patch)、[回歸測試](tools/cpu386-integration_test.go) |
+| dosgolem 執行本作 | MCB／CDDA 接入後重新通過原版入口至首場戰場；750,000,000 步、390 筆普通滑鼠事件，只因預算結束，無未支援指令或 DPMI 服務。畫面與先前驗收相同 | [完整收據](workplace/startup-probe/latest.json)，SHA-256 `06971d5bca19eb5103dd7c6b6a6c7bd759c5a2ed3b3b361d21fb79d26d6b2e36`；[原生戰場畫面](workplace/startup-probe/frame-b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846.png) |
+| 通用平台修正 | 在隔離副本實作 CPU 指令形式、DPMI 主機服務轉接與明確啟用的 MCB 配置池；支援標頭、重用、合併與縮放，保留外部預設配置器 | [dosgolem.patch](tools/dosgolem.patch)、[MCB](tools/dpmi-mcb.go)、[回歸](tools/dpmi-mcb_test.go) |
 | 平台回歸 | CPU386、machine、dosfile、研究入口四個套件通過；每次修改後重跑 | [platform-test.log](workplace/startup-probe/platform-test.log) |
 | 原版時間等待 | DOS 時間與 VGA 回掃共用一微秒／成功指令的虛擬時間；原版自行校準等待迴圈 | 最新收據 `virtual_clock`；[回掃契約](RESEARCH-LOG.md)；未略過指令 |
-| 光碟 | 真實 CUE/BIN 掛載與 TOC 子集已測；第一筆零長度 PLAY 已確認來自緩衝區重疊、31 次錯誤音軌查詢及原版長度相減；正長度音訊未支援 | [cdrom.go](tools/cdrom.go)、[因果鏈](RESEARCH-LOG.md)；`workplace/cd-trace/first-play.json` 與完整記憶體 |
+| 光碟 | MCB 配置修正後前 15 筆長度與 CUE 相鄰軌差一致；第 10 軌 PLAY 已合法送出並產生 PCM。末軌 lead-out 仍受原版重疊影響；含顯式 PREGAP 的 PLAY 拒絕 | [cdrom.go](tools/cdrom.go)、[cdda.go](tools/cdda.go)、[因果與契約](RESEARCH-LOG.md)；`workplace/cd-trace/cdda-first-play.json` |
+| CDDA 技術驗證 | PLAY／STOP／RESUME、狀態、自然結束、PCM 分塊、跨軌與界限測試通過。正常流程自行選第 10、5、10、5、5、10、2、6 軌，無拒絕；輸出 19,818,728 個立體聲樣本框。桌面與人耳確認未完成 | [CDDA 測試](tools/cdda_test.go)、最新收據 `cd_pcm` 與 `mounted_disc.audio.events`；79,274,912 bytes 逐段與 BIN 及時間公式獨立核對通過 |
 | CD 只讀診斷 | 開關對照通過；同一 3,000,000 步的完整記憶體、畫面、停止位置、中斷計數與原始 trace 一致；未修改原版或 DPMI 回傳契約 | [startup-probe.go](tools/startup-probe.go) 的 `-cd-trace`；`workplace/cd-trace/trace-on.json`、`trace-off.json` |
 | 滑鼠與 BIOS | 普通滑鼠已推進選單、角色建立與敘事；已接原版遮罩與畫面游標層，未實作 TSR 的 VRAM 背景讀回 | [video.go](tools/video.go)；`latest.json` 的輸入與邊界畫面 |
 | VGA／VESA 顯示 | 原版模式 12h 與 CRTC 自行設定 640×400，開場、標題與主選單已目視確認；VBE 分頁子集另有測試 | [原生標題與選單](workplace/startup-probe/frame-7df7211c989bca30c3e82077011a96e7ef7142c9029c515aeb5dda5e461697e7.png)、[video.go](tools/video.go) |
 | DOSBox 輔助基準 | 可顯示原版標題；實際 DOS/4GW 的 MCB 配置可重用，段號相差 2。第 1、2 軌 MSF 起點保留，控制欄位仍遭重疊覆蓋；未作音訊驗證 | [25s.png](workplace/dosbox-aux/25s.png)、[aux-cd-trace.py](tools/aux-cd-trace.py)、`workplace/cd-trace/aux-toc/manifest.json`；詳見 RESEARCH-LOG |
-| 正常玩家路徑、存讀檔與音訊 | 部分驗證；選單、角色建立、敘事、選項與出陣確認通過，地形、人物單位與小地圖已目視確認；單位操作、戰鬥與存讀檔未驗證，CD 正長度音訊未支援 | [普通輸入時間表](tools/player-path.json)；精確畫面雜湊與操作見 RESEARCH-LOG |
+| 正常玩家路徑、存讀檔與音訊 | 原版入口、角色建立、敘事、選項、出陣與首場戰場顯示保持通過，原版選曲／換曲與 PCM 同步通過；單位操作、戰鬥、存讀檔及桌面聽覺未驗證 | [普通輸入時間表](tools/player-path.json)；精確畫面、音訊雜湊與範圍見 RESEARCH-LOG |
 | remake | 排除 | 使用者明確指定原版與 dosgolem 整合 |
-| 後續功能範圍 | 已確認 CD 音樂、繁中／簡中／英文／日文，以及可切換的 HD 素材包；已授權在 repo 與 Issues 建立後開工，尚未實作 | 本次使用者選擇；階段與待送出 Issue 內容見 [WORKLIST.md](WORKLIST.md) |
+| 後續功能範圍 | CDDA 裝置與 PCM 已實作；桌面播放、繁中／簡中／英文／日文與可切換 HD 素材包待後續切片 | 已確認範圍與驗收見 [WORKLIST.md](WORKLIST.md) |
 | 後續使用介面 | 桌面版；瀏覽器排除 | 使用者明確表示「不考慮瀏覽器」；桌面作業系統與打包驗收清單尚未定案 |
-| private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 均已存在且開啟；從 [CD-TRACE #1](https://github.com/wicanr2/tokugawa-dosgolem/issues/1) 開工 | 2026-10-12 主機 `gh auth status`、`repo view` 與分頁 Issues API；不重複建立 |
+| private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 已建立；CD-TRACE 的修正與正常路徑驗收通過，CDDA 後續限制與桌面音訊待辦記於 #2、#3 | [CD-TRACE #1](https://github.com/wicanr2/tokugawa-dosgolem/issues/1)、[CDDA #2](https://github.com/wicanr2/tokugawa-dosgolem/issues/2)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)；Issue 即時狀態直接查 GitHub |
 | Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試與文件；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
 | Docker 收尾 | 本輪原生重跑與驗證容器均已結束，無本專案殘留；未建新 image | `docker ps -a --filter name=tokugawa` 為空；擁有權檢查通過 |
@@ -43,7 +44,7 @@
 
 - 已證實：`DX5.EXE` 與 `.BAK` 在檔案偏移 `0x17459`、`0x17582` 分別為 `3F` 與 `15`，以及調色盤範圍 `0x2FAD4–0x2FBF3` 存在差異。包內 UTF-8 修正說明記載亮度調整方法。保留網站使用的 EXE 作為此次基準。
 - 已證實：檔案偏移 `0x19395` 的 active／BAK bytes 為 `EB`／`74`。IDA 新證據確認網站 EXE 在此無條件略過 TOC 末軌是否等於 16 的失敗出口；勘誤與原始定位見 RESEARCH-LOG。不宣稱所有差異只有亮度修正，也不切換 `.BAK`。
-- 已證實：`DX5.cue` 宣告 16 軌，第一軌 `MODE1/2352`，其餘 15 軌 `AUDIO`。尚未驗證實際音軌播放與遊戲的選曲行為。
+- 已證實：`DX5.cue` 宣告 16 軌，第一軌 `MODE1/2352`，其餘 15 軌 `AUDIO`。原版首筆 PLAY 自行選取第 10 軌，LBA 51,515、6,811 個磁區；PCM 解碼通過，人耳確認待桌面驗收。
 - 未知：`.BAK` 的版本來源、額外差異用途，以及尚未測到的戰鬥、存讀檔與音訊相容性。
 
 ## 探針版本與限制
@@ -70,7 +71,7 @@
 
 目前任務是把原版接到 dosgolem 執行。本輪已完成原始 LE 入口至新遊戲戰場的整合啟動驗收；四套件回歸與完整收據核對通過。這個範圍不等於全遊戲相容。後續單位操作、戰鬥、光碟音訊與存讀檔依實際阻塞點分項查證，不重新開啟已通過的啟動切片。
 
-2026-10-12 環境已開放主機存取，`/home/anr2/.local/bin/gh auth status` 成功，使用帳號 `wicanr2`。遠端核對確認 repository 為 private，六筆 Issues 已建立，#1 尚無留言，首次讀取時 repository 尚無預設分支。CD TOC／PLAY 的唯讀資料流查證依 #1 繼續。先前工具政策拒絕的歷程保留在 WORKLOG；原版資料仍不得入 Git。
+主機 `/home/anr2/.local/bin/gh` 已登入 `wicanr2`；private repository、`main` 與六筆 Issues 已建立。Issue 現況直接查 GitHub，先前存取受阻與建立歷程留在 WORKLOG。原版資料仍不得入 Git。
 
 ## 後續擴充的已確認決定
 
@@ -78,4 +79,4 @@
 - 使用者選擇可切換 HD 素材包，逐項替換人物、場景與介面。原版顯示保留作對照與缺圖備援；單純放大原圖不作為 HD 素材包完成標準。
 - 第一批語言為繁中、簡中、英文與日文。原文與譯文均以 UTF-8 TSV catalog 管理，穩定 key 的規則依 `/home/anr2/.codex/knowledge-base/local/localization-display-semantic-isolation.md`；翻譯只進顯示路徑，不改原版比較、資源名稱或存檔欄位。
 - 桌面版為本次目標。瀏覽器與 WebAssembly 不列入規劃或後備路線。
-- 使用者已授權依 [WORKLIST.md](WORKLIST.md) 的功能範圍開工。技術切片仍依證據審查成為 READY；桌面工具版本、完整文字／繪圖擷取位置、HD 美術風格與顯示比例仍待可行性驗證或 prototype。尚未開始正式功能實作，沒有把未知寫成既有能力。
+- 使用者已授權依 [WORKLIST.md](WORKLIST.md) 的功能範圍開工。MCB 與 CDDA 切片已有 READY 契約並實作；桌面工具版本、完整文字／繪圖擷取位置、HD 美術風格與顯示比例仍待可行性驗證或 prototype。
