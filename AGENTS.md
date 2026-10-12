@@ -50,7 +50,7 @@
 | [tools/keyboard_test.go](tools/keyboard_test.go) | 按鍵查詢、消耗與空緩衝測試 |
 | [tools/player-path.json](tools/player-path.json) | 原版入口、角色建立與敘事推進的普通滑鼠時間表；已驗證範圍見 RESEARCH-LOG |
 | [tools/setup-github.sh](tools/setup-github.sh) | 主機 gh 建立 private repo 與六筆 Issues；Docker 擷取本文，`--prepare` 不存取 GitHub |
-| `workplace/github-setup/` | 從 WORKLIST 重生的待送出 Issue 本文，不作遠端狀態台帳 |
+| `workplace/github-setup/` | 從 WORKLIST 重生的 Issue 本文及已授權進度留言草稿，不作遠端狀態台帳 |
 | `workplace/cd-trace/` | CD TOC／PLAY 的隔離診斷收據、IDA 窄範圍證據與可重生工具副本；`aux-toc/` 保存額外 TOC 查詢的 DOSBox-X 輔助證據 |
 | [tools/dos_test.go](tools/dos_test.go) | DOS EXEC 缺檔錯誤與不假執行測試 |
 | [RESEARCH-LOG.md](RESEARCH-LOG.md) | 輸入雜湊、位址空間、平台契約與研究證據 |

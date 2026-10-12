@@ -149,3 +149,4 @@
 - 預覽測試首輪因 Go 預設並行量超過容器程序上限而失敗。保留同一 image、命令及上限，將 GOMAXPROCS 與建置並行量限制為 2 後乾淨重跑通過；屬工具環境問題。
 - 下一切片為 #3 桌面呈現與 #5 唯讀繪圖事件、更新範圍及切換契約。其他人物、地形、介面及四語呈現未完成。本輪提交與最後清理結果接於下方。
 - 收尾：四套件的完整觀測收據與目前所有整合工具雜湊相符，原 CDDA 完整收據未變；預覽獨立測試、提示詞與美術 provenance、原圖／缺圖逐 byte 核對通過。Python／shell 語法、文件相對連結、索引正對照、UID/GID、root-owned／異常 `.md` 目錄及 Git 差異檢查通過。無本專案殘留容器，未建新 image；外部 dosgolem 仍只有原先的 `cmd/probe/main.go` 差異。遠端再次核對為 private，原版與衍生圖的 Git 排除生效。
+- 工具、測試與文件提交 `470d9e5` 已推送 main。[HD #5 進度留言](https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6122684480) 已送出並讀回核對，Issue 保持開啟。僅提交 15 份自製程式與文件，原版、RAM、PCM、擷取原圖及生成美術均未加入 Git。
