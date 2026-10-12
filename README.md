@@ -1,0 +1,17 @@
+# 德川家康 × dosgolem
+
+將 DOS 原版《德川家康》接到 dosgolem 執行，保留原版程式與資料。此專案不製作 remake。
+
+GitHub 儲存庫：[wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem)。
+
+已下載並核對 jsdos。dosgolem 能從原版入口，經主選單、角色建立、敘事與出陣確認，顯示戰場地形、人物單位及小地圖，並持續接收滑鼠查詢；普通滑鼠能推進對話並選取劇情選項。單位操作、戰鬥與存讀檔仍待驗證，CD 音樂尚未支援。
+
+- [工作規則與重跑命令](AGENTS.md)
+- [目前狀態](CONTEXT.md)
+- [接入待辦與 CD／四語／HD 規劃](WORKLIST.md)
+- [啟動證據與平台修正契約](RESEARCH-LOG.md)
+- [工作歷程](WORKLOG.md)
+
+執行依賴 `/home/anr2/cht/dosgolem`。來源檔只存本機 `original/`，研究產物存 `workplace/`，兩者均排除版控。下載來源與逐檔雜湊保存在 `original/source.json`。
+
+使用固定 Go Docker image，依 AGENTS 的完整命令執行 `tools/run-probes.sh -steps 750000000 -mouse-file /project/tools/player-path.json`。腳本核對 dosgolem 基準、在研究副本套用 [平台修正](tools/dosgolem.patch)，跑回歸測試後讓原版 LE 自然執行。操作時間表、原生畫面與停止原因會寫入收據；完整驗證範圍見 CONTEXT。

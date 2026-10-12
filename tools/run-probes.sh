@@ -1,0 +1,46 @@
+#!/bin/sh
+# 僅在文件列出的 Go Docker image 內執行。
+set -eu
+test -f /.dockerenv || { printf '%s\n' '請在 Docker 容器內執行。' >&2; exit 2; }
+test "$(id -u)" = 1000
+test "$(stat -c %u /output)" = 1000
+test "$(git -C /dosgolem rev-parse HEAD)" = a9714ebdab2ad6b529f81225472680f2b11f2842
+test "$(sha256sum /dosgolem/internal/cpu386/cpu.go | cut -d ' ' -f 1)" = 932441d673ed5af723ff0b44db2fbf928072831750a1eccf85f41cb07cbdce20
+test "$(sha256sum /dosgolem/internal/cpu386/cpu_test.go | cut -d ' ' -f 1)" = 0f34a8ef87f6f369e784699fad035525391a5eede6f9ef2ab6f34a6c5f0bd4b5
+test "$(sha256sum /dosgolem/internal/machine/dpmi_real_mode.go | cut -d ' ' -f 1)" = b936e3b415d1e3b2b6da53737500992a949d2e400dee36979ac545df8d6b03e0
+mkdir -p /output/engine/internal/cpu386 /output/engine/internal/machine /output/startup-probe/receipts
+if test -s /output/startup-probe/latest.json; then
+  receipt_hash=$(sha256sum /output/startup-probe/latest.json | cut -d ' ' -f 1)
+  cp /output/startup-probe/latest.json "/output/startup-probe/receipts/$receipt_hash.json"
+fi
+cp /dosgolem/internal/cpu386/cpu.go /output/engine/internal/cpu386/cpu.go
+cp /dosgolem/internal/cpu386/cpu_test.go /output/engine/internal/cpu386/cpu_test.go
+cp /project/tools/cpu386-integration_test.go /output/engine/internal/cpu386/integration_test.go
+cp /dosgolem/internal/machine/dpmi_real_mode.go /output/engine/internal/machine/dpmi_real_mode.go
+cd /output/engine
+git apply --check /project/tools/dosgolem.patch
+git apply /project/tools/dosgolem.patch
+gofmt -w /output/engine/internal/cpu386/cpu.go /output/engine/internal/cpu386/integration_test.go /output/engine/internal/machine/dpmi_real_mode.go
+cat > /output/startup-probe/repro-overlay.json <<'JSON'
+{"Replace":{
+  "/dosgolem/internal/cpu386/cpu.go":"/output/engine/internal/cpu386/cpu.go",
+  "/dosgolem/internal/cpu386/cpu_test.go":"/output/engine/internal/cpu386/cpu_test.go",
+  "/dosgolem/internal/cpu386/integration_test.go":"/output/engine/internal/cpu386/integration_test.go",
+  "/dosgolem/internal/machine/dpmi_real_mode.go":"/output/engine/internal/machine/dpmi_real_mode.go",
+  "/dosgolem/cmd/leprobe/main.go":"/project/tools/startup-probe.go",
+  "/dosgolem/cmd/leprobe/cdrom.go":"/project/tools/cdrom.go",
+  "/dosgolem/cmd/leprobe/cdrom_test.go":"/project/tools/cdrom_test.go",
+  "/dosgolem/cmd/leprobe/video.go":"/project/tools/video.go",
+  "/dosgolem/cmd/leprobe/video_test.go":"/project/tools/video_test.go",
+  "/dosgolem/cmd/leprobe/vbe.go":"/project/tools/vbe.go",
+  "/dosgolem/cmd/leprobe/vbe_test.go":"/project/tools/vbe_test.go",
+  "/dosgolem/cmd/leprobe/keyboard.go":"/project/tools/keyboard.go",
+  "/dosgolem/cmd/leprobe/keyboard_test.go":"/project/tools/keyboard_test.go",
+  "/dosgolem/cmd/leprobe/dos_test.go":"/project/tools/dos_test.go"
+}}
+JSON
+cd /dosgolem
+go test -count=1 -overlay /output/startup-probe/repro-overlay.json ./internal/cpu386 ./internal/machine ./internal/dosfile ./cmd/leprobe > /output/startup-probe/platform-test.log 2>&1
+go run -overlay /output/startup-probe/repro-overlay.json ./cmd/leprobe "$@" > /output/startup-probe/pending.json 2> /output/startup-probe/latest-stderr.log
+mv /output/startup-probe/pending.json /output/startup-probe/latest.json
+find /output/engine /output/startup-probe \( -user root -o -type d -name '*.md' \) -print
