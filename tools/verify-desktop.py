@@ -141,7 +141,7 @@ try:
         key("F7")
         wait_for(lambda s: s.get("paused"), 10)
         pictures.append(capture("after-click"))
-        key("Escape")
+        key("shift+Escape")
     process.wait(timeout=60)
     assert process.returncode == 0
     stdout.close()

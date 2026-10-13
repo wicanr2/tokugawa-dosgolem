@@ -32,6 +32,12 @@ type desktopGame struct {
 	lastMouse                   [3]int
 	events                      []map[string]any
 	assetInfo                   map[string]any
+	bar                         windowBar
+	barFont                     barFont
+	barTexture                  *ebiten.Image
+	barEvents                   []map[string]any
+	blockMouse                  bool
+	barPointer                  image.Point
 }
 
 func init() { runDesktop = runDesktopWindow }
@@ -40,7 +46,12 @@ func runDesktopWindow(c *desktopContext) error {
 	if *desktopSpeed < 1 || *desktopSpeed > 60 {
 		return fmt.Errorf("invalid desktop speed")
 	}
-	g := &desktopGame{c: c, lastMouse: [3]int{-1, -1, 0}, assetInfo: map[string]any{}}
+	g := &desktopGame{c: c, lastMouse: [3]int{-1, -1, 0}, assetInfo: map[string]any{}, bar: newWindowBar()}
+	font, err := loadBarFont("/project/tools/toolbar-font.hex.gz")
+	if err != nil {
+		return err
+	}
+	g.barFont = font
 	if data, err := os.ReadFile(*desktopSource); err == nil {
 		sum := fmt.Sprintf("%x", sha256.Sum256(data))
 		g.assetInfo["source_sha256"] = sum
@@ -98,8 +109,9 @@ func runDesktopWindow(c *desktopContext) error {
 	ebiten.SetCursorMode(ebiten.CursorModeHidden)
 	ebiten.SetRunnableOnUnfocused(true)
 	g.texture = ebiten.NewImage(1280, 800)
-	err := ebiten.RunGame(g)
-	c.Report = map[string]any{"classification": "Linux desktop prototype; one source-matched asset only", "updates": g.updates, "draws": g.draws, "events": g.events, "hd_observation": c.Live, "physical_mouse_events": g.mouseEvents, "scripted_mouse": c.Scripted, "hd_enabled": g.enabled, "last_mode": g.mode, "assets": g.assetInfo, "virtual_speed": *desktopSpeed, "audio_output": "PCM receipt only; desktop playback not enabled", "listening_verified": false}
+	g.barTexture = ebiten.NewImage(640, barHeight+2*barRowHeight)
+	err = ebiten.RunGame(g)
+	c.Report = map[string]any{"classification": "Linux desktop prototype; one source-matched asset only", "updates": g.updates, "draws": g.draws, "events": g.events, "windowbar_events": g.barEvents, "hd_observation": c.Live, "physical_mouse_events": g.mouseEvents, "scripted_mouse": c.Scripted, "hd_enabled": g.enabled, "last_mode": g.mode, "assets": g.assetInfo, "virtual_speed": *desktopSpeed, "audio_output": "PCM receipt only; desktop playback not enabled", "listening_verified": false}
 	return err
 }
 
@@ -150,39 +162,65 @@ func (g *desktopGame) saveFrame(label string) (map[string]any, error) {
 	return map[string]any{"path": path, "png_sha256": fmt.Sprintf("%x", sha256.Sum256(b)), "rgba_sha256": fmt.Sprintf("%x", sha256.Sum256(g.pixels.Pix)), "mode": g.mode}, nil
 }
 
-func (g *desktopGame) Update() error {
-	g.updates++
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return ebiten.Termination
-	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyF7) {
-		g.paused = !g.paused
-	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyF6) && len(g.events) < 128 {
+func (g *desktopGame) setHD(enabled bool) error {
+	if enabled != g.enabled {
 		before := g.c.Proof()
-		g.enabled = !g.enabled
+		g.enabled = enabled
 		f, err := g.saveFrame(fmt.Sprintf("switch-%d", len(g.events)))
 		if err != nil {
 			return err
 		}
 		after := g.c.Proof()
 		same := reflect.DeepEqual(before, after)
-		g.events = append(g.events, map[string]any{"kind": "toggle", "step": g.c.Steps(), "enabled": g.enabled, "paused": g.paused, "before": before, "after": after, "guest_unchanged": same, "frame": f})
+		if len(g.events) < 128 {
+			g.events = append(g.events, map[string]any{"kind": "toggle", "step": g.c.Steps(), "enabled": g.enabled, "paused": g.paused, "before": before, "after": after, "guest_unchanged": same, "frame": f})
+		}
 		if !same {
 			return fmt.Errorf("presentation changed original state")
 		}
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyF9) && len(g.events) < 128 {
-		f, err := g.saveFrame(fmt.Sprintf("capture-%d", len(g.events)))
-		if err != nil {
+	return nil
+}
+
+func (g *desktopGame) capture() error {
+	f, err := g.saveFrame(fmt.Sprintf("capture-%d", len(g.events)))
+	if err != nil {
+		return err
+	}
+	if len(g.events) < 128 {
+		g.events = append(g.events, map[string]any{"kind": "capture", "step": g.c.Steps(), "paused": g.paused, "proof": g.c.Proof(), "frame": f})
+	}
+	return nil
+}
+
+func (g *desktopGame) Update() error {
+	g.updates++
+	consumed, err := g.updateBar()
+	if err != nil {
+		return err
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyF7) {
+		g.paused = !g.paused
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyF6) {
+		if err := g.setHD(!g.enabled); err != nil {
 			return err
 		}
-		g.events = append(g.events, map[string]any{"kind": "capture", "step": g.c.Steps(), "paused": g.paused, "frame": f})
 	}
-	if !g.c.Scripted {
+	if inpututil.IsKeyJustPressed(ebiten.KeyF9) {
+		if err := g.capture(); err != nil {
+			return err
+		}
+	}
+	mouseBlocked := true
+	if !consumed {
+		mouseBlocked = g.mouseBlocked()
+	}
+	if !g.c.Scripted && !consumed && !mouseBlocked {
 		x, y := ebiten.CursorPosition()
+		p, inside := barGamePoint(x, y, g.bar.Visible)
 		buttons := 0
-		if ebiten.IsFocused() && x >= 0 && y >= 0 && x < 1280 && y < 800 {
+		if ebiten.IsFocused() && inside {
 			if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 				buttons |= 1
 			}
@@ -192,7 +230,7 @@ func (g *desktopGame) Update() error {
 			if ebiten.IsMouseButtonPressed(ebiten.MouseButtonMiddle) {
 				buttons |= 4
 			}
-			now := [3]int{x / 2, y / 2, buttons}
+			now := [3]int{p.X, p.Y, buttons}
 			if now != g.lastMouse {
 				g.c.Mouse(now[0], now[1], now[2])
 				g.lastMouse = now
@@ -205,7 +243,7 @@ func (g *desktopGame) Update() error {
 		}
 	}
 	running := true
-	if !g.paused {
+	if !g.paused && !consumed && !mouseBlocked {
 		n := int((int64(g.updates)*1000000*int64(*desktopSpeed))/60 - (int64(g.updates-1)*1000000*int64(*desktopSpeed))/60)
 		running = g.c.Advance(n)
 	}
@@ -213,6 +251,9 @@ func (g *desktopGame) Update() error {
 		return err
 	}
 	g.texture.WritePixels(g.pixels.Pix)
+	if g.bar.Visible {
+		g.barTexture.WritePixels(g.bar.paint(g.barFont, g.selectedBar(), g.asset != nil && g.source != nil).Pix)
+	}
 	title := "原版"
 	if g.mode == "hd" {
 		title = "HD"
@@ -220,8 +261,9 @@ func (g *desktopGame) Update() error {
 	if g.paused {
 		title += " 暫停"
 	}
-	ebiten.SetWindowTitle("德川家康｜" + title + "｜F6 切換 HD｜F7 暫停")
-	status := map[string]any{"step": g.c.Steps(), "mode": g.mode, "eligible": g.c.Live.Active, "enabled": g.enabled, "paused": g.paused, "events": g.events, "mouse_events": g.mouseEvents}
+	ebiten.SetWindowTitle("德川家康｜" + title + "｜頂端設定／Esc｜F6 HD｜F7 暫停")
+	w, h := ebiten.WindowSize()
+	status := map[string]any{"step": g.c.Steps(), "mode": g.mode, "eligible": g.c.Live.Active, "enabled": g.enabled, "paused": g.paused, "events": g.events, "mouse_events": g.mouseEvents, "bar_visible": g.bar.Visible, "bar_pinned": g.bar.Pinned, "bar_menu": g.bar.Menu, "bar_focus": g.bar.Focus, "bar_hover": g.bar.Hover, "bar_events": g.barEvents, "window_size": []int{w, h}, "mouse_blocked": g.blockMouse}
 	b, err := json.Marshal(status)
 	if err != nil {
 		return err
@@ -238,5 +280,27 @@ func (g *desktopGame) Update() error {
 	return nil
 }
 
-func (g *desktopGame) Draw(screen *ebiten.Image)  { screen.DrawImage(g.texture, nil); g.draws++ }
-func (g *desktopGame) Layout(_, _ int) (int, int) { return 1280, 800 }
+func (g *desktopGame) Draw(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	if g.bar.Visible {
+		op.GeoM.Translate(0, barHeight*2)
+	}
+	screen.DrawImage(g.texture, op)
+	if g.bar.Visible {
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Scale(2, 2)
+		screen.DrawImage(g.barTexture, op)
+	}
+	g.draws++
+}
+
+func (g *desktopGame) Layout(_, _ int) (int, int) {
+	if g.bar.Visible {
+		return 1280, 800 + barHeight*2
+	}
+	return 1280, 800
+}
+
+func (g *desktopGame) DrawFinalScreen(dst ebiten.FinalScreen, src *ebiten.Image, geo ebiten.GeoM) {
+	dst.DrawImage(src, &ebiten.DrawImageOptions{GeoM: geo, Filter: ebiten.FilterNearest})
+}

@@ -33,6 +33,11 @@
 | [tools/hd-live.go](tools/hd-live.go)、[tools/hd-live_test.go](tools/hd-live_test.go) | 只讀原版素材與矩形繪製入口／返回，限制 A-0 的桌面替換資格 |
 | [tools/presentation.go](tools/presentation.go)、[tools/presentation_test.go](tools/presentation_test.go) | 桌面試作的步進、畫面、普通滑鼠及原版狀態核對介面與游標層測試；預設無頭 |
 | [tools/desktop.go](tools/desktop.go) | 只在 desktop 建置標籤啟用的 Ebitengine 視窗、HD 開關與證據擷取 |
+| [tools/windowbar.go](tools/windowbar.go)、[tools/windowbar_test.go](tools/windowbar_test.go) | 頂端隱藏列的狀態、幾何、點陣字型與純畫面測試 |
+| [tools/desktop-windowbar.go](tools/desktop-windowbar.go) | 桌面功能列輸入、視窗高度與原版輸入隔離 |
+| [tools/toolbar-font.hex.gz](tools/toolbar-font.hex.gz)、[tools/LICENSE-toolbar-font.txt](tools/LICENSE-toolbar-font.txt) | 參考專案的完整 Unifont 點陣字型與原授權全文；執行時讀取，不使用原版遊戲字模 |
+| [tools/verify-windowbar.py](tools/verify-windowbar.py) | 真實 X11 頂端顯示、固定、選單、鍵盤與誤觸隔離驗證 |
+| `workplace/desktop-prototype/toolbar/` | 本次功能列隔離建置、GUI 收據與截圖；保留先前桌面驗證產物 |
 | [tools/run-desktop.sh](tools/run-desktop.sh) | 固定既有 GUI image 的隔離建置入口；原版與外部 dosgolem 唯讀 |
 | [tools/desktop.mod](tools/desktop.mod)、[tools/desktop.sum](tools/desktop.sum) | 桌面試作的 Ebitengine 2.9.9 與傳遞依賴鎖定；不修改外部 dosgolem go.mod |
 | [tools/verify-desktop.py](tools/verify-desktop.py) | 有界 Xvfb 真實視窗／切換與普通滑鼠驗證、像素比較及程序清理 |
@@ -238,7 +243,24 @@ timeout 300s docker run --rm --name tokugawa-desktop-gui --network none \
   timeout -k 5s 280s python3 /project/tools/verify-desktop.py --mode hd
 ```
 
-桌面程式只有使用 `-desktop` 才開視窗，預設仍為無頭。F6 切換原圖／HD，F7 暫停試作步進，F9 擷取強化畫面，Esc 關窗並輸出原生收據。`-hd-source`／`-hd-asset` 可指定本機原圖與 HD 圖；原圖固定雜湊，缺圖備援。`-desktop-speed` 預設 1，驗證用 20 不改虛擬時間公式。普通滑鼠只在沒有輸入時間表時啟用；一般鍵盤轉送與桌面音訊尚未接入。二進位留在 `workplace/` 作中間產物，不能稱為正式平台交付。
+桌面程式只有使用 `-desktop` 才開視窗，預設仍為無頭。F6 切換原圖／HD，F7 暫停試作步進，F9 擷取強化畫面。滑鼠移到頂端 6 個原版邏輯像素會展開功能列，移開自動收起。Esc 固定／收起；叉號只收起，Shift+Esc 或工具選單可關窗並輸出原生收據。功能列顯示時原版停止步進，畫面下移並增加視窗高度；收起後滑鼠按鍵全部放開才恢復步進與滑鼠轉送。Tab 切換欄位，方向鍵選取，Enter 展開／套用。顯示提供原版及單張 HD，缺圖時 HD 列停用；執行提供繼續／暫停，工具提供截圖／離開。
+
+`-hd-source`／`-hd-asset` 可指定本機原圖與 HD 圖；原圖固定雜湊，缺圖備援。`-desktop-speed` 預設 1，驗證用 20 不改虛擬時間公式。普通滑鼠只在沒有輸入時間表時啟用；一般鍵盤轉送與桌面音訊尚未接入。四語及音訊設定待功能接妥再加入。二進位留在 `workplace/` 作中間產物，不能稱為正式平台交付。
+
+功能列的獨立驗證沿用上述 GUI image 與建置命令，將可寫掛載改成已存在的 `workplace/desktop-prototype/toolbar/`，保留先前 GUI 收據。建置後執行下列命令；`--mode hd` 可換為 `mouse` 或 `missing`。腳本輸出 `windowbar-<mode>.json`、`verification-windowbar-<mode>.json` 及真實視窗 PNG，並清理所有子程序。
+
+```sh
+test -f workplace/desktop-prototype/toolbar/tokugawa-desktop-prototype
+test -f tools/verify-windowbar.py && test -d original/game
+timeout 300s docker run --rm --name tokugawa-toolbar-gui --network none \
+  --memory 2g --cpus 2 --pids-limit 128 --user "$(id -u):$(id -g)" \
+  --mount "type=bind,source=$PWD,target=/project,readonly" \
+  --mount "type=bind,source=$PWD/original/game,target=/original,readonly" \
+  --mount "type=bind,source=$PWD/workplace/desktop-prototype/toolbar,target=/output" \
+  --env HOME=/tmp --env GOMAXPROCS=2 \
+  sha256:baa20f69bccc7dc8ac7a4bbcf93fbcb32019505bf1c31c1312f85aa873bbb9d4 \
+  timeout -k 5s 280s python3 /project/tools/verify-windowbar.py --mode hd
+```
 
 要重跑保存的正常玩家路徑，在同一 Docker 命令最後使用 `tools/run-probes.sh -steps 750000000 -mouse-file /project/tools/player-path.json`。`-mouse-file` 與 `-mouse` 擇一，輸入雜湊記入 `mouse_input_sha256`。路徑的驗證進度以 CONTEXT 為準，不以輸入檔存在宣稱通過。
 
@@ -273,6 +295,6 @@ timeout 240s docker run --rm --name tokugawa-download --network bridge \
 
 目前授權範圍是下載 jsdos、建立 private GitHub repository 與 Issues，並將原版遊戲整合到 dosgolem 執行。使用者指定先建立 repo、登記 Issues，再開工。使用者明確表示不是 remake。可自主補齊本作所需的平台能力與測試；玩法修改、版本切換、公開發行或授權變更需另有明確任務。
 
-後續規劃已確認桌面版、繁中／簡中／英文／日文，以及可切換的 HD 素材包。瀏覽器排除。現行決定見 [CONTEXT.md](CONTEXT.md)，階段與驗收草案見 [WORKLIST.md](WORKLIST.md)。原版繼續負責玩法與存檔，譯文與 HD 圖層在桌面呈現；完整擷取介面、素材格式與美術風格尚未定案，不把規劃寫成既有能力。
+後續規劃已確認桌面版、繁中／簡中／英文／日文，以及可切換的 HD 素材包。瀏覽器排除。現行決定見 [CONTEXT.md](CONTEXT.md)，階段與驗收草案見 [WORKLIST.md](WORKLIST.md)。原版繼續負責玩法與存檔，譯文與 HD 圖層在桌面呈現。美術風格已選 B 戰國手繪風，首張肖像及參考 `/home/anr2/cht/softworld_san` 的頂端隱藏列已接入 Linux 桌面試作；完整擷取介面與素材包格式仍待定案。
 
 原版 ZIP、EXE、DAT、光碟映像、音軌與原包附帶的補丁只留本機，不加入 Git、GitHub Release 或公開雲端。`.gitignore` 已排除 `original/` 與 `workplace/`。自製的平台修正、測試與文件可加入已授權的 private repository，包含 `tools/dosgolem.patch`。未確認散布權前不製作公開資料包。
