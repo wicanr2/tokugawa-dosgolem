@@ -186,3 +186,4 @@
 - 依 READY 契約監看 VISUAL 載入／原版全畫面複製的自然返回；其他全畫面複製即撤銷資格。捲軸文字安全區以外有任何背景變化就回原圖。F6 及功能列同時切換肖像與捲軸，各自缺圖備援；一項有效時即可啟用 HD。
 - 四套件與新來源／前景／範圍／生命週期測試通過。真實視窗三種捲軸模式及功能列整合均通過，兩頁原文保留 24324／4036 個呈現前景像素。四次 150M 原版 RAM、trace、畫面與 CD PCM 符合既有基準；原有 CDDA 與完整 750M 收據未變。資料及各次雜湊見 RESEARCH-LOG 與驗收總表。
 - 收尾：整合工具與美術 provenance 雜湊、Python／shell 語法、文件連結及索引正對照、UID/GID、root-owned／異常 `.md` 目錄及 Git 差異檢查通過。所有本專案容器已結束，未建新 image。外部 dosgolem 仍保留原先的 `cmd/probe/main.go` 差異；固定 clone 為乾淨 detached HEAD。原版、HD 美術、提示詞、RAM、PCM、截圖及二進位皆被 Git 排除。
+- 自製程式、測試與文件共 19 份提交 `4691f6a` 已推送 private main。[HD #5 進度留言](https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6145463978) 已送出並讀回核對，Issue 保持開啟。儲存庫再次確認為 private，沒有上傳原版與衍生圖；目前素材路徑、完整提示詞及使用內建 imagegen 的來源記錄均已保存本機。
