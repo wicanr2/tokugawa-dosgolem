@@ -39,6 +39,13 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/cmd/leprobe/cdda_test.go":"/project/tools/cdda_test.go",
   "/dosgolem/cmd/leprobe/hd_trace.go":"/project/tools/hd-trace.go",
   "/dosgolem/cmd/leprobe/hd_trace_test.go":"/project/tools/hd-trace_test.go",
+  "/dosgolem/cmd/leprobe/hd_live.go":"/project/tools/hd-live.go",
+  "/dosgolem/cmd/leprobe/hd_live_test.go":"/project/tools/hd-live_test.go",
+  "/dosgolem/cmd/leprobe/hd_layer.go":"/project/tools/hd-layer.go",
+  "/dosgolem/cmd/leprobe/hd_layer_test.go":"/project/tools/hd-preview_test.go",
+  "/dosgolem/cmd/leprobe/presentation.go":"/project/tools/presentation.go",
+  "/dosgolem/cmd/leprobe/presentation_test.go":"/project/tools/presentation_test.go",
+  "/dosgolem/cmd/leprobe/desktop.go":"/project/tools/desktop.go",
   "/dosgolem/cmd/leprobe/video.go":"/project/tools/video.go",
   "/dosgolem/cmd/leprobe/video_test.go":"/project/tools/video_test.go",
   "/dosgolem/cmd/leprobe/vbe.go":"/project/tools/vbe.go",
@@ -50,6 +57,7 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
 JSON
 cd /dosgolem
 go test -count=1 -overlay /output/startup-probe/repro-overlay.json ./internal/cpu386 ./internal/machine ./internal/dosfile ./cmd/leprobe > /output/startup-probe/platform-test.log 2>&1
+if test "${TOKUGAWA_PREPARE_ONLY:-0}" = 1; then exit 0; fi
 go run -overlay /output/startup-probe/repro-overlay.json ./cmd/leprobe "$@" > /output/startup-probe/pending.json 2> /output/startup-probe/latest-stderr.log
 mv /output/startup-probe/pending.json /output/startup-probe/latest.json
 find /output/engine /output/startup-probe \( -user root -o -type d -name '*.md' \) -print

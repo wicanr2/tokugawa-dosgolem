@@ -29,6 +29,15 @@
 | [tools/hd-trace.go](tools/hd-trace.go)、[tools/hd-trace_test.go](tools/hd-trace_test.go) | 固定 EXE 的唯讀素材載入觀測及記憶體不變、錯誤界限、事件上限測試；不替換素材 |
 | [tools/hd-extract.go](tools/hd-extract.go) | 從正常路徑 RAM 擷取 A-0.OZM，核對四平面雜湊與原生畫面矩形，輸出本機 PNG 及收據；不是正式素材包格式 |
 | [tools/hd-preview.go](tools/hd-preview.go)、[tools/hd-preview_test.go](tools/hd-preview_test.go) | 單張 A-0 的離線原圖／HD／缺圖預覽與範圍保護測試；不接管遊戲或代表桌面執行中切換 |
+| [tools/hd-layer.go](tools/hd-layer.go) | 離線預覽與桌面試作共用的單張素材呈現與來源像素保護 |
+| [tools/hd-live.go](tools/hd-live.go)、[tools/hd-live_test.go](tools/hd-live_test.go) | 只讀原版素材與矩形繪製入口／返回，限制 A-0 的桌面替換資格 |
+| [tools/presentation.go](tools/presentation.go)、[tools/presentation_test.go](tools/presentation_test.go) | 桌面試作的步進、畫面、普通滑鼠及原版狀態核對介面與游標層測試；預設無頭 |
+| [tools/desktop.go](tools/desktop.go) | 只在 desktop 建置標籤啟用的 Ebitengine 視窗、HD 開關與證據擷取 |
+| [tools/run-desktop.sh](tools/run-desktop.sh) | 固定既有 GUI image 的隔離建置入口；原版與外部 dosgolem 唯讀 |
+| [tools/desktop.mod](tools/desktop.mod)、[tools/desktop.sum](tools/desktop.sum) | 桌面試作的 Ebitengine 2.9.9 與傳遞依賴鎖定；不修改外部 dosgolem go.mod |
+| [tools/verify-desktop.py](tools/verify-desktop.py) | 有界 Xvfb 真實視窗／切換與普通滑鼠驗證、像素比較及程序清理 |
+| `workplace/desktop-prototype/headless/` | 步進重構後的完整無頭玩家路徑，獨立於 GUI 試作收據 |
+| `workplace/desktop-prototype/` | 桌面試作的建置、模組鎖定、正常路徑收據與 GUI 驗證；不是正式交付目錄 |
 | `workplace/hd-prototype/` | 可丟棄 HD 風格概念圖、完整提示詞、候選資源盤點及 IDA 證據；不作已接入遊戲的證明 |
 | `workplace/hd-prototype/asset-capture/` | 正常玩家輸入前綴的原版素材 RAM、畫面與獨立擷取收據；與完整路徑收據分開保存 |
 | [tools/dosgolem.patch](tools/dosgolem.patch) | 固定 dosgolem 基準的通用平台修正，尚未回填外部工作樹 |
@@ -187,14 +196,49 @@ DAT 盤點沿用固定 Python Docker 命令，唯讀掛專案及 `original/game/
 離線預覽則將整個 `workplace/hd-prototype/` 掛為 `/output`，在同一 Go Docker 執行：
 
 ```sh
-go test /project/tools/hd-preview.go /project/tools/hd-preview_test.go
-go run /project/tools/hd-preview.go \
+go test /project/tools/hd-preview.go /project/tools/hd-layer.go /project/tools/hd-preview_test.go
+go run /project/tools/hd-preview.go /project/tools/hd-layer.go \
   -frame /output/asset-capture/startup-probe/frame-f8b23041cc0ab4866e40dd4d14eb92489b8c3896d2595ea5cba11f1338f0db62.png \
   -source /output/asset-capture/A-0-original.png \
   -hd /output/A-0-hd-b-v1.png -out /output/A-0-hd-preview-v1.png
 ```
 
 Go 預覽工作設定 `GOMAXPROCS=2` 與 `GOFLAGS=-p=2`，配合 2 CPU／64 程序限制。`-hd` 留空顯示原圖，指向不存在的 PNG 驗證缺圖備援；輸出檔名必須尚未存在。生成美術不隨 Git 提供，須先核對本機 `prototype.json` 的圖像與提示詞雜湊。以上只驗證離線呈現，未實作桌面執行中切換。
+
+桌面首張試作的契約與實際驗證見 RESEARCH-LOG 的「首張 HD 桌面試作契約」。沿用已存在的 GUI image ID，實際版本為 Go 1.24.13／Ebitengine 2.9.9；不重建 image，不改外部 dosgolem。下列輸出目錄與快取須已存在且為 UID/GID 1000:1000。
+
+```sh
+test -d /home/anr2/cht/dosgolem && test -d original/game
+test -d workplace/desktop-prototype && test -d workplace/leprobe/gocache
+timeout 180s docker run --rm --name tokugawa-desktop-build --network none \
+  --memory 2g --cpus 2 --pids-limit 128 --user "$(id -u):$(id -g)" \
+  --mount type=bind,source=/home/anr2/cht/dosgolem,target=/dosgolem,readonly \
+  --mount "type=bind,source=$PWD,target=/project,readonly" \
+  --mount "type=bind,source=$PWD/original/game,target=/original,readonly" \
+  --mount "type=bind,source=$PWD/workplace/desktop-prototype,target=/output" \
+  --mount "type=bind,source=$PWD/workplace/leprobe/gocache,target=/gocache" \
+  --env HOME=/tmp --env GOCACHE=/gocache --env GOTOOLCHAIN=local \
+  --env TOKUGAWA_BUILD_ONLY=1 --workdir /dosgolem \
+  sha256:baa20f69bccc7dc8ac7a4bbcf93fbcb32019505bf1c31c1312f85aa873bbb9d4 \
+  timeout -k 5s 160s sh /project/tools/run-desktop.sh
+```
+
+真實視窗驗證由容器內 Xvfb 管理，不在主機啟動 GUI。以下 `--mode hd` 可改為 `missing` 或 `mouse`，分別核對缺圖備援及縮放後的普通滑鼠。腳本管理並清理 Xvfb 與桌面程序，輸出 `desktop-<mode>.json`、`verification-<mode>.json` 與真實視窗 PNG。HD 及缺圖模式使用 33 筆正常輸入前綴，路徑與雜湊見擷取契約；mouse 模式不帶時間表。
+
+```sh
+test -f workplace/desktop-prototype/tokugawa-desktop-prototype
+test -f tools/verify-desktop.py && test -d original/game
+timeout 300s docker run --rm --name tokugawa-desktop-gui --network none \
+  --memory 2g --cpus 2 --pids-limit 128 --user "$(id -u):$(id -g)" \
+  --mount "type=bind,source=$PWD,target=/project,readonly" \
+  --mount "type=bind,source=$PWD/original/game,target=/original,readonly" \
+  --mount "type=bind,source=$PWD/workplace/desktop-prototype,target=/output" \
+  --env HOME=/tmp --env GOMAXPROCS=2 \
+  sha256:baa20f69bccc7dc8ac7a4bbcf93fbcb32019505bf1c31c1312f85aa873bbb9d4 \
+  timeout -k 5s 280s python3 /project/tools/verify-desktop.py --mode hd
+```
+
+桌面程式只有使用 `-desktop` 才開視窗，預設仍為無頭。F6 切換原圖／HD，F7 暫停試作步進，F9 擷取強化畫面，Esc 關窗並輸出原生收據。`-hd-source`／`-hd-asset` 可指定本機原圖與 HD 圖；原圖固定雜湊，缺圖備援。`-desktop-speed` 預設 1，驗證用 20 不改虛擬時間公式。普通滑鼠只在沒有輸入時間表時啟用；一般鍵盤轉送與桌面音訊尚未接入。二進位留在 `workplace/` 作中間產物，不能稱為正式平台交付。
 
 要重跑保存的正常玩家路徑，在同一 Docker 命令最後使用 `tools/run-probes.sh -steps 750000000 -mouse-file /project/tools/player-path.json`。`-mouse-file` 與 `-mouse` 擇一，輸入雜湊記入 `mouse_input_sha256`。路徑的驗證進度以 CONTEXT 為準，不以輸入檔存在宣稱通過。
 

@@ -850,3 +850,45 @@ HD 風格使用內建 image_gen 產生一次可丟棄比較圖，原始參考是
 離線呈現子集達 CONFORMED。原生畫面 640×400 暫以兩倍邏輯座標輸出 1280×800，沿用包內 `dosbox.conf` 的 `aspect=false`，沒有另定 CRT 或桌面顯示模式。生成素材的比例因整數尺寸相差約 0.09%，僅在試作映射至已證實矩形，正式包尚未定規格。HD 預覽共 192,000 個像素變動，全部位於兩倍肖像矩形，矩形外零變動。原圖及缺圖輸出的 PNG SHA-256 同為 `4517ea850104f4b7e6b6a5589ad5f8ff746cbada976ce1f89ebc3858dde203bd`；HD 預覽為 `86dfb08019d186852a69d43996dbae326de8d6512f35cf7eb9288a33c06947a7`。手動目視確認只替換肖像，外框、徽章與下方原文保持原版。
 
 預覽測試涵蓋關閉、缺圖、錯誤來源、比例不符、透明圖、畫面／倍率界限、輸入不變及完整矩形外核對。`preview-test.log` SHA-256 `2ea3c38d89344e1cc130a9a223a49c4d702b257a692123c6b4e2be2502e5de03`。IDA 指標交叉參照 `range-38bf0-38c10.json` SHA-256 `2d8c0b4fde99935634248353b28c96d4c1d988e4931b304f30534807891661e6`；複製端 `range-1bf73-1c550.json` 為 `d50027225833948b080dce1207902e09caea3e09b3d7b01490d4775cc3e6b1f8`；劇情圖呼叫端 `range-17fb0-180a0.json` 為 `4b78a751a88fc1c60c38fce399b8ddcbfe0ec2f35f92df03c283b4b0e76466f2`。桌面呈現、執行中切換、游標／更新範圍及正式素材包仍待後續 READY 契約。
+
+## 2026-10-13：首張 HD 桌面試作契約
+
+路由命中 dosgolem、平台規格、正常玩家路徑與文件職責。狀態：DRAFT → 證據審查 → READY，只授權可撤回的 Linux 桌面試作；不定正式素材包格式、跨平台交付或全遊戲相容性。使用者已確認 B 風格及原版玩法、桌面與可切換 HD 範圍。
+
+- 沿用 dosgolem 固定 HEAD、原版 EXE／DAT 與原本的成功指令時間。既有步進迴圈只改成可分批呼叫，無頭仍連續跑；桌面 Update 分批執行相同 CPU.Step。GUI 繪製、切換與擷取不得略過原版指令或回寫 RAM／VRAM。正常輸入時間表仍在精確成功指令數套用。
+- 固定既有 GUI image `sha256:baa20f69bccc7dc8ac7a4bbcf93fbcb32019505bf1c31c1312f85aa873bbb9d4`，實查 Go 1.24.13、Ebitengine 2.9.9、Xvfb、xdotool、ffmpeg 與 gcc 已存在；不由 image tag／繼承標籤推定版本。依 [Ebitengine 視窗與邏輯畫面契約](https://ebitengine.org/en/documents/cheatsheet.html) 及容器內固定版本原始碼試作。新增依賴只寫輸出目錄的 modfile，不改外部 go.mod，不用主機 runtime 或憑證。
+- 第一張只支援固定 A-0.OZM。觀測沿用已證實載入入口／返回與四平面 SHA-256，再核對原始 `sub_1C1BC` 的五個參數及相同堆疊返回。只接受來源偏移 0、寬 40 bytes、高 150、pitch 80、目的 `0xA0FB4`；新載入先撤銷資格。識別只讀 backing RAM，不能只靠整張截圖判斷。
+- 畫面呈現另逐像素核對 320×150 原圖與原生矩形，遇到更新、遮擋或調色盤差異立即回原圖。HD 與關閉／缺圖備援共用既有離線呈現邏輯。原圖擷取 PNG 固定 SHA-256 `0b7a25670a568f2e8e61ecfdf4d7ea264dac13caf67dea7ddf9218b370f1239c`，生成 HD 僅從本機指定檔案讀取。
+- 邏輯座標保留 640×400，試作畫布為 1280×800。Ebitengine 的 CursorPosition 先轉回畫布座標，再除以二傳給原版普通 MoveMouse／PressMouse／ReleaseMouse。離開視窗或失焦須釋放按鍵。使用輸入時間表時停用實體滑鼠，避免驗收條件漂移；另測普通滑鼠路徑。
+- 原生畫面與 HD 分開保存。游標沿用原版遮罩，最後才合成到呈現畫布；透明遮罩不覆寫 HD，XOR 色取原生底圖結果，仍標為既有 display-layer approximation，不宣稱 TSR VRAM 背景讀回已實作。
+- F6 在同一原版狀態切換原圖／HD，F7 僅暫停試作步進；每次切換記錄步數、原版 RAM／CPU／原生色號證據及呈現 PNG。視窗狀態放標題，不把研究資訊畫進遊戲 HUD。關窗後保存完整收據，不改原版檔案。
+- 驗收包括觀測的錯誤參數／堆疊、輸入不變、來源／缺圖備援、真實 Xvfb 視窗與鍵盤事件、同輸入的原版 RAM／CPU／畫面／PCM 核對，以及普通滑鼠縮放。音訊仍保存原版 PCM，本切片先驗證畫面與切換，不把桌面音訊或人耳確認稱為完成。
+
+### 實作與驗證結果
+
+本節的首張 Linux 桌面試作子集達 CONFORMED。只適用既定 EXE 的 A-0.OZM，未定正式素材包。原始程式、資料與外部 dosgolem 都唯讀；主機沒有啟動 GUI 或專案程式。沿用既有 GUI image，沒有建新 image。Go 1.24.13 與 Ebitengine 2.9.9、五個傳遞依賴由 `tools/desktop.mod`／`desktop.sum` 鎖定；建置使用輸出目錄的 modfile 與 Go overlay，外部 go.mod 不改。
+
+| 已證實的觀測 | 原始定位與結果 |
+|---|---|
+| A-0 原版繪圖 | dosgolem 成功步數 137,089,680、線性 `0x1C1BC`，堆疊 `0x5C558`，五個參數 `[0,40,150,80,0xA0FB4]`。第 137,096,468 步自然返回線性 `0x1803D`，與原始堆疊加四相符，這時才開啟替換資格。沒有跳過繪圖指令 |
+| 執行中切換 | 真實 X11 F6 在第 140,333,333 步開啟 HD，當時未暫停。第 141,666,666 步暫停後切回原版，再切回 HD。三次切換的 RAM、CPU、原生色號、調色盤及游標證據前後一致 |
+| 真實視窗 | Xvfb 內實際 Ebitengine 視窗為 1280×800，xdotool 送真實鍵盤事件，ffmpeg 從 X11 擷取。HD、原圖、恢復 HD 三張都逐像素符合呈現 PNG，恢復 HD 與前次 HD 的 PNG 雜湊相同 |
+| 缺圖備援 | 同樣的普通輸入與三次切換，HD 路徑不存在時回 `fallback_missing_asset`。原圖、開啟及恢復後的呈現 PNG 完全相同，實際視窗逐像素核對也通過 |
+| 兩個 150,000,000 步的 GUI 路徑 | 全部 33 筆普通輸入照原步數套用。HD 與缺圖兩側的完整 RAM 均為 `0d9123e52923ba852b125ea04918e1007138a33e0a8e4d856b078865cb33562f`，與先前原生無頭擷取相同；trace、原生畫面、DPMI、輸入邊界、CD 裝置與 PCM 均一致 |
+| 普通滑鼠 | 無輸入時間表，真實視窗縮為 1000×700，含上下留黑。X11 視窗座標 `(469,306)` 對應原版 `(300,171)`，普通按下與放開分別記在第 85,000,000／85,333,333 步。從主選單進入顯示「時間是」的新遊戲開場，已人工目視確認。這次只驗證新遊戲點擊，未宣稱實體滑鼠走完整角色建立 |
+| 完整無頭回歸 | 步進重構後從原版入口重跑 750,000,000 步、390 筆普通滑鼠事件。全部 RAM、trace、原生戰場畫面、輸入與 CD PCM 同原完整基準，RAM 仍為 `4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9`；四套件通過 |
+
+滑鼠測試初次遇到 Go 空 slice 序列化為 null，驗證工具直接取長度而停止。修正工具接受空事件清單後，以同一 image、命令與資源限制乾淨重跑通過。未修改產品程式或遊戲判斷。初次 stdout／stderr 與修正前的驗證工具存於 `workplace/desktop-prototype/`，歷史版本的工具 SHA-256 與每次執行對應由下表總核對索引保存。縮放滑鼠測試的 1000×700 視窗與 1280×800 呈現圖尺寸不同，驗證座標與玩家動作，不宣稱兩者可直接逐像素相等。
+
+| 收據／產物 | SHA-256 |
+|---|---|
+| `workplace/desktop-prototype/verification-summary.json` | `00826f14baa6b1f9c1e2707b77019efb2d7242bed6f5d0fa42bd9a0945017dcf` |
+| `headless/startup-probe/latest.json` | `1eb3fe503bac5ecfb0261e0f94cf762a765895d5d4fb9b4a0e1e712ee210ac7c` |
+| `desktop-hd.json` | `baac5b2b5923783f397eaeb3f4809a06ef1830b73a88121d327b0cfa3a46b97f` |
+| `desktop-missing.json` | `a405e06ad8b13c54f7ba784b265c7e4b7b03a7f312a62c192199c43614e87729` |
+| `desktop-mouse.json` | `292f10edd68193081741c14514fef60d9cc7bc798302b40aac766543a03636e5` |
+| `gui-hd-enabled.png`，真實視窗 | `2d845709d0182e910855765564d9dd7dd7bcf3d32829d7bb263192636ba31c84` |
+| `gui-mouse-after-click.png`，新遊戲開場 | `8d777a0d7e37b1ffb4dc3b4fd35eec4b73f2a574924e4505f60c1235ef24d6bd` |
+| `tokugawa-desktop-prototype`，Linux amd64 中間產物 | `a36b9a83f0d10c3f5ed34f1a6bdb1fb819a091a3721c14288e6435e1610a53e0` |
+
+原生畫面與強化畫面分開保存，正式 CDDA 及先前 HD 載入收據沒有被覆寫。所有圖像、RAM、PCM 與可執行中間產物留本機；只提交自製程式、依賴鎖定與文件。桌面音訊、一般鍵盤轉送、其餘素材與四語、其他 OS 及正式發行仍未驗收。

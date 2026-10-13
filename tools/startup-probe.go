@@ -38,8 +38,14 @@ func main() {
 	mouseFile := flag.String("mouse-file", "", "read mouse state array from a file")
 	cdDiagnostic := flag.Bool("cd-trace", false, "record bounded read-only DPMI/CD request diagnostics")
 	hdDiagnostic := flag.Bool("hd-trace", false, "record bounded read-only original asset loader diagnostics")
+	desktop := flag.Bool("desktop", false, "run isolated desktop presentation prototype")
 	flag.Parse()
 	var assetTrace hdTrace
+	var live hdLive
+	var desktopReceipt map[string]any
+	if *desktop && runDesktop == nil {
+		panic("desktop build tag is required")
+	}
 	if *budget < 1 || *budget > 750000000 {
 		panic("instruction budget out of range")
 	}
@@ -265,53 +271,91 @@ func main() {
 	inputEvents := []map[string]any{}
 	inputFrames := []map[string]any{}
 	nextMouse := 0
-	for steps < *budget {
-		if steps&1023 == 0 {
-			if err := disc.advanceAudio(uint64(steps)); err != nil {
-				panic(err)
+	advance := func(maxSteps int) bool {
+		end := steps + maxSteps
+		for steps < *budget && steps < end {
+			if steps&1023 == 0 {
+				if err := disc.advanceAudio(uint64(steps)); err != nil {
+					panic(err)
+				}
+			}
+			video.advance(uint64(steps))
+			if nextMouse < len(mouseEvents) && mouseEvents[nextMouse].Step == steps {
+				e := mouseEvents[nextMouse]
+				if e.Buttons == 0 && mouseServices.Mouse.Buttons == 0 {
+					f, err := captureFrame(screen, &cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
+					if err != nil {
+						panic(err)
+					}
+					inputFrames = append(inputFrames, map[string]any{"step": steps, "frame": f})
+				}
+				applyMouseEvent(mouseServices, e)
+				inputEvents = append(inputEvents, map[string]any{"scheduled_step": e.Step, "actual_step": steps, "requested_x": e.X, "requested_y": e.Y, "x": mouseServices.Mouse.X, "y": mouseServices.Mouse.Y, "buttons": mouseServices.Mouse.Buttons})
+				nextMouse++
+			}
+			before = m.CPU.EIP
+			if *hdDiagnostic {
+				assetTrace.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem)
+			}
+			if *desktop {
+				live.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem)
+			}
+			row := rawTrace{step: steps, eip: before, registers: m.CPU.R, segments: m.CPU.Seg, flags: m.CPU.EFlags}
+			for offset := uint32(0); offset < 16; offset++ {
+				b, e := m.CPU.Bus.Read8(before + offset)
+				if e != nil {
+					break
+				}
+				row.bytes[row.size] = b
+				row.size++
+			}
+			traceRing[traceCount%len(traceRing)] = row
+			traceCount++
+			if err := m.CPU.Step(); err != nil {
+				stop = err.Error()
+				if m.Keyboard.Waiting {
+					stop = "waiting_for_keyboard"
+				}
+				break
+			}
+			steps++
+			if services.Exited {
+				stop = "dos_exit"
+				break
 			}
 		}
-		video.advance(uint64(steps))
-		if nextMouse < len(mouseEvents) && mouseEvents[nextMouse].Step == steps {
-			e := mouseEvents[nextMouse]
-			if e.Buttons == 0 && mouseServices.Mouse.Buttons == 0 {
-				f, err := captureFrame(screen, &cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
+		return steps < *budget && stop == "instruction_budget"
+	}
+	if *desktop {
+		ctx := &desktopContext{
+			Advance: advance, Steps: func() int { return steps }, Live: &live, Scripted: len(mouseEvents) > 0,
+			Snapshot: func() (nativeSnapshot, error) {
+				return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
+			},
+			Mouse: func(x, y, buttons int) {
+				e := scheduledMouse{Step: steps, X: x, Y: y, Buttons: buttons}
+				applyMouseEvent(mouseServices, e)
+				if len(inputEvents) < 1024 {
+					inputEvents = append(inputEvents, map[string]any{"source": "desktop", "actual_step": steps, "requested_x": x, "requested_y": y, "x": mouseServices.Mouse.X, "y": mouseServices.Mouse.Y, "buttons": buttons})
+				}
+			},
+			Proof: func() map[string]any {
+				s, err := snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
 				if err != nil {
 					panic(err)
 				}
-				inputFrames = append(inputFrames, map[string]any{"step": steps, "frame": f})
-			}
-			applyMouseEvent(mouseServices, e)
-			inputEvents = append(inputEvents, map[string]any{"scheduled_step": e.Step, "actual_step": steps, "requested_x": e.X, "requested_y": e.Y, "x": mouseServices.Mouse.X, "y": mouseServices.Mouse.Y, "buttons": mouseServices.Mouse.Buttons})
-			nextMouse++
+				return map[string]any{"step": steps, "ram_sha256": fmt.Sprintf("%x", sha256.Sum256(m.Mem)), "eip": m.CPU.EIP, "registers": m.CPU.R, "segments": m.CPU.Seg, "flags": m.CPU.EFlags, "raw_indexed_sha256": fmt.Sprintf("%x", sha256.Sum256(s.Indexed)), "palette": s.Palette, "cursor": cursor, "mouse_x": s.X, "mouse_y": s.Y}
+			},
 		}
-		before = m.CPU.EIP
-		if *hdDiagnostic {
-			assetTrace.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem)
+		if err := runDesktop(ctx); err != nil {
+			panic(err)
 		}
-		row := rawTrace{step: steps, eip: before, registers: m.CPU.R, segments: m.CPU.Seg, flags: m.CPU.EFlags}
-		for offset := uint32(0); offset < 16; offset++ {
-			b, e := m.CPU.Bus.Read8(before + offset)
-			if e != nil {
-				break
-			}
-			row.bytes[row.size] = b
-			row.size++
+		desktopReceipt = ctx.Report
+		if steps < *budget && stop == "instruction_budget" {
+			stop = "desktop_closed"
 		}
-		traceRing[traceCount%len(traceRing)] = row
-		traceCount++
-		if err := m.CPU.Step(); err != nil {
-			stop = err.Error()
-			if m.Keyboard.Waiting {
-				stop = "waiting_for_keyboard"
-			}
-			break
-		}
-		steps++
-		if services.Exited {
-			stop = "dos_exit"
-			break
-		}
+	} else {
+		advance(*budget)
 	}
 	if err := disc.advanceAudio(uint64(steps)); err != nil {
 		panic(err)
@@ -349,7 +393,7 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
-	for _, name := range []string{"tools/startup-probe.go", "tools/cdrom.go", "tools/cdrom_test.go", "tools/cdda.go", "tools/cdda_test.go", "tools/hd-trace.go", "tools/hd-trace_test.go", "tools/video.go", "tools/video_test.go", "tools/vbe.go", "tools/vbe_test.go", "tools/keyboard.go", "tools/keyboard_test.go", "tools/dos_test.go", "tools/dosgolem.patch", "tools/dpmi-mcb.go", "tools/dpmi-mcb_test.go", "tools/cpu386-integration_test.go", "tools/run-probes.sh"} {
+	for _, name := range []string{"tools/startup-probe.go", "tools/cdrom.go", "tools/cdrom_test.go", "tools/cdda.go", "tools/cdda_test.go", "tools/hd-trace.go", "tools/hd-trace_test.go", "tools/hd-live.go", "tools/hd-live_test.go", "tools/hd-layer.go", "tools/hd-preview_test.go", "tools/presentation.go", "tools/presentation_test.go", "tools/desktop.go", "tools/run-desktop.sh", "tools/desktop.mod", "tools/desktop.sum", "tools/video.go", "tools/video_test.go", "tools/vbe.go", "tools/vbe_test.go", "tools/keyboard.go", "tools/keyboard_test.go", "tools/dos_test.go", "tools/dosgolem.patch", "tools/dpmi-mcb.go", "tools/dpmi-mcb_test.go", "tools/cpu386-integration_test.go", "tools/run-probes.sh"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)
@@ -375,6 +419,7 @@ func main() {
 		"real_mode_last":        services.DPMI.RealModeLast,
 		"cd_diagnostic_enabled": *cdDiagnostic, "cd_diagnostic_events": cdTrace, "cd_diagnostic_dropped": cdTraceDropped,
 		"hd_diagnostic_enabled": *hdDiagnostic, "hd_asset_trace": assetTrace,
+		"desktop":            desktopReceipt,
 		"mouse_calls":        mouseServices.Mouse.Calls,
 		"mouse_cursor":       cursor,
 		"mouse_input_events": inputEvents, "mouse_input_schedule": mouseEvents,

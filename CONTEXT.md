@@ -1,6 +1,6 @@
 # 德川家康目前狀態
 
-更新日期：2026-10-12。規則入口：[AGENTS.md](AGENTS.md)。歷程：[WORKLOG.md](WORKLOG.md)。待辦：[WORKLIST.md](WORKLIST.md)。證據：[RESEARCH-LOG.md](RESEARCH-LOG.md)。
+更新日期：2026-10-13。規則入口：[AGENTS.md](AGENTS.md)。歷程：[WORKLOG.md](WORKLOG.md)。待辦：[WORKLIST.md](WORKLIST.md)。證據：[RESEARCH-LOG.md](RESEARCH-LOG.md)。
 
 ## 唯一目前狀態表
 
@@ -12,9 +12,9 @@
 | 網站啟動契約 | 掛載 C: 工作目錄、D: CUE 光碟，再由 `PLAY.BAT` 呼叫 `DX5.EXE` | `original/game/.jsdos/dosbox.conf`、`PLAY.BAT` |
 | 執行檔格式 | 已證實為 MZ 內嵌 LE；LE header 檔案偏移 `0x2C90` | 原始 bytes；[LE 探針](workplace/leprobe/stdout.log) |
 | dosgolem 格式解析 | 完成；40 pages、2 objects、4,831 fixup records；relocation preview 成功 | `workplace/leprobe/stdout.log`，stderr 為空，exit 0 |
-| dosgolem 執行本作 | CDDA 邊界補齊後重新通過原版入口至首場戰場；750,000,000 步、390 筆普通滑鼠事件，只因預算結束，無未支援指令或 DPMI 服務。畫面與先前驗收相同 | [完整收據](workplace/startup-probe/latest.json)，SHA-256 `c6b33e27450f09a6668cf77d848a13774c8e2780f7d96126b266da773570e075`；[原生戰場畫面](workplace/startup-probe/frame-b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846.png) |
+| dosgolem 執行本作 | 桌面步進重構後通過原版入口至首場戰場；750,000,000 步、390 筆普通滑鼠事件，只因預算結束。全部 RAM、trace、原生畫面、輸入與 CD PCM 和先前完整驗收一致 | [最近完整收據](workplace/desktop-prototype/headless/startup-probe/latest.json)，SHA-256 `1eb3fe503bac5ecfb0261e0f94cf762a765895d5d4fb9b4a0e1e712ee210ac7c`；[原生戰場畫面](workplace/startup-probe/frame-b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846.png) |
 | 通用平台修正 | 在隔離副本實作 CPU 指令形式、DPMI 主機服務轉接與明確啟用的 MCB 配置池；支援標頭、重用、合併與縮放，保留外部預設配置器 | [dosgolem.patch](tools/dosgolem.patch)、[MCB](tools/dpmi-mcb.go)、[回歸](tools/dpmi-mcb_test.go) |
-| 平台回歸 | CPU386、machine、dosfile、研究入口四個套件通過；每次修改後重跑 | [platform-test.log](workplace/startup-probe/platform-test.log) |
+| 平台回歸 | CPU386、machine、dosfile、研究入口四個套件通過，包含新繪圖返回、備援與游標層測試 | [最近 platform-test.log](workplace/desktop-prototype/headless/startup-probe/platform-test.log) |
 | 原版時間等待 | DOS 時間與 VGA 回掃共用一微秒／成功指令的虛擬時間；原版自行校準等待迴圈 | 最新收據 `virtual_clock`；[回掃契約](RESEARCH-LOG.md)；未略過指令 |
 | 光碟 | AUDIO PREGAP 依 CUE 輸出靜音；有效起點的超長請求在 lead-out 停止，保存原始長度與實際終點。原版末軌表格重疊仍保留，沒有改 EXE 或表格 | [cdrom.go](tools/cdrom.go)、[cdda.go](tools/cdda.go)、[因果與契約](RESEARCH-LOG.md) |
 | CDDA 技術驗證 | 完成 PLAY／STOP／RESUME、狀態、自然結束、分塊、跨軌、PREGAP、極大長度與非法起點測試；十五條音軌全段與 BIN 一致。正常流程八次選曲無拒絕，輸出 19,818,728 個立體聲樣本框。桌面與人耳確認未完成 | [CDDA 測試](tools/cdda_test.go)、`workplace/startup-probe/cdda-boundary-test.log`、[獨立核對](workplace/startup-probe/cdda-verification.json)；79,274,912 bytes 逐段與 BIN 及時間公式相符 |
@@ -26,9 +26,10 @@
 | remake | 排除 | 使用者明確指定原版與 dosgolem 整合 |
 | 後續功能範圍 | CDDA 裝置與 PCM 已實作；桌面播放、繁中／簡中／英文／日文與可切換 HD 素材包待後續切片 | 已確認範圍與驗收見 [WORKLIST.md](WORKLIST.md) |
 | 後續使用介面 | 桌面版；瀏覽器排除 | 使用者明確表示「不考慮瀏覽器」；桌面作業系統與打包驗收清單尚未定案 |
-| HD 風格試作 | 使用者已選 B 戰國手繪風。第一張 A-0 家康肖像已重繪，並以已證實矩形製作離線畫面預覽。外框與文字保持原版；尚未接入桌面執行中切換 | [HD 預覽](workplace/hd-prototype/A-0-hd-preview-v1.png)、[單張素材](workplace/hd-prototype/A-0-hd-b-v1.png)、[完整提示詞](workplace/hd-prototype/A-0-hd-b-v1.prompt.txt)、`prototype.json`；內建 image_gen 生成，原圖及衍生圖只留本機 |
-| HD 素材定位 | DAT 201 筆資源包含 112 個 OZM，目錄欄位已連到讀寫端。唯讀觀測的開／關及完整路徑驗證通過，記錄 19 次載入、17 個來源，原版全部 RAM、畫面與 PCM 不變；正式 HD 圖層尚未實作 | [觀測](tools/hd-trace.go)、[完整核對](workplace/hd-prototype/normal-path-verification.json)；完整收據 SHA-256 `31f8b5b7e96d9007047feff195624ae0dd806692a1a9e62d019964e8bda8201e`，證據見 RESEARCH-LOG |
-| HD 首張素材驗證 | A-0.OZM 的四平面與 320×150 原圖全部 48,000 像素一致；IDA 繪圖使用端確認 `(160,50)`、來源偏移 0、無透明遮罩。離線原圖／HD／缺圖驗證通過，矩形外零變動 | [擷取收據](workplace/hd-prototype/asset-capture/A-0-extraction.json)、[預覽工具](tools/hd-preview.go)、`workplace/hd-prototype/preview-test.log`；缺圖與原圖 PNG SHA-256 相同 |
+| HD 風格試作 | B 戰國手繪風的第一張 A-0 家康肖像已接到桌面試作。F6 可在同一流程切換原圖／HD；外框與文字保持原版。只支援這張素材 | [真實視窗 HD 畫面](workplace/desktop-prototype/gui-hd-enabled.png)、[單張素材](workplace/hd-prototype/A-0-hd-b-v1.png)、[完整提示詞](workplace/hd-prototype/A-0-hd-b-v1.prompt.txt)；原圖及衍生圖只留本機 |
+| HD 素材定位 | DAT 201 筆資源包含 112 個 OZM，目錄欄位已連到讀寫端。唯讀載入觀測的完整路徑記錄 19 次載入、17 個來源；桌面再核對 A-0 的繪圖入口、五參數與堆疊返回。正式素材包格式仍未定案 | [載入觀測](tools/hd-trace.go)、[繪圖觀測](tools/hd-live.go)、[桌面核對](workplace/desktop-prototype/verification-summary.json)；原版全部 RAM、畫面與 PCM 不變 |
+| HD 首張素材驗證 | A-0 四平面、48,000 原圖像素與繪圖矩形已核對。真實視窗的原圖／HD／缺圖驗證通過，三次 F6 切換原版狀態不變。HD 與缺圖兩次 150,000,000 步的 RAM、CPU、原生畫面、PCM 都符合原無頭基準 | [擷取收據](workplace/hd-prototype/asset-capture/A-0-extraction.json)、[GUI 驗證](workplace/desktop-prototype/verification-hd.json)、[缺圖驗證](workplace/desktop-prototype/verification-missing.json) |
+| 桌面呈現與普通滑鼠 | Linux 容器內 Ebitengine 2.9.9 試作通過。正常入口與普通時間表走到首張敘事；視窗縮為 1000×700 後，實體 X11 左鍵正確對應原版 `(300,171)` 並開始新遊戲。支援 F6 切換、F7 暫停、F9 擷取、Esc 關窗；一般鍵盤、桌面音訊及其他 OS 未驗收 | [建置入口](tools/run-desktop.sh)、[普通滑鼠核對](workplace/desktop-prototype/verification-mouse.json)、[新遊戲開場](workplace/desktop-prototype/gui-mouse-after-click.png)；操作及限制見 AGENTS |
 | private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 已建立；#2 技術切片驗收後已關閉，HD 接續 #5，桌面與聽覺驗收留 #3 | [CDDA 完成記錄](https://github.com/wicanr2/tokugawa-dosgolem/issues/2#issuecomment-6121828738)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)、[HD #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5)；Issue 即時狀態直接查 GitHub |
 | Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試與文件；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
