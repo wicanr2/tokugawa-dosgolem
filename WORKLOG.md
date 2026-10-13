@@ -162,3 +162,4 @@
 - 步進重構後完整無頭回歸通過 750,000,000 步及 390 筆原樣普通輸入。RAM、trace、戰場畫面、CD 裝置與 PCM 均保持一致；CPU386、machine、dosfile、研究入口四套件及新觀測、備援、游標測試通過。最新收據與範圍見 CONTEXT、RESEARCH-LOG。
 - 本輪完成 Linux 容器內第一張肖像的桌面試作。正式素材包、其他人物／地形／介面、四語、一般鍵盤及桌面音訊仍待後續；原版與所有衍生圖僅留本機。最後文件、擁有權、Docker 清理及 GitHub 記錄接於下方。
 - 收尾：Python／shell 語法、文件連結與索引正對照、全部新整合工具雜湊、UID/GID、root-owned／異常 `.md` 目錄檢查通過。既有 CDDA 收據未變；三種 GUI 與完整無頭驗證的收據均已獨立核對。Docker 無本專案執行中或已停止容器，未建新 image；外部 dosgolem 仍只有原先的 `cmd/probe/main.go` 差異。儲存庫仍為 private，原版、RAM、PCM、圖像及二進位中間產物的 Git 排除生效。
+- 自製工具、依賴鎖定、測試與文件共 19 份提交 `7ca5c9a`，已推送 main。[桌面 #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3#issuecomment-6138108426) 與 [HD #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6138127948) 的進度留言已送出並讀回核對，兩筆均保持開啟。後續文字另澄清滑鼠驗證使用合成 X11 事件，沒有宣稱實體硬體驗收。
