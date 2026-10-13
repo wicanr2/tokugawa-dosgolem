@@ -922,3 +922,45 @@ HD 風格使用內建 image_gen 產生一次可丟棄比較圖，原始參考是
 | missing | `3d89dd63a8c3b2712397db47f0465fba4bd650c92e026c7578137d69891a8da4` | `6f3f86466e207340d6277f576bbb3fc42cf62dcbec5f35947c9abedadac74f7e` |
 
 驗收總表：`workplace/desktop-prototype/toolbar/verification-summary.json`，SHA-256 `1e329edf8c1ca1c05b4584e08fa45142c9e06967797b98dfb7c9a3670a738ff1`。內含實際二進位、驗證工具、參考原始碼、字型及截圖雜湊。整合輸入逐項與目前檔案核對通過。原有完整 CDDA 及 750,000,000 步無頭收據保留；本輪沒有重新宣稱後續戰鬥、存讀檔、四語、桌面音訊或其他平台完成。
+
+
+## 2026-10-13 劇情捲軸 HD 契約
+
+使用者指定捲軸介面也要 HD，沿用 B 戰國手繪風與可切換原版的既有決定。路由命中 GUI 還原、素材考古及文件職責；使用 reverse-engineer-retro-game-remake 的證據及 READY 閘門與 imagegen 技能，不建立 remake 引擎。
+
+已證實的來源：VISUAL.OZM 在 DAT 檔案偏移 2692940，長 81152 bytes，payload SHA-256 `d749447e8f9a19a172d7cc51e6bba5db2fc8017db5b4752844ee2ed22d87d4e9`。原版載入後四平面各 32000 bytes；普通輸入前綴 30 筆，固定 136769993 步擷取，停止在下一張 A-0 載入前。完整平面與載入返回的雜湊相同。
+
+IDA 9.4 的 `range-1bf73-1c550.json` 保留原名、bytes 與檔案偏移：`sub_1C084` 在線性 `0x1C084` 起，依 `dword_38C00`、`dword_38BF8`、`dword_38C04`、`dword_38BFC` 的順序，每平面複製 `0x1F40` 個 DWORD 至 VGA `0xA0000`，最後於線性 `0x1C10A` 返回。這是全畫面複製，與肖像的 `sub_1C1BC` 分開觀測。
+
+來源擷取比對固定原生 150M 畫面，在排除肖像 `(160,50,320,150)` 與文字安全區 `(80,268,510,114)` 後，149860 個背景像素與色號一致。捲軸取 `(0,250,640,150)`；本次 1009 個前景差異像素全部在文字安全區，界限 `(209,305)-(479,319)`。背景 PNG `scroll-original.png` SHA-256 `e8abcce3af8bc8bd4243ad27aecc0f8b07122813af23dd79d958650de04f6690`，完整底圖 `VISUAL-original.png` 為 `cd8d249121f87e9a86fa5d4aa7e51609a68ae3252864be46dcb9142cb3f1542b`。原圖、來源輸入與擷取收據都在 `workplace/hd-prototype/scroll/`。
+
+狀態：READY，範圍限劇情捲軸的可撤回桌面試作。
+
+- 維持 640×400 原版邏輯與原版文字、按鍵、選項位置。重繪紙張、捲邊及外框，文字與其他前景保留原生像素，不生成文字，不改翻頁或存檔。
+- 原版 VISUAL 載入與四平面 SHA 通過後，監看 `sub_1C084` 的自然返回與 ESP+4，這時才開啟背景資格。其他全畫面複製立即撤銷；肖像載入不撤銷已畫好的背景。不得改 RAM／VRAM 或跳過指令。
+- 呈現前核對捲軸 640×150 原背景。文字安全區外有任何變動就回原圖，以涵蓋動畫、遮擋與調色盤差異；安全區內與原底圖不同的像素逐點作前景，精確保留原色及位置。不得把動態前景當作已解析的文字語意。
+- F6 與原有功能列一起切換肖像及捲軸。素材分項缺圖回原圖；只要一項 HD 素材有效即可啟用，記錄各項模式。原版模式完全保持既有輸出；游標仍在最後合成。
+- 生成素材只作美術，不能反推正式幾何。保存完整提示詞及內建工具產物，原版及衍生圖都只留本機。原版上方紅框不列為本切片完成；四語與字型重繪另行實作。
+- 驗收：來源／平面與背景來源、矩形外不變、前景精確保留、缺圖／透明／比例錯誤備援、不同原版文字頁、真實視窗 F6 與功能列操作，以及 150M 原版 RAM、trace、畫面與 PCM 相同。其他捲軸型別須另有來源證據才接入。
+
+### 劇情捲軸實作與驗收
+
+狀態：CONFORMED，限已查證的 VISUAL 劇情捲軸與 Linux 桌面試作。
+
+- 原版觀測：`{'kind': 'scroll_draw_enter', 'linear_eip': 114820, 'logical_rect': [0, 250, 640, 150], 'return_linear': 98866, 'stack_linear': 378244, 'step': 136770000}`。
+- 原版觀測：`{'eligible': True, 'kind': 'scroll_draw_return', 'linear_eip': 98866, 'step': 136770139}`。
+
+內建 image_gen.imagegen 以完整 VISUAL 底圖及既有 B 肖像作參考生成 1586×992 畫布；只取像素 (0,620,1586,372) 為捲軸。上方生成紅框未接入。素材 scroll-hd-b-v1.png SHA-256 `b08c787b1431c2e890bf0dd33779a0a9b1551ebe531ec829450566404be5b488`；完整提示詞 SHA-256 `28b81238fdd2fcadc88a6aefad0b565ac1ad9b0e232b36e7136f6f19632b2a08`。來源與裁切由 `workplace/hd-prototype/scroll/scroll-art.json` 保存，全部原圖及衍生圖只留本機。
+
+四套件、新背景自然返回、其他全畫面繪圖撤銷、矩形外與前景保留、來源不符及透明／比例／缺圖備援測試通過。真實 X11 視窗的兩頁原文，原圖／HD／恢復後逐像素符合呈現 PNG。第一頁精確保留 24324 個呈現前景像素，第二頁 4036 個；文字不是由 OCR 或生成圖重建。紙張與外框改變像素分別為 359676、379964，全部在捲軸矩形內。
+
+| 模式 | 原生收據 SHA-256 | 核對 SHA-256 |
+|---|---|---|
+| scroll | `aac286718f3485b160a65779e2cdc9ebeabfe7b9cf7452befc36d85fd5368459` | `741ea13e84d574dd3e282a3c980db1104f27ea7d7ce3c68a847bba6da4e224f0` |
+| scroll-missing | `05c7b3c58bb83aadb09b664f0f1e038725f03dde8b8048c8df7475b0474bb2ea` | `bd5a552509d050bec14a345586ab1f42c3a04b22bef72a70abb5034c73ea6462` |
+| scroll-only | `5714fdcf2de3adc79089b15f61a941b6a533463bdbf4b2f988e5dd3a06dae49e` | `eed372bd920913c90765431c03f346513c74f524884075d502a9ff0e7e37dcad` |
+| windowbar-hd | `a64e6783f757c1e4bd73f5a60b7a9b3673696c4477ea367c8a06ad2db11b0dfa` | `c3d5c93c52d224d799ff1e42d5fc2530ab50d41bdb5f7658e94ac72d892a305e` |
+
+各模式均自然執行至 150,000,000 步；全部原版 RAM、trace、原生畫面、普通輸入與 CD PCM 符合原基準，RAM SHA-256 `0d9123e52923ba852b125ea04918e1007138a33e0a8e4d856b078865cb33562f`。缺捲軸圖時只回原捲軸，肖像仍 HD；只有捲軸圖時仍可 HD，肖像回原圖。頂端列能切換兩項素材，顯示與收起手勢的原版隔離、視窗高度及同狀態核對保持通過。
+
+驗收總表 `workplace/hd-prototype/scroll/verification-summary.json` SHA-256 `00bedb656362f6ff567015dbbec89450adbc8ed636bda3cb49508d5bd5c8986f`，記錄目前二進位、工具、素材、來源、截圖及各模式雜湊。外部 dosgolem HEAD 已前進，固定 commit 的獨立副本唯讀掛載，沒有放寬 HEAD／來源檢查或修改外部工作樹。既有完整 CDDA 及 750M 收據保持原樣。本輪不擴張為全部介面、完整 HD 包、字型重繪、四語或音訊完成。

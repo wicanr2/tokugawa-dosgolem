@@ -10,12 +10,14 @@ import time
 
 assert Path("/.dockerenv").exists() and os.getuid() == 1000
 parser = argparse.ArgumentParser()
-parser.add_argument("--mode", choices=["hd", "missing", "mouse"], default="hd")
+parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only"], default="hd")
 args = parser.parse_args()
 root = Path("/output")
 assert root.stat().st_uid == os.getuid()
 env = dict(os.environ, DISPLAY=":98", LIBGL_ALWAYS_SOFTWARE="1", LP_NUM_THREADS="2")
 children = []
+scroll_checks = []
+is_scroll = args.mode.startswith("scroll")
 
 
 def run(*command, **kwargs):
@@ -73,6 +75,36 @@ def capture(label):
             "presented": event, "geometry": g, "window_pixels_equal": a == b}
 
 
+def check_scroll_pair(enhanced, original):
+    a, b = decoded(Path(enhanced["actual_png"])), decoded(Path(original["actual_png"]))
+    source = decoded(Path("/project/workplace/hd-prototype/scroll/scroll-original.png"))
+    assert len(a) == len(b) == 1280*800*4 and len(source) == 640*150*4
+    assert enhanced["presented"]["proof"] == original["presented"]["proof"]
+    foreground = differences = 0
+    for y in range(800):
+        for x in range(1280):
+            i = (y*1280+x)*4
+            p, q = a[i:i+4], b[i:i+4]
+            portrait = 320 <= x < 960 and 100 <= y < 400
+            if y < 500 and (not portrait or args.mode == "scroll-only"):
+                assert p == q, ("outside HD region", x, y)
+            if y >= 500:
+                j = (((y-500)//2)*640+x//2)*4
+                if q != source[j:j+4]:
+                    assert p == q, ("original foreground changed", x, y)
+                    foreground += 1
+                if p != q:
+                    differences += 1
+    assert foreground > 0
+    if args.mode == "scroll-missing":
+        assert differences == 0, "missing scroll must keep original while portrait stays HD"
+    else:
+        assert differences > 0
+    scroll_checks.append({"step": enhanced["presented"]["step"], "foreground_output_pixels": foreground,
+                          "changed_scroll_pixels": differences, "foreground_unchanged": True,
+                          "outside_regions_unchanged": True})
+
+
 try:
     xvfb_log = (root / f"xvfb-{args.mode}.log").open("wb")
     xvfb = subprocess.Popen(["Xvfb", ":98", "-screen", "0", "1600x1000x24", "-nolisten", "tcp", "-ac"],
@@ -84,13 +116,17 @@ try:
         time.sleep(0.05)
     for name in ("desktop-status.json", "desktop-status.pending"):
         (root / name).unlink(missing_ok=True)
-    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-desktop-speed", "20",
+    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-desktop-speed", "5" if is_scroll else "20",
                "-steps", "150000000", "-hd-trace"]
     if args.mode != "mouse":
         source = Path("/project/workplace/cd-trace/first-play-input.json")
         assert hashlib.sha256(source.read_bytes()).hexdigest() == "cc23a9dc6353d066e12a1097224c1c8472940ade33365f880d01aff5ba6fe736"
         command += ["-mouse-file", str(source)]
     if args.mode == "missing":
+        command += ["-hd-asset", "/output/nonexistent-hd-asset.png", "-hd-scroll-asset", "/output/nonexistent-scroll.png"]
+    if args.mode == "scroll-missing":
+        command += ["-hd-scroll-asset", "/output/nonexistent-scroll.png"]
+    if args.mode == "scroll-only":
         command += ["-hd-asset", "/output/nonexistent-hd-asset.png"]
     stdout_path = root / f"desktop-{args.mode}.json"
     stdout = stdout_path.open("wb")
@@ -101,7 +137,7 @@ try:
     window = run("xdotool", "search", "--name", "德川家康", stdout=subprocess.PIPE).stdout.decode().splitlines()[0]
     run("xdotool", "windowfocus", "--sync", window)
     pictures = []
-    if args.mode in ("hd", "missing"):
+    if args.mode != "mouse":
         wait_for(lambda s: s.get("eligible") and s.get("step", 0) >= 140_000_000)
         key("F6")
         wait_for(lambda s: s.get("enabled"), 10)
@@ -115,12 +151,30 @@ try:
         wait_for(lambda s: s.get("enabled"), 10)
         pictures.append(capture("restored"))
         assert pictures[0]["presented"]["frame"]["png_sha256"] == pictures[2]["presented"]["frame"]["png_sha256"]
-        if args.mode == "hd":
+        if args.mode != "missing":
             assert pictures[0]["presented"]["frame"]["mode"] == "hd"
             assert pictures[0]["presented"]["frame"]["png_sha256"] != pictures[1]["presented"]["frame"]["png_sha256"]
         else:
             assert pictures[0]["presented"]["frame"]["mode"] == "fallback_missing_asset"
             assert pictures[0]["presented"]["frame"]["png_sha256"] == pictures[1]["presented"]["frame"]["png_sha256"]
+        if is_scroll:
+            assert status()["scroll_eligible"], status()
+            expected = "fallback_missing_asset" if args.mode == "scroll-missing" else "hd"
+            assert status()["scroll_mode"] == expected, status()
+            check_scroll_pair(pictures[0], pictures[1])
+            key("F7")
+            wait_for(lambda s: s.get("step", 0) >= 146_000_000)
+            key("F7")
+            wait_for(lambda s: s.get("paused"), 10)
+            assert status()["scroll_mode"] == expected, status()
+            pictures.append(capture("second-enabled"))
+            key("F6")
+            pictures.append(capture("second-original"))
+            key("F6")
+            pictures.append(capture("second-restored"))
+            assert pictures[3]["presented"]["frame"]["png_sha256"] == pictures[5]["presented"]["frame"]["png_sha256"]
+            check_scroll_pair(pictures[3], pictures[4])
+            assert scroll_checks[0]["foreground_output_pixels"] != scroll_checks[1]["foreground_output_pixels"], "must exercise different original text pages"
         key("F7")
     else:
         wait_for(lambda s: s.get("step", 0) >= 85_000_000)
@@ -155,7 +209,7 @@ try:
         assert all(receipt[k] == baseline[k] for k in fields), [k for k in fields if receipt[k] != baseline[k]]
         assert hashlib.sha256((root / "startup-memory.bin").read_bytes()).hexdigest() == "0d9123e52923ba852b125ea04918e1007138a33e0a8e4d856b078865cb33562f"
         toggles = [e for e in receipt["desktop"]["events"] if e["kind"] == "toggle"]
-        assert len(toggles) == 3 and all(e["guest_unchanged"] for e in toggles)
+        assert len(toggles) == (5 if is_scroll else 3) and all(e["guest_unchanged"] for e in toggles)
         assert any(not e["paused"] for e in toggles)
         assert receipt["desktop"]["hd_observation"]["draw_completed"]
     else:
@@ -166,6 +220,7 @@ try:
         assert pictures[0]["presented"]["frame"]["png_sha256"] != pictures[1]["presented"]["frame"]["png_sha256"]
     result = {"mode": args.mode, "verified": True, "tool": "Xvfb + xdotool + ffmpeg; actual Ebitengine window",
               "receipt_sha256": hashlib.sha256(stdout_path.read_bytes()).hexdigest(), "pictures": pictures,
+              "scroll_checks": scroll_checks,
               "scope": "Linux container prototype; no physical audio or other OS verification"}
     (root / f"verification-{args.mode}.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(f"desktop {args.mode}: verified", flush=True)

@@ -30,9 +30,15 @@
 | [tools/hd-extract.go](tools/hd-extract.go) | 從正常路徑 RAM 擷取 A-0.OZM，核對四平面雜湊與原生畫面矩形，輸出本機 PNG 及收據；不是正式素材包格式 |
 | [tools/hd-preview.go](tools/hd-preview.go)、[tools/hd-preview_test.go](tools/hd-preview_test.go) | 單張 A-0 的離線原圖／HD／缺圖預覽與範圍保護測試；不接管遊戲或代表桌面執行中切換 |
 | [tools/hd-layer.go](tools/hd-layer.go) | 離線預覽與桌面試作共用的單張素材呈現與來源像素保護 |
-| [tools/hd-live.go](tools/hd-live.go)、[tools/hd-live_test.go](tools/hd-live_test.go) | 只讀原版素材與矩形繪製入口／返回，限制 A-0 的桌面替換資格 |
+| [tools/hd-live.go](tools/hd-live.go)、[tools/hd-live_test.go](tools/hd-live_test.go) | 只讀原版素材、A-0 矩形與 VISUAL 全畫面繪製入口／返回，限制桌面替換資格 |
+| `workplace/hd-prototype/scroll/dosgolem-base/` | 固定 a9714eb 的獨立來源副本，執行時唯讀；外部 dosgolem 前進時保留既有驗證基準 |
 | [tools/presentation.go](tools/presentation.go)、[tools/presentation_test.go](tools/presentation_test.go) | 桌面試作的步進、畫面、普通滑鼠及原版狀態核對介面與游標層測試；預設無頭 |
 | [tools/desktop.go](tools/desktop.go) | 只在 desktop 建置標籤啟用的 Ebitengine 視窗、HD 開關與證據擷取 |
+| [tools/hd-scroll-extract.go](tools/hd-scroll-extract.go) | 固定正常路徑的 VISUAL.OZM 原始平面、捲軸底圖與文字區核對 |
+| [tools/hd-scroll-prepare.go](tools/hd-scroll-prepare.go) | 從生成的完整畫布取出既定捲軸區，保存產物及提示詞雜湊 |
+| [tools/hd-scroll.go](tools/hd-scroll.go)、[tools/hd-scroll_test.go](tools/hd-scroll_test.go) | 捲軸 HD 呈現、原版前景保留、來源及缺圖備援 |
+| [tools/verify-hd-scroll.py](tools/verify-hd-scroll.py) | 真實視窗的捲軸原圖／HD 切換、文字與原版狀態核對 |
+| `workplace/hd-prototype/scroll/` | 捲軸原圖擷取、HD 素材、完整提示詞、來源與隔離桌面驗證；只留本機 |
 | [tools/windowbar.go](tools/windowbar.go)、[tools/windowbar_test.go](tools/windowbar_test.go) | 頂端隱藏列的狀態、幾何、點陣字型與純畫面測試 |
 | [tools/desktop-windowbar.go](tools/desktop-windowbar.go) | 桌面功能列輸入、視窗高度與原版輸入隔離 |
 | [tools/toolbar-font.hex.gz](tools/toolbar-font.hex.gz)、[tools/LICENSE-toolbar-font.txt](tools/LICENSE-toolbar-font.txt) | 參考專案的完整 Unifont 點陣字型與原授權全文；執行時讀取，不使用原版遊戲字模 |
@@ -133,6 +139,23 @@ CD 配置的輔助除錯使用 [tools/aux-cd-trace.py](tools/aux-cd-trace.py)，
 
 GitHub 建立工具另依使用者明確授權使用主機 `/home/anr2/.local/bin/gh`。在主機終端執行 `sh tools/setup-github.sh`，先由 Docker 從 WORKLIST 擷取本文，再核對主機登入、建立或沿用 private repository，以及建立缺少的六筆 Issues。重跑前讀取所有頁的遠端現況，同題 Issue 不重建，既有 Issue 不覆寫。工具不提交遊戲資料，也不初始化本機 `.git`。僅預覽待送出本文時執行 `sh tools/setup-github.sh --prepare`。遠端建立尚未實測，最新驗證狀態以 CONTEXT 為準。
 
+探針固定 dosgolem commit `a9714ebdab2ad6b529f81225472680f2b11f2842`。外部工作樹 HEAD 已前進，捲軸試作改用 `workplace/hd-prototype/scroll/dosgolem-base/` 的獨立副本，沒有回退或修改 `/home/anr2/cht/dosgolem`。後文命令已將 `/dosgolem` 掛載來源固定為 `$PWD/workplace/hd-prototype/scroll/dosgolem-base`。副本已存在就核對 HEAD 並沿用，不重新覆寫。
+
+只在副本不存在且輸出父目錄已建立時，用 Docker 重建固定來源：
+
+```sh
+test -d /home/anr2/cht/dosgolem/.git
+test -d workplace/hd-prototype/scroll
+test ! -e workplace/hd-prototype/scroll/dosgolem-base
+timeout 60s docker run --rm --name tokugawa-pinned-source --network none \
+  --memory 1g --cpus 2 --pids-limit 64 --user "$(id -u):$(id -g)" \
+  --mount type=bind,source=/home/anr2/cht/dosgolem,target=/current,readonly \
+  --mount "type=bind,source=$PWD/workplace/hd-prototype/scroll,target=/output" \
+  --env HOME=/tmp \
+  golang@sha256:1a6d4452c65dea36aac2e2d606b01b4a029ec90cc1ae53890540ce6173ea77ac \
+  sh -c 'git clone --quiet --no-hardlinks --no-checkout /current /output/dosgolem-base && git -C /output/dosgolem-base checkout --quiet --detach a9714ebdab2ad6b529f81225472680f2b11f2842'
+```
+
 來源完整性核對：
 
 ```sh
@@ -148,11 +171,11 @@ timeout 90s docker run --rm --name tokugawa-verify --network none \
 dosgolem 的唯讀 LE 解析與 relocation preview：
 
 ```sh
-test -d /home/anr2/cht/dosgolem && test -f original/game/DX5.EXE
+test -d workplace/hd-prototype/scroll/dosgolem-base && test -f original/game/DX5.EXE
 mkdir -p workplace/leprobe
 timeout 180s docker run --rm --name tokugawa-leprobe --network none \
   --memory 2g --cpus 2 --pids-limit 128 --user "$(id -u):$(id -g)" \
-  --mount type=bind,source=/home/anr2/cht/dosgolem,target=/dosgolem,readonly \
+  --mount "type=bind,source=$PWD/workplace/hd-prototype/scroll/dosgolem-base,target=/dosgolem,readonly" \
   --mount "type=bind,source=$PWD/original/game,target=/original,readonly" \
   --mount "type=bind,source=$PWD/workplace/leprobe,target=/output" \
   --env HOME=/tmp --env GOCACHE=/output/gocache --env GOMODCACHE=/output/gomodcache \
@@ -167,11 +190,11 @@ timeout 180s docker run --rm --name tokugawa-leprobe --network none \
 原版自然啟動研究探針與平台回歸：
 
 ```sh
-test -d /home/anr2/cht/dosgolem && test -f original/game/DX5.EXE
+test -d workplace/hd-prototype/scroll/dosgolem-base && test -f original/game/DX5.EXE
 test -d workplace && test -f tools/run-probes.sh
 timeout 630s docker run --rm --name tokugawa-repro-probe --network none \
   --memory 2g --cpus 2 --pids-limit 128 --user "$(id -u):$(id -g)" \
-  --mount type=bind,source=/home/anr2/cht/dosgolem,target=/dosgolem,readonly \
+  --mount "type=bind,source=$PWD/workplace/hd-prototype/scroll/dosgolem-base,target=/dosgolem,readonly" \
   --mount "type=bind,source=$PWD,target=/project,readonly" \
   --mount "type=bind,source=$PWD/original/game,target=/original,readonly" \
   --mount "type=bind,source=$PWD/workplace,target=/output" \
@@ -217,7 +240,7 @@ test -d /home/anr2/cht/dosgolem && test -d original/game
 test -d workplace/desktop-prototype && test -d workplace/leprobe/gocache
 timeout 180s docker run --rm --name tokugawa-desktop-build --network none \
   --memory 2g --cpus 2 --pids-limit 128 --user "$(id -u):$(id -g)" \
-  --mount type=bind,source=/home/anr2/cht/dosgolem,target=/dosgolem,readonly \
+  --mount "type=bind,source=$PWD/workplace/hd-prototype/scroll/dosgolem-base,target=/dosgolem,readonly" \
   --mount "type=bind,source=$PWD,target=/project,readonly" \
   --mount "type=bind,source=$PWD/original/game,target=/original,readonly" \
   --mount "type=bind,source=$PWD/workplace/desktop-prototype,target=/output" \
@@ -243,9 +266,9 @@ timeout 300s docker run --rm --name tokugawa-desktop-gui --network none \
   timeout -k 5s 280s python3 /project/tools/verify-desktop.py --mode hd
 ```
 
-桌面程式只有使用 `-desktop` 才開視窗，預設仍為無頭。F6 切換原圖／HD，F7 暫停試作步進，F9 擷取強化畫面。滑鼠移到頂端 6 個原版邏輯像素會展開功能列，移開自動收起。Esc 固定／收起；叉號只收起，Shift+Esc 或工具選單可關窗並輸出原生收據。功能列顯示時原版停止步進，畫面下移並增加視窗高度；收起後滑鼠按鍵全部放開才恢復步進與滑鼠轉送。Tab 切換欄位，方向鍵選取，Enter 展開／套用。顯示提供原版及單張 HD，缺圖時 HD 列停用；執行提供繼續／暫停，工具提供截圖／離開。
+桌面程式只有使用 `-desktop` 才開視窗，預設仍為無頭。F6 切換原圖／HD，F7 暫停試作步進，F9 擷取強化畫面。滑鼠移到頂端 6 個原版邏輯像素會展開功能列，移開自動收起。Esc 固定／收起；叉號只收起，Shift+Esc 或工具選單可關窗並輸出原生收據。功能列顯示時原版停止步進，畫面下移並增加視窗高度；收起後滑鼠按鍵全部放開才恢復步進與滑鼠轉送。Tab 切換欄位，方向鍵選取，Enter 展開／套用。顯示提供原版及 HD 圖像，肖像與捲軸分項缺圖回原圖；兩項素材都無效時 HD 列停用；執行提供繼續／暫停，工具提供截圖／離開。
 
-`-hd-source`／`-hd-asset` 可指定本機原圖與 HD 圖；原圖固定雜湊，缺圖備援。`-desktop-speed` 預設 1，驗證用 20 不改虛擬時間公式。普通滑鼠只在沒有輸入時間表時啟用；一般鍵盤轉送與桌面音訊尚未接入。四語及音訊設定待功能接妥再加入。二進位留在 `workplace/` 作中間產物，不能稱為正式平台交付。
+`-hd-source`／`-hd-asset` 指定肖像原圖及 HD 圖；`-hd-scroll-source`／`-hd-scroll-asset` 指定捲軸原圖及 HD 圖。兩份原圖各自固定雜湊，缺圖分項備援。捲軸的紙張、捲邊與外框換成 HD，文字前景維持原版像素與位置。`-desktop-speed` 預設 1，驗證用 20 不改虛擬時間公式。普通滑鼠只在沒有輸入時間表時啟用；一般鍵盤轉送與桌面音訊尚未接入。四語及音訊設定待功能接妥再加入。二進位留在 `workplace/` 作中間產物，不能稱為正式平台交付。
 
 功能列的獨立驗證沿用上述 GUI image 與建置命令，將可寫掛載改成已存在的 `workplace/desktop-prototype/toolbar/`，保留先前 GUI 收據。建置後執行下列命令；`--mode hd` 可換為 `mouse` 或 `missing`。腳本輸出 `windowbar-<mode>.json`、`verification-windowbar-<mode>.json` 及真實視窗 PNG，並清理所有子程序。
 
@@ -260,6 +283,23 @@ timeout 300s docker run --rm --name tokugawa-toolbar-gui --network none \
   --env HOME=/tmp --env GOMAXPROCS=2 \
   sha256:baa20f69bccc7dc8ac7a4bbcf93fbcb32019505bf1c31c1312f85aa873bbb9d4 \
   timeout -k 5s 280s python3 /project/tools/verify-windowbar.py --mode hd
+```
+
+捲軸的原始資料與生成素材放在 `workplace/hd-prototype/scroll/`，桌面驗證另放其 `desktop/` 子目錄。來源擷取依 RESEARCH-LOG 的「劇情捲軸 HD 契約」：30 筆普通輸入前綴、136769993 步，最後載入 VISUAL.OZM；擷取由 `go run /project/tools/hd-scroll-extract.go` 完成。生成完整畫布及提示詞保存後，由 `go run /project/tools/hd-scroll-prepare.go` 取出既定下方捲軸區，兩工具都只在固定 Go Docker 中執行，拒絕覆寫既有 PNG。工具路徑、輸入與輸出雜湊見該目錄的 `scroll-extraction.json` 及 `scroll-art.json`。
+
+捲軸桌面建置沿用 `tools/run-desktop.sh`，以固定副本掛 `/dosgolem`、`scroll/desktop/` 掛 `/output`。確認素材與二進位已存在後執行兩頁劇情的真實視窗驗證；`--mode hd` 可換為 `missing` 或 `only`，分別測缺捲軸圖及只有捲軸 HD。驗證用虛擬速度 5，以便在第二頁擷取；不改原版時間公式。
+
+```sh
+test -f workplace/hd-prototype/scroll/desktop/tokugawa-desktop-prototype
+test -f tools/verify-hd-scroll.py && test -d original/game
+timeout 300s docker run --rm --name tokugawa-scroll-gui --network none \
+  --memory 2g --cpus 2 --pids-limit 128 --user "$(id -u):$(id -g)" \
+  --mount "type=bind,source=$PWD,target=/project,readonly" \
+  --mount "type=bind,source=$PWD/original/game,target=/original,readonly" \
+  --mount "type=bind,source=$PWD/workplace/hd-prototype/scroll/desktop,target=/output" \
+  --env HOME=/tmp --env GOMAXPROCS=2 \
+  sha256:baa20f69bccc7dc8ac7a4bbcf93fbcb32019505bf1c31c1312f85aa873bbb9d4 \
+  timeout -k 5s 280s python3 /project/tools/verify-hd-scroll.py --mode hd
 ```
 
 要重跑保存的正常玩家路徑，在同一 Docker 命令最後使用 `tools/run-probes.sh -steps 750000000 -mouse-file /project/tools/player-path.json`。`-mouse-file` 與 `-mouse` 擇一，輸入雜湊記入 `mouse_input_sha256`。路徑的驗證進度以 CONTEXT 為準，不以輸入檔存在宣稱通過。
@@ -295,6 +335,6 @@ timeout 240s docker run --rm --name tokugawa-download --network bridge \
 
 目前授權範圍是下載 jsdos、建立 private GitHub repository 與 Issues，並將原版遊戲整合到 dosgolem 執行。使用者指定先建立 repo、登記 Issues，再開工。使用者明確表示不是 remake。可自主補齊本作所需的平台能力與測試；玩法修改、版本切換、公開發行或授權變更需另有明確任務。
 
-後續規劃已確認桌面版、繁中／簡中／英文／日文，以及可切換的 HD 素材包。瀏覽器排除。現行決定見 [CONTEXT.md](CONTEXT.md)，階段與驗收草案見 [WORKLIST.md](WORKLIST.md)。原版繼續負責玩法與存檔，譯文與 HD 圖層在桌面呈現。美術風格已選 B 戰國手繪風，首張肖像及參考 `/home/anr2/cht/softworld_san` 的頂端隱藏列已接入 Linux 桌面試作；完整擷取介面與素材包格式仍待定案。
+後續規劃已確認桌面版、繁中／簡中／英文／日文，以及可切換的 HD 素材包。瀏覽器排除。現行決定見 [CONTEXT.md](CONTEXT.md)，階段與驗收草案見 [WORKLIST.md](WORKLIST.md)。原版繼續負責玩法與存檔，譯文與 HD 圖層在桌面呈現。美術風格已選 B 戰國手繪風，首張肖像、劇情捲軸及參考 `/home/anr2/cht/softworld_san` 的頂端隱藏列已接入 Linux 桌面試作；完整擷取介面與素材包格式仍待定案。
 
 原版 ZIP、EXE、DAT、光碟映像、音軌與原包附帶的補丁只留本機，不加入 Git、GitHub Release 或公開雲端。`.gitignore` 已排除 `original/` 與 `workplace/`。自製的平台修正、測試與文件可加入已授權的 private repository，包含 `tools/dosgolem.patch`。未確認散布權前不製作公開資料包。

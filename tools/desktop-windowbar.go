@@ -36,11 +36,15 @@ func (g *desktopGame) selectedBar() [3]int {
 	return selected
 }
 
+func (g *desktopGame) hdAvailable() bool {
+	return (g.asset != nil && g.source != nil) || (g.scroll != nil && g.scroll.Reason == "ready")
+}
+
 func (g *desktopGame) chooseBar(field, row int) error {
 	if field < 0 || field > 2 || row < 0 || row >= len(barLists[field]) {
 		return nil
 	}
-	if field == 0 && row == 1 && (g.asset == nil || g.source == nil) {
+	if field == 0 && row == 1 && !g.hdAvailable() {
 		return nil
 	}
 	before := g.c.Proof()

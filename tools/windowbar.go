@@ -20,7 +20,7 @@ var barFields = [4]image.Rectangle{
 	image.Rect(376, 4, 592, 28), image.Rect(600, 4, 632, 28),
 }
 var barLabels = [3]string{"顯示", "執行", "工具"}
-var barLists = [3][]string{{"原版", "HD 肖像"}, {"繼續", "暫停"}, {"擷取畫面 F9", "離開程式"}}
+var barLists = [3][]string{{"原版", "HD 圖像"}, {"繼續", "暫停"}, {"擷取畫面 F9", "離開程式"}}
 var barText = "顯示執行工具原版肖像繼續暫停擷取畫面離開程式缺圖設定×▾✓"
 
 type windowBar struct {
