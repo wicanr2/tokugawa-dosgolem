@@ -207,3 +207,6 @@
 - 使用者新增明確授權，要求將生成圖片保存於私人 GitHub repo。建立 assets/hd-b 作可版控的素材來源；既有 workplace 用於本機研究且排除 Git，tools 保存程式，兩者不承擔圖像來源歸檔。
 - 保存 139 張 PNG、54 份完整提示詞、頭像裁切紀錄與索引；逐檔 SHA-256、大小及清單核對通過。GitHub repo 再確認為 private。原版資料與擷取原圖未加入來源清單。
 - 新的保存工具及入口已掛入 AGENTS、README，CONTEXT 與 WORKLIST 同步新授權及框架狀態。正式全遊戲 HD 與三平台打包仍在進行。
+- 提交 `2117da5e28faa41a6300e73342d5cb31713321cc` 已推送 private main。GitHub API 讀回的 196 個素材檔與本機逐檔 Git blob 雜湊、大小及完整清單相同，包含 139 張 PNG、54 份完整提示詞。遠端核對收據位於 `workplace/github-setup/hd-art-remote-verification.json`；素材入口為 https://github.com/wicanr2/tokugawa-dosgolem/tree/main/assets/hd-b 。
+- 保存工具的 `--verify-only` 再次通過，原版資料與本機研究輸出維持排除。Docker 無本專案殘留容器，未建新 image。
+- 已更新 [HD Issue #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6163315211)，記錄私人素材歸檔、上方框架驗證及尚未完成的範圍，Issue 保持開啟。
