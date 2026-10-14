@@ -261,3 +261,5 @@
 - 四套件通過，leprobe 26.413s。HD／缺圖 GUI 各自然跑完 750M／390 筆普通輸入，各三次開關不改原版。真實視窗六種地面、65 矩形、7067 個原生前景像素通過，缺圖零變動。離線 64 格與桌面 65 格的差異以原始索引及實際游標 AND／XOR 獨立核對。總表 SHA-256 78591ff9cf7a2d4e1682581cd2afe5950b8d514694cd8d3d1dd0e9ba6ddb78a9。
 - 使用內建 image_gen.imagegen 製作樹木、石塊、藍／紅城郭四張透明草稿，檢視後保存原始 PNG、alpha、提示詞及生成記錄，未接入遊戲。保存腳本原先假設 1280 尺寸，檢查實際 1254×1254 後改核對尺寸界限，不改生成 bytes。本輪素材總量 188 PNG／99 提示詞。
 - 舊 terrain/trace、terrain/runtime 與劇情收據保留原版本；新呈現與原版資料、存檔、規則隔離。地面重疊留下的碎片、HD 物件／單位、其他美術與正式三平台封包仍待後續。下一切片為 objects-000 樹木的透明 HD 呈現。最後素材、文件索引、擁有權、容器與遠端核對接續記錄。
+
+提交 `888be53953cb4f1225650cb941c5f4a6fa7a30e7` 已推送 private main，主機 gh 重核遠端 SHA 一致。297 個圖片、提示詞與索引檔逐項符合遠端 Git blob；original/、workplace/ 未入遠端。Issue #5 保持 OPEN，進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6168468573 。素材核對為 188 PNG／99 提示詞、296187457 indexed bytes。語法、文件索引正對照、完整來源綁定、Git whitespace、UID/GID 與 root-owned／誤建 .md 目錄檢查通過，所有 tokugawa 容器已自動刪除，沿用原 image。
