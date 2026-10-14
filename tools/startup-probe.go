@@ -426,7 +426,7 @@ func main() {
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
-	for _, name := range []string{"tools/hd-window.go", "tools/hd-window_test.go", "tools/hd-story_test.go", "tools/hd-terrain-sprite-profiles.go"} {
+	for _, name := range []string{"tools/hd-window.go", "tools/hd-window_test.go", "tools/hd-story_test.go", "tools/hd-terrain-sprite-profiles.go", "tools/hd-terrain-sprites.go", "tools/hd-terrain-sprites_test.go", "tools/hd-terrain-tree-profile.go"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)

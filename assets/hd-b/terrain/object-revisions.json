@@ -1,0 +1,33 @@
+{
+  "records": [
+    {
+      "tool": "built-in image_gen.imagegen",
+      "asset": "object-000-hd-b-v2.png",
+      "supersedes": "object-000-hd-b-v1.png",
+      "reason": "preserve separate lower trunks and rear brown segment seen in magnified original; v1 incorrectly drew a single tree",
+      "asset_sha256": "f6885ec6d1d557973fdb304fca537e095eec4c65e37439340ef2c39da2d94cd2",
+      "prompt_sha256": "42d75cd28f4beef3643747021c88bd7364d712fcf71ac9462207be6f67b0752b",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha8_bbox": [
+        10,
+        0,
+        1244,
+        1242
+      ],
+      "review_crop": [
+        7,
+        0,
+        1247,
+        1245
+      ],
+      "status": "reviewed composition correction; not runtime verified"
+    }
+  ]
+}

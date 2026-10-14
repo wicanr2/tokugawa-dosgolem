@@ -10,7 +10,7 @@ import time
 
 assert Path("/.dockerenv").exists() and os.getuid() == 1000
 parser = argparse.ArgumentParser()
-parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only", "window", "window-missing", "window-only", "window-modal", "terrain", "terrain-missing"], default="hd")
+parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only", "window", "window-missing", "window-only", "window-modal", "terrain", "terrain-missing", "trees", "trees-only", "trees-missing"], default="hd")
 parser.add_argument("--include-council", action="store_true", help="於既有普通輸入路徑另抽測 GUNGI.OZM")
 args = parser.parse_args()
 root = Path("/output")
@@ -23,8 +23,10 @@ scroll_checks = []
 is_scroll = args.mode.startswith("scroll")
 is_portraits = args.mode.startswith("portraits")
 is_terrain = args.mode.startswith("terrain")
-long_path = is_portraits or is_terrain
+is_trees = args.mode.startswith("trees")
+long_path = is_portraits or is_terrain or is_trees
 terrain_checks = []
+tree_checks = []
 assert not args.include_council or is_portraits
 story_cases = 9 if args.include_council else 8
 portrait_checks = []
@@ -214,6 +216,14 @@ try:
         command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png"]
         if args.mode == "terrain-missing":
             command += ["-hd-terrain-dir", "/output/no-terrain"]
+    if not is_trees:
+        command += ["-hd-terrain-tree-asset", "/output/no-tree.png"]
+    if is_trees:
+        command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-frame-asset", "/output/no-frame.png", "-hd-window-asset", "/output/no-window.png"]
+        if args.mode in ("trees-only", "trees-missing"):
+            command += ["-hd-terrain-dir", "/output/no-terrain"]
+        if args.mode == "trees-missing":
+            command += ["-hd-terrain-tree-asset", "/output/no-tree.png"]
     stdout_path = root / f"desktop-{args.mode}.json"
     stdout = stdout_path.open("wb")
     stderr = (root / f"desktop-{args.mode}.stderr.log").open("wb")
@@ -282,6 +292,86 @@ try:
             assert not any(d["logical_rect"] == {"Min": {"X": 200, "Y": 150}, "Max": {"X": 504, "Y": 198}} for d in status()["window_draws"]), status()
             pictures += check_window_modal("after-confirmation")
             key("F7")
+    elif is_trees:
+        from PIL import Image
+        wait_for(lambda s: s.get('step',0)>=740_000_000 and len(s.get('tree_draws') or [])>0,600)
+        key('F6'); key('F7')
+        enhanced=capture('enabled')
+        snapshot=status()
+        tree_draws=list(snapshot['tree_draws']); tree_modes=list(snapshot['tree_modes'])
+        floor_draws=list(snapshot['terrain_draws']); floor_modes=list(snapshot['terrain_modes'])
+        key('F6'); original=capture('original'); key('F6'); restored=capture('restored')
+        assert enhanced['presented']['proof']==original['presented']['proof']==restored['presented']['proof']
+        assert enhanced['presented']['frame']['png_sha256']==restored['presented']['frame']['png_sha256']
+        a,b=decoded(Path(enhanced['actual_png'])),decoded(Path(original['actual_png']))
+        active_trees=[d for d,m in zip(tree_draws,tree_modes) if m=='hd']
+        active_floors=[d for d,m in zip(floor_draws,floor_modes) if m=='hd']
+        assert len(active_trees)==(0 if args.mode=='trees-missing' else 3)
+        assert len(active_floors)==(65 if args.mode=='trees' else 0)
+        allowed=bytearray(1280*800)
+        for d in active_trees+active_floors:
+            r=d['logical_rect']
+            for y in range(r['Min']['Y']*2,r['Max']['Y']*2):
+                x0,x1=r['Min']['X']*2,r['Max']['X']*2
+                allowed[y*1280+x0:y*1280+x1]=b'\1'*(x1-x0)
+        changed=0
+        for n,eligible in enumerate(allowed):
+            if a[n*4:n*4+4]!=b[n*4:n*4+4]:
+                assert eligible,('outside floor/tree replacement',n%1280,n//1280)
+                changed+=1
+        assert (changed>0)==(args.mode!='trees-missing')
+        cache={}
+        def source_image(group,index):
+            key=(group,index)
+            if key not in cache:
+                path=Path('/project/workplace/hd-prototype/catalog/terrain')
+                path=path/'prepared/sources'/f'floor-{index:03d}-original.png' if group=='floor' else path/'objects/sources'/f'{group}-{index:03d}-original.png'
+                cache[key]=Image.open(path).convert('RGBA')
+            return cache[key]
+        def pixel_scene(x,y,target_order):
+            floor=next((f for f in floor_draws if f['logical_rect']['Min']['X']<=x<f['logical_rect']['Max']['X'] and f['logical_rect']['Min']['Y']<=y<f['logical_rect']['Max']['Y']),None)
+            assert floor is not None,('incomplete tree background',x,y)
+            fr=floor['logical_rect'];bg=source_image('floor',floor['index']).getpixel((x-fr['Min']['X'],y-fr['Min']['Y']))
+            owner=floor['draw_order']
+            for s in tree_draws:
+                sr=s['logical_rect']
+                if s['draw_order']<=floor['draw_order'] or not (sr['Min']['X']<=x<sr['Max']['X'] and sr['Min']['Y']<=y<sr['Max']['Y']):
+                    continue
+                c=source_image(s['group'],s['index']).getpixel((x-sr['Min']['X'],y-sr['Min']['Y']))
+                if c[3]==255:
+                    owner=s['draw_order']
+                    if s['draw_order']!=target_order:
+                        bg=c
+            return floor['draw_order'],owner,bg
+        prepared_path=Path('/project/workplace/hd-prototype/catalog/terrain/trees/tree-prepared-v2.png')
+        prepared=Image.open(prepared_path).convert('RGBA')
+        baseline=json.loads(Path('/project/workplace/desktop-prototype/headless/startup-probe/latest.json').read_text())
+        cursor=baseline['mouse_cursor'];last=baseline['mouse_input_events'][-1]
+        cx,cy=last['x']-cursor['HotX'],last['y']-cursor['HotY']
+        protected=removed=0
+        for d in active_trees:
+            r=d['logical_rect']
+            for y in range(r['Min']['Y'],r['Max']['Y']):
+                for x in range(r['Min']['X'],r['Max']['X']):
+                    floor_order,owner,bg=pixel_scene(x,y,d['draw_order'])
+                    is_other=owner not in (floor_order,d['draw_order'])
+                    protected+=is_other
+                    for dy in range(2):
+                        for dx in range(2):
+                            n=((y*2+dy)*1280+x*2+dx)*4
+                            if is_other:
+                                assert a[n:n+4]==b[n:n+4],('visible original foreground changed',x,y)
+                            if args.mode=='trees-only' and owner==d['draw_order'] and prepared.getpixel(((x-r['Min']['X'])*2+dx,(y-r['Min']['Y'])*2+dy))[3]==0 and not (cx<=x<cx+16 and cy<=y<cy+16):
+                                assert a[n:n+4]==bytes(bg),('original tree outline not erased',x,y)
+                                removed+=1
+        assert protected==snapshot['tree_protected_pixels']
+        if args.mode=='trees-only':
+            assert removed>0
+        tree_checks.append({'step':enhanced['presented']['step'],'active_tree_rectangles':active_trees,'active_floor_rectangles':active_floors,
+                            'changed_pixels':changed,'other_foreground_native_pixels':protected,'original_other_foreground_unchanged':True,
+                            'old_outline_output_pixels_removed':removed,'outside_replacement_unchanged':True,'guest_unchanged':True})
+        pictures += [enhanced,original,restored]
+        key('F7')
     elif is_terrain:
         wait_for(lambda s: s.get("step", 0) >= 740_000_000 and len(s.get("terrain_draws") or []) > 0, 600)
         key("F6")
@@ -531,7 +621,7 @@ try:
             assert len(loaded) == 81 and all(info.get("source_sha256") for info in loaded.values())
             if args.mode == "portraits":
                 assert all(info.get("hd_sha256") and not info.get("hd_error") for info in loaded.values())
-        elif not is_terrain:
+        elif not is_terrain and not is_trees:
             assert receipt["desktop"]["hd_observation"]["draw_completed"]
         if is_window:
             observation = receipt["desktop"]["hd_observation"]["window"]
@@ -552,6 +642,7 @@ try:
               "frame_checks": frame_checks,
               "window_checks": window_checks,
               "terrain_checks": terrain_checks,
+              "tree_checks": tree_checks,
               "scope": "Linux container prototype; no physical audio or other OS verification"}
     (root / f"verification-{args.mode}.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(f"desktop {args.mode}: verified", flush=True)

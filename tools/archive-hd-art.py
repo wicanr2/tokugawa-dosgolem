@@ -146,6 +146,16 @@ def main():
         copy(council_path, "art/gungi-revision.json", "revision-metadata")
     terrain = catalog/"terrain/art"
     terrain_profiles = catalog/"terrain/prepared/profiles.json"
+    verified_tree_asset = ""
+    tree_summary_path = catalog/"terrain/trees/verification-summary.json"
+    if tree_summary_path.exists():
+        tree_summary = json.loads(tree_summary_path.read_text())
+        tree_source_path = catalog/"terrain/trees/tree-source-verification.json"
+        assert tree_summary["source_verification_sha256"] == sha(tree_source_path)
+        assert tree_summary["normal_HD_object_instances"] == 3
+        tree_source = json.loads(tree_source_path.read_text())
+        verified_tree_asset = tree_source["asset"]
+        assert tree_summary["asset_sha256"] == tree_source["asset_sha256"]
     approved_floor = {}
     normal_floor_art = set()
     if terrain_profiles.exists():
@@ -171,6 +181,11 @@ def main():
             status = "generated unit draft; original identity and footprint review pending" if unit else "superseded or unreviewed floor draft"
             if object_draft:
                 status = "generated object draft; cell footprint and normal HD integration pending"
+                if source.name == "object-000-hd-b-v1.png":
+                    status = "superseded single-tree draft; original grove composition corrected in v2"
+                if source.name == verified_tree_asset:
+                    assert sha(source) == tree_source["asset_sha256"]
+                    status = "normal first-battle forest clump v2 verified in three complete scenes; clipped edge falls back"
             if source.name in approved_floor:
                 assert sha(source) == approved_floor[source.name]
                 status = "normal first-battle floor verified" if source.name in normal_floor_art else "reviewed floor art and common draw consumer integrated; visible normal case not yet sampled"
@@ -179,7 +194,7 @@ def main():
                     alpha_policy="transparent" if unit or object_draft else "opaque")
         for source in sorted(terrain.glob("*-hd-gallery-v*.png")):
             copy(source, "terrain/"+source.name, "png", status="generated-art gallery; includes drafts")
-        for name in ("generation.json", "floor-generation.json", "floor-revisions.json", "object-generation.json"):
+        for name in ("generation.json", "floor-generation.json", "floor-revisions.json", "object-generation.json", "object-revisions.json"):
             source = terrain/name
             if source.exists():
                 copy(source, "terrain/"+name, "generation-metadata")

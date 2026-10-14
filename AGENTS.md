@@ -126,9 +126,17 @@
 
 `workplace/hd-prototype/catalog/terrain/objects/` 保存物件／單位的唯讀繪製順序研究、來源遮罩、隔離建置與 GUI 驗證。舊地面收據留在 `terrain/trace/` 及 `terrain/runtime/`，不覆寫。`-hd-terrain-trace` 同時記錄原版 `sub_1FC07` 地面及 `sub_1F9D0` 透明圖塊的原始暫存器、自然返回與平面指紋；診斷不決定呈現資格。
 
+`workplace/hd-prototype/catalog/terrain/trees/` 保存 objects-000 樹木的背景覆蓋研究、透明素材幾何、可丟棄預覽與獨立 GUI 驗證。原版前景來源沿用 `terrain/objects/sources/`，該輪收據保持不變。`tools/hd-terrain-tree-prepare.py` 核對原始順序、完整背景及實際游標，生成樹木素材指紋與裁切幾何；固定 GUI image 內專案掛 `/project` 可寫、`terrain/trees/` 掛 `/output` 可寫後執行。輪廓之外的低 alpha 雜點只在明示裁切範圍外排除，生成原始 PNG 保留。
+
+`tools/hd-terrain-tree-profile.go` 為準備工具生成的選定 v2 SHA 與裁切幾何。`tools/hd-terrain-sprites.go`／`tools/hd-terrain-sprites_test.go` 實作完整背景核對、原版輪廓移除、透明合成與其他可見前景保留。只批准 objects-000，介面邊緣或未知背景備援；準備工具更新後在固定 Go image 內對 profile 執行 gofmt。
+
+`tools/verify-desktop.py --mode trees`／`trees-only`／`trees-missing` 驗證樹叢三模式，需先使用 `tools/run-desktop.sh` 建置至 `terrain/trees/` 並將相同二進位、engine 與驗證器快照放入各自 desktop 輸出。`tools/verify-hd-trees.py` 在固定 GUI image 中核對三模式、來源、建置輸入與完整原版狀態；專案唯讀掛 `/project`、`terrain/trees/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-trees.py`。既有非樹叢 GUI 模式明確停用樹叢素材，保留各切片驗證的隔離範圍。
+
 [tools/hd-terrain-object-prepare.py](tools/hd-terrain-object-prepare.py) 以正常 750M 的唯讀繪製順序及既有 IDA 遮罩證據，核對原生地面／透明前景合成，準備 39 個原版物件／單位來源及 [tools/hd-terrain-sprite-profiles.go](tools/hd-terrain-sprite-profiles.go) 指紋。固定 GUI image 內專案掛 `/project` 可寫、`catalog/terrain/objects/` 掛 `/output` 可寫，執行 `python3 /project/tools/hd-terrain-object-prepare.py`；只輸出原始來源遮罩，不啟用單位 HD 草稿。
 
 [tools/verify-terrain-evidence.py](tools/verify-terrain-evidence.py) 加 `--foreground` 核對 `terrain/objects/` 的 HD／缺圖正常 GUI、39 個來源、原版狀態及前景像素。固定 GUI image 內專案唯讀掛 `/project`、`terrain/objects/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-terrain-evidence.py --foreground`。不加旗標則核對舊地面切片，須使用該次來源快照。來源準備後用固定 Go image 對生成的 profiles 執行 gofmt，不在主機執行 Go。
+
+樹叢接入後，現行正常流程驗證入口改為 `tools/verify-hd-trees.py`。重核先前原版透明前景切片時，於上述命令加 `--runtime-source-root /project/workplace/hd-prototype/catalog/terrain/objects/desktop/source-snapshot --verify-only`，核對當次來源且保留原總表，不以目前原始碼誤判歷史證據失效。
 
 唯一覆蓋清單為 `workplace/hd-prototype/catalog/art-coverage.json`，由 `tools/hd-art-inventory.py` 重生。圖集資源數不代表內部圖塊完成數。`tools/hd-kao-extract.py` 擷取原版來源；`tools/hd-kao-prepare.py --root /output/kao` 裁切已保存的手繪圖集。這些是本機研究產物，正式素材包格式另列。
 

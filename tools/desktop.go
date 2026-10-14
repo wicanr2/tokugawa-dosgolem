@@ -33,6 +33,7 @@ var desktopWindowAsset = flag.String("hd-window-asset", "/project/assets/hd-b/wi
 var desktopTerrainSourceDir = flag.String("hd-terrain-source-dir", "/project/workplace/hd-prototype/catalog/terrain/prepared/sources", "verified original floor PNGs with normal battle DAC")
 var desktopTerrainDir = flag.String("hd-terrain-dir", "/project/assets/hd-b/terrain", "approved source-specific floor HD art; each missing item falls back")
 var desktopTerrainSpriteSourceDir = flag.String("hd-terrain-sprite-source-dir", "/project/workplace/hd-prototype/catalog/terrain/objects/sources", "verified index-zero masks and native object/unit pixels")
+var desktopTerrainTreeAsset = flag.String("hd-terrain-tree-asset", "/project/assets/hd-b/terrain/object-000-hd-b-v2.png", "approved transparent forest-clump HD art")
 
 type desktopGame struct {
 	c                           *desktopContext
@@ -68,6 +69,9 @@ type desktopGame struct {
 	terrainHD                   int
 	terrainSprites              map[hdTerrainSpriteKey]*image.NRGBA
 	terrainForeground           int
+	terrainTree                 hdTerrainTreePair
+	treeModes                   []string
+	treeHD, treeProtected       int
 }
 
 type desktopPortrait struct {
@@ -307,6 +311,33 @@ func runDesktopWindow(c *desktopContext) error {
 		spriteInfo[fmt.Sprintf("%s-%03d", profile.Group, profile.Index)] = info
 	}
 	g.assetInfo["terrain_sprite_sources"] = spriteInfo
+	treeInfo := map[string]any{}
+	var treeSource image.Image
+	if source := g.terrainSprites[hdTerrainSpriteKey{"objects", 0}]; source != nil {
+		treeSource = source
+	}
+	if data, e := os.ReadFile(filepath.Join(*desktopTerrainSpriteSourceDir, "objects-000-original.png")); e == nil {
+		sum := fmt.Sprintf("%x", sha256.Sum256(data))
+		treeInfo["source_sha256"] = sum
+		if sum != hdTerrainTreeSourceSHA {
+			treeSource = nil
+		}
+	} else {
+		treeSource = nil
+	}
+	var treeAsset image.Image
+	if data, e := os.ReadFile(*desktopTerrainTreeAsset); e == nil {
+		sum := fmt.Sprintf("%x", sha256.Sum256(data))
+		treeInfo["hd_sha256"] = sum
+		if sum == hdTerrainTreeAssetSHA {
+			treeAsset, _ = previewPNG(*desktopTerrainTreeAsset)
+		} else {
+			treeInfo["hd_error"] = "unapproved tree fingerprint"
+		}
+	}
+	g.terrainTree = newHDTerrainTreePair(treeSource, treeAsset, 2)
+	treeInfo["validation"] = g.terrainTree.Reason
+	g.assetInfo["terrain_tree"] = treeInfo
 	ebiten.SetWindowSize(1280, 800)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("德川家康｜原版｜F6 切換 HD｜F7 暫停")
@@ -319,6 +350,7 @@ func runDesktopWindow(c *desktopContext) error {
 	c.Report["window_modes"], c.Report["window_hd_count"], c.Report["window_foreground_pixels"] = g.windowModes, g.windowHD, g.windowForeground
 	c.Report["terrain_modes"], c.Report["terrain_hd_count"] = g.terrainModes, g.terrainHD
 	c.Report["terrain_foreground_pixels"] = g.terrainForeground
+	c.Report["tree_modes"], c.Report["tree_hd_count"], c.Report["tree_protected_pixels"] = g.treeModes, g.treeHD, g.treeProtected
 	return err
 }
 
@@ -355,6 +387,18 @@ func (g *desktopGame) render() error {
 		if result == "hd" {
 			g.terrainHD++
 			g.terrainForeground += foreground
+			mode = "hd"
+		}
+	}
+	g.treeModes, g.treeHD, g.treeProtected = nil, 0, 0
+	var replacedTrees []image.Rectangle
+	for _, sprite := range g.c.Live.Terrain.Sprites {
+		result, protected := g.terrainTree.apply(out, s.Image, sprite, g.c.Live.Terrain, g.terrain, g.terrainModes, g.terrainSprites, replacedTrees, 2, g.enabled)
+		g.treeModes = append(g.treeModes, result)
+		if result == "hd" {
+			replacedTrees = append(replacedTrees, sprite.Rect)
+			g.treeHD++
+			g.treeProtected += protected
 			mode = "hd"
 		}
 	}
@@ -530,6 +574,7 @@ func (g *desktopGame) Update() error {
 	status["window_modes"], status["window_hd_count"], status["window_foreground_pixels"], status["window_draws"] = g.windowModes, g.windowHD, g.windowForeground, g.c.Live.Window.Draws
 	status["terrain_modes"], status["terrain_hd_count"], status["terrain_draws"] = g.terrainModes, g.terrainHD, g.c.Live.Terrain.Draws
 	status["terrain_foreground_pixels"], status["terrain_sprites"] = g.terrainForeground, g.c.Live.Terrain.Sprites
+	status["tree_modes"], status["tree_hd_count"], status["tree_protected_pixels"], status["tree_draws"] = g.treeModes, g.treeHD, g.treeProtected, g.c.Live.Terrain.Sprites
 	b, err := json.Marshal(status)
 	if err != nil {
 		return err

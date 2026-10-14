@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 188,
-    "prompts": 99,
-    "bytes": 296187457
+    "png": 189,
+    "prompts": 100,
+    "bytes": 298937061
   },
-  "archive_tool_sha256": "df987197a7783b92d029449e06f8310e661bf54fe3fad243b79b5c7e06d8a3a4",
+  "archive_tool_sha256": "525528fa7a0dafc97c78f9de943452b513c4a3118695687f81fabadf6d2b350d",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -5004,7 +5004,7 @@
       "sha256": "23947dfd12a6ecfad5745892d432a66d1e92e29bc6fc2a106756bec5a6084136",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/object-000-hd-b-v1.png",
       "prompt": "terrain/object-000-hd-b-v1.prompt.txt",
-      "status": "generated object draft; cell footprint and normal HD integration pending",
+      "status": "superseded single-tree draft; original grove composition corrected in v2",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -5021,6 +5021,31 @@
       "bytes": 1483,
       "sha256": "da1fe6890b990557c8ef738e287ed12bf3ea5c679a51345a04beaeb5b1f4a178",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/object-000-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/object-000-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 2746842,
+      "sha256": "f6885ec6d1d557973fdb304fca537e095eec4c65e37439340ef2c39da2d94cd2",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-000-hd-b-v2.png",
+      "prompt": "terrain/object-000-hd-b-v2.prompt.txt",
+      "status": "normal first-battle forest clump v2 verified in three complete scenes; clipped edge falls back",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/object-000-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1935,
+      "sha256": "42d75cd28f4beef3643747021c88bd7364d712fcf71ac9462207be6f67b0752b",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-000-hd-b-v2.prompt.txt"
     },
     {
       "path": "terrain/object-001-hd-b-v1.png",
@@ -5115,6 +5140,13 @@
         1024,
         288
       ]
+    },
+    {
+      "path": "terrain/object-revisions.json",
+      "kind": "generation-metadata",
+      "bytes": 827,
+      "sha256": "8e0aa1a896ff52cfe13fbd6db5127551b895cf2a20f5b1889f144399793d0f68",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-revisions.json"
     },
     {
       "path": "terrain/unit-000-hd-b-v1.png",

@@ -78,8 +78,11 @@ def main():
     assert Path("/.dockerenv").is_file() and os.getuid() == 1000
     parser = argparse.ArgumentParser()
     parser.add_argument('--foreground', action='store_true', help='核對保留原始透明前景的地面切片')
+    parser.add_argument('--runtime-source-root', type=Path, help='包含 tools/ 的當次唯讀來源快照；未指定則核對現行原始碼')
+    parser.add_argument('--verify-only', action='store_true', help='核對而不改寫既有總表')
     args = parser.parse_args()
     project = Path("/project")
+    runtime_source = args.runtime_source_root or project
     terrain = project/"workplace/hd-prototype/catalog/terrain"
     runtime = terrain/("objects" if args.foreground else "runtime")
     output = Path("/output")
@@ -109,7 +112,7 @@ def main():
         assert len(receipt["mouse_input_events"]) == 390
         assert sha(folder/"startup-memory.bin") == "4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9"
         for name, digest in receipt["integration_input_sha256"].items():
-            assert sha(project/name) == digest, ("stale runtime input", name)
+            assert sha(runtime_source/name) == digest, ("stale runtime input", name)
         toggles = [e for e in receipt["desktop"]["events"] if e["kind"] == "toggle"]
         assert len(toggles) == 3 and all(e["guest_unchanged"] and e["before"] == e["after"] for e in toggles)
         state = receipt["desktop"]["hd_observation"]["terrain"]
@@ -169,6 +172,9 @@ def main():
         result['original_draw_trace_verification_sha256'] = sha(terrain/'objects/trace/verification.json')
         result['original_cursor_verification'] = verify_original_cursor(project, terrain)
     target = output/"verification-summary.json"
+    if args.verify_only:
+        print(json.dumps({'verified': True, 'normal_HD_floor_cases': 6, 'outputs_written': False}))
+        return
     target.write_text(json.dumps(result, ensure_ascii=False, indent=2)+"\n")
     print(json.dumps({"verified": True, "normal_HD_floor_cases": 6, "summary_sha256": sha(target)}))
 
