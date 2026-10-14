@@ -291,3 +291,5 @@
 - 四套件通過，研究入口 27.346s。三模式各自然 750M／390 事件，完整 RAM、十五欄、原生畫面、trace、PCM 與基準相符，三次切換不改原版，真實 X11 與呈現圖完整吻合。正常 67 地面、四樹叢、兩人物，413696 呈現像素與獨立公式相符；重疊 82 原生人物像素、1620 介面像素及兩人物 1584／1574 舊輪廓還原通過，全部缺圖零變動。總表 5af50794c64a7442aee41bc88609a314ea0755de81cd1b8ec96049ff1a4946ce。
 - 內建 image_gen.imagegen 製作 MAPGAMEN 紅金戰場介面草稿，來源及既有手繪風格參考、1586×992 原始圖、完整提示詞與 SHA 保存。此草稿尚未接入。私人素材保存核對 191 PNG／102 提示詞，302088815 indexed bytes，units-001／003 索引改為正常路徑已驗證。
 - 全遊戲 HD 仍未完成。接續戰場框架、其他物件／單位及未製作地面、美術與動畫；正式三平台打包尚未開始。
+
+提交 `cfe75a136a10ce6c552c11e2b73d459a04cead7f` 已推送私人 main，主機 gh 核對 SHA 一致。306 個素材檔逐項符合遠端 Git blob，original/、workplace/ 未加入遠端。Issue #5 進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6171788132 。當次與歷史收據、來源快照、素材索引、語法、文件入口、Git whitespace、UID/GID 及 root-owned／誤建 .md 目錄檢查通過；所有 tokugawa 容器均已自動刪除，沒有重建 image。
