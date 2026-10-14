@@ -271,3 +271,5 @@
 - READY 後實作完整背景核對、透明合成、原版輪廓還原及其他可見前景保留。四套件通過，leprobe 25.378s。三種 GUI 各自然 750M、390 筆普通輸入、三次原版狀態不變切換；15 欄、完整 RAM、原生畫面、trace 與 PCM 符合基準。三處樹叢 HD、82 原版人物像素及 1394 個舊輪廓背景還原通過，介面邊緣備援；目視核對搭配地面與只有樹叢兩種實際畫面。
 - 獨立總表 SHA-256 42e02fd79ed8dbb9393a2f9418adf216875d2df314a7921ec939c55b1fe08455。舊 objects 收據用當次來源快照唯讀重核通過，總表不改。覆蓋清單區分一種物件、三個可見實例與其他草稿，不增加整個圖集完成率。生成美術保存核對為 189 PNG／100 提示詞，298937061 indexed bytes。
 - 其餘物件、單位、地面碎片、其他美術與正式三平台打包仍待後續。下一切片為介面邊緣的可驗證部分背景與裁切。最後擁有權、容器、私人遠端與 Issue 核對接續記錄。
+
+提交 `bc44bef6c8361eda09ce8d71d35bbdd46d6dcc93` 已推送私人 main，主機 gh 核對遠端 SHA 一致。300 個素材檔逐項符合遠端 Git blob，original/、workplace/ 未加入遠端。Issue #5 保持 OPEN，進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6169579498 。最後語法、文件索引正對照、當次及歷史收據 SHA、素材索引、UID/GID、root-owned／誤建 .md 目錄與 Git whitespace 檢查通過；所有 tokugawa 容器均已自動刪除，沒有重建 image 或遺留背景程序。
