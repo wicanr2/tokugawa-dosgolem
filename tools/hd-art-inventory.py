@@ -53,6 +53,8 @@ def main():
     weather_proof = json.loads(weather_proof_path.read_text()) if weather_proof_path.exists() else None
     opening_path = ROOT/'art/opening-generation.json'
     opening = {r['source']:r for r in json.loads(opening_path.read_text())['records']} if opening_path.exists() else {}
+    remaining_path = ROOT/'art/remaining-generation-v1.json'
+    remaining_art = {r['source']:r for r in json.loads(remaining_path.read_text())['records']} if remaining_path.exists() else {}
     frame_summary_path = ROOT/'battle-frame/verification-summary.json'
     frame_summary = json.loads(frame_summary_path.read_text()) if frame_summary_path.exists() else None
     if frame_summary:
@@ -60,7 +62,7 @@ def main():
         proof_sources_frame = {'verification':str(frame_summary_path.relative_to(PROJECT)),'sha256':sha(frame_summary_path)}
     direct = {}
     for record in decoded["records"]:
-        if record['name'] in ui_drafts or record['name'] in weather or record['name'] in opening:
+        if record['name'] in ui_drafts or record['name'] in weather or record['name'] in opening or record['name'] in remaining_art:
             continue
         stem = record["name"].removesuffix(".OZM")
         path = ROOT / "art" / f"{stem}-hd-b-v1.png"
@@ -209,6 +211,19 @@ def main():
             assert object_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-objects.py')
             proof_sources.append({'verification':str(object_proof_path.relative_to(PROJECT)),'sha256':sha(object_proof_path)})
     object_drafts -= len(reviewed_object_indices)
+    wall_profiles_path = ROOT/'terrain/objects/walls/profiles.json'
+    if wall_profiles_path.exists():
+        wall_profiles = json.loads(wall_profiles_path.read_text())
+        assert wall_profiles['tool_sha256'] == sha(PROJECT/'tools/hd-wall-prepare.py') == sha(wall_profiles_path.parent/'profiles-source.txt')
+        assert wall_profiles['approved_indices'] == list(range(24)) and wall_profiles['empty_indices'] == [24,25]
+        object_drafts += len(reviewed_object_indices)-24
+        reviewed_object_indices = wall_profiles['approved_indices']
+        wall_proof_path = wall_profiles_path.parent/'verification-summary.json'
+        if wall_proof_path.exists():
+            wall_proof = json.loads(wall_proof_path.read_text())
+            assert wall_proof['verified'] and wall_proof['profiles_sha256'] == sha(wall_profiles_path)
+            assert wall_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-walls.py')
+            proof_sources.append({'verification':str(wall_proof_path.relative_to(PROJECT)),'sha256':sha(wall_proof_path)})
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -275,6 +290,12 @@ def main():
                           normal_floor_draws_verified=67 if scene_summary else 65 if foreground_summary else 0,
                           floor_profiles_sha256=sha(material_profiles_path if approved_floor_count == 104 else terrain_path),
                           source_extraction_sha256=sha(ROOT / "terrain/terrain-extraction.json"))
+            if approved_floor_count == 104 and len(reviewed_unit_indices) == 10 and len(reviewed_object_indices) == 24:
+                data = (ROOT/'decoded/MAP_CHIP.OZM.idx').read_bytes()
+                assert len(data) == 640*400 and not any(data[y*640+x] for y in range(400) for x in range(624,640))
+                record.update(art_status="prepared", wall_profiles_sha256=sha(wall_profiles_path),
+                              complete_art_scope="104 floor, 24 nonempty object and 10 nonempty unit sources; five blank sprite cells and zero right padding preserved",
+                              runtime_status="complete atlas art registered with common consumers; normal six-floor scene, object-000 and units-001/003 sampled; remaining sources not individually sampled")
         if name in ui_drafts:
             draft = ui_drafts[name]
             path = ROOT/'art'/draft['asset']
@@ -313,6 +334,12 @@ def main():
                 assert weather_proof['verified'] and weather_proof['profiles_sha256'] == sha(weather_profile_path)
                 record.update(runtime_status='normal first-battle weather HD, original toggle and missing asset verified',
                               runtime_proof_sha256=sha(weather_proof_path))
+        if name in remaining_art:
+            painting = remaining_art[name]
+            path = ROOT/'art'/painting['asset']
+            assert sha(path) == painting['sha256']
+            record.update(art_status='draft',art=art_info(path,ROOT/'art'/painting['prompt']),
+                          runtime_status='source-referenced art draft; black padding, geometry and consumer registration pending')
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]
@@ -341,6 +368,7 @@ def main():
               "generated_weather_sources":len(weather), "approved_weather_sources":len(weather_profiles),
               "normal_weather_sources_verified":1 if weather_proof else 0,
               "generated_opening_drafts":len(opening),
+              "generated_remaining_OZM_drafts":len(remaining_art),
               "approved_MAP_CHIP_floor_art": approved_floor_count,
               "normal_MAP_CHIP_floor_cases_verified": len(verified_floors),
               "generated_MAP_CHIP_unit_drafts": unit_drafts,

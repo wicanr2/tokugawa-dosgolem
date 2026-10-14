@@ -20,8 +20,10 @@ README = """# 戰國手繪 HD 素材
 - [地面圖集的材質與衍生圖](terrain/materials/)，保留兩版製作紀錄及完整提示詞。
 - [十項非空單位的透明裁切](terrain/units/)，原版三個空白來源保持空白。
 - [物件的透明裁切及審查](terrain/objects/)，獨立物件分項接入，城牆接縫草稿另列。
+- [城牆校準與完整物件圖集](terrain/objects/walls/)，共用手繪材質對齊屋簷、石基及接縫，原版空白格保留。
 - [晴天與陰天天氣圖](art/weather-generation.json)，第二版保留原版岩峰構圖。
 - [開場騎兵與武將群像草稿](art/opening-generation.json)，保留原始生成圖，幾何與呈現待驗證。
+- [戰鬥背景與開場徽記草稿](art/remaining-generation-v1.json)，保留原版參考定位、完整提示詞及未校準的原始生成圖。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。
@@ -146,9 +148,14 @@ def main():
     weather_art = {r["asset"]: r for r in json.loads(weather_path.read_text())["records"]} if weather_path.exists() else {}
     opening_path = catalog/"art/opening-generation.json"
     opening_art = {r["asset"]:r for r in json.loads(opening_path.read_text())["records"]} if opening_path.exists() else {}
+    remaining_drafts_path = catalog/"art/remaining-generation-v1.json"
+    remaining_drafts = {r["asset"]:r for r in json.loads(remaining_drafts_path.read_text())["records"]} if remaining_drafts_path.exists() else {}
     for source in sorted((catalog/"art").glob("*-hd-b-v*.png")):
         name = source.name
         status = "draft; integration and review pending"
+        if name in remaining_drafts:
+            assert sha(source) == remaining_drafts[name]["sha256"]
+            status = "source-referenced artwork draft; black padding, geometry and runtime draw eligibility pending"
         if name in selected_art:
             assert sha(source) == selected_art[name]
             status = "normal player path verified" if name in normal_art else "reviewed source and common draw consumer integrated; normal path not yet sampled"
@@ -193,6 +200,11 @@ def main():
             assert sha(catalog/"art"/record["asset"]) == record["sha256"]
             assert sha(catalog/"art"/record["prompt"]) == record["prompt_sha256"]
         copy(opening_path,"art/opening-generation.json","generation-metadata")
+    if remaining_drafts_path.exists():
+        for record in remaining_drafts.values():
+            assert sha(catalog/"art"/record["asset"]) == record["sha256"]
+            assert sha(catalog/"art"/record["prompt"]) == record["prompt_sha256"]
+        copy(remaining_drafts_path,"art/remaining-generation-v1.json","generation-metadata")
     battle_frame = catalog/"battle-frame"
     for revision in (1,2):
         geometry_path = battle_frame/("battle-frame-geometry.json" if revision == 1 else "battle-frame-geometry-v2.json")
@@ -276,6 +288,16 @@ def main():
         object_profiles = json.loads(object_profiles_path.read_text())
         assert object_profiles["tool_sha256"] == sha(project/"tools/hd-object-prepare.py")
         selected_objects = {r["asset"]:r for r in object_profiles["records"] if r["index"] in object_profiles["approved_indices"]}
+    wall_root = catalog/"terrain/objects/walls"
+    wall_profiles_path = wall_root/"profiles.json"
+    wall_input_names = set()
+    if wall_profiles_path.exists():
+        wall_profiles = json.loads(wall_profiles_path.read_text())
+        assert wall_profiles["tool_sha256"] == sha(wall_root/"profiles-source.txt") == sha(project/"tools/hd-wall-prepare.py")
+        assert wall_profiles["approved_indices"] == list(range(24))
+        selected_objects.update({r["asset"]:r for r in wall_profiles["records"] if r["asset"]})
+        draft = json.loads((wall_root/wall_profiles["draft_manifest"]).read_text())
+        wall_input_names = {r["asset"] for r in draft["inputs"]}
     if unit_profiles_path.exists():
         unit_profiles = json.loads(unit_profiles_path.read_text())
         assert unit_profiles["tool_sha256"] == sha(project/"tools/hd-unit-prepare.py")
@@ -301,6 +323,8 @@ def main():
                 status = "normal first-battle unit HD verified; joint floor and forest-clump composition, native visible-owner priority"
             if object_draft:
                 status = "generated object draft; cell footprint and normal HD integration pending"
+                if source.name in wall_input_names:
+                    status = "generated material source for calibrated wall geometry; raw draft not used directly"
                 if source.name in selected_objects:
                     assert sha(source) == selected_objects[source.name]["asset_sha256"]
                     status = "reviewed independent object silhouette and alpha crop; common consumer integrated, normal source not yet sampled"
@@ -361,6 +385,39 @@ def main():
         copy(attempt/previous["gallery"],"terrain/units/attempt-01/"+previous["gallery"],"png",status="superseded generated-only unit review gallery")
         for name in ["draft-profiles.json","pose-revisions.json","prepare-source.txt"]:
             copy(attempt/name,"terrain/units/attempt-01/"+name,"preparation-metadata")
+    if wall_profiles_path.exists():
+        for folder in sorted(wall_root.glob("draft-v*")):
+            manifest_path = folder/"draft-manifest.json"
+            manifest = json.loads(manifest_path.read_text())
+            assert manifest["tool_sha256"] == sha(folder/"prepare-source.txt")
+            for record in manifest["records"]:
+                source = folder/record["asset"]
+                assert sha(source) == record["asset_sha256"]
+                copy(source,"terrain/objects/walls/"+folder.name+"/"+source.name,"png",alpha_policy="transparent",derivation=record,
+                     prompts=["terrain/"+r["prompt"] for r in manifest["inputs"]],
+                     status="calibrated source-bounded wall art" if folder.name == "draft-v2" else "first geometry calibration draft; superseded by v2")
+            for name in [manifest["gallery"]]+[r["HD"] for r in manifest.get("fixtures",[])]:
+                copy(folder/name,"terrain/objects/walls/"+folder.name+"/"+name,"png",status="generated-only calibration gallery or offline enclosure; not normal player path")
+            for name in ["draft-manifest.json","prepare-source.txt","review.json"]:
+                if (folder/name).exists():
+                    copy(folder/name,"terrain/objects/walls/"+folder.name+"/"+name,"preparation-metadata")
+        for record in wall_profiles["records"]:
+            if not record["asset"]:
+                continue
+            if record["index"] in wall_profiles["wall_source_indices"] and record["index"] == record["asset_source_index"]:
+                source = project/record["asset_local_source"]
+                assert sha(source) == record["asset_sha256"]
+                copy(source,"terrain/"+record["asset"],"png",alpha_policy="transparent",derivation=record,
+                     prompts=["terrain/"+r["prompt"] for r in record["material_inputs"]],
+                     status="reviewed calibrated wall; common object consumer integrated, normal source not yet sampled")
+            source = wall_root/record["prepared"]
+            assert sha(source) == record["prepared_sha256"]
+            copy(source,"terrain/objects/walls/"+record["prepared"],"png",alpha_policy="transparent_sampled",derivation=record,
+                 status="registered object preview; original eight images and crops unchanged")
+        copy(wall_root/wall_profiles["gallery"],"terrain/objects/walls/"+wall_profiles["gallery"],"png",
+             status="generated-only complete 24 nonempty object gallery; two original blank objects preserved")
+        for name in ["profiles.json","profiles-source.txt"]:
+            copy(wall_root/name,"terrain/objects/walls/"+name,"preparation-metadata")
     material_root = catalog/"terrain/materials"
     if (material_root/"generation.json").exists():
         generation = json.loads((material_root/"generation.json").read_text())

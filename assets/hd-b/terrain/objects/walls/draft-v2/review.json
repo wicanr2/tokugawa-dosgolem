@@ -1,0 +1,113 @@
+{
+  "verified": true,
+  "approved_indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    20,
+    21
+  ],
+  "draft_manifest_sha256": "8ef855c8f0707b7dfed49cdc7bdc8f3964c454e7e0d4b33ab63681f7f66390ca",
+  "review_pages": [
+    {
+      "path": "review-page-01.png",
+      "sha256": "737be830f765ccefddc1cd9b3c1aff5d2ac25b7c141d850300a47bb1b7bfe964"
+    },
+    {
+      "path": "review-page-02.png",
+      "sha256": "3e9078803ea759aea79051c2c89bdcf79c9fd974ec2c0d9a712ff378626a4580"
+    },
+    {
+      "path": "review-page-03.png",
+      "sha256": "d3d22fcaa20c8716a12375cffa99d6ef366dd6070c3a5fc56c36ee1176bffef9"
+    }
+  ],
+  "fixtures": [
+    {
+      "kind": "enclosure",
+      "grid": [
+        [
+          4,
+          6,
+          5,
+          6,
+          7
+        ],
+        [
+          13,
+          null,
+          null,
+          null,
+          12
+        ],
+        [
+          20,
+          null,
+          null,
+          null,
+          21
+        ],
+        [
+          13,
+          null,
+          null,
+          null,
+          12
+        ],
+        [
+          8,
+          10,
+          9,
+          10,
+          11
+        ]
+      ],
+      "HD": "wall-HD-enclosure-v2.png",
+      "HD_sha256": "6ad4181b04cdef08ad534db9b04c57b9818a2c99a2eb9f5e85e968c332e21f6c",
+      "local_comparison": "wall-enclosure-comparison.png",
+      "local_comparison_sha256": "4c878447b3784406509a74bdfd29bc3ad522ee427912f6a7db76215934635814"
+    },
+    {
+      "kind": "partial",
+      "grid": [
+        [
+          14,
+          6,
+          15
+        ],
+        [
+          16,
+          10,
+          17
+        ]
+      ],
+      "HD": "wall-HD-partial-v2.png",
+      "HD_sha256": "d6aaca1b4f1b26e172865621b88f11030286fecd371a6e1d04e38c8f65fb7abd",
+      "local_comparison": "wall-partial-comparison.png",
+      "local_comparison_sha256": "db48ccfa80d6eb1f14a5cc1576c879cb2affce1e250876dababa8021a1041f25"
+    }
+  ],
+  "observations": [
+    "horizontal roof, plaster, moss and masonry bands align across corner, straight and gate pieces",
+    "vertical runs use one material phase and clipped source bounds",
+    "paletted dithering in original shadow becomes a soft alpha edge",
+    "gate portals remain dark opaque RGB inside the source outline",
+    "broken wall center shapes remain distinct; no reflection shortcut"
+  ],
+  "approximation": "art geometry assembled from generated textures; 0.65 native-pixel alpha softening; not native pixel parity",
+  "limitations": [
+    "compound fixtures are offline art previews",
+    "individual wall sprites not sampled in normal player paths"
+  ]
+}

@@ -352,3 +352,15 @@
 - 建置及 GUI 容器均正常退出並移除，後續附 GitHub 與擁有權核對結果。
 
 GitHub 收尾：功能與素材提交 db97be7f0d17b9f898c2302fb311769b52cf95bd 已推送 main。主機 gh 再次確認 PRIVATE，遠端 main SHA 一致；immutable tree 的 632 個 assets/hd-b 檔案逐項 blob SHA 與本機一致，tree 未截斷，original/、workplace/ 不在遠端。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6176564528 。最後保存核對為 460 PNG、136 提示詞；完整工作根的 root-owned 檔案及 .md 目錄檢查為空，所有本次輸出抽查 UID/GID 1000:1000，tokugawa 容器為空，未重建或清理其他專案 image。
+
+
+## 2026-10-15：完成城牆校準及完整物件圖集
+
+- 上一輪屬實際進展。本輪命中並載入規格驗收及文件職責入口，接續 16 項牆件。用已保存的手繪橫牆、直牆、城門及斷牆作分區材質，對齊相位、屋簷與石基；source index-zero 輪廓柔化 0.65 原生像素並限制於原版範圍。三頁對照及圍牆／短牆接縫檢視後，第二版進入 READY，第一版保留。
+- 24 非空物件全部接入，6／10、12／13 依已確認相同的來源裁切重用；其餘不直接鏡像。既有八項素材、裁切及準備後 PNG 的 SHA 不變，24、25 空白保留。只改既有 Go profile 資料表，沒有新增原版觀測或 gameplay 寫入。
+- 四套件通過，研究入口 26.951 秒。新版本 750M／390 事件、完整 RAM、十五欄及三次切換通過，三張真實 X11 擷取與呈現 PNG 及前版完整相同。正常首戰仍只有 objects-000，離線圍牆不作正常路徑證據。
+- 驗收總表：terrain/objects/walls/verification-summary.json，SHA-256 04e41b453715467568b098768f93a13a48662a63cd3548548d124ed43fe47a11。右側 atlas padding 的 6400 像素全零；MAP_CHIP 的 104 地面、24 物件及十個非空單位全數已準備，五個空白格保留。
+- 內建 imagegen 另製作 BATTLE01／BATTLE02 戰鬥背景及 OP4 徽記三張草稿，完整提示詞、參考圖雜湊及原始生成圖均保存。未校準黑區及 runtime，保持 draft。
+- 保存工具新增紀錄時與舊 remaining-generation.json 變數衝突，拒絕覆寫；分開變數後以同一 Docker 命令乾淨重跑通過，舊檔未改。覆蓋工具亦將新背景草稿排除於已審查劇情計數。
+- 保存及 verify-only：538 PNG、139 提示詞、423404392 索引 bytes。覆蓋清單：80 OZM prepared、一項 partial、五項 draft、21 項已解碼未製作與五項解碼未知；81 頭像已準備，PCX 待處理。全遊戲 HD 未完成，三平台打包未開始。
+- 本輪建置與 GUI 容器均正常結束且移除，遠端與擁有權核對結果接續記錄。

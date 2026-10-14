@@ -211,6 +211,9 @@ func TestSceneOverlappingHDVisibleOwnerAlphaAndPartialFloors(t *testing.T) {
 }
 
 func TestSceneApprovedSpriteArtCropAndSourceGeometry(t *testing.T) {
+	if len(hdTerrainObjectProfiles) != 24 {
+		t.Fatal("all 24 nonempty object sources must have approved art")
+	}
 	if len(hdTerrainUnitProfiles) != 10 {
 		t.Fatal("all ten nonempty unit sources must have approved art")
 	}

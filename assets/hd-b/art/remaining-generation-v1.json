@@ -1,0 +1,83 @@
+{
+  "classification": "generated source-referenced opaque artwork drafts; geometry and runtime integration pending",
+  "records": [
+    {
+      "source": "BATTLE01.OZM",
+      "asset": "BATTLE01-hd-b-v1.png",
+      "sha256": "d768ef822f7f1bb271657877ebb8503903c421ea7a2f4a84e40ae6c4bba90669",
+      "prompt": "BATTLE01-hd-b-v1.prompt.txt",
+      "prompt_sha256": "8fa79e8ee150cecc7a1e8feb2b963f8a0741d5920f439803b21d083c8e761233",
+      "source_reference": {
+        "source": "BATTLE01.OZM",
+        "width": 640,
+        "height": 400,
+        "source_indices_sha256": "fff8d2df770a10b5a9634d6f0ff4ba9f73c141429bc575293327597b9a12c8b9",
+        "source_payload_sha256": "0deacfcc96535b4916a40da2888bd349fe60e461c5903228f52bb1bbf53c0d3a",
+        "original": "BATTLE01.OZM-original.png",
+        "original_png_sha256": "ac0f7d1cb4335cb3a6cc6595890f9ab142383b8e2f1521ff88a499b3d3653798",
+        "reference": "BATTLE01.OZM-reference.png",
+        "reference_png_sha256": "733f061b7bde8a3ef17b7c877fa17684ce78cf22831e599e1acf82b98def12c0"
+      },
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-37fb53cd-c6c1-44ce-b6c9-b5a459e4eb5e.png",
+      "size": [
+        1586,
+        992
+      ],
+      "transparent_background": false,
+      "tool": "built-in imagegen",
+      "status": "draft; geometry, black padding and runtime draw eligibility pending"
+    },
+    {
+      "source": "BATTLE02.OZM",
+      "asset": "BATTLE02-hd-b-v1.png",
+      "sha256": "119c1edd9d5fb3cf4351ac954c634a1341ea7b1624c4db0f0596af112f3fccb3",
+      "prompt": "BATTLE02-hd-b-v1.prompt.txt",
+      "prompt_sha256": "516c62307725cb4800e04342ff8251f1b9a9de22a2509fada8650a9466553d00",
+      "source_reference": {
+        "source": "BATTLE02.OZM",
+        "width": 640,
+        "height": 400,
+        "source_indices_sha256": "ea1a7a0f0beb2b20ab8cce5c6035175b92c331007ce8709e04c4ac65aba6cb17",
+        "source_payload_sha256": "523b08d0c9102569c18bb5a5b80aad30433c1167577cd928d6bba378a5a9dce3",
+        "original": "BATTLE02.OZM-original.png",
+        "original_png_sha256": "09367f7f4cf40924ceec946594a7dafd8bde9c38ef9177f94fc91dd68c717be8",
+        "reference": "BATTLE02.OZM-reference.png",
+        "reference_png_sha256": "8612327e4a6a451d0205336dc93265a26563bb197ff6ea3b53e7cbd62616c39a"
+      },
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-29bc4047-a337-42c7-8f96-68b58809bd13.png",
+      "size": [
+        1586,
+        992
+      ],
+      "transparent_background": false,
+      "tool": "built-in imagegen",
+      "status": "draft; geometry, black padding and runtime draw eligibility pending"
+    },
+    {
+      "source": "OP4.OZM",
+      "asset": "OP4-hd-b-v1.png",
+      "sha256": "a3b91158da5eaeec1c99d707893c9671271d2beb33483cdaf9bf332bbe8dd969",
+      "prompt": "OP4-hd-b-v1.prompt.txt",
+      "prompt_sha256": "e632fe58ae76b002d63ca6e6304698edc8a38c567d7491564f6cd844eb6d96f3",
+      "source_reference": {
+        "source": "OP4.OZM",
+        "width": 640,
+        "height": 400,
+        "source_indices_sha256": "71236f6049ebc0e7a81255d28dbf63c9042abf76bb1d50d5f7b48d75afc46b55",
+        "source_payload_sha256": "a119ed52973469389a9e7ed8911c5fd439d7ced951844ea7a002375dd3289519",
+        "original": "OP4.OZM-original.png",
+        "original_png_sha256": "f0e735e929261541c076160d1369adeed3c266c32a861eae62738615b86b1f53",
+        "reference": "OP4.OZM-reference.png",
+        "reference_png_sha256": "c8e74882314a92f8db6d9b1e87630cf267e9d329e3f9c75098f53f88edb3e599"
+      },
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-91a9885c-656b-406a-b7a7-59a85229e804.png",
+      "size": [
+        1586,
+        992
+      ],
+      "transparent_background": false,
+      "tool": "built-in imagegen",
+      "status": "draft; geometry, black padding and runtime draw eligibility pending"
+    }
+  ]
+}

@@ -1,0 +1,826 @@
+{
+  "classification": "wall geometry calibration draft; not map rules or production profiles",
+  "tool_sha256": "e395fa0769f70ede69701c817d4709819418873e7cad1e630d02536c6b0dc825",
+  "base_profiles_sha256": "a5450148ad4f4a394135ad7fb27f4ff9dd266c22a9eb98f4149e170b793fd637",
+  "scale": 8,
+  "alpha": "original index-zero silhouette blurred by 0.65 native pixel and resampled; clipped to original bounds; no original RGB copied",
+  "edge_wrap": "H columns and V rows share endpoint RGB; one native pixel inward blend",
+  "inputs": [
+    {
+      "part": "H",
+      "source_index": 6,
+      "asset": "object-006-hd-b-v1.png",
+      "asset_sha256": "dc0421a3eac13094271f05f1c537f55e8e3a5803b499f0a80ce4cb599f92ae04",
+      "prompt": "object-006-hd-b-v1.prompt.txt",
+      "prompt_sha256": "758a7c588a7525020a19cc9e497a96d98e282c9aa6b0c2aa0532d40ac204bb49",
+      "crop": [
+        0,
+        333,
+        1254,
+        918
+      ]
+    },
+    {
+      "part": "V",
+      "source_index": 12,
+      "asset": "object-012-hd-b-v1.png",
+      "asset_sha256": "75cfecc39a9e42edd8a1c41de26f80d794a597281c6c1a892fc09d36b806b772",
+      "prompt": "object-012-hd-b-v1.prompt.txt",
+      "prompt_sha256": "f8247aefddc370d3183ba2c21a6eba116ea7e9ba864ec78d4daa2be82061807c",
+      "crop": [
+        715,
+        0,
+        980,
+        1254
+      ]
+    },
+    {
+      "part": "G",
+      "source_index": 5,
+      "asset": "object-005-hd-b-v1.png",
+      "asset_sha256": "ae6d9c426db635e78f70fd3abd589b7e420017df5d4ac14c9372b611e5b85fba",
+      "prompt": "object-005-hd-b-v1.prompt.txt",
+      "prompt_sha256": "c59fc7b6f1c3cf0ee760d039c2deefde48102ae7ef860994dc585d0d04efa567",
+      "crop": [
+        260,
+        63,
+        992,
+        1143
+      ]
+    },
+    {
+      "part": "B20",
+      "source_index": 20,
+      "asset": "object-020-hd-b-v1.png",
+      "asset_sha256": "aac37069c63e7f265fe3ae4baa8361e31c969818951889c9cecacd8fe596bcb9",
+      "prompt": "object-020-hd-b-v1.prompt.txt",
+      "prompt_sha256": "b15f89bc528cf115231d9a450c34a9d43d61e918e1a5c0ea5783533501f4affd",
+      "crop": [
+        162,
+        320,
+        454,
+        780
+      ]
+    },
+    {
+      "part": "B21",
+      "source_index": 21,
+      "asset": "object-021-hd-b-v1.png",
+      "asset_sha256": "50ab6e8656fd64a0f7f4659f1e3a6a49a357e745d526710fdddd4cb9343cadee",
+      "prompt": "object-021-hd-b-v1.prompt.txt",
+      "prompt_sha256": "e5583de352ee56590673b782e46df6173ed374492e1153d9d31fa8fcbdaffa65",
+      "crop": [
+        753,
+        320,
+        1087,
+        780
+      ]
+    }
+  ],
+  "records": [
+    {
+      "index": 4,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-004-original.png",
+      "source_png_sha256": "76d845298eebeaa365822174db897997aec192fc66e4aae1dc7b353458a61ed2",
+      "source_indices_sha256": "e3760f3735dbcab9f6873ffdb34137b0d2d40c2e8fbeef1eb0719c9ef6534cd7",
+      "source_bounds": [
+        3,
+        4,
+        48,
+        48
+      ],
+      "asset": "wall-004-calibrated-v2.png",
+      "asset_sha256": "db64534f6b6aa08f7d755ccf6200ac71cc765ed12d3c2f8e7cb5155a1dd1c7af",
+      "crop": [
+        24,
+        32,
+        384,
+        384
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            3,
+            4,
+            22,
+            48
+          ]
+        ],
+        [
+          "H",
+          [
+            15,
+            4,
+            48,
+            34
+          ]
+        ]
+      ],
+      "preview": "wall-004-preview.png",
+      "preview_sha256": "651030e55aca4760e76f971089d2df6b5a34c8b6b80dfd961df77a9d4e3f4730"
+    },
+    {
+      "index": 5,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-005-original.png",
+      "source_png_sha256": "c24da86daf021007d14eadcec71b3486076ff76f24580a152191edb0faef3b86",
+      "source_indices_sha256": "a9fa5298242dabef7c761268cd867c6e0c0c38ec9be11a880e19dce113ed8d84",
+      "source_bounds": [
+        0,
+        0,
+        48,
+        38
+      ],
+      "asset": "wall-005-calibrated-v2.png",
+      "asset_sha256": "26834267fd24ceb1ce2f0e121afa72e1f60c220db50170cc699b0cc0cca38cfc",
+      "crop": [
+        0,
+        0,
+        384,
+        304
+      ],
+      "parts": [
+        [
+          "F",
+          [
+            0,
+            34,
+            48,
+            38
+          ]
+        ],
+        [
+          "H",
+          [
+            0,
+            4,
+            48,
+            34
+          ]
+        ],
+        [
+          "G",
+          [
+            9,
+            0,
+            38,
+            38
+          ]
+        ]
+      ],
+      "preview": "wall-005-preview.png",
+      "preview_sha256": "bbfeebb3f6e82b2f594be206de237cf1cda148f4b7a7a8826185465afdb297a0"
+    },
+    {
+      "index": 6,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-006-original.png",
+      "source_png_sha256": "293030b697011541c234527dc58d8c0dbf59f177d5d4283d370be186193ae5bf",
+      "source_indices_sha256": "ba5f2c00a3dc7e2a510e18a7ba4b4ba286bcd4050c029c03263552c61d8505a3",
+      "source_bounds": [
+        0,
+        4,
+        48,
+        34
+      ],
+      "asset": "wall-006-calibrated-v2.png",
+      "asset_sha256": "574758c222e7831f59fb4e878b2599dbedbc4deef2481c8368120723cad0c5bc",
+      "crop": [
+        0,
+        32,
+        384,
+        272
+      ],
+      "parts": [
+        [
+          "H",
+          [
+            0,
+            4,
+            48,
+            34
+          ]
+        ]
+      ],
+      "preview": "wall-006-preview.png",
+      "preview_sha256": "06941e726c37a00b3f143161305edd50f74d9ee568b3c3ee7fd2748eb04442f8"
+    },
+    {
+      "index": 7,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-007-original.png",
+      "source_png_sha256": "ef148afa2de127c0b50efa49b50c1bcb42c10222edfb07d302c5cd20600aa797",
+      "source_indices_sha256": "d912fcc7648e4bfd8b5dad7949a07be69975e6638e1c005ab5242794ccdc4646",
+      "source_bounds": [
+        0,
+        4,
+        46,
+        48
+      ],
+      "asset": "wall-007-calibrated-v2.png",
+      "asset_sha256": "26a419923d09122b1ced7f74f8b7124b213fb7c22145220ca24607ea57f6a01b",
+      "crop": [
+        0,
+        32,
+        368,
+        384
+      ],
+      "parts": [
+        [
+          "H",
+          [
+            0,
+            4,
+            30,
+            34
+          ]
+        ],
+        [
+          "V",
+          [
+            27,
+            4,
+            46,
+            48
+          ]
+        ],
+        [
+          "R",
+          [
+            0,
+            4,
+            35,
+            14
+          ]
+        ]
+      ],
+      "preview": "wall-007-preview.png",
+      "preview_sha256": "7687e759c0a1e916d137977eb6488d3375998e1959045b6322890f84bf8c4163"
+    },
+    {
+      "index": 8,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-008-original.png",
+      "source_png_sha256": "a00657e80e10389de3b924f90cc451098a345a1a67ddb12dad74a3aaa615bef2",
+      "source_indices_sha256": "90b884f696d4bbd6b670a36a2498ea0b759b87988750a19c8b92337ee08363a0",
+      "source_bounds": [
+        3,
+        0,
+        48,
+        44
+      ],
+      "asset": "wall-008-calibrated-v2.png",
+      "asset_sha256": "d3155234d91c138b01ac7e77b35923e240bd66362befe5e9a22b23c2f52d2c7c",
+      "crop": [
+        24,
+        0,
+        384,
+        352
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            3,
+            0,
+            22,
+            44
+          ]
+        ],
+        [
+          "H",
+          [
+            3,
+            14,
+            48,
+            44
+          ]
+        ]
+      ],
+      "preview": "wall-008-preview.png",
+      "preview_sha256": "55157f67aa68954353f2a679e9bd1699dfbe6aa9b66f6eeacfd08f768baa5080"
+    },
+    {
+      "index": 9,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-009-original.png",
+      "source_png_sha256": "11367e982030d0b95ab32a9db3893548bb38a1d02fe6096a2ef9083f70741551",
+      "source_indices_sha256": "39fb7e6d763ef32773b53fa07e462ce7db0f2ce9175f39ab20117f42e495d183",
+      "source_bounds": [
+        0,
+        10,
+        48,
+        48
+      ],
+      "asset": "wall-009-calibrated-v2.png",
+      "asset_sha256": "ee86cef3fd2c4a773efb62d496a7d899e5af046751d40a87208ff85a2d3947d2",
+      "crop": [
+        0,
+        80,
+        384,
+        384
+      ],
+      "parts": [
+        [
+          "F",
+          [
+            0,
+            44,
+            48,
+            48
+          ]
+        ],
+        [
+          "H",
+          [
+            0,
+            14,
+            48,
+            44
+          ]
+        ],
+        [
+          "G",
+          [
+            9,
+            10,
+            38,
+            48
+          ]
+        ]
+      ],
+      "preview": "wall-009-preview.png",
+      "preview_sha256": "bae4744145566926a2bcbf6271032f05c9ccc9aef0f5aa52ce807d7762f9b603"
+    },
+    {
+      "index": 10,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-010-original.png",
+      "source_png_sha256": "5dc6b9f558cb2b14e37461076dd6a5a2a48bab1b3f103eb82f5b891b9674c3a9",
+      "source_indices_sha256": "a4d052c2ecaaa6e24d958ee9c4acc0dc6ac7e9dca47c869235035477e2830bde",
+      "source_bounds": [
+        0,
+        14,
+        48,
+        44
+      ],
+      "asset": "wall-010-calibrated-v2.png",
+      "asset_sha256": "6f8b16ec6c1acc9c4327188b076a9df3f496ca7506d38560650a9446db611e30",
+      "crop": [
+        0,
+        112,
+        384,
+        352
+      ],
+      "parts": [
+        [
+          "H",
+          [
+            0,
+            14,
+            48,
+            44
+          ]
+        ]
+      ],
+      "preview": "wall-010-preview.png",
+      "preview_sha256": "2f6280b1810883e19a003a004f121ae49dca24f5330eb92e622f11edfbdaf163"
+    },
+    {
+      "index": 11,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-011-original.png",
+      "source_png_sha256": "56bf73f85f3714b2c047f670f2c649163dc2f9378b370fe9a03de1cd645d44cb",
+      "source_indices_sha256": "c106e8f840f1e3f0e843e825935394de0b86ad34b87e939f7ccc997866a737d2",
+      "source_bounds": [
+        0,
+        0,
+        46,
+        44
+      ],
+      "asset": "wall-011-calibrated-v2.png",
+      "asset_sha256": "fca46768466a1bd82eee5ff7fca812536e0356d1f0905613a9674b252adf5c58",
+      "crop": [
+        0,
+        0,
+        368,
+        352
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            27,
+            0,
+            46,
+            44
+          ]
+        ],
+        [
+          "H",
+          [
+            0,
+            14,
+            46,
+            44
+          ]
+        ]
+      ],
+      "preview": "wall-011-preview.png",
+      "preview_sha256": "bf07821985bb53601917087c2d2072aa7296fa3b75840ff9055806f2a1c49913"
+    },
+    {
+      "index": 12,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-012-original.png",
+      "source_png_sha256": "42ca5b7f1b3980e2e3a612a25dc30bb7c5e5afe130c23d612823c193b4940464",
+      "source_indices_sha256": "52e13b453971acf1583db891f0fd6116c97cea1adc0a3de359d19bcad9e33df8",
+      "source_bounds": [
+        27,
+        0,
+        46,
+        48
+      ],
+      "asset": "wall-012-calibrated-v2.png",
+      "asset_sha256": "8a76c643cbca8264a13c95db5066be7251ab34eba9ca294e20acf2164fe70b10",
+      "crop": [
+        216,
+        0,
+        368,
+        384
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            27,
+            0,
+            46,
+            48
+          ]
+        ]
+      ],
+      "preview": "wall-012-preview.png",
+      "preview_sha256": "f7632111b0b9b70dc3b104b47cd7c80e5ab7c2474815873dc522279a21045796"
+    },
+    {
+      "index": 13,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-013-original.png",
+      "source_png_sha256": "dbfb3be350697fb1a6ecd7bcbea9a97e211a874b9aea0935bb6d0917f2e73f44",
+      "source_indices_sha256": "d66a385cf4801f5d3f90096168b57f99c18804298e60a50161cf45bd15b7327a",
+      "source_bounds": [
+        3,
+        0,
+        22,
+        48
+      ],
+      "asset": "wall-013-calibrated-v2.png",
+      "asset_sha256": "72d24a3b7b85dff710626ee2dd31de252d487d03e5f116e387bb33f319dd3836",
+      "crop": [
+        24,
+        0,
+        176,
+        384
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            3,
+            0,
+            22,
+            48
+          ]
+        ]
+      ],
+      "preview": "wall-013-preview.png",
+      "preview_sha256": "54a9eafe8005c646788aa09dd6e44866e5753fec73728eef24b78aad7e537a87"
+    },
+    {
+      "index": 14,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-014-original.png",
+      "source_png_sha256": "02c7528b1c6f0c959efa818a73e7fb963ab9a144bb987dcee88a57b71b43f6f2",
+      "source_indices_sha256": "180400fac6b79ee162892df0fedfc7dff330047dcd12dcf90ff5b03364895c5b",
+      "source_bounds": [
+        27,
+        0,
+        48,
+        34
+      ],
+      "asset": "wall-014-calibrated-v2.png",
+      "asset_sha256": "59cdcf209ea93f8ac78bdc12856099f78029560d2367ce7e2558cfe78d61bd03",
+      "crop": [
+        216,
+        0,
+        384,
+        272
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            27,
+            0,
+            46,
+            34
+          ]
+        ],
+        [
+          "H",
+          [
+            27,
+            4,
+            48,
+            34
+          ]
+        ]
+      ],
+      "preview": "wall-014-preview.png",
+      "preview_sha256": "48bee37cd979269f1afda4adadb093223893180cbe14102b8be3fadcfff18c75"
+    },
+    {
+      "index": 15,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-015-original.png",
+      "source_png_sha256": "13f78ca101c7a6e080848c76a73e44441604b14526c0533ff19bf02dd2fdd7fe",
+      "source_indices_sha256": "233e45920eb6bedd985c67263728391fb94851a7255a130564dec33cbfbed7d9",
+      "source_bounds": [
+        0,
+        0,
+        22,
+        34
+      ],
+      "asset": "wall-015-calibrated-v2.png",
+      "asset_sha256": "d359da88720b7c93218d6bb8c22ce5be57a75a715a3a1816c0a432038b4733db",
+      "crop": [
+        0,
+        0,
+        176,
+        272
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            3,
+            0,
+            22,
+            34
+          ]
+        ],
+        [
+          "H",
+          [
+            0,
+            4,
+            22,
+            34
+          ]
+        ]
+      ],
+      "preview": "wall-015-preview.png",
+      "preview_sha256": "ca4e17d8a5ad634c4b785dbee0ca192640d0c9a4415f506c5ebb2695f20854d6"
+    },
+    {
+      "index": 16,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-016-original.png",
+      "source_png_sha256": "1961620aea47cd79f42b481f33c4d3dbc43310feb74b502508ace6579aa6b2a9",
+      "source_indices_sha256": "9726b2479be1dc9bb9587821eca7b9a3f9665b379d417502798ae698bf5a5814",
+      "source_bounds": [
+        27,
+        0,
+        48,
+        44
+      ],
+      "asset": "wall-016-calibrated-v2.png",
+      "asset_sha256": "02058513939d66271a61199174ab5715d3a90330c54dfd2be3104f9771725100",
+      "crop": [
+        216,
+        0,
+        384,
+        352
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            27,
+            0,
+            46,
+            44
+          ]
+        ],
+        [
+          "H",
+          [
+            27,
+            14,
+            48,
+            44
+          ]
+        ]
+      ],
+      "preview": "wall-016-preview.png",
+      "preview_sha256": "e1a947dbae21413cdc21c981fc9d0b0c4861fc616d58ebb189676be2273a795c"
+    },
+    {
+      "index": 17,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-017-original.png",
+      "source_png_sha256": "af578e591089002c59fbaefb845ed717e8a282c3b172a2450cd9fad6d66d35c7",
+      "source_indices_sha256": "424233b9b8db65a39de7588721a86db2ab1fc9b5e4173f3150d0c879cf9eaea4",
+      "source_bounds": [
+        0,
+        0,
+        22,
+        44
+      ],
+      "asset": "wall-017-calibrated-v2.png",
+      "asset_sha256": "0029233e9db8559e18a2c1d9d3bc31e9b7825dc5ed405343f5d6e85785a5fd9d",
+      "crop": [
+        0,
+        0,
+        176,
+        352
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            3,
+            0,
+            22,
+            44
+          ]
+        ],
+        [
+          "H",
+          [
+            0,
+            14,
+            22,
+            44
+          ]
+        ]
+      ],
+      "preview": "wall-017-preview.png",
+      "preview_sha256": "c223fb8a6c41555137a15ba8f9586c44cece06f45b1dd9e1709e982503e5572f"
+    },
+    {
+      "index": 20,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-020-original.png",
+      "source_png_sha256": "92634b3cfc341862b7a07fa3ee9a52401243fe2db4edc958982ed40ff679d3a8",
+      "source_indices_sha256": "c704a00f07770a8f21f61b4222468a379a2b741862d30048449ef693a3c0588a",
+      "source_bounds": [
+        3,
+        0,
+        23,
+        48
+      ],
+      "asset": "wall-020-calibrated-v2.png",
+      "asset_sha256": "564980475ddb2f793e56549e9224793c7f2e85fbc38f96af2dc8f2f354f03009",
+      "crop": [
+        24,
+        0,
+        184,
+        384
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            3,
+            0,
+            22,
+            48
+          ]
+        ],
+        [
+          "B20",
+          [
+            3,
+            13,
+            23,
+            31
+          ]
+        ]
+      ],
+      "preview": "wall-020-preview.png",
+      "preview_sha256": "11ac0e2c6fdb10f25495b0e41fc6b97a3f7b5598423d5a941955e2ee2c4aa8df"
+    },
+    {
+      "index": 21,
+      "source": "workplace/hd-prototype/catalog/terrain/objects/sources/objects-021-original.png",
+      "source_png_sha256": "ebe149d3ab90d0ee39f766a2d9a292ba5c619df09fc000f1f494e1011ddd5aac",
+      "source_indices_sha256": "633e52a4cfd77456b88749e3d9b36e60525780321535a8d5a4edbb10c3a76de6",
+      "source_bounds": [
+        27,
+        0,
+        46,
+        48
+      ],
+      "asset": "wall-021-calibrated-v2.png",
+      "asset_sha256": "576389fa980bb7b8a2d75f591d0e2c1e5a98f06dc93d4b27cd1c3c045b429e3e",
+      "crop": [
+        216,
+        0,
+        368,
+        384
+      ],
+      "parts": [
+        [
+          "V",
+          [
+            27,
+            0,
+            46,
+            48
+          ]
+        ],
+        [
+          "B21",
+          [
+            27,
+            13,
+            46,
+            31
+          ]
+        ]
+      ],
+      "preview": "wall-021-preview.png",
+      "preview_sha256": "3656ad7d73f1c504d83f9fef077d6ed3cbc86dbd1130f347d6a3737ee9cafe55"
+    }
+  ],
+  "review_pages": [
+    {
+      "path": "review-page-01.png",
+      "sha256": "737be830f765ccefddc1cd9b3c1aff5d2ac25b7c141d850300a47bb1b7bfe964"
+    },
+    {
+      "path": "review-page-02.png",
+      "sha256": "3e9078803ea759aea79051c2c89bdcf79c9fd974ec2c0d9a712ff378626a4580"
+    },
+    {
+      "path": "review-page-03.png",
+      "sha256": "d3d22fcaa20c8716a12375cffa99d6ef366dd6070c3a5fc56c36ee1176bffef9"
+    }
+  ],
+  "fixtures": [
+    {
+      "kind": "enclosure",
+      "grid": [
+        [
+          4,
+          6,
+          5,
+          6,
+          7
+        ],
+        [
+          13,
+          null,
+          null,
+          null,
+          12
+        ],
+        [
+          20,
+          null,
+          null,
+          null,
+          21
+        ],
+        [
+          13,
+          null,
+          null,
+          null,
+          12
+        ],
+        [
+          8,
+          10,
+          9,
+          10,
+          11
+        ]
+      ],
+      "HD": "wall-HD-enclosure-v2.png",
+      "HD_sha256": "6ad4181b04cdef08ad534db9b04c57b9818a2c99a2eb9f5e85e968c332e21f6c",
+      "local_comparison": "wall-enclosure-comparison.png",
+      "local_comparison_sha256": "4c878447b3784406509a74bdfd29bc3ad522ee427912f6a7db76215934635814"
+    },
+    {
+      "kind": "partial",
+      "grid": [
+        [
+          14,
+          6,
+          15
+        ],
+        [
+          16,
+          10,
+          17
+        ]
+      ],
+      "HD": "wall-HD-partial-v2.png",
+      "HD_sha256": "d6aaca1b4f1b26e172865621b88f11030286fecd371a6e1d04e38c8f65fb7abd",
+      "local_comparison": "wall-partial-comparison.png",
+      "local_comparison_sha256": "db48ccfa80d6eb1f14a5cc1576c879cb2affce1e250876dababa8021a1041f25"
+    }
+  ],
+  "gallery": "wall-HD-gallery-v2.png",
+  "gallery_sha256": "fcec406f50a057421bc06a638a394586e9b2b1ed24b6107f8b1f8e1d05002691"
+}

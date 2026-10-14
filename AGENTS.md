@@ -61,6 +61,9 @@
 | [tools/hd-object-prepare.py](tools/hd-object-prepare.py)、[tools/hd-terrain-object-profiles.go](tools/hd-terrain-object-profiles.go) | 26 項物件來源的 alpha、裁切及審查；只有 review 的 approved_indices 進入共同呈現，兩個空白格保留 |
 | [tools/verify-hd-objects.py](tools/verify-hd-objects.py) | 固定 GUI Docker 內逐項核對物件來源索引、alpha、載入 profile、完整 RAM、切換及前版真實視窗；專案唯讀掛 /project、objects/expanded 可寫掛 /output |
 | `workplace/hd-prototype/catalog/terrain/objects/expanded/` | 物件裁切、原圖對照、審查及隔離 runtime／desktop 收據；生成圖、裁切與提示詞保存於 assets/hd-b/terrain/objects |
+| [tools/hd-wall-prepare.py](tools/hd-wall-prepare.py) | 以已生成的橫牆、直牆、城門及斷牆分區校準 16 項牆件，保留原生透明形狀；來源索引與像素角色不作玩法推論 |
+| [tools/verify-hd-walls.py](tools/verify-hd-walls.py) | 核對完整 24 項非空物件、校準圖重用、原有八項不變及新版正常首戰；固定 GUI Docker，專案唯讀掛 /project、objects/walls 可寫掛 /output |
+| `workplace/hd-prototype/catalog/terrain/objects/walls/` | 城牆分區、接縫審查與隔離驗證；每版草稿分目錄保留，生成材質衍生圖與幾何紀錄另存 assets/hd-b/terrain/objects/walls |
 | [tools/hd-kao.go](tools/hd-kao.go)、[tools/hd-kao_test.go](tools/hd-kao_test.go) | 原版頭像繪製的唯讀參數／返回觀測與來源、遮擋、缺圖備援；原版全畫面複製撤銷舊頭像 |
 | `workplace/hd-prototype/catalog/kao/` | 本機原版頭像、HD 製作副本與來源證據；生成圖依使用者授權同步至 assets/hd-b |
 | `workplace/hd-prototype/catalog/` | 本機 HD 覆蓋盤點、原版擷取、格式診斷與驗證；已生成圖像另存 assets/hd-b |
@@ -142,6 +145,8 @@
 新增目錄或文件前讀 `/home/anr2/.codex/knowledge-base/local/project-document-responsibilities.md`，並更新本表。未有可執行待辦前不另建 WORKLIST；需要時只建立一份。README 只放穩定入口，工作歷程寫入 WORKLOG。
 
 ## 全美術 HD 研究入口
+
+尚未接入的戰鬥背景與開場徽記生成紀錄為 `workplace/hd-prototype/catalog/art/remaining-generation-v1.json`，原版參考沿用 `catalog/graphics/source-references.json`。BATTLE01／BATTLE02／OP4 的原始生成圖與提示詞保存至 `assets/hd-b/art/`；此紀錄只證明製作，裁切、文字與 runtime 整合仍需分項驗證。
 
 物件擴充入口為 `tools/hd-object-prepare.py`、`tools/hd-terrain-object-profiles.go` 與 `tools/verify-hd-objects.py`。`workplace/hd-prototype/catalog/terrain/objects/expanded/` 保存 26 項來源的裁切審查、原圖對照、準備後圖片及隔離 runtime／desktop 驗證；生成圖的裁切與提示詞另存 `assets/hd-b/terrain/objects/`。原版來源仍留在既有 `objects/sources/`，24、25 空白不得補圖。這批沿用共同前景 renderer 的來源、alpha、遮擋及備援契約，不推定地圖物件用途。
 

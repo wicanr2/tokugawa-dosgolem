@@ -10,8 +10,10 @@
 - [地面圖集的材質與衍生圖](terrain/materials/)，保留兩版製作紀錄及完整提示詞。
 - [十項非空單位的透明裁切](terrain/units/)，原版三個空白來源保持空白。
 - [物件的透明裁切及審查](terrain/objects/)，獨立物件分項接入，城牆接縫草稿另列。
+- [城牆校準與完整物件圖集](terrain/objects/walls/)，共用手繪材質對齊屋簷、石基及接縫，原版空白格保留。
 - [晴天與陰天天氣圖](art/weather-generation.json)，第二版保留原版岩峰構圖。
 - [開場騎兵與武將群像草稿](art/opening-generation.json)，保留原始生成圖，幾何與呈現待驗證。
+- [戰鬥背景與開場徽記草稿](art/remaining-generation-v1.json)，保留原版參考定位、完整提示詞及未校準的原始生成圖。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。
