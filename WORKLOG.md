@@ -326,3 +326,5 @@
 - READY 後只更新來源固定 Asset／AssetSHA。104 來源的共同呈現、缺圖、未知遮擋、原始輸入不變及矩形外保護測試通過；四套件通過，研究入口 25.741s。正常 GUI 自然完成 750M／390 事件，十五欄、完整 RAM、原生畫面、trace 及 CD PCM 符合基準，三次切換 Proof 相同。三張真實 X11 與呈現 PNG 完整相符，原圖與 HD 又逐點符合前次天氣版本；收據中全部 104 地面素材 ready。正常首戰仍只抽測六個來源、67 處可見區，其餘 98 來源未逐項正常抽測。
 - 唯一總表 7c3c0a8ccb899015ce3080fe91e5c0b56b7cad88811a2f6074114c384f5eca9d；來源對照 06828ec98b7011a925a72031f9623c6e82170474f782cd975f5acb87ff06bbd3；binary 9d4ebacda3e42dc2a36e3681e409c088dd86c069c5cce90892348970031e9d13。素材保存目前為 390 PNG、113 提示詞、373567657 indexed bytes；原版原圖、遮罩與執行收據留本機。
 - 全遊戲 HD 仍未完成，接續非空物件／單位、其他 OZM、開場與介面、動畫；全美術完成前不開始三平台打包。各製作、建置與 GUI 容器已結束，沒有重建 image。
+
+提交 `2f5e9a7172d3d88bd0ba4d40d03094bf3db0a4fc` 已推送私人 main，主機 gh 核對 SHA 一致。527 個素材檔逐項符合遠端 Git blob，original/、workplace/ 未加入遠端。Issue #5 進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6174942347 。保存索引、來源快照、Python 語法、文件入口、Git whitespace、UID/GID、root-owned／誤建 .md 目錄檢查通過；所有 tokugawa 容器已自動刪除，沒有殘留背景程序。
