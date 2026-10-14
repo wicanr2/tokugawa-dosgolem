@@ -337,3 +337,5 @@
 - 自然原版入口至首戰 750M／390 事件，完整 RAM、十五欄、原生畫面、trace 及 CD PCM 符合基準，三次切換 Proof 相同。三張真實 X11 與呈現 PNG 完整吻合，原圖、HD 及還原後完整畫面又逐點等於前次地面版本。十項單位載入皆 ready；正常首戰仍只看見 001／003，其餘八項只列來源與共同場景通過。
 - 唯一總表 a417f849eec3b4f2715c93da3aea429690451f9e9625810b2e4d7dd86f7d7bd3；來源對照 3a2edcd1567a56ab1d6573356a376ed22ce7238deafab9b7133fe0c6546d2e2e；binary b3d881260858e4058ef2c2d726696b2b4ba87f7e3dc70078b796f203569ec6b2。原始生成圖、全部修正版、兩次透明裁切、純 HD 總覽及完整提示詞保存；原圖對照及執行收據維持本機。
 - 素材庫目前 415 PNG、116 提示詞、377450824 indexed bytes。全遊戲 HD 仍未完成，接續其餘 23 非空物件、其他 OZM、介面與動畫；正式三平台打包尚未開始。製作、建置與 GUI 容器均已結束，沿用既有 image。
+
+提交 `87ab034b0bf0d91274c78d47802e8ae1dc7193c5` 已推送私人 main，主機 gh 核對 SHA 一致。563 個素材檔逐項符合遠端 Git blob，original/、workplace/ 未加入遠端。Issue #5 進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6175780323 。保存索引、來源快照、Python 語法、文件入口、Git whitespace、UID/GID、root-owned／誤建 .md 目錄檢查通過；所有 tokugawa 容器已自動刪除，沒有殘留背景程序。
