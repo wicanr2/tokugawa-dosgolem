@@ -305,3 +305,12 @@
 - 全遊戲 HD 尚未完成；下一切片為天氣、MAP_WAKU 等其他戰場圖像與共同繪圖端，其後補剩餘 OZM、地面與非空物件／單位。正式三平台打包尚未開始。
 
 提交 `b6bcfa0010dcb5ff7f5147266d0a63012013c751` 已推送私人 main，主機 gh 核對 SHA 一致。313 個素材檔逐項符合遠端 Git blob，original/、workplace/ 未加入遠端。Issue #5 進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6173478172 。當次及歷史收據、來源快照、素材索引、語法、文件入口、Git whitespace、UID/GID、root-owned／誤建 .md 目錄檢查通過；所有 tokugawa 容器均已自動刪除，沿用原 image，沒有遺留背景程序。
+
+## 2026-10-15 共用 OZM 繪圖與天氣 HD
+
+- 命中規格驗收與文件職責入口；沿用原版整合及戰國手繪風。先從既有覆蓋表擷取 28 個未製作且可解碼的 OZM 參考，五個未完整解碼來源不填補，原圖與總覽維持本機。
+- 依 IDA Pro 9.4 的 sub_1C1BC／sub_1C26D 原始定位確認來源 offset、byte columns、rows、目的 pitch 與位址。新診斷核對實際 RAM 四平面，避免把最後載入檔名當作快取來源。四套件及自然 750M／390 事件通過，16 次繪圖均與靜態來源矩形逐索引相符，完整 RAM、十五欄及 PCM 符合基準。來源總表 7abe3e4f463ffb001c5024bf89111b7209c643c818027c1d6ccdd509be9cdc69。
+- 內建 image_gen.imagegen 製作 WEATHER1／2；首版把原圖岩峰畫成松樹，依原圖修正 v2，兩版與完整提示詞皆保留。READY 後接入共用不透明繪圖端、來源裁切及 palette／整區資格、全畫面清除與未知交疊撤銷。正式規則、資料及存檔維持原版。
+- 固定 GUI image 四套件通過，研究入口 19.915s。晴天及缺圖兩模式各自然 750M／390 事件、三次原版狀態不變切換，完整 RAM、十五欄、原生圖及 CD PCM 符合基準；六張真實 X11 圖與呈現 PNG 完整一致。天氣 42624 呈現像素逐點符合手繪取樣，缺圖同區零變動，天氣區外的框架、67 地面、樹叢與人物 HD 完全相同。總表 743d43ac25ffe6d318daa13f1f307d66c861a2584d8c5ff6656a024c780f593e，共用 binary c8d83595c1f593de60b180e5b1dfaa1e565626cb6f9ecb67579619dbfd333314。陰天為共同繪圖端及來源測試通過，正常路徑未抽測。
+- 另製作 OP2 騎兵與 OP8 五武將開場草稿。保留原始 2172×724／2171×724 與提示詞；原版 640×200 幾何及 OP2 未使用藍底區待校準，不加入 production profile。覆蓋表現為 79 個 OZM 已準備、兩個部分完成及兩個新開場草稿，全遊戲 HD 仍未完成，未開始三平台打包。
+- 私人素材保存與 verify-only 核對 199 PNG、110 提示詞、319872400 indexed bytes，共 327 個素材檔。語法、文件入口、目前與來源快照雜湊、Git whitespace、UID/GID 及 root-owned／誤建 .md 目錄檢查通過。來源探針、建置、兩個 GUI 及收尾容器均已結束並自動刪除，沿用既有 image。

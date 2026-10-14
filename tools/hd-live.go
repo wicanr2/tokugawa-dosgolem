@@ -6,6 +6,7 @@ type hdDrawReturn struct{ Return, Stack uint32 }
 
 // 固定 EXE 的原版入口與返回觀測；不修改 guest 或取代指令。
 type hdLive struct {
+	Graphics        hdGraphicsState  `json:"graphics"`
 	BattleFrame     battleFrameState `json:"battle_frame"`
 	Terrain         hdTerrainState   `json:"terrain"`
 	Window          hdWindowState    `json:"window"`
@@ -26,6 +27,7 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 	if len(snapshots) == 1 {
 		snapshot = snapshots[0]
 	}
+	h.Graphics.observe(step, eip, esp, mem, snapshot)
 	h.BattleFrame.observe(step, eip, esp, mem, snapshot)
 	h.Window.observe(step, eip, esp, mem)
 	h.Kao.observe(step, eip, esp, mem)

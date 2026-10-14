@@ -1,0 +1,77 @@
+{
+  "classification": "generated weather paintings, original bare rock spires preserved in v2",
+  "selected_versions": {
+    "WEATHER1.OZM": 2,
+    "WEATHER2.OZM": 2
+  },
+  "records": [
+    {
+      "source": "WEATHER1.OZM",
+      "version": 1,
+      "asset": "WEATHER1-hd-b-v1.png",
+      "sha256": "0a10456e639c9b03b27d2758b11abd613fdf0151cffe429b1eb838308c6d9be6",
+      "prompt": "WEATHER1-hd-b-v1.prompt.txt",
+      "prompt_sha256": "66bbe4f82bdfa7a915e76add190b701f6e95151e5fdd547ab4b2caef883f6d3c",
+      "tool": "built-in image_gen.imagegen",
+      "size": [
+        1750,
+        899
+      ],
+      "transparent_background": false,
+      "reference_original_indexed_sha256": "ad397c7ae15a08571b43e66fed4fc9fc9236c37909b374fe69ef1e51771066c0",
+      "reference_original_png_sha256": "1901ca88247a02ae67d085d915a13693fecb74f93ad554638f0efbb406d0b783",
+      "status": "superseded; rock spires misinterpreted as trees"
+    },
+    {
+      "source": "WEATHER1.OZM",
+      "version": 2,
+      "asset": "WEATHER1-hd-b-v2.png",
+      "sha256": "44ea325fa5e95ab3d8b686a9cf895c3347a47d99f081c58c7406257c49bd014b",
+      "prompt": "WEATHER1-hd-b-v2.prompt.txt",
+      "prompt_sha256": "ba28f251ce14d75d4e8e1b5f89c3335213110a5cb3797e5ab97593063040de1a",
+      "tool": "built-in image_gen.imagegen",
+      "size": [
+        1750,
+        899
+      ],
+      "transparent_background": false,
+      "reference_original_indexed_sha256": "ad397c7ae15a08571b43e66fed4fc9fc9236c37909b374fe69ef1e51771066c0",
+      "reference_original_png_sha256": "1901ca88247a02ae67d085d915a13693fecb74f93ad554638f0efbb406d0b783",
+      "status": "visually reviewed rock spires and clouds; runtime integration pending"
+    },
+    {
+      "source": "WEATHER2.OZM",
+      "version": 1,
+      "asset": "WEATHER2-hd-b-v1.png",
+      "sha256": "4dffbf4c7e56f0e84501e28b8c45c5bae858c55df1d00a2408add6afcdcc81fe",
+      "prompt": "WEATHER2-hd-b-v1.prompt.txt",
+      "prompt_sha256": "2d59c17df9df29c95d0a2e0170a2fe89d4535aa85b5e1dab7ea7723eac41d415",
+      "tool": "built-in image_gen.imagegen",
+      "size": [
+        1750,
+        899
+      ],
+      "transparent_background": false,
+      "reference_original_indexed_sha256": "61220f0bcfe5c2c85d09f3a451deeef33c2363109d8de992d99d19951cf84696",
+      "reference_original_png_sha256": "6f06a7db2968f2c3dd911c43a2b81dd2f9260b3a28bf55533a5619cce3083f6e",
+      "status": "superseded; rock spires misinterpreted as trees"
+    },
+    {
+      "source": "WEATHER2.OZM",
+      "version": 2,
+      "asset": "WEATHER2-hd-b-v2.png",
+      "sha256": "b5a024f4ae985a46f6c8e8686ae286a3583394b59e48fa08d821b2f1a146562a",
+      "prompt": "WEATHER2-hd-b-v2.prompt.txt",
+      "prompt_sha256": "4c9085e988c293801d372287cb266d97ba14f681ade329e1102201a3df762c3a",
+      "tool": "built-in image_gen.imagegen",
+      "size": [
+        1750,
+        899
+      ],
+      "transparent_background": false,
+      "reference_original_indexed_sha256": "61220f0bcfe5c2c85d09f3a451deeef33c2363109d8de992d99d19951cf84696",
+      "reference_original_png_sha256": "6f06a7db2968f2c3dd911c43a2b81dd2f9260b3a28bf55533a5619cce3083f6e",
+      "status": "visually reviewed rock spires and clouds; runtime integration pending"
+    }
+  ]
+}

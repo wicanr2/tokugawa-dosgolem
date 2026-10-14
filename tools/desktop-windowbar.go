@@ -37,6 +37,11 @@ func (g *desktopGame) selectedBar() [3]int {
 }
 
 func (g *desktopGame) hdAvailable() bool {
+	for _, pair := range g.graphics {
+		if pair.Reason == "ready" {
+			return true
+		}
+	}
 	if g.battleFrame != nil && g.battleFrame.Reason == "ready" {
 		return true
 	}

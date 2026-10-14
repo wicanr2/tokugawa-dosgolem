@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 193,
-    "prompts": 104,
-    "bytes": 305012173
+    "png": 199,
+    "prompts": 110,
+    "bytes": 319872400
   },
-  "archive_tool_sha256": "086e1ebdd0b9f3bf6ee0e507ca5fbd4b7178d086c74017eb7f80c02a0befe0f6",
+  "archive_tool_sha256": "e380f840a2926653132751514fef66a3467e22827669cbb3c2b256fc7f8269f6",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -1272,6 +1272,126 @@
       "local_source": "workplace/hd-prototype/catalog/art/MAPGAMEN-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/OP2-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2190260,
+      "sha256": "ff96cecd3dbb331ab7692c67a00ed25fbd1a67cd316bfae1bb6118378f14f5ec",
+      "local_source": "workplace/hd-prototype/catalog/art/OP2-hd-b-v1.png",
+      "prompt": "art/OP2-hd-b-v1.prompt.txt",
+      "status": "composition visually reviewed; aspect, occupied panel and unused blue-region geometry calibration pending",
+      "size": [
+        2172,
+        724
+      ]
+    },
+    {
+      "path": "art/OP2-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1349,
+      "sha256": "71bce91521dd547bf1e233348021914e2279ab5d8bcc159562e44bcec401f5e3",
+      "local_source": "workplace/hd-prototype/catalog/art/OP2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/OP8-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2829081,
+      "sha256": "57f96bcccb77bce9d047c851de383d1400f9abe3cfbdcdf0abfcadfc3db294d2",
+      "local_source": "workplace/hd-prototype/catalog/art/OP8-hd-b-v1.png",
+      "prompt": "art/OP8-hd-b-v1.prompt.txt",
+      "status": "five-figure composition visually reviewed; aspect calibration and runtime integration pending",
+      "size": [
+        2171,
+        724
+      ]
+    },
+    {
+      "path": "art/OP8-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1467,
+      "sha256": "68da76ac0756cdf5072339bf9acf7bed03cb5b351d7f6b724595faaee36d9070",
+      "local_source": "workplace/hd-prototype/catalog/art/OP8-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/WEATHER1-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2471879,
+      "sha256": "0a10456e639c9b03b27d2758b11abd613fdf0151cffe429b1eb838308c6d9be6",
+      "local_source": "workplace/hd-prototype/catalog/art/WEATHER1-hd-b-v1.png",
+      "prompt": "art/WEATHER1-hd-b-v1.prompt.txt",
+      "status": "superseded; rock spires misinterpreted as trees",
+      "size": [
+        1750,
+        899
+      ]
+    },
+    {
+      "path": "art/WEATHER1-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 965,
+      "sha256": "66bbe4f82bdfa7a915e76add190b701f6e95151e5fdd547ab4b2caef883f6d3c",
+      "local_source": "workplace/hd-prototype/catalog/art/WEATHER1-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/WEATHER1-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 2220053,
+      "sha256": "44ea325fa5e95ab3d8b686a9cf895c3347a47d99f081c58c7406257c49bd014b",
+      "local_source": "workplace/hd-prototype/catalog/art/WEATHER1-hd-b-v2.png",
+      "prompt": "art/WEATHER1-hd-b-v2.prompt.txt",
+      "status": "common opaque draw consumer integrated; WEATHER1 normal first battle verified",
+      "size": [
+        1750,
+        899
+      ]
+    },
+    {
+      "path": "art/WEATHER1-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1547,
+      "sha256": "ba28f251ce14d75d4e8e1b5f89c3335213110a5cb3797e5ab97593063040de1a",
+      "local_source": "workplace/hd-prototype/catalog/art/WEATHER1-hd-b-v2.prompt.txt"
+    },
+    {
+      "path": "art/WEATHER2-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2720348,
+      "sha256": "4dffbf4c7e56f0e84501e28b8c45c5bae858c55df1d00a2408add6afcdcc81fe",
+      "local_source": "workplace/hd-prototype/catalog/art/WEATHER2-hd-b-v1.png",
+      "prompt": "art/WEATHER2-hd-b-v1.prompt.txt",
+      "status": "superseded; rock spires misinterpreted as trees",
+      "size": [
+        1750,
+        899
+      ]
+    },
+    {
+      "path": "art/WEATHER2-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1037,
+      "sha256": "2d59c17df9df29c95d0a2e0170a2fe89d4535aa85b5e1dab7ea7723eac41d415",
+      "local_source": "workplace/hd-prototype/catalog/art/WEATHER2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/WEATHER2-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 2415744,
+      "sha256": "b5a024f4ae985a46f6c8e8686ae286a3583394b59e48fa08d821b2f1a146562a",
+      "local_source": "workplace/hd-prototype/catalog/art/WEATHER2-hd-b-v2.png",
+      "prompt": "art/WEATHER2-hd-b-v2.prompt.txt",
+      "status": "common opaque draw consumer integrated; overcast normal path not yet sampled",
+      "size": [
+        1750,
+        899
+      ]
+    },
+    {
+      "path": "art/WEATHER2-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1619,
+      "sha256": "4c9085e988c293801d372287cb266d97ba14f681ade329e1102201a3df762c3a",
+      "local_source": "workplace/hd-prototype/catalog/art/WEATHER2-hd-b-v2.prompt.txt"
+    },
+    {
       "path": "art/YOULOSE-hd-b-v1.png",
       "kind": "png",
       "bytes": 2572968,
@@ -1299,6 +1419,13 @@
       "local_source": "workplace/hd-prototype/catalog/art/gungi-revision.json"
     },
     {
+      "path": "art/opening-generation.json",
+      "kind": "generation-metadata",
+      "bytes": 1663,
+      "sha256": "7c0515adcc63667762de73621b4f90088bf6760f47667e8e72ffb074cda767bf",
+      "local_source": "workplace/hd-prototype/catalog/art/opening-generation.json"
+    },
+    {
       "path": "art/remaining-generation.json",
       "kind": "generation-metadata",
       "bytes": 10434,
@@ -1318,6 +1445,13 @@
       "bytes": 1032,
       "sha256": "9f5d62b5bee87e0055652504a0937aff404705691b136f68a89064756aa5b0da",
       "local_source": "workplace/hd-prototype/catalog/art/ui-generation.json"
+    },
+    {
+      "path": "art/weather-generation.json",
+      "kind": "generation-metadata",
+      "bytes": 3215,
+      "sha256": "19d8da31e4ddd96754468ed178e8118791dae25e84d984850e6a797266f20219",
+      "local_source": "workplace/hd-prototype/catalog/art/weather-generation.json"
     },
     {
       "path": "battle-frame/battle-frame-geometry-v2.json",

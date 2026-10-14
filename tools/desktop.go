@@ -39,6 +39,7 @@ var desktopTerrainScene = flag.Bool("hd-terrain-scene", true, "compose the compl
 var desktopBattleFrameIndices = flag.String("hd-battle-frame-indices", "/project/workplace/hd-prototype/catalog/hd-assets/MAPGAMEN.OZM-"+battleFrameIndexedSHA+".idx", "verified original MAPGAMEN indexed source")
 var desktopBattleFrameAsset = flag.String("hd-battle-frame-asset", "/project/assets/hd-b/battle-frame/"+battleFrameAsset, "registered battle-frame skin; missing asset falls back")
 var desktopBattleFrameProof = flag.Bool("hd-battle-frame-proof", false, "export native snapshot and pre-sprite indices with desktop captures for isolated validation")
+var desktopGraphicsDir = flag.String("hd-graphics-dir", "/project/assets/hd-b/art", "approved opaque OZM HD paintings; each missing item falls back")
 
 type desktopGame struct {
 	c                           *desktopContext
@@ -82,6 +83,8 @@ type desktopGame struct {
 	sceneReport                 hdTerrainSceneReport
 	battleFrame                 *hdBattleFrame
 	battleFrameReport           hdBattleFrameReport
+	graphics                    map[string]hdGraphicsPair
+	graphicsReports             []hdGraphicsReport
 }
 
 type desktopPortrait struct {
@@ -395,6 +398,27 @@ func runDesktopWindow(c *desktopContext) error {
 	g.battleFrame = newHDBattleFrame(indices, battleAsset, 2)
 	battleInfo["validation"], battleInfo["source_mask_sha256"] = g.battleFrame.Reason, fmt.Sprintf("%x", sha256.Sum256(g.battleFrame.Mask))
 	g.assetInfo["battle_frame"] = battleInfo
+	g.graphics = map[string]hdGraphicsPair{}
+	graphicsInfo := map[string]any{}
+	for _, profile := range hdGraphicsProfiles {
+		indices, _ := os.ReadFile(filepath.Join("/project/workplace/hd-prototype/catalog/decoded", profile.Source.Name+".idx"))
+		info := map[string]any{"source_indices_sha256": fmt.Sprintf("%x", sha256.Sum256(indices))}
+		var painting image.Image
+		if data, e := os.ReadFile(filepath.Join(*desktopGraphicsDir, profile.Asset)); e == nil {
+			sum := fmt.Sprintf("%x", sha256.Sum256(data))
+			info["hd_sha256"] = sum
+			if sum == profile.AssetSHA {
+				painting, _ = previewPNG(filepath.Join(*desktopGraphicsDir, profile.Asset))
+			} else {
+				info["hd_error"] = "unapproved opaque graphic fingerprint"
+			}
+		}
+		pair := newHDGraphicsPair(profile, indices, painting, 2)
+		info["validation"] = pair.Reason
+		g.graphics[profile.Source.Name] = pair
+		graphicsInfo[profile.Source.Name] = info
+	}
+	g.assetInfo["graphics"] = graphicsInfo
 	ebiten.SetWindowSize(1280, 800)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("德川家康｜原版｜F6 切換 HD｜F7 暫停")
@@ -410,6 +434,7 @@ func runDesktopWindow(c *desktopContext) error {
 	c.Report["tree_modes"], c.Report["tree_hd_count"], c.Report["tree_protected_pixels"] = g.treeModes, g.treeHD, g.treeProtected
 	c.Report["terrain_scene"], c.Report["terrain_scene_enabled"] = g.sceneReport, *desktopTerrainScene
 	c.Report["battle_frame"] = g.battleFrameReport
+	c.Report["graphics"] = g.graphicsReports
 	return err
 }
 
@@ -519,6 +544,14 @@ func (g *desktopGame) render() error {
 		g.kaoModes[draw.Index] = result
 		if result == "hd" {
 			g.kaoHD++
+			mode = "hd"
+		}
+	}
+	g.graphicsReports = nil
+	for _, draw := range g.c.Live.Graphics.Draws {
+		report := g.graphics[draw.Name].apply(out, s, draw, g.enabled)
+		g.graphicsReports = append(g.graphicsReports, report)
+		if report.Mode == "hd" {
 			mode = "hd"
 		}
 	}
@@ -685,6 +718,7 @@ func (g *desktopGame) Update() error {
 	status["tree_modes"], status["tree_hd_count"], status["tree_protected_pixels"], status["tree_draws"] = g.treeModes, g.treeHD, g.treeProtected, g.c.Live.Terrain.Sprites
 	status["terrain_scene"], status["terrain_scene_enabled"], status["terrain_history"] = g.sceneReport, *desktopTerrainScene, g.c.Live.Terrain.History
 	status["battle_frame"], status["battle_frame_observation"] = g.battleFrameReport, g.c.Live.BattleFrame
+	status["graphics"], status["graphics_observation"] = g.graphicsReports, g.c.Live.Graphics
 	if *desktopTerrainScene {
 		status["terrain_draws"] = g.c.Live.Terrain.History
 	}

@@ -45,6 +45,14 @@ def main():
         profiles = {r["resource"]: r for r in prepared["records"]}
     ui_path = ROOT/'art/ui-generation.json'
     ui_drafts = {r['source']:r for r in json.loads(ui_path.read_text())['records']} if ui_path.exists() else {}
+    weather_path = ROOT/'art/weather-generation.json'
+    weather = {r['source']:r for r in json.loads(weather_path.read_text())['records'] if r['version'] == 2} if weather_path.exists() else {}
+    weather_profile_path = ROOT/'graphics/weather-profiles.json'
+    weather_profiles = {r['source']:r for r in json.loads(weather_profile_path.read_text())['records']} if weather_profile_path.exists() else {}
+    weather_proof_path = ROOT/'graphics/verification-summary.json'
+    weather_proof = json.loads(weather_proof_path.read_text()) if weather_proof_path.exists() else None
+    opening_path = ROOT/'art/opening-generation.json'
+    opening = {r['source']:r for r in json.loads(opening_path.read_text())['records']} if opening_path.exists() else {}
     frame_summary_path = ROOT/'battle-frame/verification-summary.json'
     frame_summary = json.loads(frame_summary_path.read_text()) if frame_summary_path.exists() else None
     if frame_summary:
@@ -52,7 +60,7 @@ def main():
         proof_sources_frame = {'verification':str(frame_summary_path.relative_to(PROJECT)),'sha256':sha(frame_summary_path)}
     direct = {}
     for record in decoded["records"]:
-        if record['name'] in ui_drafts:
+        if record['name'] in ui_drafts or record['name'] in weather or record['name'] in opening:
             continue
         stem = record["name"].removesuffix(".OZM")
         path = ROOT / "art" / f"{stem}-hd-b-v1.png"
@@ -233,6 +241,28 @@ def main():
                 record.update(art_status='prepared',art=art_info(prepared,ROOT/'art'/draft['prompt']),
                               runtime_status='normal pre-battle modal and first battle verified; whole-region weather/crest guards, indexed foreground and joint HD scene underlay',
                               runtime_proof_sha256=sha(frame_summary_path),geometry_sha256=sha(geometry_path))
+        if name in opening:
+            painting = opening[name]
+            path = ROOT/'art'/painting['asset']
+            assert sha(path) == painting['sha256']
+            record.update(kind='opening panoramic illustration', art_status='draft',
+                          art=art_info(path,ROOT/'art'/painting['prompt']),runtime_status=painting['status'])
+        if name in weather:
+            painting = weather[name]
+            path = ROOT/'art'/painting['asset']
+            assert sha(path) == painting['sha256']
+            record.update(kind='opaque mountain and cloud weather painting', art_status='draft',
+                          art=art_info(path, ROOT/'art'/painting['prompt']),
+                          runtime_status='v2 rock spires visually reviewed; source and integration pending')
+            if name in weather_profiles:
+                profile = weather_profiles[name]
+                assert profile['asset_sha256'] == painting['sha256']
+                record.update(art_status='prepared',source_profile=profile,
+                              runtime_status='exact source and common opaque draw consumer integrated; normal path not yet sampled')
+            if weather_proof and name == 'WEATHER1.OZM':
+                assert weather_proof['verified'] and weather_proof['profiles_sha256'] == sha(weather_profile_path)
+                record.update(runtime_status='normal first-battle weather HD, original toggle and missing asset verified',
+                              runtime_proof_sha256=sha(weather_proof_path))
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]
@@ -258,6 +288,9 @@ def main():
               "prepared_KAO_portraits": 81, "native_story_cases_verified": len(verified_story),
               "native_KAO_cases_verified": len(verified_kao), "unsupported_OZM_decodes": 5,
               "reviewed_story_source_profiles": len(profiles),
+              "generated_weather_sources":len(weather), "approved_weather_sources":len(weather_profiles),
+              "normal_weather_sources_verified":1 if weather_proof else 0,
+              "generated_opening_drafts":len(opening),
               "approved_MAP_CHIP_floor_art": 8 if terrain_profiles else 0,
               "normal_MAP_CHIP_floor_cases_verified": len(verified_floors),
               "generated_MAP_CHIP_unit_drafts": unit_drafts,

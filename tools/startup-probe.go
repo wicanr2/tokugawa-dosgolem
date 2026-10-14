@@ -42,6 +42,7 @@ func main() {
 	terrainDiagnostic := flag.Bool("hd-terrain-trace", false, "record bounded read-only original floor/sprite draw registers and returns")
 	backdropDiagnostic := flag.Bool("hd-backdrop-trace", false, "capture bounded read-only native sprite backgrounds and verify original binary-alpha primitive")
 	battleFrameDiagnostic := flag.Bool("hd-battle-frame-trace", false, "verify MAPGAMEN full native draw at its natural return; no HD replacement")
+	graphicsDiagnostic := flag.Bool("hd-graphics-trace", false, "verify exact opaque OZM source and destination at natural draw returns; read-only")
 	hdExport := flag.Bool("hd-export", false, "copy validated loader-return planes and DAC to local research output; implies hd-trace")
 	desktop := flag.Bool("desktop", false, "run isolated desktop presentation prototype")
 	flag.Parse()
@@ -52,6 +53,14 @@ func main() {
 	var floorTrace terrainTrace
 	var backdropTrace spriteBackdropTrace
 	var live hdLive
+	var graphics graphicsTrace
+	if *graphicsDiagnostic {
+		var err error
+		graphics, err = newGraphicsTrace("/project/workplace/hd-prototype/catalog/decoded/inventory.json")
+		if err != nil {
+			panic(err)
+		}
+	}
 	var desktopReceipt map[string]any
 	if *desktop && runDesktop == nil {
 		panic("desktop build tag is required")
@@ -304,6 +313,11 @@ func main() {
 				nextMouse++
 			}
 			before = m.CPU.EIP
+			if *graphicsDiagnostic {
+				graphics.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem, func() (nativeSnapshot, error) {
+					return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
+				})
+			}
 			if *hdDiagnostic {
 				previous := len(assetTrace.Events)
 				assetTrace.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem)
@@ -433,6 +447,13 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
+	for _, name := range []string{"tools/hd-graphics-trace.go", "tools/hd-graphics-trace_test.go", "tools/hd-graphics.go", "tools/hd-graphics_test.go", "tools/hd-graphics-profiles.go"} {
+		b, e := os.ReadFile("/project/" + name)
+		if e != nil {
+			panic(e)
+		}
+		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
+	}
 	for _, name := range []string{"tools/hd-battle-frame.go", "tools/hd-battle-frame_test.go", "tools/hd-battle-frame-render.go", "tools/hd-battle-frame-render_test.go", "tools/hd-battle-frame-profile.go"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
@@ -497,6 +518,7 @@ func main() {
 		"terrain_diagnostic_enabled": *terrainDiagnostic, "terrain_draw_trace": floorTrace,
 		"sprite_backdrop_diagnostic_enabled": *backdropDiagnostic, "sprite_backdrop_records": backdropRecords, "sprite_backdrop_dropped": backdropTrace.Dropped,
 		"battle_frame_diagnostic_enabled": *battleFrameDiagnostic, "battle_frame_observation": live.BattleFrame, "battle_frame_capture": battleFrameCapture,
+		"graphics_diagnostic_enabled": *graphicsDiagnostic, "graphics_draw_trace": graphics,
 		"desktop":            desktopReceipt,
 		"mouse_calls":        mouseServices.Mouse.Calls,
 		"mouse_cursor":       cursor,

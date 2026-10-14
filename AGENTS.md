@@ -1,5 +1,11 @@
 # 德川家康：DOS 原版與 dosgolem
 
+共同 OZM 診斷的獨立核對入口為 [tools/verify-hd-graphics-source.py](tools/verify-hd-graphics-source.py)。固定 GUI image 中專案唯讀掛 `/project`、`workplace/hd-prototype/catalog/graphics/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-graphics-source.py`。`graphics/source-probe/source-snapshot/tools/` 保存當次來源；`graphics/source-verification.json` 記錄靜態來源矩形、自然返回、完整 RAM 與正常路徑基準核對。
+
+共同不透明 OZM 的呈現入口為 [tools/hd-graphics.go](tools/hd-graphics.go)，固定來源與天氣素材指紋見 [tools/hd-graphics-profiles.go](tools/hd-graphics-profiles.go)，邊界與備援測試見 [tools/hd-graphics_test.go](tools/hd-graphics_test.go)。沿固定 GUI image 與 `tools/run-desktop.sh`，建置寫入 `workplace/hd-prototype/catalog/graphics/runtime/`；`graphics/desktop/` 與 `graphics/desktop-missing/` 保存真實視窗及來源快照。驗證入口 [tools/verify-hd-weather.py](tools/verify-hd-weather.py) 及 [tools/verify-hd-weather-summary.py](tools/verify-hd-weather-summary.py)，天氣來源及生成圖對應保存在 `graphics/weather-profiles.json`，兩模式總表為 `graphics/verification-summary.json`。生成圖與提示詞另保存 `assets/hd-b/art/weather-generation.json`，原圖及收據不進 Git。
+
+開場 OP2／OP8 手繪草稿及完整提示詞保存於 `workplace/hd-prototype/catalog/art/`，生成 metadata 為該目錄的 `opening-generation.json`，私人索引副本為 `assets/hd-b/art/opening-generation.json`。原始生成尺寸分別 2172×724、2171×724，尚須依原版 640×200 校準；OP2 未使用的藍底區另外保護。草稿不當作已接入或正常路徑驗收。
+
 ## 開工入口
 
 本專案保存《德川家康》的 jsdos 來源與 dosgolem 接入證據。下載完成不代表遊戲已在 dosgolem 可玩。本次沒有建立 remake 引擎。
@@ -151,6 +157,10 @@
 `tools/verify_hd_battle_frame_pixels.py` 依原版索引、實際 palette、固定幾何與場景影響區獨立計算框架。真實視窗驗證開啟 `-hd-battle-frame-proof`，擷取原生及 48×48 背景索引至同一輸出目錄；它們維持本機，不加入素材索引。此核對器與 verify_hd_scene_pixels.py 隨 verify-desktop.py 複製到各 GUI 輸出目錄。
 
 `tools/verify-hd-battle-frame.py` 彙整兩個正常畫面、三種 GUI、來源與幾何、工具快照、完整 RAM 及十五欄基準。固定 GUI image 內專案唯讀掛 `/project`、`battle-frame/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-battle-frame.py`。歷史重核可指定 `--runtime-source-root` 與 `--verify-only`。
+
+`workplace/hd-prototype/catalog/graphics/` 保存其餘 OZM 的原圖、生成參考、共同繪圖診斷及後續驗證。`tools/hd-remaining-art-extract.py` 只讀已解碼且未製作的來源，依已核對十六色重生本機 PNG、放大參考與總覽；不填補未支援的五個 OZM。固定 GUI image 內專案唯讀掛 `/project`、該目錄可寫掛 `/output`，執行 `python3 /project/tools/hd-remaining-art-extract.py`。原圖與混合總覽不加入 Git，生成美術沿 assets/hd-b/art 保存。
+
+`tools/hd-graphics-trace.go`／`tools/hd-graphics-trace_test.go` 是共用 OZM 不透明繪圖的唯讀診斷：以實際 RAM 四平面指紋識別來源，記錄 sub_1C1BC／sub_1C084 的入口與自然返回，逐索引核對輸出。`graphics/source-probe/` 保存有界普通玩家路徑、來源快照及診斷。固定 Go image 內該目錄可寫掛 `/output`，沿 run-probes.sh 加 `-hd-graphics-trace`；診斷只讀，正式呈現由 hd-graphics.go 依已審查契約處理。
 
 `battle-frame/desktop-attempt-01/`、`desktop-only-attempt-01/`、`desktop-missing-attempt-01/` 保留首輪驗證器階段假設與切換次數不符的輸出；不是產品缺陷或成功收據。正常 658M 後畫面有能力／確認視窗遮住徽記，應驗證徽記整區備援，不能假設已是裸框架。
 

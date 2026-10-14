@@ -1,0 +1,37 @@
+{
+  "classification": "generated opening artwork drafts; original raw output preserved, geometry and runtime pending",
+  "records": [
+    {
+      "source": "OP2.OZM",
+      "asset": "OP2-hd-b-v1.png",
+      "sha256": "ff96cecd3dbb331ab7692c67a00ed25fbd1a67cd316bfae1bb6118378f14f5ec",
+      "prompt": "OP2-hd-b-v1.prompt.txt",
+      "prompt_sha256": "71bce91521dd547bf1e233348021914e2279ab5d8bcc159562e44bcec401f5e3",
+      "tool": "built-in image_gen.imagegen",
+      "size": [
+        2172,
+        724
+      ],
+      "transparent_background": false,
+      "reference_original_indexed_sha256": "85503de8a0563ade51a6a6cf65b71f9fbe0c10fbc0c10e4229605221fd6e6cb9",
+      "reference_original_png_sha256": "d113842570ac5879303481de240e1b98be6d1486dd8d57551e8af6a338333e94",
+      "status": "composition visually reviewed; aspect, occupied panel and unused blue-region geometry calibration pending"
+    },
+    {
+      "source": "OP8.OZM",
+      "asset": "OP8-hd-b-v1.png",
+      "sha256": "57f96bcccb77bce9d047c851de383d1400f9abe3cfbdcdf0abfcadfc3db294d2",
+      "prompt": "OP8-hd-b-v1.prompt.txt",
+      "prompt_sha256": "68da76ac0756cdf5072339bf9acf7bed03cb5b351d7f6b724595faaee36d9070",
+      "tool": "built-in image_gen.imagegen",
+      "size": [
+        2171,
+        724
+      ],
+      "transparent_background": false,
+      "reference_original_indexed_sha256": "1d62b8132a2861e4954e08cb628af588cc441dfeab0eea1ab0f2f4aff8cf9c69",
+      "reference_original_png_sha256": "894804f397dcce78a0411de7a4cf3c8f1a1317ff1e3a507a5d7a2c909db47d08",
+      "status": "five-figure composition visually reviewed; aspect calibration and runtime integration pending"
+    }
+  ]
+}

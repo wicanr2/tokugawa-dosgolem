@@ -17,6 +17,8 @@ README = """# 戰國手繪 HD 素材
 - [81 張頭像總覽](kao/selected/contact-sheet.png)、[九頁頭像圖集](kao/)。
 - [捲軸與紅金框架](scroll/)、[共用視窗邊框](window/)。
 - [戰場地面、物件與單位草稿](terrain/)，物件／單位 PNG 保留透明背景。
+- [晴天與陰天天氣圖](art/weather-generation.json)，第二版保留原版岩峰構圖。
+- [開場騎兵與武將群像草稿](art/opening-generation.json)，保留原始生成圖，幾何與呈現待驗證。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。
@@ -131,6 +133,10 @@ def main():
     ui_drafts = {}
     if ui_generation.exists():
         ui_drafts = {r["asset"]:r["sha256"] for r in json.loads(ui_generation.read_text())["records"]}
+    weather_path = catalog/"art/weather-generation.json"
+    weather_art = {r["asset"]: r for r in json.loads(weather_path.read_text())["records"]} if weather_path.exists() else {}
+    opening_path = catalog/"art/opening-generation.json"
+    opening_art = {r["asset"]:r for r in json.loads(opening_path.read_text())["records"]} if opening_path.exists() else {}
     for source in sorted((catalog/"art").glob("*-hd-b-v*.png")):
         name = source.name
         status = "draft; integration and review pending"
@@ -143,6 +149,17 @@ def main():
         elif name in ui_drafts:
             assert sha(source) == ui_drafts[name]
             status = "battle UI frame visually reviewed; geometry and runtime presentation pending"
+        elif name in weather_art:
+            assert sha(source) == weather_art[name]["sha256"]
+            status = weather_art[name]["status"]
+            proof = catalog/"graphics/verification-summary.json"
+            if weather_art[name]["version"] == 2 and proof.exists():
+                checked = json.loads(proof.read_text())
+                assert checked["verified"]
+                status = "common opaque draw consumer integrated; WEATHER1 normal first battle verified" if weather_art[name]["source"] == "WEATHER1.OZM" else "common opaque draw consumer integrated; overcast normal path not yet sampled"
+        elif name in opening_art:
+            assert sha(source) == opening_art[name]["sha256"]
+            status = opening_art[name]["status"]
         picture(source, "art/"+name, source.with_suffix(".prompt.txt"), "art/"+source.with_suffix(".prompt.txt").name, status)
     revisions = catalog/"art/revisions.json"
     if revisions.exists():
@@ -157,6 +174,16 @@ def main():
             assert sha(catalog/"art"/record["asset"]) == record["sha256"]
             assert sha(catalog/"art"/record["prompt"]) == record["prompt_sha256"]
         copy(ui_generation, "art/ui-generation.json", "generation-metadata")
+    if weather_path.exists():
+        for record in weather_art.values():
+            assert sha(catalog/"art"/record["asset"]) == record["sha256"]
+            assert sha(catalog/"art"/record["prompt"]) == record["prompt_sha256"]
+        copy(weather_path, "art/weather-generation.json", "generation-metadata")
+    if opening_path.exists():
+        for record in opening_art.values():
+            assert sha(catalog/"art"/record["asset"]) == record["sha256"]
+            assert sha(catalog/"art"/record["prompt"]) == record["prompt_sha256"]
+        copy(opening_path,"art/opening-generation.json","generation-metadata")
     battle_frame = catalog/"battle-frame"
     for revision in (1,2):
         geometry_path = battle_frame/("battle-frame-geometry.json" if revision == 1 else "battle-frame-geometry-v2.json")

@@ -192,6 +192,7 @@ try:
         (root / name).unlink(missing_ok=True)
     command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-desktop-speed", "5" if is_scroll else "60" if long_path or is_frame or is_window else "20",
                "-steps", "750000000" if long_path else "150000000", "-hd-trace"]
+    command += ["-hd-graphics-dir", "/output/no-opaque-graphics"]
     if args.mode != "mouse":
         source = Path("/project/tools/player-path.json") if long_path else Path("/project/workplace/cd-trace/first-play-input.json")
         if long_path:

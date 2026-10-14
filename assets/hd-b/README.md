@@ -7,6 +7,8 @@
 - [81 張頭像總覽](kao/selected/contact-sheet.png)、[九頁頭像圖集](kao/)。
 - [捲軸與紅金框架](scroll/)、[共用視窗邊框](window/)。
 - [戰場地面、物件與單位草稿](terrain/)，物件／單位 PNG 保留透明背景。
+- [晴天與陰天天氣圖](art/weather-generation.json)，第二版保留原版岩峰構圖。
+- [開場騎兵與武將群像草稿](art/opening-generation.json)，保留原始生成圖，幾何與呈現待驗證。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。
