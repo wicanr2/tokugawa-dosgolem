@@ -350,3 +350,5 @@
 - 保存工具對有限取樣 alpha=254 的分類已修正，沒有改 PNG alpha；重跑保存與 verify-only 通過，460 PNG、136 提示詞、407334935 索引 bytes。原版來源與執行產物維持本機。
 - 覆蓋清單重生：104 地面、十個非空單位、八項物件已接入，16 物件草稿、其餘 OZM／動畫及五筆解碼未知仍待完成；全遊戲 HD 未完成，三平台打包未開始。
 - 建置及 GUI 容器均正常退出並移除，後續附 GitHub 與擁有權核對結果。
+
+GitHub 收尾：功能與素材提交 db97be7f0d17b9f898c2302fb311769b52cf95bd 已推送 main。主機 gh 再次確認 PRIVATE，遠端 main SHA 一致；immutable tree 的 632 個 assets/hd-b 檔案逐項 blob SHA 與本機一致，tree 未截斷，original/、workplace/ 不在遠端。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6176564528 。最後保存核對為 460 PNG、136 提示詞；完整工作根的 root-owned 檔案及 .md 目錄檢查為空，所有本次輸出抽查 UID/GID 1000:1000，tokugawa 容器為空，未重建或清理其他專案 image。
