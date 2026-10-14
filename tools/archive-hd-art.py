@@ -157,6 +157,28 @@ def main():
             assert sha(catalog/"art"/record["asset"]) == record["sha256"]
             assert sha(catalog/"art"/record["prompt"]) == record["prompt_sha256"]
         copy(ui_generation, "art/ui-generation.json", "generation-metadata")
+    battle_frame = catalog/"battle-frame"
+    for revision in (1,2):
+        geometry_path = battle_frame/("battle-frame-geometry.json" if revision == 1 else "battle-frame-geometry-v2.json")
+        if not geometry_path.exists():
+            continue
+        geometry = json.loads(geometry_path.read_text())
+        source = battle_frame/geometry["prepared_asset"]
+        assert sha(source) == geometry["prepared_png_sha256"]
+        assert sha(catalog/"art"/geometry["asset"]) == geometry["asset_sha256"]
+        prompt = catalog/"art/MAPGAMEN-hd-b-v1.prompt.txt"
+        status = "superseded frame geometry draft; post projections corrected in v2" if revision == 1 else "reviewed frame geometry; runtime and GUI acceptance pending"
+        proof_path = battle_frame/"verification-summary.json"
+        if revision == 2 and proof_path.exists():
+            proof = json.loads(proof_path.read_text())
+            assert proof["geometry_sha256"] == sha(geometry_path) and proof["asset_sha256"] == sha(source)
+            assert len(proof["records"]) == 3
+            status = "normal pre-battle modal and first battle verified; native-index foreground and joint HD scene underlay"
+        picture(source, "battle-frame/"+source.name, prompt, f"battle-frame/battle-frame-hd-b-v{revision}.prompt.txt", status)
+        copy(geometry_path,"battle-frame/"+geometry_path.name,"preparation-metadata")
+    old_prepare = battle_frame/"prepare-v1-source.txt"
+    if old_prepare.exists():
+        copy(old_prepare,"battle-frame/prepare-v1-source.txt","preparation-source-snapshot")
     terrain = catalog/"terrain/art"
     terrain_profiles = catalog/"terrain/prepared/profiles.json"
     verified_tree_asset = ""

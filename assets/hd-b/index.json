@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 191,
-    "prompts": 102,
-    "bytes": 302088815
+    "png": 193,
+    "prompts": 104,
+    "bytes": 305012173
   },
-  "archive_tool_sha256": "12427b340d2018aa3bba414e6a1db275d69c8770633f1008c786b5f61950baa5",
+  "archive_tool_sha256": "086e1ebdd0b9f3bf6ee0e507ca5fbd4b7178d086c74017eb7f80c02a0befe0f6",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -1318,6 +1318,67 @@
       "bytes": 1032,
       "sha256": "9f5d62b5bee87e0055652504a0937aff404705691b136f68a89064756aa5b0da",
       "local_source": "workplace/hd-prototype/catalog/art/ui-generation.json"
+    },
+    {
+      "path": "battle-frame/battle-frame-geometry-v2.json",
+      "kind": "preparation-metadata",
+      "bytes": 7030,
+      "sha256": "9476514d407923222ee06346da4869153279795b7a55293a76c7287e71bd33f9",
+      "local_source": "workplace/hd-prototype/catalog/battle-frame/battle-frame-geometry-v2.json"
+    },
+    {
+      "path": "battle-frame/battle-frame-geometry.json",
+      "kind": "preparation-metadata",
+      "bytes": 6556,
+      "sha256": "78b75b80d6ab3d2e29fac6e6231252f0051df5c09d729bdd77a30b064639169a",
+      "local_source": "workplace/hd-prototype/catalog/battle-frame/battle-frame-geometry.json"
+    },
+    {
+      "path": "battle-frame/battle-frame-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1440705,
+      "sha256": "3a18e9f615d4cb56e7eb556424134597091ec2e503118f115c0280eaaa25a3b1",
+      "local_source": "workplace/hd-prototype/catalog/battle-frame/battle-frame-hd-b-v1.png",
+      "prompt": "battle-frame/battle-frame-hd-b-v1.prompt.txt",
+      "status": "superseded frame geometry draft; post projections corrected in v2",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "path": "battle-frame/battle-frame-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1711,
+      "sha256": "cdc2af4ce6dd0cd10b9e5e54df2894fc3056f66eb7291e140d352393d6356517",
+      "local_source": "workplace/hd-prototype/catalog/art/MAPGAMEN-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "battle-frame/battle-frame-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 1458620,
+      "sha256": "3de79e3eebe01aa970e45b8bf377b6e381bec14c9b4d9f569994aaecbe78e435",
+      "local_source": "workplace/hd-prototype/catalog/battle-frame/battle-frame-hd-b-v2.png",
+      "prompt": "battle-frame/battle-frame-hd-b-v2.prompt.txt",
+      "status": "normal pre-battle modal and first battle verified; native-index foreground and joint HD scene underlay",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "path": "battle-frame/battle-frame-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1711,
+      "sha256": "cdc2af4ce6dd0cd10b9e5e54df2894fc3056f66eb7291e140d352393d6356517",
+      "local_source": "workplace/hd-prototype/catalog/art/MAPGAMEN-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "battle-frame/prepare-v1-source.txt",
+      "kind": "preparation-source-snapshot",
+      "bytes": 7025,
+      "sha256": "d039055cfecc799052fbec294df33bfad3ec0f2b0463477c35268a01573e79b6",
+      "local_source": "workplace/hd-prototype/catalog/battle-frame/prepare-v1-source.txt"
     },
     {
       "path": "concept/style-comparison-v1.png",

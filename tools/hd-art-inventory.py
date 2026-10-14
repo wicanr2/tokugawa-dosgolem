@@ -45,6 +45,11 @@ def main():
         profiles = {r["resource"]: r for r in prepared["records"]}
     ui_path = ROOT/'art/ui-generation.json'
     ui_drafts = {r['source']:r for r in json.loads(ui_path.read_text())['records']} if ui_path.exists() else {}
+    frame_summary_path = ROOT/'battle-frame/verification-summary.json'
+    frame_summary = json.loads(frame_summary_path.read_text()) if frame_summary_path.exists() else None
+    if frame_summary:
+        assert frame_summary['records'][0]['GUI_verification_sha256'] == sha(ROOT/'battle-frame/desktop/verification-battle-frame.json')
+        proof_sources_frame = {'verification':str(frame_summary_path.relative_to(PROJECT)),'sha256':sha(frame_summary_path)}
     direct = {}
     for record in decoded["records"]:
         if record['name'] in ui_drafts:
@@ -67,6 +72,8 @@ def main():
     verified_story = {}
     verified_kao = {}
     proof_sources = []
+    if frame_summary:
+        proof_sources.append(proof_sources_frame)
     for directory in ("desktop", "kao-desktop", "story/desktop", "story-expanded/desktop"):
         verify_path = ROOT / directory / "verification-portraits.json"
         receipt_path = ROOT / directory / "desktop-portraits.json"
@@ -217,6 +224,15 @@ def main():
             record.update(kind="battle interface frame", art_status="draft",
                           art=art_info(path, ROOT/'art'/draft['prompt']),
                           runtime_status="visually reviewed; geometry and integration pending")
+            if name == 'MAPGAMEN.OZM' and frame_summary:
+                geometry_path = ROOT/'battle-frame/battle-frame-geometry-v2.json'
+                geometry = json.loads(geometry_path.read_text())
+                assert frame_summary['geometry_sha256'] == sha(geometry_path)
+                prepared = ROOT/'battle-frame'/geometry['prepared_asset']
+                assert sha(prepared) == frame_summary['asset_sha256']
+                record.update(art_status='prepared',art=art_info(prepared,ROOT/'art'/draft['prompt']),
+                              runtime_status='normal pre-battle modal and first battle verified; whole-region weather/crest guards, indexed foreground and joint HD scene underlay',
+                              runtime_proof_sha256=sha(frame_summary_path),geometry_sha256=sha(geometry_path))
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]
@@ -235,7 +251,8 @@ def main():
                     "art_status": "missing", "runtime_status": "not integrated"})
     counts = {"OZM_resources": 112, "KAO_portraits": 81, "PCX_resources": 1,
               "generated_story_illustrations": len(direct),
-              "generated_UI_drafts": len(ui_drafts),
+              "generated_UI_drafts": len(ui_drafts)-(1 if frame_summary else 0),
+              "generated_UI_art": len(ui_drafts),"approved_UI_art":1 if frame_summary else 0,
               "OZM_sources_with_prepared_art_including_exact_reuse": sum(r["art_status"] == "prepared" for r in records[:112]),
               "OZM_partial_art": sum(r["art_status"] == "partial" for r in records[:112]),
               "prepared_KAO_portraits": 81, "native_story_cases_verified": len(verified_story),

@@ -36,6 +36,9 @@ var desktopTerrainSpriteSourceDir = flag.String("hd-terrain-sprite-source-dir", 
 var desktopTerrainTreeAsset = flag.String("hd-terrain-tree-asset", "/project/assets/hd-b/terrain/object-000-hd-b-v2.png", "approved transparent forest-clump HD art")
 var desktopTerrainUnitDir = flag.String("hd-terrain-unit-dir", "/project/assets/hd-b/terrain", "approved source-specific unit HD art")
 var desktopTerrainScene = flag.Bool("hd-terrain-scene", true, "compose the complete observed floor journal and qualified overlapping sprites")
+var desktopBattleFrameIndices = flag.String("hd-battle-frame-indices", "/project/workplace/hd-prototype/catalog/hd-assets/MAPGAMEN.OZM-"+battleFrameIndexedSHA+".idx", "verified original MAPGAMEN indexed source")
+var desktopBattleFrameAsset = flag.String("hd-battle-frame-asset", "/project/assets/hd-b/battle-frame/"+battleFrameAsset, "registered battle-frame skin; missing asset falls back")
+var desktopBattleFrameProof = flag.Bool("hd-battle-frame-proof", false, "export native snapshot and pre-sprite indices with desktop captures for isolated validation")
 
 type desktopGame struct {
 	c                           *desktopContext
@@ -77,6 +80,8 @@ type desktopGame struct {
 	terrainUnits                map[hdTerrainSpriteKey]hdTerrainSpritePair
 	scene                       hdTerrainScene
 	sceneReport                 hdTerrainSceneReport
+	battleFrame                 *hdBattleFrame
+	battleFrameReport           hdBattleFrameReport
 }
 
 type desktopPortrait struct {
@@ -372,6 +377,24 @@ func runDesktopWindow(c *desktopContext) error {
 		g.terrainUnits[key], unitInfo[index] = pair, info
 	}
 	g.assetInfo["terrain_units"] = unitInfo
+	battleInfo := map[string]any{}
+	indices, err := os.ReadFile(*desktopBattleFrameIndices)
+	if err == nil {
+		battleInfo["source_indices_sha256"] = fmt.Sprintf("%x", sha256.Sum256(indices))
+	}
+	var battleAsset image.Image
+	if data, e := os.ReadFile(*desktopBattleFrameAsset); e == nil {
+		sum := fmt.Sprintf("%x", sha256.Sum256(data))
+		battleInfo["hd_sha256"] = sum
+		if sum == battleFrameAssetSHA {
+			battleAsset, _ = previewPNG(*desktopBattleFrameAsset)
+		} else {
+			battleInfo["hd_error"] = "unapproved frame fingerprint"
+		}
+	}
+	g.battleFrame = newHDBattleFrame(indices, battleAsset, 2)
+	battleInfo["validation"], battleInfo["source_mask_sha256"] = g.battleFrame.Reason, fmt.Sprintf("%x", sha256.Sum256(g.battleFrame.Mask))
+	g.assetInfo["battle_frame"] = battleInfo
 	ebiten.SetWindowSize(1280, 800)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("德川家康｜原版｜F6 切換 HD｜F7 暫停")
@@ -386,6 +409,7 @@ func runDesktopWindow(c *desktopContext) error {
 	c.Report["terrain_foreground_pixels"] = g.terrainForeground
 	c.Report["tree_modes"], c.Report["tree_hd_count"], c.Report["tree_protected_pixels"] = g.treeModes, g.treeHD, g.treeProtected
 	c.Report["terrain_scene"], c.Report["terrain_scene_enabled"] = g.sceneReport, *desktopTerrainScene
+	c.Report["battle_frame"] = g.battleFrameReport
 	return err
 }
 
@@ -412,12 +436,13 @@ func (g *desktopGame) render() error {
 		mode = "fallback_no_original_draw"
 	}
 	g.portraitMode = mode
+	g.battleFrame.update(s, g.c.Live.BattleFrame.Active, g.enabled)
 	if *desktopTerrainScene {
 		pairs := map[hdTerrainSpriteKey]hdTerrainSpritePair{{"objects", 0}: g.terrainTree}
 		for key, pair := range g.terrainUnits {
 			pairs[key] = pair
 		}
-		g.sceneReport = g.scene.apply(out, s.Image, g.c.Live.Terrain, g.terrain, pairs, g.terrainSprites, 2, g.enabled)
+		g.sceneReport = g.scene.apply(out, s.Image, g.c.Live.Terrain, g.terrain, pairs, g.terrainSprites, 2, g.enabled, g.battleFrame.background)
 		g.terrainModes, g.terrainHD, g.terrainForeground = g.sceneReport.FloorModes, g.sceneReport.FloorHD, g.sceneReport.ProtectedNativePixels
 		g.treeModes = append(g.treeModes[:0], g.sceneReport.SpriteModes...)
 		for i, d := range g.c.Live.Terrain.Sprites {
@@ -455,6 +480,10 @@ func (g *desktopGame) render() error {
 				mode = "hd"
 			}
 		}
+	}
+	g.battleFrameReport = g.battleFrame.paint(out, s, g.c.Live.Terrain, &g.scene)
+	if g.battleFrameReport.Mode == "hd" {
+		mode = "hd"
 	}
 	if mode == "hd" {
 		preservePortraitLabels(out, s.Image, g.c.Live.LastName, 2)
@@ -520,7 +549,32 @@ func (g *desktopGame) saveFrame(label string) (map[string]any, error) {
 	if err != nil {
 		return nil, err
 	}
-	return map[string]any{"path": path, "png_sha256": fmt.Sprintf("%x", sha256.Sum256(b)), "rgba_sha256": fmt.Sprintf("%x", sha256.Sum256(g.pixels.Pix)), "mode": g.mode}, nil
+	result := map[string]any{"path": path, "png_sha256": fmt.Sprintf("%x", sha256.Sum256(b)), "rgba_sha256": fmt.Sprintf("%x", sha256.Sum256(g.pixels.Pix)), "mode": g.mode}
+	if *desktopBattleFrameProof {
+		s, e := g.c.Snapshot()
+		if e != nil {
+			return nil, e
+		}
+		sum := fmt.Sprintf("%x", sha256.Sum256(s.Indexed))
+		name := "native-indexed-" + sum + ".idx"
+		if e = os.WriteFile(filepath.Join("/output", name), s.Indexed, 0600); e != nil {
+			return nil, e
+		}
+		result["native_indices"] = map[string]any{"path": name, "sha256": sum, "palette": s.Palette, "dac": s.DAC}
+		for _, d := range g.c.Live.Terrain.Sprites {
+			if len(d.BackgroundIndexed) != 48*48 {
+				continue
+			}
+			sum := fmt.Sprintf("%x", sha256.Sum256(d.BackgroundIndexed))
+			if sum != d.BackgroundIndexedSHA {
+				return nil, fmt.Errorf("background index proof changed")
+			}
+			if e = os.WriteFile(filepath.Join("/output", "sprite-background-"+sum+".idx"), d.BackgroundIndexed, 0600); e != nil {
+				return nil, e
+			}
+		}
+	}
+	return result, nil
 }
 
 func (g *desktopGame) setHD(enabled bool) error {
@@ -630,6 +684,7 @@ func (g *desktopGame) Update() error {
 	status["terrain_foreground_pixels"], status["terrain_sprites"] = g.terrainForeground, g.c.Live.Terrain.Sprites
 	status["tree_modes"], status["tree_hd_count"], status["tree_protected_pixels"], status["tree_draws"] = g.treeModes, g.treeHD, g.treeProtected, g.c.Live.Terrain.Sprites
 	status["terrain_scene"], status["terrain_scene_enabled"], status["terrain_history"] = g.sceneReport, *desktopTerrainScene, g.c.Live.Terrain.History
+	status["battle_frame"], status["battle_frame_observation"] = g.battleFrameReport, g.c.Live.BattleFrame
 	if *desktopTerrainScene {
 		status["terrain_draws"] = g.c.Live.Terrain.History
 	}

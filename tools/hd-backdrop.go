@@ -17,6 +17,8 @@ type spriteBackdropRecord struct {
 	BeginStep, EndStep             int
 	Return, Stack, SourceOffset    uint32
 	Before, Source, After          *image.NRGBA `json:"-"`
+	BeforeIndexed                  []byte       `json:"-"`
+	BeforeIndexedSHA               string
 	BeforeSHA, SourceSHA, AfterSHA string
 	Verified                       bool   `json:"primitive_verified"`
 	Error                          string `json:"observation_error,omitempty"`
@@ -39,6 +41,17 @@ func cropBackdrop(native image.Image, r image.Rectangle) *image.NRGBA {
 		}
 	}
 	return im
+}
+
+func cropBackdropIndices(indices []byte, r image.Rectangle) []byte {
+	if len(indices) != 640*400 || r.Dx() != 48 || r.Dy() != 48 || !r.In(image.Rect(0, 0, 640, 400)) {
+		return nil
+	}
+	out := make([]byte, 48*48)
+	for y := 0; y < 48; y++ {
+		copy(out[y*48:(y+1)*48], indices[(r.Min.Y+y)*640+r.Min.X:(r.Min.Y+y)*640+r.Max.X])
+	}
+	return out
 }
 
 func originalSpriteSource(mem []byte, source uint32, s nativeSnapshot) *image.NRGBA {
@@ -123,6 +136,10 @@ func beginSpriteBackdrop(step int, esp, esi, edi uint32, mem []byte, snapshot fu
 		return p
 	}
 	p.Before = cropBackdrop(s.Image, p.Draw.Rect)
+	p.BeforeIndexed = cropBackdropIndices(s.Indexed, p.Draw.Rect)
+	if len(p.BeforeIndexed) == 48*48 {
+		p.BeforeIndexedSHA = fmt.Sprintf("%x", sha256.Sum256(p.BeforeIndexed))
+	}
 	p.Source = originalSpriteSource(mem, esi, s)
 	if p.Before == nil || p.Source == nil {
 		p.Error = "source or snapshot unavailable"

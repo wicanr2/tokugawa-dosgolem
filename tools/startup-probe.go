@@ -41,6 +41,7 @@ func main() {
 	hdDiagnostic := flag.Bool("hd-trace", false, "record bounded read-only original asset loader diagnostics")
 	terrainDiagnostic := flag.Bool("hd-terrain-trace", false, "record bounded read-only original floor/sprite draw registers and returns")
 	backdropDiagnostic := flag.Bool("hd-backdrop-trace", false, "capture bounded read-only native sprite backgrounds and verify original binary-alpha primitive")
+	battleFrameDiagnostic := flag.Bool("hd-battle-frame-trace", false, "verify MAPGAMEN full native draw at its natural return; no HD replacement")
 	hdExport := flag.Bool("hd-export", false, "copy validated loader-return planes and DAC to local research output; implies hd-trace")
 	desktop := flag.Bool("desktop", false, "run isolated desktop presentation prototype")
 	flag.Parse()
@@ -325,7 +326,11 @@ func main() {
 				live.Terrain.observe(steps, before, m.CPU.R[cpu386.ESP], m.CPU.R[cpu386.ESI], m.CPU.R[cpu386.EDI], m.Mem, func() (nativeSnapshot, error) {
 					return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
 				})
-				live.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem)
+			}
+			if *desktop || *battleFrameDiagnostic {
+				live.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem, func() (nativeSnapshot, error) {
+					return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
+				})
 			}
 			if *terrainDiagnostic {
 				floorTrace.observe(steps, before, m.CPU.R[cpu386.ESP], m.CPU.R[cpu386.ESI], m.CPU.R[cpu386.EDI], m.Mem)
@@ -428,6 +433,13 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
+	for _, name := range []string{"tools/hd-battle-frame.go", "tools/hd-battle-frame_test.go", "tools/hd-battle-frame-render.go", "tools/hd-battle-frame-render_test.go", "tools/hd-battle-frame-profile.go"} {
+		b, e := os.ReadFile("/project/" + name)
+		if e != nil {
+			panic(e)
+		}
+		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
+	}
 	for _, name := range []string{"tools/hd-terrain-scene.go", "tools/hd-terrain-scene_test.go", "tools/hd-terrain-unit-profiles.go"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
@@ -454,6 +466,13 @@ func main() {
 		panic(err)
 	}
 	var backdropRecords []map[string]any
+	var battleFrameCapture map[string]any
+	if *battleFrameDiagnostic {
+		battleFrameCapture, err = live.BattleFrame.export("/output")
+		if err != nil {
+			panic(err)
+		}
+	}
 	if *backdropDiagnostic {
 		backdropRecords, err = backdropTrace.export("/output")
 		if err != nil {
@@ -477,6 +496,7 @@ func main() {
 		"hd_diagnostic_enabled": *hdDiagnostic, "hd_asset_trace": assetTrace, "hd_export_enabled": *hdExport,
 		"terrain_diagnostic_enabled": *terrainDiagnostic, "terrain_draw_trace": floorTrace,
 		"sprite_backdrop_diagnostic_enabled": *backdropDiagnostic, "sprite_backdrop_records": backdropRecords, "sprite_backdrop_dropped": backdropTrace.Dropped,
+		"battle_frame_diagnostic_enabled": *battleFrameDiagnostic, "battle_frame_observation": live.BattleFrame, "battle_frame_capture": battleFrameCapture,
 		"desktop":            desktopReceipt,
 		"mouse_calls":        mouseServices.Mouse.Calls,
 		"mouse_cursor":       cursor,

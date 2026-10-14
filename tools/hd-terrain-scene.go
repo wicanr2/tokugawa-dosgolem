@@ -13,6 +13,8 @@ type terrainScenePixel struct {
 	Order, Owner    uint64
 	Color           color.NRGBA
 	Known           bool
+	Affected        bool
+	VisibleSprite   bool
 }
 
 type hdTerrainSceneReport struct {
@@ -25,9 +27,15 @@ type hdTerrainSceneReport struct {
 	FloorNativePixels     int      `json:"floor_native_pixels"`
 	ProtectedNativePixels int      `json:"protected_original_foreground_pixels"`
 	UIOutputPixels        int      `json:"preserved_UI_output_pixels"`
+	UIHDOutputPixels      int      `json:"HD_frame_underlay_output_pixels"`
 }
 
-type hdTerrainScene struct{ Pixels []terrainScenePixel }
+type hdTerrainScene struct {
+	Pixels     []terrainScenePixel
+	ModelValid bool
+}
+
+type sceneBackground func(x, y, dx, dy int, index byte) (color.NRGBA, bool)
 
 func spriteBackgroundValid(s hdTerrainSpriteDraw, source *image.NRGBA) bool {
 	return s.BackgroundVerified && s.Order > 0 && s.BeginStep < s.EndStep && s.Background != nil &&
@@ -37,7 +45,8 @@ func spriteBackgroundValid(s hdTerrainSpriteDraw, source *image.NRGBA) bool {
 }
 
 // 此畫布只讀原版 native、來源與已自然返回的 journal，不回寫 guest。
-func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTerrainState, floors map[int]hdTerrainPair, pairs map[hdTerrainSpriteKey]hdTerrainSpritePair, sources map[hdTerrainSpriteKey]*image.NRGBA, scale int, enabled bool) hdTerrainSceneReport {
+func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTerrainState, floors map[int]hdTerrainPair, pairs map[hdTerrainSpriteKey]hdTerrainSpritePair, sources map[hdTerrainSpriteKey]*image.NRGBA, scale int, enabled bool, backgroundsHD ...sceneBackground) hdTerrainSceneReport {
+	h.ModelValid = false
 	r := hdTerrainSceneReport{Reason: "original", FloorModes: make([]string, len(state.History)), SpriteModes: make([]string, len(state.Sprites))}
 	fail := func(reason string) hdTerrainSceneReport {
 		r.Reason = reason
@@ -88,6 +97,7 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 	}
 	last = 0
 	backgrounds := make([]bool, len(state.Sprites))
+	indexedBackgrounds := make([]bool, len(state.Sprites))
 	for i, s := range state.Sprites {
 		im := sources[hdTerrainSpriteKey{s.Group, s.Index}]
 		if s.Order <= last || orders[s.Order] || s.Rect.Dx() != 48 || s.Rect.Dy() != 48 || !s.Rect.In(native.Bounds()) || im == nil || im.Bounds() != image.Rect(0, 0, 48, 48) {
@@ -96,6 +106,7 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 		last = s.Order
 		orders[s.Order] = true
 		backgrounds[i] = spriteBackgroundValid(s, im)
+		indexedBackgrounds[i] = len(s.BackgroundIndexed) == 48*48 && s.BackgroundIndexedSHA == fmt.Sprintf("%x", sha256.Sum256(s.BackgroundIndexed))
 		if !backgrounds[i] {
 			continue
 		}
@@ -152,6 +163,20 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 			}
 		}
 		return true
+	}
+	h.ModelValid = true
+	for _, s := range state.Sprites {
+		if !match(s.Rect) {
+			continue
+		}
+		for y := s.Rect.Min.Y; y < s.Rect.Max.Y; y++ {
+			for x := s.Rect.Min.X; x < s.Rect.Max.X; x++ {
+				p := &h.Pixels[y*640+x]
+				if p.Owner == s.Order {
+					p.VisibleSprite = true
+				}
+			}
+		}
 	}
 	for i, d := range state.History {
 		p := floors[d.Index]
@@ -245,6 +270,7 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 			if !affected || !p.Known {
 				continue
 			}
+			h.Pixels[y*640+x].Affected = true
 			ownerIndex, ownerHD := approved[p.Owner]
 			foreground := p.Owner != 0 && (p.Floor < 0 || p.Owner != p.Order)
 			if foreground && !ownerHD {
@@ -253,6 +279,8 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 			for dy := 0; dy < scale; dy++ {
 				for dx := 0; dx < scale; dx++ {
 					var c color.NRGBA
+					var hdBackground color.NRGBA
+					hasHDBackground := false
 					if p.Floor >= 0 {
 						d := state.History[p.Floor]
 						pair := floors[d.Index]
@@ -263,6 +291,13 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 					} else {
 						s := state.Sprites[p.Backdrop]
 						c = s.Background.NRGBAAt(x-s.Rect.Min.X, y-s.Rect.Min.Y)
+						if len(backgroundsHD) == 1 && backgroundsHD[0] != nil && indexedBackgrounds[p.Backdrop] {
+							n := (y-s.Rect.Min.Y)*48 + x - s.Rect.Min.X
+							hdBackground, hasHDBackground = backgroundsHD[0](x, y, dx, dy, s.BackgroundIndexed[n])
+							if hasHDBackground {
+								c = hdBackground
+							}
+						}
 					}
 					for i, s := range state.Sprites {
 						if s.Order <= p.Order || !image.Pt(x, y).In(s.Rect) {
@@ -290,8 +325,13 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 						c = p.Color
 					}
 					if p.Floor < 0 && p.Owner == 0 {
-						c = p.Color
-						r.UIOutputPixels++
+						if hasHDBackground {
+							c = hdBackground
+							r.UIHDOutputPixels++
+						} else {
+							c = p.Color
+							r.UIOutputPixels++
+						}
 					}
 					out.SetNRGBA(x*scale+dx, y*scale+dy, c)
 				}

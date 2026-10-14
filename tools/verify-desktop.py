@@ -10,7 +10,7 @@ import time
 
 assert Path("/.dockerenv").exists() and os.getuid() == 1000
 parser = argparse.ArgumentParser()
-parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only", "window", "window-missing", "window-only", "window-modal", "terrain", "terrain-missing", "trees", "trees-only", "trees-missing", "scene", "scene-only", "scene-missing"], default="hd")
+parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only", "window", "window-missing", "window-only", "window-modal", "terrain", "terrain-missing", "trees", "trees-only", "trees-missing", "scene", "scene-only", "scene-missing", "battle-frame", "battle-frame-only", "battle-frame-missing"], default="hd")
 parser.add_argument("--include-council", action="store_true", help="於既有普通輸入路徑另抽測 GUNGI.OZM")
 args = parser.parse_args()
 root = Path("/output")
@@ -25,10 +25,12 @@ is_portraits = args.mode.startswith("portraits")
 is_terrain = args.mode.startswith("terrain")
 is_trees = args.mode.startswith("trees")
 is_scene = args.mode.startswith("scene")
-long_path = is_portraits or is_terrain or is_trees or is_scene
+is_battle_frame = args.mode.startswith("battle-frame")
+long_path = is_portraits or is_terrain or is_trees or is_scene or is_battle_frame
 terrain_checks = []
 tree_checks = []
 scene_checks = []
+battle_frame_checks = []
 assert not args.include_council or is_portraits
 story_cases = 9 if args.include_council else 8
 portrait_checks = []
@@ -218,7 +220,7 @@ try:
         command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png"]
         if args.mode == "terrain-missing":
             command += ["-hd-terrain-dir", "/output/no-terrain"]
-    if not is_trees and not is_scene:
+    if not is_trees and not is_scene and not is_battle_frame:
         command += ["-hd-terrain-tree-asset", "/output/no-tree.png"]
     if is_trees:
         command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-frame-asset", "/output/no-frame.png", "-hd-window-asset", "/output/no-window.png"]
@@ -226,14 +228,20 @@ try:
             command += ["-hd-terrain-dir", "/output/no-terrain"]
         if args.mode == "trees-missing":
             command += ["-hd-terrain-tree-asset", "/output/no-tree.png"]
-    if is_scene:
+    if is_scene or is_battle_frame:
         command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-frame-asset", "/output/no-frame.png", "-hd-window-asset", "/output/no-window.png"]
-        if args.mode in ("scene-only", "scene-missing"):
+        if args.mode in ("scene-only", "scene-missing", "battle-frame-only"):
             command += ["-hd-terrain-dir", "/output/no-terrain"]
         if args.mode == "scene-missing":
             command += ["-hd-terrain-tree-asset", "/output/no-tree.png", "-hd-terrain-unit-dir", "/output/no-units"]
+        if args.mode == "battle-frame-only":
+            command += ["-hd-terrain-tree-asset", "/output/no-tree.png", "-hd-terrain-unit-dir", "/output/no-units"]
+        if is_battle_frame:
+            command += ["-hd-battle-frame-proof", "-hd-battle-frame-trace"]
     else:
         command += ["-hd-terrain-scene=false", "-hd-terrain-unit-dir", "/output/no-units"]
+    if not is_battle_frame or args.mode == "battle-frame-missing":
+        command += ["-hd-battle-frame-asset", "/output/no-battle-frame.png"]
     stdout_path = root / f"desktop-{args.mode}.json"
     stdout = stdout_path.open("wb")
     stderr = (root / f"desktop-{args.mode}.stderr.log").open("wb")
@@ -302,6 +310,30 @@ try:
             assert not any(d["logical_rect"] == {"Min": {"X": 200, "Y": 150}, "Max": {"X": 504, "Y": 198}} for d in status()["window_draws"]), status()
             pictures += check_window_modal("after-confirmation")
             key("F7")
+    elif is_battle_frame:
+        from verify_hd_battle_frame_pixels import FrameReference,verify_intro_frame
+        from verify_hd_scene_pixels import verify_scene_pixels
+        wait_for(lambda s:s.get('step',0)>=658_000_000 and s.get('battle_frame_observation',{}).get('draw_completed',False),600)
+        key('F6');key('F7')
+        enhanced=capture('intro-enabled');snapshot=status()
+        key('F6');original=capture('intro-original');key('F6');restored=capture('intro-restored')
+        assert enhanced['presented']['proof']==original['presented']['proof']==restored['presented']['proof']
+        assert enhanced['presented']['frame']['png_sha256']==restored['presented']['frame']['png_sha256']
+        check=verify_intro_frame(snapshot,enhanced,decoded(Path(enhanced['actual_png'])),decoded(Path(original['actual_png'])),root,args.mode!='battle-frame-missing')
+        check.update(step=enhanced['presented']['step'],guest_unchanged=True)
+        battle_frame_checks.append(check);pictures += [enhanced,original,restored]
+        key('F7')
+        wait_for(lambda s:s.get('step',0)>=740_000_000 and len(s.get('terrain_history') or [])==134,600)
+        key('F7')
+        enhanced=capture('battle-enabled');snapshot=status()
+        key('F6');original=capture('battle-original');key('F6');restored=capture('battle-restored')
+        assert enhanced['presented']['proof']==original['presented']['proof']==restored['presented']['proof']
+        assert enhanced['presented']['frame']['png_sha256']==restored['presented']['frame']['png_sha256']
+        ref=FrameReference(snapshot,enhanced,root,args.mode!='battle-frame-missing')
+        check=verify_scene_pixels(snapshot,decoded(Path(enhanced['actual_png'])),decoded(Path(original['actual_png'])),'scene-missing' if args.mode=='battle-frame-only' else 'scene',ref)
+        check.update(phase='battle',step=enhanced['presented']['step'],guest_unchanged=True)
+        battle_frame_checks.append(check);pictures += [enhanced,original,restored]
+        key('F7')
     elif is_scene:
         from verify_hd_scene_pixels import verify_scene_pixels
         wait_for(lambda s: s.get('step',0)>=740_000_000 and len(s.get('terrain_history') or [])==134,600)
@@ -667,7 +699,7 @@ try:
         expected_ram = "4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9" if long_path else "0d9123e52923ba852b125ea04918e1007138a33e0a8e4d856b078865cb33562f"
         assert hashlib.sha256((root / "startup-memory.bin").read_bytes()).hexdigest() == expected_ram
         toggles = [e for e in receipt["desktop"]["events"] if e["kind"] == "toggle"]
-        assert len(toggles) == (3+2*story_cases if is_portraits else 7 if args.mode == "window-modal" else 5 if is_scroll else 3) and all(e["guest_unchanged"] for e in toggles)
+        assert len(toggles) == (3+2*story_cases if is_portraits else 7 if args.mode == "window-modal" else 5 if is_scroll or is_battle_frame else 3) and all(e["guest_unchanged"] for e in toggles)
         assert any(not e["paused"] for e in toggles)
         if is_portraits:
             assert len(portrait_checks) == story_cases
@@ -676,7 +708,7 @@ try:
             assert len(loaded) == 81 and all(info.get("source_sha256") for info in loaded.values())
             if args.mode == "portraits":
                 assert all(info.get("hd_sha256") and not info.get("hd_error") for info in loaded.values())
-        elif not is_terrain and not is_trees and not is_scene:
+        elif not is_terrain and not is_trees and not is_scene and not is_battle_frame:
             assert receipt["desktop"]["hd_observation"]["draw_completed"]
         if is_window:
             observation = receipt["desktop"]["hd_observation"]["window"]
@@ -699,6 +731,7 @@ try:
               "terrain_checks": terrain_checks,
               "tree_checks": tree_checks,
               "scene_checks": scene_checks,
+              "battle_frame_checks":battle_frame_checks,
               "scope": "Linux container prototype; no physical audio or other OS verification"}
     (root / f"verification-{args.mode}.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(f"desktop {args.mode}: verified", flush=True)

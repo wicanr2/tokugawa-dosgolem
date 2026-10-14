@@ -24,7 +24,7 @@ def blend(back, front):
     return tuple((f*a+b*(255-a)+127)//255 for b, f in zip(back[:3], front[:3]))+(255,)
 
 
-def verify_scene_pixels(snapshot, enhanced, original, mode):
+def verify_scene_pixels(snapshot, enhanced, original, mode, frame_ref=None):
     project = Path('/project')
     terrain = project/'workplace/hd-prototype/catalog/terrain'
     report = snapshot['terrain_scene']
@@ -87,6 +87,7 @@ def verify_scene_pixels(snapshot, enhanced, original, mode):
         hd_sprites[key] = hd
     diagnostic = json.loads((terrain/'backgrounds/startup-probe/latest.json').read_text())
     backdrops = {}
+    backdrop_indices = {}
     for i, s in enumerate(sprites):
         rows = [r for r in diagnostic['sprite_backdrop_records'] if r['begin_step'] == s['BeginStep']]
         assert len(rows) == 1 and s['background_verified']
@@ -95,6 +96,12 @@ def verify_scene_pixels(snapshot, enhanced, original, mode):
         assert s['source_rgba_sha256'] == row['source']['rgba_sha256'] and s['after_rgba_sha256'] == row['after']['rgba_sha256']
         backdrops[i] = Image.open(terrain/'backgrounds'/row['before']['path']).convert('RGBA')
         assert hashlib.sha256(backdrops[i].tobytes()).hexdigest() == s['background_rgba_sha256']
+        if frame_ref is not None:
+            path=frame_ref.root/('sprite-background-'+s['background_indexed_sha256']+'.idx')
+            data=path.read_bytes()
+            assert len(data)==48*48 and sha(path)==s['background_indexed_sha256']
+            assert b''.join(bytes(frame_ref.palette[index]) for index in data)==backdrops[i].tobytes()
+            backdrop_indices[i]=data
     total = 640*400
     base = [-1]*total; background = [-1]*total; order = [0]*total; owner = [0]*total; scene = [None]*total
     for i, d in enumerate(floors):
@@ -134,8 +141,17 @@ def verify_scene_pixels(snapshot, enhanced, original, mode):
     baseline = json.loads((project/'workplace/desktop-prototype/headless/startup-probe/latest.json').read_text())
     cur, mouse = baseline['mouse_cursor'], baseline['mouse_input_events'][-1]
     cx, cy = mouse['x']-cur['HotX'], mouse['y']-cur['HotY']
+    if frame_ref is not None:
+        cx,cy=frame_ref.cursor_rect[:2]
     tree_rects = [bounds(sprites[i]) for i in active_sprites.values() if sprites[i]['group'] == 'objects']
-    changed = checked = ui = protected = overlap_units = 0
+    valid_sprite_orders=set()
+    if frame_ref is not None:
+        for s in sprites:
+            rect=bounds(s)
+            if all(scene[y*640+x]==frame_ref.palette[frame_ref.indices[y*640+x]] for y in range(rect[1],rect[3]) for x in range(rect[0],rect[2])):
+                valid_sprite_orders.add(s['draw_order'])
+    changed = checked = ui = hd_ui = protected = overlap_units = 0
+    frame_painted=frame_preserved=frame_skipped=frame_checked=0
     removed = {1: 0, 3: 0}
     for y in range(400):
         for x in range(640):
@@ -143,6 +159,11 @@ def verify_scene_pixels(snapshot, enhanced, original, mode):
             hd_floor = base[n] in active_floors
             owner_hd = owner[n] in active_sprites
             foreground = owner[n] != 0 and (base[n] < 0 or owner[n] != order[n])
+            frame_paint=False
+            if frame_ref is not None and frame_ref.candidate(x,y):
+                if not frame_ref.body(x,y):frame_preserved+=1
+                elif affected[n] or owner[n] in valid_sprite_orders:frame_skipped+=1
+                else:frame_paint=True;frame_painted+=1
             if affected[n] and foreground and not owner_hd:
                 protected += 1
             layers = [(i, s, bounds(s), native_image(s['group'], s['index'])) for i, s in enumerate(sprites) if s['draw_order'] > order[n] and inside(bounds(s), x, y)] if affected[n] else []
@@ -153,10 +174,18 @@ def verify_scene_pixels(snapshot, enhanced, original, mode):
                 for dx in range(2):
                     pixel = ((y*2+dy)*1280+x*2+dx)*4
                     a, b = enhanced[pixel:pixel+4], original[pixel:pixel+4]
+                    if frame_ref is not None and not cursor:
+                        assert b==bytes(frame_ref.palette[frame_ref.indices[n]]),('native indexed proof',x,y)
                     if a != b:
-                        assert affected[n], ('outside qualified layers', x, y)
+                        assert affected[n] or frame_paint, ('outside qualified layers', x, y)
                         changed += 1
-                    if not affected[n] or cursor:
+                    if cursor:
+                        continue
+                    if not affected[n]:
+                        if frame_paint:
+                            assert a==bytes(frame_ref.asset.getpixel((x*2+dx,y*2+dy))),('frame body reference',x,y,dx,dy)
+                            frame_checked+=1
+                        else:assert a==b,('outside scene/frame changed',x,y)
                         continue
                     assert bytes(scene[n]) == b, ('original source scene differs', x, y)
                     if base[n] >= 0:
@@ -165,6 +194,12 @@ def verify_scene_pixels(snapshot, enhanced, original, mode):
                     else:
                         s = sprites[background[n]]; rect = bounds(s)
                         c = backdrops[background[n]].getpixel((x-rect[0], y-rect[1]))
+                    frame_bg=None
+                    if frame_ref is not None and base[n]<0:
+                        s=sprites[background[n]];rect=bounds(s)
+                        index=backdrop_indices[background[n]][(y-rect[1])*48+x-rect[0]]
+                        frame_bg=frame_ref.underlay(x,y,dx,dy,index)
+                        if frame_bg is not None:c=frame_bg
                     for i, s, rect, im in layers:
                         source_pixel = im.getpixel((x-rect[0], y-rect[1])); key = s['group'], s['index']
                         if s['draw_order'] in active_sprites:
@@ -182,20 +217,31 @@ def verify_scene_pixels(snapshot, enhanced, original, mode):
                     elif foreground:
                         c = scene[n]
                     if base[n] < 0 and owner[n] == 0:
-                        c = scene[n]; ui += 1
+                        if frame_bg is None:c=scene[n];ui+=1
+                        else:c=frame_bg;hd_ui+=1
                     assert a == bytes(c), ('HD reference composite differs', x, y, dx, dy, tuple(a), c)
                     checked += 1
     assert protected == report['protected_original_foreground_pixels'] == 0
     assert ui == report['preserved_UI_output_pixels']
+    assert hd_ui == report.get('HD_frame_underlay_output_pixels',0)
     assert overlap_units == (0 if mode == 'scene-missing' else 82)
-    assert (changed > 0) == (mode != 'scene-missing')
+    assert (changed > 0) == (mode != 'scene-missing' or (frame_ref is not None and frame_ref.enabled))
     if mode != 'scene-missing':
         assert checked > 20000 and all(v > 0 for v in removed.values())
     assert report['floor_native_pixels'] == (102720 if mode == 'scene' else 0)
+    if frame_ref is not None:
+        frame_report=snapshot['battle_frame']
+        assert frame_painted==frame_report['painted_native_pixels']
+        assert frame_preserved==frame_report['preserved_native_foreground_pixels']
+        assert frame_skipped==frame_report['skipped_scene_native_pixels']
+        assert not frame_report['crest_HD'] and not frame_report['weather_placeholder_HD']
     return {'changed_pixels': changed, 'independent_output_pixels_verified': checked,
             'HD_floor_draws': len(active_floors), 'HD_tree_draws': report['tree_hd_count'], 'HD_unit_draws': report['unit_hd_count'],
             'floor_native_pixels': report['floor_native_pixels'], 'original_visible_unit_pixels_overlapping_HD_tree': overlap_units,
             'old_unit_outline_output_pixels_removed': removed, 'original_UI_output_pixels_preserved': ui,
+            'HD_frame_underlay_output_pixels':hd_ui,'frame_native_painted':frame_painted,
+            'frame_native_foreground_preserved':frame_preserved,'frame_skipped_scene_native_pixels':frame_skipped,
+            'frame_reference_output_pixels_verified':frame_checked,
             'protected_original_foreground_pixels': protected, 'outside_qualified_layers_unchanged': True,
             'native_source_scene_verified': True, 'HD_reference_composite_verified': True,
             'cursor_formula_excluded_logical_rect': [cx, cy, cx+16, cy+16],

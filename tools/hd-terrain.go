@@ -12,16 +12,18 @@ type hdTerrainDraw struct {
 }
 
 type hdTerrainSpriteDraw struct {
-	Group              string          `json:"group"`
-	Index              int             `json:"index"`
-	Rect               image.Rectangle `json:"logical_rect"`
-	Order              uint64          `json:"draw_order"`
-	Background         *image.NRGBA    `json:"-"`
-	BackgroundVerified bool            `json:"background_verified,omitempty"`
-	BackgroundSHA      string          `json:"background_rgba_sha256,omitempty"`
-	SourceSHA          string          `json:"source_rgba_sha256,omitempty"`
-	AfterSHA           string          `json:"after_rgba_sha256,omitempty"`
-	BeginStep, EndStep int
+	Group                string          `json:"group"`
+	Index                int             `json:"index"`
+	Rect                 image.Rectangle `json:"logical_rect"`
+	Order                uint64          `json:"draw_order"`
+	Background           *image.NRGBA    `json:"-"`
+	BackgroundIndexed    []byte          `json:"-"`
+	BackgroundIndexedSHA string          `json:"background_indexed_sha256,omitempty"`
+	BackgroundVerified   bool            `json:"background_verified,omitempty"`
+	BackgroundSHA        string          `json:"background_rgba_sha256,omitempty"`
+	SourceSHA            string          `json:"source_rgba_sha256,omitempty"`
+	AfterSHA             string          `json:"after_rgba_sha256,omitempty"`
+	BeginStep, EndStep   int
 }
 
 type hdTerrainPending struct {
@@ -110,6 +112,7 @@ func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte
 					if p.Backdrop.Verified {
 						b := p.Backdrop
 						d.Background, d.BackgroundVerified = b.Before, true
+						d.BackgroundIndexed, d.BackgroundIndexedSHA = b.BeforeIndexed, b.BeforeIndexedSHA
 						d.BackgroundSHA, d.SourceSHA, d.AfterSHA = b.BeforeSHA, b.SourceSHA, b.AfterSHA
 						d.BeginStep, d.EndStep = b.BeginStep, b.EndStep
 					}

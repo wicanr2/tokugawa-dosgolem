@@ -113,6 +113,31 @@ func TestSceneOverlappingHDVisibleOwnerAlphaAndPartialFloors(t *testing.T) {
 	if !bytes.Equal(nativeBefore, native.Pix) || !bytes.Equal(unitBefore, unitSource.Pix) {
 		t.Fatal("renderer changed original input")
 	}
+	withIndices := state
+	withIndices.Sprites = append([]hdTerrainSpriteDraw(nil), state.Sprites...)
+	for i := range withIndices.Sprites {
+		s := &withIndices.Sprites[i]
+		s.BackgroundIndexed = make([]byte, 48*48)
+		for n := range s.BackgroundIndexed {
+			s.BackgroundIndexed[n] = 1
+		}
+		s.BackgroundIndexedSHA = fmt.Sprintf("%x", sha256.Sum256(s.BackgroundIndexed))
+	}
+	hdUI := color.NRGBA{17, 80, 170, 255}
+	provider := func(x, y, dx, dy int, index byte) (color.NRGBA, bool) { return hdUI, index == 1 }
+	out, _, _ = previewA0(native, nil, nil, 2, false)
+	rendered := scene.apply(out, native, withIndices, floors, pairs, sources, 2, true, provider)
+	if out.NRGBAAt(160, 128) != hdUI || rendered.UIHDOutputPixels == 0 || rendered.UIOutputPixels != 0 {
+		t.Fatal("indexed HD frame underlay not used", rendered)
+	}
+	for i := range withIndices.Sprites {
+		withIndices.Sprites[i].BackgroundIndexedSHA = "wrong"
+	}
+	out, _, _ = previewA0(native, nil, nil, 2, false)
+	rendered = scene.apply(out, native, withIndices, floors, pairs, sources, 2, true, provider)
+	if out.NRGBAAt(160, 128) != ui || rendered.UIHDOutputPixels != 0 {
+		t.Fatal("unverified background index used")
+	}
 	for y := 0; y < 800; y++ {
 		for x := 0; x < 1280; x++ {
 			if image.Pt(x, y).In(image.Rect(160, 128, 304, 224)) {

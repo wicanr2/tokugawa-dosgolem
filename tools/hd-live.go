@@ -6,6 +6,7 @@ type hdDrawReturn struct{ Return, Stack uint32 }
 
 // 固定 EXE 的原版入口與返回觀測；不修改 guest 或取代指令。
 type hdLive struct {
+	BattleFrame     battleFrameState `json:"battle_frame"`
 	Terrain         hdTerrainState   `json:"terrain"`
 	Window          hdWindowState    `json:"window"`
 	Kao             hdKaoState       `json:"kao"`
@@ -20,7 +21,12 @@ type hdLive struct {
 	ScrollPending   *hdDrawReturn    `json:"pending_scroll_draw"`
 }
 
-func (h *hdLive) observe(step int, eip, esp uint32, mem []byte) {
+func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...func() (nativeSnapshot, error)) {
+	var snapshot func() (nativeSnapshot, error)
+	if len(snapshots) == 1 {
+		snapshot = snapshots[0]
+	}
+	h.BattleFrame.observe(step, eip, esp, mem, snapshot)
 	h.Window.observe(step, eip, esp, mem)
 	h.Kao.observe(step, eip, esp, mem)
 	if h.ScrollPending != nil && eip == h.ScrollPending.Return && uint64(esp) == uint64(h.ScrollPending.Stack)+4 {
@@ -51,6 +57,7 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte) {
 	if h.Trace.ReturnSequence != previous {
 		e := h.Trace.LastReturn
 		if e["kind"] == "load_return" {
+			h.BattleFrame.loaded(e)
 			h.LastName, _ = e["name"].(string)
 			if h.LastName == "VISUAL.OZM" && e["raw_columns"] == uint32(80) && e["raw_rows"] == uint32(400) {
 				planes, ok := e["planes"].([]map[string]any)

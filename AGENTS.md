@@ -138,6 +138,22 @@
 
 `workplace/hd-prototype/catalog/art/ui-generation.json` 保存戰場介面生成草稿的來源、參考、完整提示詞與 SHA；生成原圖與提示詞同步至 `assets/hd-b/art/`，metadata 由 archive-hd-art.py 保存。圖像布局及正式呈現資格另驗證，生成草稿不算原版介面已接入。
 
+`workplace/hd-prototype/catalog/battle-frame/` 保存 MAPGAMEN 原版全畫面繪製的自然返回、當時 DAC、原生索引與框架製作。`tools/hd-battle-frame.go`／`tools/hd-battle-frame_test.go` 目前只觀測已知載入與 sub_1C084 自然返回，完整索引 SHA 不符不授予資格，不先替換畫面。固定 Go image 內該目錄可寫掛 `/output`，沿 run-probes.sh 加 `-hd-battle-frame-trace` 重跑普通路徑；其 `source-probe/` 保留診斷，後續建置及 GUI 另列，不能覆寫來源收據。
+
+`tools/verify-hd-battle-frame-source.py` 獨立核對來源索引、實際 DAC／PNG、自然返回、十五欄與完整 RAM。固定 GUI image 內專案唯讀掛 `/project`、`battle-frame/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-battle-frame-source.py`。來源快照綁定當次工具，不把來源驗證當作 HD 框架已完成。
+
+`tools/hd-battle-frame-prepare.py` 以明示分區座標校準已生成的 MAPGAMEN 框架，保存純生成圖的 HD skin、來源遮罩、幾何及本機預覽；原版遮罩與含原版的預覽不加入 Git。固定 GUI image 內專案唯讀掛 `/project`、`battle-frame/` 可寫掛 `/output`，執行 `python3 /project/tools/hd-battle-frame-prepare.py`。這是可丟棄幾何試作，READY 及正常 GUI 驗收另列。
+
+`tools/hd-battle-frame-profile.go` 固定選定 v2 skin、來源遮罩與十六色；`tools/hd-battle-frame-render.go`／`tools/hd-battle-frame-render_test.go` 實作框架、徽記／天氣整區資格、逐索引前景及共同場景底圖。`battle-frame/runtime/`、`desktop/`、`desktop-only/`、`desktop-missing/` 保存後續隔離建置與真實視窗，來源探針及草稿版本保留不覆寫。
+
+`assets/hd-b/battle-frame/` 只保存生成圖校準出的 v1／v2 skin、完整提示詞、幾何 metadata 及 v1 工具快照。archive-hd-art.py 核對純生成產物與來源關係；不保存原版索引、來源遮罩及含原版的預覽。正式呈現與正常路徑資格見 CONTEXT。
+
+`tools/verify_hd_battle_frame_pixels.py` 依原版索引、實際 palette、固定幾何與場景影響區獨立計算框架。真實視窗驗證開啟 `-hd-battle-frame-proof`，擷取原生及 48×48 背景索引至同一輸出目錄；它們維持本機，不加入素材索引。此核對器與 verify_hd_scene_pixels.py 隨 verify-desktop.py 複製到各 GUI 輸出目錄。
+
+`tools/verify-hd-battle-frame.py` 彙整兩個正常畫面、三種 GUI、來源與幾何、工具快照、完整 RAM 及十五欄基準。固定 GUI image 內專案唯讀掛 `/project`、`battle-frame/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-battle-frame.py`。歷史重核可指定 `--runtime-source-root` 與 `--verify-only`。
+
+`battle-frame/desktop-attempt-01/`、`desktop-only-attempt-01/`、`desktop-missing-attempt-01/` 保留首輪驗證器階段假設與切換次數不符的輸出；不是產品缺陷或成功收據。正常 658M 後畫面有能力／確認視窗遮住徽記，應驗證徽記整區備援，不能假設已是裸框架。
+
 `workplace/hd-prototype/catalog/terrain/objects/` 保存物件／單位的唯讀繪製順序研究、來源遮罩、隔離建置與 GUI 驗證。舊地面收據留在 `terrain/trace/` 及 `terrain/runtime/`，不覆寫。`-hd-terrain-trace` 同時記錄原版 `sub_1FC07` 地面及 `sub_1F9D0` 透明圖塊的原始暫存器、自然返回與平面指紋；診斷不決定呈現資格。
 
 `workplace/hd-prototype/catalog/terrain/trees/` 保存 objects-000 樹木的背景覆蓋研究、透明素材幾何、可丟棄預覽與獨立 GUI 驗證。原版前景來源沿用 `terrain/objects/sources/`，該輪收據保持不變。`tools/hd-terrain-tree-prepare.py` 核對原始順序、完整背景及實際游標，生成樹木素材指紋與裁切幾何；固定 GUI image 內專案掛 `/project` 可寫、`terrain/trees/` 掛 `/output` 可寫後執行。輪廓之外的低 alpha 雜點只在明示裁切範圍外排除，生成原始 PNG 保留。
