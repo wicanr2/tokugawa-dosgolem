@@ -314,3 +314,5 @@
 - 固定 GUI image 四套件通過，研究入口 19.915s。晴天及缺圖兩模式各自然 750M／390 事件、三次原版狀態不變切換，完整 RAM、十五欄、原生圖及 CD PCM 符合基準；六張真實 X11 圖與呈現 PNG 完整一致。天氣 42624 呈現像素逐點符合手繪取樣，缺圖同區零變動，天氣區外的框架、67 地面、樹叢與人物 HD 完全相同。總表 743d43ac25ffe6d318daa13f1f307d66c861a2584d8c5ff6656a024c780f593e，共用 binary c8d83595c1f593de60b180e5b1dfaa1e565626cb6f9ecb67579619dbfd333314。陰天為共同繪圖端及來源測試通過，正常路徑未抽測。
 - 另製作 OP2 騎兵與 OP8 五武將開場草稿。保留原始 2172×724／2171×724 與提示詞；原版 640×200 幾何及 OP2 未使用藍底區待校準，不加入 production profile。覆蓋表現為 79 個 OZM 已準備、兩個部分完成及兩個新開場草稿，全遊戲 HD 仍未完成，未開始三平台打包。
 - 私人素材保存與 verify-only 核對 199 PNG、110 提示詞、319872400 indexed bytes，共 327 個素材檔。語法、文件入口、目前與來源快照雜湊、Git whitespace、UID/GID 及 root-owned／誤建 .md 目錄檢查通過。來源探針、建置、兩個 GUI 及收尾容器均已結束並自動刪除，沿用既有 image。
+
+提交 `af96706f99add0196e96e262accce17d1e34f104` 已推送私人 main，主機 gh 核對 SHA 一致。327 個素材檔逐項符合遠端 Git blob，original/、workplace/ 未加入遠端。Issue #5 進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6174208391 。所有 tokugawa 容器已自動刪除；下一步依目前覆蓋表處理其餘戰場美術、開場草稿及圖集，不重開已驗收的天氣切片。
