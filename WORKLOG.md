@@ -303,3 +303,5 @@
 - 框架＋共同場景改變 761107 呈現像素，框架 347932 與場景 413696 像素符合獨立公式；1564 個透明處像素用 HD 框架底圖，56 個未知介面像素保留。只有框架保留原版人物；缺框架時原有 HD 場景保持 412342 像素變動。總表 943c5bb05efbfb009cb282db0c052d8f146379094f3924ed83d7315ae864b66e，共用 binary a3b822fc53d4ed9948465eaf4ca28dd0cb37c7efd688ef645d05204d6e248c3b。
 - 193 PNG／104 提示詞與 305012173 indexed bytes 保存核對通過。純生成 skin 及完整提示詞、幾何 metadata、v1 工具文字快照加入素材索引；原版 mask、idx、native 圖與含原版預覽不加入 Git。素材工具保持原有檔案類型白名單，以文字快照保存舊腳本。原始生成圖及各歷史收據不改。
 - 全遊戲 HD 尚未完成；下一切片為天氣、MAP_WAKU 等其他戰場圖像與共同繪圖端，其後補剩餘 OZM、地面與非空物件／單位。正式三平台打包尚未開始。
+
+提交 `b6bcfa0010dcb5ff7f5147266d0a63012013c751` 已推送私人 main，主機 gh 核對 SHA 一致。313 個素材檔逐項符合遠端 Git blob，original/、workplace/ 未加入遠端。Issue #5 進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6173478172 。當次及歷史收據、來源快照、素材索引、語法、文件入口、Git whitespace、UID/GID、root-owned／誤建 .md 目錄檢查通過；所有 tokugawa 容器均已自動刪除，沿用原 image，沒有遺留背景程序。
