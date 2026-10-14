@@ -32,6 +32,7 @@ var desktopWindowSource = flag.String("hd-window-source", "/project/workplace/hd
 var desktopWindowAsset = flag.String("hd-window-asset", "/project/assets/hd-b/window/window-skin-hd-b-v1.png", "HD window nine-slice PNG; original foreground is preserved")
 var desktopTerrainSourceDir = flag.String("hd-terrain-source-dir", "/project/workplace/hd-prototype/catalog/terrain/prepared/sources", "verified original floor PNGs with normal battle DAC")
 var desktopTerrainDir = flag.String("hd-terrain-dir", "/project/assets/hd-b/terrain", "approved source-specific floor HD art; each missing item falls back")
+var desktopTerrainSpriteSourceDir = flag.String("hd-terrain-sprite-source-dir", "/project/workplace/hd-prototype/catalog/terrain/objects/sources", "verified index-zero masks and native object/unit pixels")
 
 type desktopGame struct {
 	c                           *desktopContext
@@ -65,6 +66,8 @@ type desktopGame struct {
 	terrain                     map[int]hdTerrainPair
 	terrainModes                []string
 	terrainHD                   int
+	terrainSprites              map[hdTerrainSpriteKey]*image.NRGBA
+	terrainForeground           int
 }
 
 type desktopPortrait struct {
@@ -282,6 +285,28 @@ func runDesktopWindow(c *desktopContext) error {
 		g.terrain[index], terrainInfo[index] = pair, info
 	}
 	g.assetInfo["terrain"] = terrainInfo
+	g.terrainSprites = map[hdTerrainSpriteKey]*image.NRGBA{}
+	spriteInfo := map[string]any{}
+	for _, profile := range hdTerrainSpriteProfiles {
+		key := hdTerrainSpriteKey{profile.Group, profile.Index}
+		name := fmt.Sprintf("%s-%03d-original.png", profile.Group, profile.Index)
+		path := filepath.Join(*desktopTerrainSpriteSourceDir, name)
+		info := map[string]any{"validation": "fallback_missing_source"}
+		if data, e := os.ReadFile(path); e == nil {
+			sum := fmt.Sprintf("%x", sha256.Sum256(data))
+			info["source_sha256"] = sum
+			if sum == profile.SourceSHA {
+				if source, e := previewPNG(path); e == nil {
+					if validated := newHDTerrainSpriteSource(source); validated != nil {
+						g.terrainSprites[key] = validated
+						info["validation"] = "ready_native_mask"
+					}
+				}
+			}
+		}
+		spriteInfo[fmt.Sprintf("%s-%03d", profile.Group, profile.Index)] = info
+	}
+	g.assetInfo["terrain_sprite_sources"] = spriteInfo
 	ebiten.SetWindowSize(1280, 800)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("德川家康｜原版｜F6 切換 HD｜F7 暫停")
@@ -293,6 +318,7 @@ func runDesktopWindow(c *desktopContext) error {
 	c.Report = map[string]any{"classification": "desktop prototype; source-matched story portraits, scroll, upper frame and KAO portraits", "updates": g.updates, "draws": g.draws, "events": g.events, "windowbar_events": g.barEvents, "hd_observation": c.Live, "physical_mouse_events": g.mouseEvents, "scripted_mouse": c.Scripted, "hd_enabled": g.enabled, "last_mode": g.mode, "portrait_mode": g.portraitMode, "scroll_mode": g.scrollMode, "frame_mode": g.frameMode, "scroll_foreground_pixels": g.scrollForeground, "kao_modes": g.kaoModes, "kao_hd_count": g.kaoHD, "assets": g.assetInfo, "virtual_speed": *desktopSpeed, "audio_output": "PCM receipt only; desktop playback not enabled", "listening_verified": false}
 	c.Report["window_modes"], c.Report["window_hd_count"], c.Report["window_foreground_pixels"] = g.windowModes, g.windowHD, g.windowForeground
 	c.Report["terrain_modes"], c.Report["terrain_hd_count"] = g.terrainModes, g.terrainHD
+	c.Report["terrain_foreground_pixels"] = g.terrainForeground
 	return err
 }
 
@@ -319,12 +345,16 @@ func (g *desktopGame) render() error {
 		mode = "fallback_no_original_draw"
 	}
 	g.portraitMode = mode
-	g.terrainModes, g.terrainHD = nil, 0
+	g.terrainModes, g.terrainHD, g.terrainForeground = nil, 0, 0
 	for _, draw := range g.c.Live.Terrain.Draws {
-		result := g.terrain[draw.Index].apply(out, s.Image, draw.Rect, 2, g.enabled)
+		result, foreground := "fallback_pending_draw", 0
+		if g.c.Live.Terrain.Pending == nil {
+			result, foreground = g.terrain[draw.Index].applyForeground(out, s.Image, draw, g.c.Live.Terrain.Sprites, g.terrainSprites, 2, g.enabled)
+		}
 		g.terrainModes = append(g.terrainModes, result)
 		if result == "hd" {
 			g.terrainHD++
+			g.terrainForeground += foreground
 			mode = "hd"
 		}
 	}
@@ -499,6 +529,7 @@ func (g *desktopGame) Update() error {
 	status := map[string]any{"step": g.c.Steps(), "mode": g.mode, "eligible": g.c.Live.Active, "portrait_resource": g.c.Live.LastName, "scroll_eligible": g.c.Live.ScrollActive, "scroll_mode": g.scrollMode, "frame_mode": g.frameMode, "scroll_foreground_pixels": g.scrollForeground, "portrait_mode": g.portraitMode, "kao_modes": g.kaoModes, "kao_hd_count": g.kaoHD, "kao_draws": g.c.Live.Kao.Draws, "enabled": g.enabled, "paused": g.paused, "events": g.events, "mouse_events": g.mouseEvents, "bar_visible": g.bar.Visible, "bar_pinned": g.bar.Pinned, "bar_menu": g.bar.Menu, "bar_focus": g.bar.Focus, "bar_hover": g.bar.Hover, "bar_events": g.barEvents, "window_size": []int{w, h}, "mouse_blocked": g.blockMouse}
 	status["window_modes"], status["window_hd_count"], status["window_foreground_pixels"], status["window_draws"] = g.windowModes, g.windowHD, g.windowForeground, g.c.Live.Window.Draws
 	status["terrain_modes"], status["terrain_hd_count"], status["terrain_draws"] = g.terrainModes, g.terrainHD, g.c.Live.Terrain.Draws
+	status["terrain_foreground_pixels"], status["terrain_sprites"] = g.terrainForeground, g.c.Live.Terrain.Sprites
 	b, err := json.Marshal(status)
 	if err != nil {
 		return err

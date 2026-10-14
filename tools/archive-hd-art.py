@@ -16,7 +16,7 @@ README = """# 戰國手繪 HD 素材
 - [劇情圖](art/) 及 [家康肖像](A-0-hd-b-v1.png)。
 - [81 張頭像總覽](kao/selected/contact-sheet.png)、[九頁頭像圖集](kao/)。
 - [捲軸與紅金框架](scroll/)、[共用視窗邊框](window/)。
-- [戰場地面與單位草稿](terrain/)，單位 PNG 保留透明背景。
+- [戰場地面、物件與單位草稿](terrain/)，物件／單位 PNG 保留透明背景。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。
@@ -167,16 +167,19 @@ def main():
     if terrain.exists():
         for source in sorted(terrain.glob("*-hd-b-v*.png")):
             unit = source.name.startswith("unit-")
+            object_draft = source.name.startswith("object-")
             status = "generated unit draft; original identity and footprint review pending" if unit else "superseded or unreviewed floor draft"
+            if object_draft:
+                status = "generated object draft; cell footprint and normal HD integration pending"
             if source.name in approved_floor:
                 assert sha(source) == approved_floor[source.name]
                 status = "normal first-battle floor verified" if source.name in normal_floor_art else "reviewed floor art and common draw consumer integrated; visible normal case not yet sampled"
             picture(source, "terrain/"+source.name, source.with_suffix(".prompt.txt"),
                     "terrain/"+source.with_suffix(".prompt.txt").name, status,
-                    alpha_policy="transparent" if unit else "opaque")
+                    alpha_policy="transparent" if unit or object_draft else "opaque")
         for source in sorted(terrain.glob("*-hd-gallery-v*.png")):
             copy(source, "terrain/"+source.name, "png", status="generated-art gallery; includes drafts")
-        for name in ("generation.json", "floor-generation.json", "floor-revisions.json"):
+        for name in ("generation.json", "floor-generation.json", "floor-revisions.json", "object-generation.json"):
             source = terrain/name
             if source.exists():
                 copy(source, "terrain/"+name, "generation-metadata")

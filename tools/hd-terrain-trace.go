@@ -10,6 +10,7 @@ type terrainTracePending struct {
 	Return, Stack uint32
 	Source, Dest  uint32
 	BeginStep     int
+	Kind          string
 }
 
 // 原始暫存器與 backing RAM 的有界診斷。未參與正式呈現。
@@ -47,16 +48,19 @@ func terrainPlaneHashes(mem []byte) []map[string]any {
 
 func (t *terrainTrace) observe(step int, eip, esp, esi, edi uint32, mem []byte) {
 	if p := t.Pending; p != nil && eip == p.Return && uint64(esp) == uint64(p.Stack)+4 {
-		t.event(map[string]any{"kind": "floor_return", "step": step, "begin_step": p.BeginStep,
+		t.event(map[string]any{"kind": p.Kind + "_return", "step": step, "begin_step": p.BeginStep,
 			"linear_eip": eip, "raw_source_offset": p.Source, "raw_destination_offset": p.Dest,
 			"planes": terrainPlaneHashes(mem)})
 		t.Pending = nil
 	}
-	if eip != 0x1fc07 {
+	kind := "floor"
+	if eip == 0x1f9d0 {
+		kind = "sprite"
+	} else if eip != 0x1fc07 {
 		return
 	}
 	t.Pending = nil
-	e := map[string]any{"kind": "floor_enter", "step": step, "linear_eip": eip,
+	e := map[string]any{"kind": kind + "_enter", "step": step, "linear_eip": eip,
 		"stack_linear": esp, "raw_source_offset": esi, "raw_destination_offset": edi,
 		"planes": terrainPlaneHashes(mem)}
 	if uint64(esp)+4 > uint64(len(mem)) {
@@ -67,12 +71,15 @@ func (t *terrainTrace) observe(step int, eip, esp, esi, edi uint32, mem []byte) 
 		if uint64(ret) >= uint64(len(mem)) {
 			e["observation_error"] = "return outside backing RAM"
 		} else {
-			t.Pending = &terrainTracePending{ret, esp, esi, edi, step}
+			t.Pending = &terrainTracePending{ret, esp, esi, edi, step, kind}
 		}
 	}
 	if len(mem) >= 0x42180 {
 		e["raw_35984"] = binary.LittleEndian.Uint32(mem[0x35984:])
 		e["raw_4217c"] = binary.LittleEndian.Uint32(mem[0x4217c:])
+		for _, addr := range []int{0x35988, 0x3598c, 0x35990} {
+			e[fmt.Sprintf("raw_%x", addr)] = binary.LittleEndian.Uint32(mem[addr:])
+		}
 	}
 	t.event(e)
 }

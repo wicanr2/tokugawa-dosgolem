@@ -88,7 +88,21 @@ def main():
     terrain_profiles = json.loads(terrain_path.read_text()) if terrain_path.exists() else None
     verified_floors = set()
     unit_drafts = 0
+    object_drafts = 0
+    foreground_summary = None
     terrain_proof = ROOT / "terrain/runtime/desktop/verification-terrain.json"
+    foreground_path = ROOT / "terrain/objects/verification-summary.json"
+    if foreground_path.exists():
+        foreground_summary = json.loads(foreground_path.read_text())
+        terrain_proof = ROOT / "terrain/objects/desktop/verification-terrain.json"
+        assert foreground_summary['source_sprite_count'] == 39
+        assert foreground_summary['records'][0]['GUI_verification_sha256'] == sha(terrain_proof)
+        proof_sources.append({'verification': str(foreground_path.relative_to(PROJECT)), 'sha256': sha(foreground_path)})
+    object_generation = ROOT / 'terrain/art/object-generation.json'
+    if object_generation.exists():
+        for draft in json.loads(object_generation.read_text())['records']:
+            assert sha(ROOT/'terrain/art'/draft['asset']) == draft['asset_sha256']
+            object_drafts += 1
     if terrain_profiles:
         assert terrain_profiles["tool_sha256"] == sha(PROJECT / "tools/hd-terrain-prepare.py")
         assert terrain_profiles["source_count"] == 104 and terrain_profiles["reviewed_HD_count"] == 8
@@ -159,8 +173,9 @@ def main():
         if name == "MAP_CHIP.OZM" and terrain_profiles:
             record.update(art_status="partial", source_grid_counts={"floor": 104, "object": 26, "unit": 13},
                           approved_floor_art=8, generated_unit_drafts=unit_drafts, approved_unit_art=0,
+                          generated_object_drafts=object_drafts, approved_object_art=0,
                           normal_floor_indices_verified=sorted(verified_floors),
-                          runtime_status="floor common draw consumer integrated; whole atlas pending",
+                          runtime_status="floor consumer with native index-zero foreground preservation integrated; HD sprites and whole atlas pending",
                           floor_profiles_sha256=sha(terrain_path),
                           source_extraction_sha256=sha(ROOT / "terrain/terrain-extraction.json"))
         records.append(record)
@@ -188,7 +203,9 @@ def main():
               "reviewed_story_source_profiles": len(profiles),
               "approved_MAP_CHIP_floor_art": 8 if terrain_profiles else 0,
               "normal_MAP_CHIP_floor_cases_verified": len(verified_floors),
-              "generated_MAP_CHIP_unit_drafts": unit_drafts}
+              "generated_MAP_CHIP_unit_drafts": unit_drafts,
+              "generated_MAP_CHIP_object_drafts": object_drafts,
+              "native_MAP_CHIP_sprite_source_profiles": 39 if foreground_summary else 0}
     result = {"classification": "local research coverage ledger; not a production asset-pack schema",
               "whole_game_HD_complete": False,
               "count_limit": "resource counts do not count atlas tiles, animation frames or UI pieces; no completion percentage",

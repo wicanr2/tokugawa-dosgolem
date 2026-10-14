@@ -39,7 +39,7 @@ func main() {
 	mouseFile := flag.String("mouse-file", "", "read mouse state array from a file")
 	cdDiagnostic := flag.Bool("cd-trace", false, "record bounded read-only DPMI/CD request diagnostics")
 	hdDiagnostic := flag.Bool("hd-trace", false, "record bounded read-only original asset loader diagnostics")
-	terrainDiagnostic := flag.Bool("hd-terrain-trace", false, "record bounded read-only original floor draw registers and returns")
+	terrainDiagnostic := flag.Bool("hd-terrain-trace", false, "record bounded read-only original floor/sprite draw registers and returns")
 	hdExport := flag.Bool("hd-export", false, "copy validated loader-return planes and DAC to local research output; implies hd-trace")
 	desktop := flag.Bool("desktop", false, "run isolated desktop presentation prototype")
 	flag.Parse()
@@ -426,7 +426,7 @@ func main() {
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
-	for _, name := range []string{"tools/hd-window.go", "tools/hd-window_test.go", "tools/hd-story_test.go"} {
+	for _, name := range []string{"tools/hd-window.go", "tools/hd-window_test.go", "tools/hd-story_test.go", "tools/hd-terrain-sprite-profiles.go"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)

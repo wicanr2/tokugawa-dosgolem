@@ -289,6 +289,8 @@ try:
         enhanced = capture("enabled")
         modes = list(status()["terrain_modes"])
         draws = list(status()["terrain_draws"])
+        sprites = list(status().get("terrain_sprites") or [])
+        foreground_reported = status()["terrain_foreground_pixels"]
         key("F6")
         original = capture("original")
         key("F6")
@@ -298,23 +300,53 @@ try:
         a, b = decoded(Path(enhanced["actual_png"])), decoded(Path(original["actual_png"]))
         allowed = bytearray(1280*800)
         active = []
+        foreground = bytearray(1280*800)
+        mask_cache = {}
         for draw, mode in zip(draws, modes):
             if mode != "hd":
                 continue
+            rect = draw["logical_rect"]
+            for sprite in sprites:
+                sr = sprite["logical_rect"]
+                if sprite["draw_order"] <= draw["draw_order"]:
+                    continue
+                x0, y0 = max(rect["Min"]["X"], sr["Min"]["X"]), max(rect["Min"]["Y"], sr["Min"]["Y"])
+                x1, y1 = min(rect["Max"]["X"], sr["Max"]["X"]), min(rect["Max"]["Y"], sr["Max"]["Y"])
+                if x0 >= x1 or y0 >= y1:
+                    continue
+                mask_name = f'{sprite["group"]}-{sprite["index"]:03d}-original.png'
+                if mask_name not in mask_cache:
+                    mask_cache[mask_name] = decoded(Path("/project/workplace/hd-prototype/catalog/terrain/objects/sources") / mask_name)
+                mask = mask_cache[mask_name]
+                for y in range(y0, y1):
+                    for x in range(x0, x1):
+                        i = ((y-sr["Min"]["Y"])*48+x-sr["Min"]["X"])*4
+                        if mask[i+3] != 255:
+                            continue
+                        for dy in range(2):
+                            n = (y*2+dy)*1280+x*2
+                            foreground[n:n+2] = b'\1\1'
             rect = draw["logical_rect"]
             x0, y0, x1, y1 = rect["Min"]["X"]*2, rect["Min"]["Y"]*2, rect["Max"]["X"]*2, rect["Max"]["Y"]*2
             for y in range(y0, y1):
                 allowed[y*1280+x0:y*1280+x1] = bytes([1])*(x1-x0)
             active.append({"index": draw["index"], "rect": [x0//2, y0//2, x1//2, y1//2]})
         changed = 0
+        preserved = 0
         for n, eligible in enumerate(allowed):
+            if foreground[n]:
+                assert a[n*4:n*4+4] == b[n*4:n*4+4], ("original foreground changed", n%1280, n//1280)
+                preserved += 1
             if a[n*4:n*4+4] != b[n*4:n*4+4]:
                 assert eligible, ("outside validated terrain", n%1280, n//1280)
                 changed += 1
         assert (changed > 0) == (args.mode == "terrain")
         assert (len(active) > 0) == (args.mode == "terrain")
+        assert preserved == foreground_reported*4
         terrain_checks.append({"step": enhanced["presented"]["step"], "active_rectangles": active,
-                               "changed_pixels": changed, "outside_terrain_unchanged": True, "guest_unchanged": True})
+                               "changed_pixels": changed, "outside_terrain_unchanged": True, "guest_unchanged": True,
+                               "foreground_native_pixels": foreground_reported, "foreground_output_pixels": preserved,
+                               "original_foreground_unchanged": True, "sprite_draws": sprites})
         pictures += [enhanced, original, restored]
         key("F7")
     elif is_portraits:

@@ -1,0 +1,7 @@
+Use case: style-transfer.
+Asset type: isolated transparent 48x48-map-cell sprite, redrawn as a high-resolution square PNG for a classic DOS Japanese Sengoku strategy game.
+Input images: Image 1 is the exact original sprite composition to preserve. Image 2 is the already approved hand-painted B-style grass texture for compatible brushwork and natural colours; do not copy its grass background.
+Primary request: redraw one compact Japanese castle keep with blue-grey roof tiles and white plaster walls, stacked tiers viewed from the same elevated frontal angle as image 1. Preserve tier count, broad base, apex and screen footprint; keep blue roof accents distinct. No flags, crests or added buildings.
+Style: carefully hand-painted historical game illustration, fine ink contours, restrained natural brush texture, readable at a small on-screen size; same B 戰國手繪風 as the project. Elevated tactical map view, no cinematic perspective.
+Composition: square canvas, match image 1's placement and occupancy inside its 48x48 cell. Entire object visible, no cropping, do not enlarge or recenter differently. Transparent background and transparent empty space exactly as required for a sprite. Soft shading painted within the object, no separate drop shadow outside its footprint.
+Constraints: no text, labels, UI, watermark, ground tile, backdrop, border, new symbols, invented crests or extra objects. Smooth detail rather than pixelated enlargement. Output genuine RGBA transparency.

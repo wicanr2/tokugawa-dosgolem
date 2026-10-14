@@ -44,6 +44,7 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/cmd/leprobe/hd_terrain_trace_test.go":"/project/tools/hd-terrain-trace_test.go",
   "/dosgolem/cmd/leprobe/hd_terrain.go":"/project/tools/hd-terrain.go",
   "/dosgolem/cmd/leprobe/hd_terrain_profiles.go":"/project/tools/hd-terrain-profiles.go",
+  "/dosgolem/cmd/leprobe/hd_terrain_sprite_profiles.go":"/project/tools/hd-terrain-sprite-profiles.go",
   "/dosgolem/cmd/leprobe/hd_terrain_test.go":"/project/tools/hd-terrain_test.go",
   "/dosgolem/cmd/leprobe/hd_live.go":"/project/tools/hd-live.go",
   "/dosgolem/cmd/leprobe/hd_portraits.go":"/project/tools/hd-portraits.go",

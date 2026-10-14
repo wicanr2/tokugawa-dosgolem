@@ -1,0 +1,106 @@
+{
+  "classification": "generated object drafts; not enabled in game",
+  "tool": "built-in image_gen.imagegen",
+  "records": [
+    {
+      "index": 0,
+      "asset": "object-000-hd-b-v1.png",
+      "asset_sha256": "23947dfd12a6ecfad5745892d432a66d1e92e29bc6fc2a106756bec5a6084136",
+      "prompt": "object-000-hd-b-v1.prompt.txt",
+      "prompt_sha256": "da1fe6890b990557c8ef738e287ed12bf3ea5c679a51345a04beaeb5b1f4a178",
+      "source_original_png_sha256": "01d61b900b19f4eb3ee51f22c03fed112d2299d0cf0d4084da9f3676aa5fcbe1",
+      "tool": "built-in image_gen.imagegen",
+      "transparent_background": true,
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bbox": [
+        0,
+        0,
+        1246,
+        1254
+      ],
+      "status": "generated transparent object draft; cell footprint/normal HD integration pending"
+    },
+    {
+      "index": 1,
+      "asset": "object-001-hd-b-v1.png",
+      "asset_sha256": "be72a74f36fd20d67dd8d3b6c2adfc4538662335e8b1edfed87740626fa97647",
+      "prompt": "object-001-hd-b-v1.prompt.txt",
+      "prompt_sha256": "a0bf3cc468ee7fc3958cdb6d0c93c852dd114e1f50826110d2a50548e8496850",
+      "source_original_png_sha256": "05a9a56d44bb6e382ef06bbe69ec26809cc675b0c0e0649a075cb7a6a162fd0d",
+      "tool": "built-in image_gen.imagegen",
+      "transparent_background": true,
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bbox": [
+        0,
+        9,
+        1232,
+        1254
+      ],
+      "status": "generated transparent object draft; cell footprint/normal HD integration pending"
+    },
+    {
+      "index": 2,
+      "asset": "object-002-hd-b-v1.png",
+      "asset_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "prompt": "object-002-hd-b-v1.prompt.txt",
+      "prompt_sha256": "ae9756654534e301b377402c277f8df42236c0a30b813605239bf5e8ac3f0555",
+      "source_original_png_sha256": "cc53efcfe70177f99d1e89b8bb31b8f84b8d9cd0bab3d2939d42d745a7354fce",
+      "tool": "built-in image_gen.imagegen",
+      "transparent_background": true,
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bbox": [
+        0,
+        21,
+        1240,
+        1254
+      ],
+      "status": "generated transparent object draft; cell footprint/normal HD integration pending"
+    },
+    {
+      "index": 3,
+      "asset": "object-003-hd-b-v1.png",
+      "asset_sha256": "e3bd055967d7fc2d68a0bf859732daf4a02bf59e5e62c17c62dd8e5bf0905546",
+      "prompt": "object-003-hd-b-v1.prompt.txt",
+      "prompt_sha256": "c9c59850c0c78631096620c70109b799594dea15a7c3ee1ccd74422acfa4423e",
+      "source_original_png_sha256": "95958271d924e6ae7016ed85418baf0927786239ce50bda06c5c57518a785698",
+      "tool": "built-in image_gen.imagegen",
+      "transparent_background": true,
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bbox": [
+        0,
+        19,
+        1206,
+        1231
+      ],
+      "status": "generated transparent object draft; cell footprint/normal HD integration pending"
+    }
+  ]
+}

@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 183,
-    "prompts": 95,
-    "bytes": 289000071
+    "png": 188,
+    "prompts": 99,
+    "bytes": 296187457
   },
-  "archive_tool_sha256": "e7766c5afed1fece7199fb522e8645de9cf365bff1bd0e7c44a52bf6c068b5fe",
+  "archive_tool_sha256": "df987197a7783b92d029449e06f8310e661bf54fe3fad243b79b5c7e06d8a3a4",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -4996,6 +4996,125 @@
       "bytes": 9610,
       "sha256": "ea02ca3518a9b014166a149825dc64b2c3114520d0e1c888ae834897d4402b9e",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/generation.json"
+    },
+    {
+      "path": "terrain/object-000-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2035106,
+      "sha256": "23947dfd12a6ecfad5745892d432a66d1e92e29bc6fc2a106756bec5a6084136",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-000-hd-b-v1.png",
+      "prompt": "terrain/object-000-hd-b-v1.prompt.txt",
+      "status": "generated object draft; cell footprint and normal HD integration pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/object-000-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1483,
+      "sha256": "da1fe6890b990557c8ef738e287ed12bf3ea5c679a51345a04beaeb5b1f4a178",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-000-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/object-001-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 769360,
+      "sha256": "be72a74f36fd20d67dd8d3b6c2adfc4538662335e8b1edfed87740626fa97647",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-001-hd-b-v1.png",
+      "prompt": "terrain/object-001-hd-b-v1.prompt.txt",
+      "status": "generated object draft; cell footprint and normal HD integration pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/object-001-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1480,
+      "sha256": "a0bf3cc468ee7fc3958cdb6d0c93c852dd114e1f50826110d2a50548e8496850",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-001-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/object-002-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2207777,
+      "sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-002-hd-b-v1.png",
+      "prompt": "terrain/object-002-hd-b-v1.prompt.txt",
+      "status": "generated object draft; cell footprint and normal HD integration pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/object-002-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1490,
+      "sha256": "ae9756654534e301b377402c277f8df42236c0a30b813605239bf5e8ac3f0555",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-002-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/object-003-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1882133,
+      "sha256": "e3bd055967d7fc2d68a0bf859732daf4a02bf59e5e62c17c62dd8e5bf0905546",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-003-hd-b-v1.png",
+      "prompt": "terrain/object-003-hd-b-v1.prompt.txt",
+      "status": "generated object draft; cell footprint and normal HD integration pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/object-003-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1503,
+      "sha256": "c9c59850c0c78631096620c70109b799594dea15a7c3ee1ccd74422acfa4423e",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-003-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/object-generation.json",
+      "kind": "generation-metadata",
+      "bytes": 3217,
+      "sha256": "5ea7132b4736cc60f535640abe0189d347b4682ae86b089e7fc0b373c220648b",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-generation.json"
+    },
+    {
+      "path": "terrain/object-hd-gallery-v1.png",
+      "kind": "png",
+      "bytes": 283837,
+      "sha256": "64b6524bce20d877dfc720a4091cfa5cf7981da9fa0c847d81f5fa39ae870ac1",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/object-hd-gallery-v1.png",
+      "status": "generated-art gallery; includes drafts",
+      "size": [
+        1024,
+        288
+      ]
     },
     {
       "path": "terrain/unit-000-hd-b-v1.png",

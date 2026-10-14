@@ -124,6 +124,12 @@
 
 ## 全美術 HD 研究入口
 
+`workplace/hd-prototype/catalog/terrain/objects/` 保存物件／單位的唯讀繪製順序研究、來源遮罩、隔離建置與 GUI 驗證。舊地面收據留在 `terrain/trace/` 及 `terrain/runtime/`，不覆寫。`-hd-terrain-trace` 同時記錄原版 `sub_1FC07` 地面及 `sub_1F9D0` 透明圖塊的原始暫存器、自然返回與平面指紋；診斷不決定呈現資格。
+
+[tools/hd-terrain-object-prepare.py](tools/hd-terrain-object-prepare.py) 以正常 750M 的唯讀繪製順序及既有 IDA 遮罩證據，核對原生地面／透明前景合成，準備 39 個原版物件／單位來源及 [tools/hd-terrain-sprite-profiles.go](tools/hd-terrain-sprite-profiles.go) 指紋。固定 GUI image 內專案掛 `/project` 可寫、`catalog/terrain/objects/` 掛 `/output` 可寫，執行 `python3 /project/tools/hd-terrain-object-prepare.py`；只輸出原始來源遮罩，不啟用單位 HD 草稿。
+
+[tools/verify-terrain-evidence.py](tools/verify-terrain-evidence.py) 加 `--foreground` 核對 `terrain/objects/` 的 HD／缺圖正常 GUI、39 個來源、原版狀態及前景像素。固定 GUI image 內專案唯讀掛 `/project`、`terrain/objects/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-terrain-evidence.py --foreground`。不加旗標則核對舊地面切片，須使用該次來源快照。來源準備後用固定 Go image 對生成的 profiles 執行 gofmt，不在主機執行 Go。
+
 唯一覆蓋清單為 `workplace/hd-prototype/catalog/art-coverage.json`，由 `tools/hd-art-inventory.py` 重生。圖集資源數不代表內部圖塊完成數。`tools/hd-kao-extract.py` 擷取原版來源；`tools/hd-kao-prepare.py --root /output/kao` 裁切已保存的手繪圖集。這些是本機研究產物，正式素材包格式另列。
 
 沿用固定 GUI image，內含 Pillow 9.4.0。掛載專案至 `/project` 唯讀、`original/game/` 至 `/original` 唯讀、`workplace/hd-prototype/catalog/` 至 `/output` 可寫，再依序執行上述擷取、裁切及覆蓋工具。Docker 的 UID、資源、網路與路徑檢查依本檔「Docker 邊界」。頭像桌面旗標為 `-hd-kao-source-dir` 與 `-hd-kao-dir`，預設分別讀 `catalog/kao/` 及 `catalog/kao/selected/`。原版逐張指紋保存在 `tools/hd-kao-profiles.go`。

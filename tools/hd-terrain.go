@@ -8,18 +8,32 @@ import (
 type hdTerrainDraw struct {
 	Index int             `json:"index"`
 	Rect  image.Rectangle `json:"logical_rect"`
+	Order uint64          `json:"draw_order"`
+}
+
+type hdTerrainSpriteDraw struct {
+	Group string          `json:"group"`
+	Index int             `json:"index"`
+	Rect  image.Rectangle `json:"logical_rect"`
+	Order uint64          `json:"draw_order"`
 }
 
 type hdTerrainPending struct {
 	Return, Stack uint32
 	Draw          hdTerrainDraw
+	Sprite        *hdTerrainSpriteDraw
 }
 
 type hdTerrainState struct {
-	Draws   []hdTerrainDraw   `json:"draws"`
-	Pending *hdTerrainPending `json:"pending_return"`
-	Returns uint64            `json:"completed_returns"`
+	Draws         []hdTerrainDraw       `json:"draws"`
+	Pending       *hdTerrainPending     `json:"pending_return"`
+	Returns       uint64                `json:"completed_returns"`
+	Sprites       []hdTerrainSpriteDraw `json:"sprites"`
+	SpriteReturns uint64                `json:"completed_sprite_returns"`
+	Sequence      uint64                `json:"draw_sequence"`
 }
+
+func (h *hdTerrainState) invalidate() { h.Draws, h.Sprites, h.Pending = nil, nil, nil }
 
 func hdTerrainSourceValid(mem []byte) bool {
 	if len(mem) < 0x42180 || binary.LittleEndian.Uint32(mem[0x35988:]) != 0 {
@@ -46,23 +60,72 @@ func hdTerrainDecode(source, dest uint32) (hdTerrainDraw, bool) {
 	if sy >= 256 || sy%32 != 0 || sx >= 78 || sx%6 != 0 || x+48 > 640 || y+32 > 400 {
 		return hdTerrainDraw{}, false
 	}
-	return hdTerrainDraw{int(sy/32*13 + sx/6), image.Rect(int(x), int(y), int(x+48), int(y+32))}, true
+	return hdTerrainDraw{Index: int(sy/32*13 + sx/6), Rect: image.Rect(int(x), int(y), int(x+48), int(y+32))}, true
+}
+
+func hdTerrainSpriteDecode(source, dest, ret uint32) (hdTerrainSpriteDraw, bool) {
+	sy, sx := source/80, source%80
+	y, x := dest/80, dest%80*8
+	d := hdTerrainSpriteDraw{Rect: image.Rect(int(x), int(y), int(x+48), int(y+48))}
+	if sx >= 78 || sx%6 != 0 || x+48 > 640 || y+48 > 400 {
+		return d, false
+	}
+	switch {
+	case (sy == 256 || sy == 304) && ret == 0x1fe69:
+		d.Group, d.Index = "objects", int((sy-256)/48*13+sx/6)
+	case sy == 352 && ret == 0x1fea2:
+		d.Group, d.Index = "units", int(sx/6)
+	default:
+		return d, false
+	}
+	return d, true
+}
+
+func hdTerrainSpriteSourceValid(mem []byte) bool {
+	return hdTerrainSourceValid(mem) && binary.LittleEndian.Uint32(mem[0x3598c:]) == 0x5000 && binary.LittleEndian.Uint32(mem[0x35990:]) == 0x6e00
 }
 
 // 暫存器參數只讀。新繪製先撤銷重疊項，自然返回後才啟用。
 func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte) {
 	if eip == 0x1c084 || eip == 0x1e93f {
-		h.Draws, h.Pending = nil, nil
+		h.invalidate()
 		return
 	}
 	if p := h.Pending; p != nil && eip == p.Return && uint64(esp) == uint64(p.Stack)+4 {
-		if hdTerrainSourceValid(mem) && len(h.Draws) < 256 {
+		if p.Sprite != nil {
+			if hdTerrainSpriteSourceValid(mem) && len(h.Sprites) < 512 {
+				h.Sequence++
+				d := *p.Sprite
+				d.Order = h.Sequence
+				h.Sprites = append(h.Sprites, d)
+				h.SpriteReturns++
+			} else {
+				h.invalidate()
+			}
+		} else if hdTerrainSourceValid(mem) && len(h.Draws) < 256 {
+			h.Sequence++
+			p.Draw.Order = h.Sequence
 			h.Draws = append(h.Draws, p.Draw)
 			h.Returns++
 		} else {
-			h.Draws = nil
+			h.invalidate()
 		}
 		h.Pending = nil
+	}
+	if eip == 0x1f9d0 {
+		h.Pending = nil
+		if !hdTerrainSpriteSourceValid(mem) || uint64(esp)+4 > uint64(len(mem)) {
+			h.invalidate()
+			return
+		}
+		ret := binary.LittleEndian.Uint32(mem[esp:])
+		d, ok := hdTerrainSpriteDecode(esi, edi, ret)
+		if !ok {
+			h.invalidate()
+			return
+		}
+		h.Pending = &hdTerrainPending{Return: ret, Stack: esp, Sprite: &d}
+		return
 	}
 	if eip != 0x1fc07 {
 		return
@@ -70,7 +133,7 @@ func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte
 	h.Pending = nil
 	draw, ok := hdTerrainDecode(esi, edi)
 	if !ok || !hdTerrainSourceValid(mem) || uint64(esp)+4 > uint64(len(mem)) {
-		h.Draws = nil
+		h.invalidate()
 		return
 	}
 	kept := h.Draws[:0]
@@ -84,7 +147,7 @@ func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte
 	if uint64(ret) >= uint64(len(mem)) {
 		return
 	}
-	h.Pending = &hdTerrainPending{ret, esp, draw}
+	h.Pending = &hdTerrainPending{Return: ret, Stack: esp, Draw: draw}
 }
 
 type hdTerrainPair struct {
@@ -122,26 +185,87 @@ func newHDTerrainPair(source, asset image.Image, scale int) hdTerrainPair {
 }
 
 func (p hdTerrainPair) apply(out *image.NRGBA, native image.Image, rect image.Rectangle, scale int, enabled bool) string {
+	result, _ := p.applyForeground(out, native, hdTerrainDraw{Rect: rect}, nil, nil, scale, enabled)
+	return result
+}
+
+type hdTerrainSpriteKey struct {
+	Group string
+	Index int
+}
+
+func newHDTerrainSpriteSource(source image.Image) *image.NRGBA {
+	if source == nil || source.Bounds() != image.Rect(0, 0, 48, 48) {
+		return nil
+	}
+	out := image.NewNRGBA(source.Bounds())
+	for y := 0; y < 48; y++ {
+		for x := 0; x < 48; x++ {
+			c := rgbaAt(source, x, y)
+			if c.A != 0 && c.A != 255 {
+				return nil
+			}
+			out.SetNRGBA(x, y, c)
+		}
+	}
+	return out
+}
+
+// 依原始索引零遮罩合成預期畫面。全部吻合後才換地面，前景保持原生像素。
+func (p hdTerrainPair) applyForeground(out *image.NRGBA, native image.Image, draw hdTerrainDraw, sprites []hdTerrainSpriteDraw, sources map[hdTerrainSpriteKey]*image.NRGBA, scale int, enabled bool) (string, int) {
+	rect := draw.Rect
 	if !enabled {
-		return "original"
+		return "original", 0
 	}
 	if p.Reason != "ready" {
-		return p.Reason
+		return p.Reason, 0
 	}
 	if native == nil || out == nil || native.Bounds() != image.Rect(0, 0, 640, 400) || out.Bounds() != image.Rect(0, 0, 640*scale, 400*scale) || rect.Dx() != 48 || rect.Dy() != 32 || !rect.In(native.Bounds()) || p.Asset == nil || p.Asset.Bounds() != image.Rect(0, 0, 48*scale, 32*scale) {
-		return "fallback_geometry"
+		return "fallback_geometry", 0
+	}
+	expected := image.NewNRGBA(image.Rect(0, 0, 48, 32))
+	copy(expected.Pix, p.Source.Pix)
+	var foreground [48 * 32]bool
+	for _, sprite := range sprites {
+		if sprite.Order <= draw.Order || !sprite.Rect.Overlaps(rect) {
+			continue
+		}
+		source := sources[hdTerrainSpriteKey{sprite.Group, sprite.Index}]
+		if source == nil || source.Bounds() != image.Rect(0, 0, 48, 48) || sprite.Rect.Dx() != 48 || sprite.Rect.Dy() != 48 || !sprite.Rect.In(native.Bounds()) {
+			return "fallback_foreground_source", 0
+		}
+		intersection := rect.Intersect(sprite.Rect)
+		for y := intersection.Min.Y; y < intersection.Max.Y; y++ {
+			for x := intersection.Min.X; x < intersection.Max.X; x++ {
+				c := source.NRGBAAt(x-sprite.Rect.Min.X, y-sprite.Rect.Min.Y)
+				if c.A == 255 {
+					expected.SetNRGBA(x-rect.Min.X, y-rect.Min.Y, c)
+					foreground[(y-rect.Min.Y)*48+x-rect.Min.X] = true
+				}
+			}
+		}
 	}
 	for y := 0; y < 32; y++ {
 		for x := 0; x < 48; x++ {
-			if rgbaAt(native, rect.Min.X+x, rect.Min.Y+y) != p.Source.NRGBAAt(x, y) {
-				return "fallback_source_mismatch"
+			if rgbaAt(native, rect.Min.X+x, rect.Min.Y+y) != expected.NRGBAAt(x, y) {
+				return "fallback_source_mismatch", 0
 			}
 		}
 	}
 	for y := 0; y < 32*scale; y++ {
 		for x := 0; x < 48*scale; x++ {
-			out.SetNRGBA(rect.Min.X*scale+x, rect.Min.Y*scale+y, p.Asset.NRGBAAt(x, y))
+			c := p.Asset.NRGBAAt(x, y)
+			if foreground[y/scale*48+x/scale] {
+				c = rgbaAt(native, rect.Min.X+x/scale, rect.Min.Y+y/scale)
+			}
+			out.SetNRGBA(rect.Min.X*scale+x, rect.Min.Y*scale+y, c)
 		}
 	}
-	return "hd"
+	count := 0
+	for _, opaque := range foreground {
+		if opaque {
+			count++
+		}
+	}
+	return "hd", count
 }

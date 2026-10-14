@@ -23,6 +23,11 @@ func TestTerrainTraceReadOnlyReturnAndLimits(t *testing.T) {
 	if trace.Pending != nil || len(trace.Events) != 2 || before != sha256.Sum256(mem) {
 		t.Fatal("natural return or immutable backing memory")
 	}
+	trace.observe(4, 0x1f9d0, 0x1000, 0x5000, 0x1045, mem)
+	trace.observe(5, 0x1fe2a, 0x1004, 0, 0, mem)
+	if trace.Events[2]["kind"] != "sprite_enter" || trace.Events[3]["kind"] != "sprite_return" || before != sha256.Sum256(mem) {
+		t.Fatal("sprite return or immutable backing memory")
+	}
 	trace.Events = make([]map[string]any, 512)
 	trace.observe(4, 0x1fc07, 0x1000, 6, 0x1045, mem)
 	trace.observe(5, 0x1fe2a, 0x1004, 0, 0, mem)
