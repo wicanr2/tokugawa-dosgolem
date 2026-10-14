@@ -52,6 +52,8 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/cmd/leprobe/hd_scroll_test.go":"/project/tools/hd-scroll_test.go",
   "/dosgolem/cmd/leprobe/hd_frame.go":"/project/tools/hd-frame.go",
   "/dosgolem/cmd/leprobe/hd_frame_test.go":"/project/tools/hd-frame_test.go",
+  "/dosgolem/cmd/leprobe/hd_window.go":"/project/tools/hd-window.go",
+  "/dosgolem/cmd/leprobe/hd_window_test.go":"/project/tools/hd-window_test.go",
   "/dosgolem/cmd/leprobe/presentation.go":"/project/tools/presentation.go",
   "/dosgolem/cmd/leprobe/presentation_test.go":"/project/tools/presentation_test.go",
   "/dosgolem/cmd/leprobe/desktop.go":"/project/tools/desktop.go",

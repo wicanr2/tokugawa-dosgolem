@@ -10,7 +10,7 @@ import time
 
 assert Path("/.dockerenv").exists() and os.getuid() == 1000
 parser = argparse.ArgumentParser()
-parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only"], default="hd")
+parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only", "window", "window-missing", "window-only", "window-modal"], default="hd")
 args = parser.parse_args()
 root = Path("/output")
 assert root.stat().st_uid == os.getuid()
@@ -25,6 +25,8 @@ portrait_checks = []
 kao_checks = []
 is_frame = args.mode.startswith("frame")
 frame_checks = []
+is_window = args.mode.startswith("window")
+window_checks = []
 
 
 def run(*command, **kwargs):
@@ -124,6 +126,47 @@ def check_scroll_pair(enhanced, original):
                           "outside_regions_unchanged": True})
 
 
+def check_window_modal(label):
+    s = status()
+    rects = [(d["logical_rect"]["Min"]["X"], d["logical_rect"]["Min"]["Y"],
+              d["logical_rect"]["Max"]["X"], d["logical_rect"]["Max"]["Y"]) for d in s["window_draws"]]
+    modes = s["window_modes"]
+    assert "hd" in modes and s["kao_hd_count"] == 0, s
+    enhanced = capture(label + "-enabled")
+    key("F6")
+    original = capture(label + "-original")
+    key("F6")
+    restored = capture(label + "-restored")
+    assert enhanced["presented"]["proof"] == original["presented"]["proof"]
+    assert enhanced["presented"]["frame"]["png_sha256"] == restored["presented"]["frame"]["png_sha256"]
+    a, b = decoded(Path(enhanced["actual_png"])), decoded(Path(original["actual_png"]))
+    source = decoded(Path("/project/workplace/hd-prototype/catalog/window/WINDOW-original.png"))
+    changed = foreground = outside = 0
+    for y in range(800):
+        for x in range(1280):
+            i = (y*1280+x)*4
+            p, q = a[i:i+4], b[i:i+4]
+            n = next((n for n in reversed(range(len(rects))) if rects[n][0] <= x//2 < rects[n][2] and rects[n][1] <= y//2 < rects[n][3]), None)
+            if n is None or modes[n] != "hd":
+                assert p == q, (label, "original fallback or outside window changed", x, y)
+                outside += 1
+                continue
+            rect = rects[n]
+            lx, ly, w, h = x//2-rect[0], y//2-rect[1], rect[2]-rect[0], rect[3]-rect[1]
+            col = 0 if lx < 16 else 2 if lx >= w-16 else 1
+            row = 0 if ly < 16 else 2 if ly >= h-16 else 1
+            j = ((ly%16)*144+(row*3+col)*16+lx%16)*4
+            if q != source[j:j+4]:
+                assert p == q, (label, "original modal foreground changed", x, y)
+                foreground += 1
+            changed += p != q
+    assert changed > 0 and foreground > 0 and outside > 0
+    window_checks.append({"label": label, "step": s["step"], "rects": rects, "modes": modes,
+                          "changed_background_pixels": changed, "preserved_foreground_pixels": foreground,
+                          "preserved_outside_or_fallback_pixels": outside, "guest_unchanged": True})
+    return [enhanced, original, restored]
+
+
 try:
     xvfb_log = (root / f"xvfb-{args.mode}.log").open("wb")
     xvfb = subprocess.Popen(["Xvfb", ":98", "-screen", "0", "1600x1000x24", "-nolisten", "tcp", "-ac"],
@@ -135,7 +178,7 @@ try:
         time.sleep(0.05)
     for name in ("desktop-status.json", "desktop-status.pending"):
         (root / name).unlink(missing_ok=True)
-    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-desktop-speed", "5" if is_scroll else "60" if is_portraits or is_frame else "20",
+    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-desktop-speed", "5" if is_scroll else "60" if is_portraits or is_frame or is_window else "20",
                "-steps", "750000000" if is_portraits else "150000000", "-hd-trace"]
     if args.mode != "mouse":
         source = Path("/project/tools/player-path.json") if is_portraits else Path("/project/workplace/cd-trace/first-play-input.json")
@@ -157,6 +200,10 @@ try:
         command += ["-hd-frame-asset", "/output/nonexistent-frame.png"]
     if args.mode == "frame-only":
         command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png"]
+    if not is_window or args.mode == "window-missing":
+        command += ["-hd-window-asset", "/output/no-window.png"]
+    if args.mode in ("window-only", "window-modal"):
+        command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png"]
     stdout_path = root / f"desktop-{args.mode}.json"
     stdout = stdout_path.open("wb")
     stderr = (root / f"desktop-{args.mode}.stderr.log").open("wb")
@@ -166,7 +213,66 @@ try:
     window = run("xdotool", "search", "--name", "德川家康", stdout=subprocess.PIPE).stdout.decode().splitlines()[0]
     run("xdotool", "windowfocus", "--sync", window)
     pictures = []
-    if is_portraits:
+    if is_window:
+        wait_for(lambda s: len(s.get("window_draws") or []) >= 5 and s.get("step", 0) >= 100_000_000)
+        key("F6")
+        key("F7")
+        s = status()
+        assert s["step"] < 105_100_000, "sample must precede the normal confirmation click"
+        rects = [(d["logical_rect"]["Min"]["X"], d["logical_rect"]["Min"]["Y"],
+                  d["logical_rect"]["Max"]["X"], d["logical_rect"]["Max"]["Y"]) for d in s["window_draws"]]
+        expected = "fallback_missing_asset" if args.mode == "window-missing" else "hd"
+        assert s["window_modes"] == [expected]*len(rects), s
+        assert (s["kao_hd_count"] == 4) == (args.mode not in ("window-only", "window-modal")), s
+        enhanced = capture("enabled")
+        key("F6")
+        original = capture("original")
+        key("F6")
+        restored = capture("restored")
+        assert enhanced["presented"]["proof"] == original["presented"]["proof"]
+        assert enhanced["presented"]["frame"]["png_sha256"] == restored["presented"]["frame"]["png_sha256"]
+        a, b = decoded(Path(enhanced["actual_png"])), decoded(Path(original["actual_png"]))
+        source = decoded(Path("/project/workplace/hd-prototype/catalog/window/WINDOW-original.png"))
+        changed = foreground = outside = 0
+        for y in range(800):
+            for x in range(1280):
+                i = (y*1280+x)*4
+                p, q = a[i:i+4], b[i:i+4]
+                rect = next((r for r in reversed(rects) if r[0] <= x//2 < r[2] and r[1] <= y//2 < r[3]), None)
+                head = any((96+k*112)*2 <= x < (176+k*112)*2 and 172 <= y < 332 for k in range(4))
+                if rect is None:
+                    assert p == q, ("outside original windows", x, y)
+                    outside += 1
+                    continue
+                if head and args.mode not in ("window-only", "window-modal"):
+                    continue
+                lx, ly, w, h = x//2-rect[0], y//2-rect[1], rect[2]-rect[0], rect[3]-rect[1]
+                col = 0 if lx < 16 else 2 if lx >= w-16 else 1
+                row = 0 if ly < 16 else 2 if ly >= h-16 else 1
+                j = ((ly%16)*144+(row*3+col)*16+lx%16)*4
+                if q != source[j:j+4]:
+                    assert p == q, ("window original foreground changed", x, y)
+                    foreground += 1
+                changed += p != q
+        assert (changed > 0) == (expected == "hd"), (changed, expected)
+        assert foreground > 0 and outside > 0
+        window_checks.append({"step": s["step"], "rects": rects, "mode": expected,
+                              "changed_background_pixels": changed, "preserved_foreground_pixels": foreground,
+                              "preserved_outside_pixels": outside, "kao_hd_count": s["kao_hd_count"], "guest_unchanged": True})
+        pictures += [enhanced, original, restored]
+        key("F7")
+        if args.mode == "window-modal":
+            wait_for(lambda s: s.get("step", 0) >= 107_000_000)
+            key("F7")
+            assert any(d["logical_rect"] == {"Min": {"X": 200, "Y": 150}, "Max": {"X": 504, "Y": 198}} for d in status()["window_draws"]), status()
+            pictures += check_window_modal("confirmation")
+            key("F7")
+            wait_for(lambda s: s.get("step", 0) >= 112_000_000)
+            key("F7")
+            assert not any(d["logical_rect"] == {"Min": {"X": 200, "Y": 150}, "Max": {"X": 504, "Y": 198}} for d in status()["window_draws"]), status()
+            pictures += check_window_modal("after-confirmation")
+            key("F7")
+    elif is_portraits:
         # 105.1M 的普通點擊會開確認框，改在它之前抽樣四張頭像。
         wait_for(lambda s: "76" in (s.get("kao_modes") or {}) and s.get("step", 0) >= 100_000_000)
         key("F6")
@@ -337,7 +443,7 @@ try:
         expected_ram = "4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9" if is_portraits else "0d9123e52923ba852b125ea04918e1007138a33e0a8e4d856b078865cb33562f"
         assert hashlib.sha256((root / "startup-memory.bin").read_bytes()).hexdigest() == expected_ram
         toggles = [e for e in receipt["desktop"]["events"] if e["kind"] == "toggle"]
-        assert len(toggles) == (19 if is_portraits else 5 if is_scroll else 3) and all(e["guest_unchanged"] for e in toggles)
+        assert len(toggles) == (19 if is_portraits else 7 if args.mode == "window-modal" else 5 if is_scroll else 3) and all(e["guest_unchanged"] for e in toggles)
         assert any(not e["paused"] for e in toggles)
         if is_portraits:
             assert len(portrait_checks) == 8
@@ -348,6 +454,11 @@ try:
                 assert all(info.get("hd_sha256") and not info.get("hd_error") for info in loaded.values())
         else:
             assert receipt["desktop"]["hd_observation"]["draw_completed"]
+        if is_window:
+            observation = receipt["desktop"]["hd_observation"]["window"]
+            assert observation["pending_draw"] is None and observation["pending_save"] is None and observation["pending_restore"] is None
+            kinds = [e["kind"] for e in observation["events"]]
+            assert kinds.count("window_save_return") > 0 and kinds.count("window_restore_return") > 0
     else:
         assert receipt["stop"] == "desktop_closed" and receipt["desktop"]["physical_mouse_events"] > 0
         clicks = [e for e in receipt["mouse_input_events"] if e["buttons"] == 1]
@@ -360,6 +471,7 @@ try:
               "portrait_checks": portrait_checks,
               "kao_checks": kao_checks,
               "frame_checks": frame_checks,
+              "window_checks": window_checks,
               "scope": "Linux container prototype; no physical audio or other OS verification"}
     (root / f"verification-{args.mode}.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(f"desktop {args.mode}: verified", flush=True)

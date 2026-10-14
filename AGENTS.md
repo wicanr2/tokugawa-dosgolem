@@ -37,6 +37,8 @@
 | [tools/hd-frame-prepare.py](tools/hd-frame-prepare.py) | 既有手繪 VISUAL 上方框架依原版矩形分區縮放；輸出 `workplace/hd-prototype/scroll/frame/` 的來源、HD 圖與幾何收據，遊戲內驗證另列 |
 | [tools/hd-frame.go](tools/hd-frame.go)、[tools/hd-frame_test.go](tools/hd-frame_test.go) | VISUAL 上方紅金框架的來源核對與呈現；中央劇情圖及下方捲軸保持獨立，遮擋時完整備援 |
 | [tools/hd-window-extract.py](tools/hd-window-extract.py) | 核對 WINDOW.OZM 九個 16×16 圖塊、原版 buffer 與正常視窗；輸出 `workplace/hd-prototype/catalog/window/` 的來源、原始圖塊、手繪參考與來源收據 |
+| [tools/hd-window.go](tools/hd-window.go)、[tools/hd-window_test.go](tools/hd-window_test.go) | 共用視窗繪製及保存／還原的唯讀觀測、九圖塊 HD 呈現與原版前景保留；READY 契約及驗收見 RESEARCH-LOG |
+| [tools/verify-hd-window.py](tools/verify-hd-window.py) | 核對五次共用視窗 GUI 收據、完整 RAM、原版狀態及建置來源；固定 Python Docker 中專案唯讀掛 `/project`、`workplace/hd-prototype/catalog/window/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-window.py` |
 | [tools/archive-hd-art.py](tools/archive-hd-art.py) | 依 2026-10-14 使用者授權保存生成的 HD 圖與提示詞；固定 GUI Docker 內以專案掛 `/project` 可寫執行，`--verify-only` 核對索引與檔案 |
 | [assets/hd-b/README.md](assets/hd-b/README.md)、[圖片索引](assets/hd-b/index.json) | 私人儲存庫內的生成圖、生成圖裁切素材與提示詞。使用者已明確授權保存；不是正式發行包或公開散布授權 |
 | [tools/hd-kao-profiles.go](tools/hd-kao-profiles.go) | KAO.GRP 原版 0..80 索引的逐張指紋，不以推測武將姓名命名 |

@@ -9,10 +9,12 @@ import time
 
 assert Path("/.dockerenv").exists() and os.getuid() == 1000
 parser = argparse.ArgumentParser()
-parser.add_argument("--mode", choices=["hd", "mouse", "missing", "frame-only"], default="hd")
+parser.add_argument("--mode", choices=["hd", "mouse", "missing", "frame-only", "window-only"], default="hd")
 mode = parser.parse_args().mode
 root = Path("/output")
 assert root.stat().st_uid == 1000
+(root / "startup-probe").mkdir(exist_ok=True)
+assert (root / "startup-probe").stat().st_uid == 1000
 env = dict(os.environ, DISPLAY=":98", LIBGL_ALWAYS_SOFTWARE="1", LP_NUM_THREADS="2")
 children = []
 pictures = []
@@ -41,9 +43,17 @@ def wait_for(predicate, limit=15):
 
 
 def key(name):
+    before = status()
     run("xdotool", "keydown", "--clearmodifiers", name)
-    time.sleep(0.4)
-    run("xdotool", "keyup", name)
+    try:
+        if name == "F7":
+            wait_for(lambda s: s.get("paused") != before.get("paused"))
+        elif name == "F9":
+            wait_for(lambda s: len(s.get("events") or []) > len(before.get("events") or []) and s["events"][-1]["kind"] == "capture")
+        else:
+            time.sleep(0.4)
+    finally:
+        run("xdotool", "keyup", name)
     time.sleep(0.15)
 
 
@@ -107,6 +117,10 @@ try:
         command += ["-hd-asset", "/output/no-hd.png", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-portrait-dir", "/output/no-portraits", "-hd-kao-dir", "/output/no-kao", "-hd-frame-asset", "/output/no-frame.png"]
     if mode == "frame-only":
         command += ["-hd-asset", "/output/no-hd.png", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-portrait-dir", "/output/no-portraits", "-hd-kao-dir", "/output/no-kao"]
+    if mode != "window-only":
+        command += ["-hd-window-asset", "/output/no-window.png"]
+    else:
+        command += ["-hd-asset", "/output/no-hd.png", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-portrait-dir", "/output/no-portraits", "-hd-kao-dir", "/output/no-kao", "-hd-frame-asset", "/output/no-frame.png"]
     stdout_path = root / f"windowbar-{mode}.json"
     stdout = stdout_path.open("wb")
     stderr = (root / f"windowbar-{mode}.stderr.log").open("wb")
@@ -115,7 +129,7 @@ try:
     wait_for(lambda s: s.get("step", 0) > 1000000, 60)
     window = run("xdotool", "search", "--name", "德川家康", stdout=subprocess.PIPE).stdout.decode().splitlines()[0]
     run("xdotool", "windowfocus", "--sync", window)
-    threshold = 85_000_000 if mode == "mouse" else 140_000_000
+    threshold = 85_000_000 if mode == "mouse" else 100_000_000 if mode == "window-only" else 140_000_000
     wait_for(lambda s: s.get("step", 0) >= threshold, 180)
     key("F7")
     initial = wait_for(lambda s: s.get("paused"))
@@ -136,6 +150,8 @@ try:
     assert status()["enabled"] == (mode != "missing")
     if mode == "frame-only":
         assert status()["frame_mode"] == "hd", status()["frame_mode"]
+    if mode == "window-only":
+        assert status()["window_hd_count"] == 5 and status()["kao_hd_count"] == 0, status()
     assert status()["step"] == frozen
     move(400, 2)
     wait_for(lambda s: s["bar_visible"] and s["window_size"] == [1280, 864])

@@ -6,6 +6,7 @@ type hdDrawReturn struct{ Return, Stack uint32 }
 
 // 固定 EXE 的原版入口與返回觀測；不修改 guest 或取代指令。
 type hdLive struct {
+	Window          hdWindowState    `json:"window"`
 	Kao             hdKaoState       `json:"kao"`
 	Trace           hdTrace          `json:"loads"`
 	LastName        string           `json:"last_resource"`
@@ -19,6 +20,7 @@ type hdLive struct {
 }
 
 func (h *hdLive) observe(step int, eip, esp uint32, mem []byte) {
+	h.Window.observe(step, eip, esp, mem)
 	h.Kao.observe(step, eip, esp, mem)
 	if h.ScrollPending != nil && eip == h.ScrollPending.Return && uint64(esp) == uint64(h.ScrollPending.Stack)+4 {
 		h.ScrollActive = true

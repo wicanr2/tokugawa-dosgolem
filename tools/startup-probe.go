@@ -420,6 +420,13 @@ func main() {
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
+	for _, name := range []string{"tools/hd-window.go", "tools/hd-window_test.go"} {
+		b, e := os.ReadFile("/project/" + name)
+		if e != nil {
+			panic(e)
+		}
+		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
+	}
 	frame, err := captureFrame(screen, &cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
 	if err != nil {
 		panic(err)

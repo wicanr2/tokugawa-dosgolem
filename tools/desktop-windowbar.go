@@ -47,7 +47,7 @@ func (g *desktopGame) hdAvailable() bool {
 			return true
 		}
 	}
-	return (g.asset != nil && g.source != nil) || (g.scroll != nil && g.scroll.Reason == "ready") || (g.frame != nil && g.frame.Reason == "ready")
+	return (g.asset != nil && g.source != nil) || (g.scroll != nil && g.scroll.Reason == "ready") || (g.frame != nil && g.frame.Reason == "ready") || (g.window != nil && g.window.Reason == "ready")
 }
 
 func (g *desktopGame) chooseBar(field, row int) error {

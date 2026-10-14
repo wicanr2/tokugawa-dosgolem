@@ -119,7 +119,16 @@ def main():
                 "unused geometry draft" if version == 1 else "upper frame region verified",
                 derivation=provenance)
     source = catalog/"window/window-skin-hd-b-v1.png"
-    picture(source, "window/"+source.name, source.with_suffix(".prompt.txt"), "window/"+source.with_suffix(".prompt.txt").name, "generated; live integration pending")
+    window_status = "generated; live integration pending"
+    proof = catalog/"window/desktop-window-modal/verification-window-modal.json"
+    receipt = catalog/"window/desktop-window-modal/desktop-window-modal.json"
+    if proof.exists():
+        verified = json.loads(proof.read_text())
+        assert verified["verified"] and verified["receipt_sha256"] == sha(receipt)
+        loaded = json.loads(receipt.read_text())["desktop"]["assets"]["window"]
+        assert loaded["validation"] == "ready" and loaded["hd_sha256"] == sha(source)
+        window_status = "normal player path verified; selection, confirmation and status windows"
+    picture(source, "window/"+source.name, source.with_suffix(".prompt.txt"), "window/"+source.with_suffix(".prompt.txt").name, window_status)
     counts = {"png": sum(r["kind"] == "png" for r in files.values()),
               "prompts": sum(r["kind"] == "prompt" for r in files.values()),
               "bytes": sum(r["bytes"] for r in files.values())}

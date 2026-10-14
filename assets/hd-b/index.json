@@ -9,7 +9,7 @@
     "prompts": 54,
     "bytes": 182357874
   },
-  "archive_tool_sha256": "7e1ce45ee45a38e8d7f81338c356e72bfe8744b7ab739b5504098601b689c60f",
+  "archive_tool_sha256": "6a0dc7ccc18d8e9d6e7620804a096e6bb6f6ae4cc7e1ed7b86aeaa19cc125c16",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -4308,7 +4308,7 @@
       "sha256": "ae2dbf50f7d00cc6d6617bf50911aa05ef461cb1f937f1cf3249b0d3838527f5",
       "local_source": "workplace/hd-prototype/catalog/window/window-skin-hd-b-v1.png",
       "prompt": "window/window-skin-hd-b-v1.prompt.txt",
-      "status": "generated; live integration pending",
+      "status": "normal player path verified; selection, confirmation and status windows",
       "size": [
         1254,
         1254

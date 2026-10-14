@@ -104,6 +104,23 @@ def main():
                               preserve_central_logical_region=[160, 50, 320, 150],
                               runtime_status="upper decorative frame and scroll verified; central scene is a separate layer",
                               frame_runtime_check=proof["frame_checks"], frame_proof_sha256=sha(frame_proof))
+        if name == "WINDOW.OZM":
+            window_root = ROOT / "window"
+            path = window_root / "window-skin-hd-b-v1.png"
+            if path.exists():
+                record.update(kind="nine-tile window UI skin", tile_count=9, tile_size=[16, 16],
+                              art_status="prepared", art=art_info(path, path.with_suffix(".prompt.txt")))
+            proof_path = window_root / "desktop-window-modal/verification-window-modal.json"
+            receipt_path = window_root / "desktop-window-modal/desktop-window-modal.json"
+            if proof_path.exists():
+                proof = json.loads(proof_path.read_text())
+                assert proof["verified"] and proof["receipt_sha256"] == sha(receipt_path)
+                loaded = json.loads(receipt_path.read_text())["desktop"]["assets"]["window"]
+                assert loaded["validation"] == "ready" and loaded["hd_sha256"] == record["art"]["sha256"]
+                record.update(runtime_status="normal player path verified; character selection, confirmation and status windows",
+                              runtime_check=proof["window_checks"], runtime_proof_sha256=sha(proof_path),
+                              source_extraction_sha256=sha(window_root / "window-extraction.json"))
+                proof_sources.append({"verification": str(proof_path.relative_to(PROJECT)), "sha256": sha(proof_path)})
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]

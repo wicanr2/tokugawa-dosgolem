@@ -210,3 +210,12 @@
 - 提交 `2117da5e28faa41a6300e73342d5cb31713321cc` 已推送 private main。GitHub API 讀回的 196 個素材檔與本機逐檔 Git blob 雜湊、大小及完整清單相同，包含 139 張 PNG、54 份完整提示詞。遠端核對收據位於 `workplace/github-setup/hd-art-remote-verification.json`；素材入口為 https://github.com/wicanr2/tokugawa-dosgolem/tree/main/assets/hd-b 。
 - 保存工具的 `--verify-only` 再次通過，原版資料與本機研究輸出維持排除。Docker 無本專案殘留容器，未建新 image。
 - 已更新 [HD Issue #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6163315211)，記錄私人素材歸檔、上方框架驗證及尚未完成的範圍，Issue 保持開啟。
+
+## 2026-10-14：共用視窗九圖塊 HD
+
+- 承接使用者的「go」，沿用戰國手繪風、原版 DOS 規則及全美術完成後三平台打包。路由命中資產考古、READY 規格閘門、桌面試玩、README 與文件職責，載入對應入口。沒有新增產品分支或 remake 引擎。
+- 先審查 WINDOW.OZM 四平面、九圖塊、原版堆疊參數與保存／還原的 IDA 證據，將契約記為 READY，再接入唯讀觀測與呈現。沿用已存 private repo 的視窗圖，沒有新增生成圖或變更玩家操作。
+- 四套件及五種 GUI 驗證通過，每次 150M 普通玩家路徑的 15 個原版欄位、完整 RAM、原生畫面及 PCM 均符合基準。實際視窗核對角色選擇、確認框開關、能力欄、缺圖、頭像共同呈現及只有視窗素材時的頂端列。詳細收據與雜湊見 RESEARCH-LOG，總表由 verify-hd-window.py 重生。
+- 頂端列驗證第一次缺輸出子目錄而提前停止，保存原始失敗輸出後修正驗證工具的目錄準備，在同一 image 及命令乾淨重跑通過。未把環境失敗記成產品缺陷。
+- 素材覆蓋及 Git 歸檔索引同步視窗的正常路徑驗證狀態；原圖、記憶體、PCM 與 GUI 截圖留在 workplace。全遊戲其他美術、桌面音訊、一般鍵盤與三平台封包仍待完成。收尾與遠端結果接於下方。
+- 收尾：來源 ZIP CRC、12 檔雜湊、唯讀及 UID/GID 通過；五次收據的整合來源與目前程式相同。Python 語法、Go 格式、文件連結與索引正對照、素材歸檔完整性、擁有權及 Git 差異檢查通過。文件正對照首輪使用錯誤的連結標題，改用 README 的既有實際標題後核對通過。無本專案殘留容器，未建新 image。
