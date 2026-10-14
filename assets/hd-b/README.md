@@ -16,6 +16,7 @@
 - [戰鬥背景與開場徽記草稿](art/remaining-generation-v1.json)，保留原版參考定位、完整提示詞及未校準的原始生成圖。
 - [校準背景、徽記與開場圖](art/static/)，五項有效美術區及原版緩衝區的幾何紀錄。
 - [Family Soft 字標](art/static/logo/)，保留原始品牌字樣與位置，另存生成圖與完整提示詞。
+- [動畫、標題與剩餘介面素材](art/remaining/)，20 項來源的逐格裁切、鏡像與留白核對；美術準備與執行器接入分開記錄。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。

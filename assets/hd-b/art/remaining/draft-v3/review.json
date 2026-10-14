@@ -1,0 +1,41 @@
+{
+  "classification": "source-by-source visual art review; runtime integration requires a separate READY contract",
+  "approved_sources": [
+    "ANIME01.OZM",
+    "ANIME02.OZM",
+    "ANIME03.OZM",
+    "ANIME04.OZM",
+    "ANIME05.OZM",
+    "ANIME06.OZM",
+    "ANIME07.OZM",
+    "ANIME08.OZM",
+    "BATTLE.OZM",
+    "END-11.OZM",
+    "END-11B.OZM",
+    "END-2.OZM",
+    "END-2B.OZM",
+    "MAP_WAKU.OZM",
+    "OP2_P.OZM",
+    "OP5.OZM",
+    "OP6.OZM",
+    "OP9.OZM",
+    "JIMEN_0.OZM",
+    "JIMEN_1.OZM"
+  ],
+  "inspected": [
+    "all 18 original generated pictures",
+    "three whole-batch source overview pages",
+    "three HD overview pages; v3 OP9 buffer inspected at full size",
+    "per-frame source mirror evidence and empty ANIME04 sixth frame"
+  ],
+  "notes": [
+    "B style retained: natural Sengoku brushwork, original poses, crops and sequence",
+    "OP5 original Roman spelling IEYASU TOKUGUWA retained",
+    "END11B white 完, unchanged generated commander reused outside crest",
+    "END2B is eight sky/bird slots; OP9 has four 72x27 eye strips",
+    "JIMEN0 bottom black strip and JIMEN1 upper-left black triangle kept separately",
+    "v1 OP9 physical buffer edge corrected in v2; BATTLE source last nonzero row 246, PaintRect exclusive edge 247 corrected in v3",
+    "original glyphs are absent from new OP6 art and must be preserved by the runtime layer; no new runtime consumer claimed"
+  ],
+  "new_runtime_sources_registered": 0
+}

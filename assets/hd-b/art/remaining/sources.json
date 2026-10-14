@@ -1,0 +1,1324 @@
+{
+  "classification": "local missing art intake; original images excluded from Git",
+  "tool_sha256": "29d4445492aeedb44ed4164a5d61e3adac2cd04baa5b2cde75986e741d6c0cf6",
+  "coverage_sha256": "a47e08af3dff119b1fda3c0602f2235f92b1c933386efa208b8525960d33b7f0",
+  "decoded_inventory_sha256": "b721070f0ff928aa8bd0652246bf63c6393b87b50cd87f18bcf4fa4d0be33af9",
+  "records": [
+    {
+      "source": {
+        "name": "ANIME01.OZM",
+        "dat_file_offset": 701299,
+        "payload_bytes": 37165,
+        "payload_sha256": "b7d7b84aea888c364a2e82c390f6ac00cc5decf282440d48e26ecbc44054185f",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "89da11f8dd0a6a2ffeaf5541f0d0dfcbf97e723aa1875e384c718a6317cf63b2",
+          "6c665a4b051435770e297deca88a5764452c31631e88325c818e91aedb6f23e7",
+          "f879cffd9f9af2317d737fb056d0938a0387d819996a879fbfa455002cce96b6",
+          "71c37193e7f9764c92904261407437478a74af4d1faec28f1408e3c54b093819"
+        ],
+        "indices_sha256": "53e0e68deda3b36ba8690961c76194c18fd66b9747e859e934850368e83d2d7a",
+        "consumed_bytes": 37165,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 982,
+          "literal": 22566,
+          "5": 1929,
+          "2": 415,
+          "4": 265,
+          "3": 132,
+          "6": 227
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "ANIME01.OZM-reference.png",
+      "reference_sha256": "9ce76b2e091611455aa84f2c765f980863a061e18890c87db3d2c8e77b269a61",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately",
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "192c5f04bb5a22aba54bfa6e76dabf3c24d0f7f03a5d965e929255307e0893f0",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME01.OZM-0-reference.png",
+          "reference_sha256": "344c835b68561eeccddf78524a6c8cf62372b1afaddc8fd9afb30714aec85b29"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "73d4f3319c03070a77068eb9f894f537dc3adbc5b1e60fe687e35ae6817acce7",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME01.OZM-1-reference.png",
+          "reference_sha256": "c99a142f7278815ff78e7e9271ecfa0ca70747e659ca93629018ebbe1f3dc954"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "bbf9174095fbc7ba416514bc500f8b562ad6607eb45d37893558cf6bdc8725f5",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME01.OZM-2-reference.png",
+          "reference_sha256": "bd1dc2a61672aa8f75ef89ebd14bb4853c57fc92714ee687e06880a7480b59be"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "fd72f3d3504bb011caa2c3f512d7e7001b83b7e8ed35719b6b8299bdb2df5209",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME01.OZM-3-reference.png",
+          "reference_sha256": "e08ce0703d2f291b0535b7651224a231be7b0dddc4a6bda0eb49c9f73eac7dcb"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "29681b523a1c286ed4cbb9efec38318d5a0ed0bca2dab235023bb012237d76d7",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME01.OZM-4-reference.png",
+          "reference_sha256": "833567c97ea858385b40bcb5bd01b0eca250f413a38cf6278258f86c5a25ad16"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "82ee84101da72779178e6f7143de7d665f41ac1d0c896b7e9cf3d82eedc3841f",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME01.OZM-5-reference.png",
+          "reference_sha256": "ef31524c269bd55203d74bed6e98acb44fff15ae548a82f765573e46bc4c9196"
+        }
+      ]
+    },
+    {
+      "source": {
+        "name": "ANIME02.OZM",
+        "dat_file_offset": 738464,
+        "payload_bytes": 37165,
+        "payload_sha256": "78f1379a558a1932e75cdffe01de5e7b8857f749c2774e600c594a98cc025e9c",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "7bd0779b8d393c7108e4772ec3cef74383301992aaf7895078b11c5f2ec618aa",
+          "a89d6a4b96cda163c73a1c5e5e85e2d63f78c69efbbfbba0c34c1c7ccb238bd3",
+          "aefe1cd131c2f82f7ceae4db7dac22dbd0469b8405db89563b9f1ff8e5d87d21",
+          "840fdc78e336c085427963a97f474e38b34c0d34c86698a40c843e2c8717c512"
+        ],
+        "indices_sha256": "d4e6a3a0573ddbf97375f4e2a15be22b5b2dfbd4f3143a8a773379886cca4eac",
+        "consumed_bytes": 37165,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 982,
+          "literal": 22566,
+          "5": 1929,
+          "6": 227,
+          "2": 415,
+          "4": 265,
+          "3": 132
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "ANIME02.OZM-reference.png",
+      "reference_sha256": "33bca459512d4770abccad9c04da5d1b1dadc9b29f4dffcfb934aacf859ca124",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately",
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "3716128832112dc70cccb7e1084105e2d02752dffb612f139cef98dd4975f1eb",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME02.OZM-0-reference.png",
+          "reference_sha256": "75a84cd794cd76920d6ff7851d99369cf931dbfb132afa6c59c1a9b617239f3a"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "6c259c847c9663d5b2e1aad1f151ab65d92de5d7ad18eced7c24aee7bb8d1099",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME02.OZM-1-reference.png",
+          "reference_sha256": "12e495364d1aad4e41ebd47fe1ef2a132e4cd9359fdfafebe806a4765984a50b"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "af737042ef26cc8e4728bb09e856c153210a004083817bf1df665ac97029a34b",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME02.OZM-2-reference.png",
+          "reference_sha256": "ae040f5ebdcecd8c69d5e55f3557fd03fa1e1c8a8b7a2719ed1a5973fd74acda"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "1eaa4e5ae06ffde06d9f2d6410b918e1d7e70409df3630ae79bb168a340409e1",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME02.OZM-3-reference.png",
+          "reference_sha256": "c463b39c5c99e676fa9d811c7c33c96a0a8caf73626529fcd6b727173bc3e2f2"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "8394bcbc9bd49dbd52d3b8411ab3373aea82707e96587e47acbda6777a30e0aa",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME02.OZM-4-reference.png",
+          "reference_sha256": "b84424242dec02fc6d501382bca06b577921618df4da9b44ad5ee7677936b040"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "c770d0bb32ce42cae9b7cc44ed63c761d0780b45d4fde71207841c9dc04f895b",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME02.OZM-5-reference.png",
+          "reference_sha256": "57ee300cee2503eca80d58686a574313648020bb5abecf37b8c880df126079b3"
+        }
+      ]
+    },
+    {
+      "source": {
+        "name": "ANIME03.OZM",
+        "dat_file_offset": 775629,
+        "payload_bytes": 34817,
+        "payload_sha256": "df047c4f14364ca8471687bd9c01bc3acf83c8e18bfd2701ac58a290988eb48c",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "999a92ffedcaa80aaeb131c186954d8cec451c45a030db3180313c4aed6dce13",
+          "3ce4ba6d61fa4ac3fda6c32336cd1aa5fa83d16287611172b6d9a1c1ad2f977c",
+          "c8c855503389dad4cef10568ab744104cc1317e343816132ff63bb38f29d2576",
+          "3704a37cf5566a62918a0247a45bf3645d57e13f5eea965cecdd04d658a334df"
+        ],
+        "indices_sha256": "09d2d0e1d22727a13f8fb147a91c797da979c989fac17599ecf735d004e182cc",
+        "consumed_bytes": 34817,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 835,
+          "literal": 21445,
+          "5": 1782,
+          "2": 407,
+          "3": 153,
+          "6": 192,
+          "4": 258
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "ANIME03.OZM-reference.png",
+      "reference_sha256": "2a025b05930333f525277c0f376e927bcdbf616f3ea8f41d09a925a4ead87b66",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately",
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "f7583d5036e6d98061ab6d84099fb016ccb7f47b4398aed879b02a1475721d48",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME03.OZM-0-reference.png",
+          "reference_sha256": "f7e23d30705e2ba7e9d8056fedce776a2ad6449dfcf812d5dfb0e82f153636df"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "8aa46b55ab2fdab436ddb96419ed880a6c4bf463145f44282cbb03ec74088add",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME03.OZM-1-reference.png",
+          "reference_sha256": "267fdddcd267eedc4dead16cbd933220d934c26cc0388cd735dda76661f903b8"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "a5d0dc3bb38f67d38c725b2ad8f3e513a2d52d640b1ae2b21c98ed714f591183",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME03.OZM-2-reference.png",
+          "reference_sha256": "72b38c80b0619e9cb5ac2fe160bcd09b9d0d16031b7777baec5d654e93d391b1"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "14f4e06cc3602b42527578fff49396daf2ac6ca0e287024aa46ca75f917bb8a8",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME03.OZM-3-reference.png",
+          "reference_sha256": "5c1fa38f3f32644fe7de20716b1b95c7999ebf14ab3209b0315871cd73e01d2f"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "36b57482369fea62bc8a29287e00492fc33ceb4622e581198fbf96ced85279f4",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME03.OZM-4-reference.png",
+          "reference_sha256": "98c965034e60310e04e5f74f0ebe6435900954f6cc00944184047311b8412bca"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "179618fc62ffb7c92696c6b00238c99b6321728f21071cd80e8bae023df2540a",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME03.OZM-5-reference.png",
+          "reference_sha256": "4f3c4608316f608bde295d8df115d19f25bc900a7ad6db6986a06bf476827f42"
+        }
+      ]
+    },
+    {
+      "source": {
+        "name": "ANIME04.OZM",
+        "dat_file_offset": 810446,
+        "payload_bytes": 33870,
+        "payload_sha256": "495e89b1a56e0ba1d481a265a715a4975b57ae5b0b18086069efad6df5cdf5de",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "e7e83ca6d7716b803a1c8d206e4956a46d76a0f151cc0410b8753946c992e17b",
+          "cb472734a1e48f9f6d64b5a7f3d41cf5d7408157b4eb7c43cbe04290366dd0bd",
+          "fd987c5d89696c2f9316f21a6fbcbcfec81e0a633269f0a8e7fcd1996a2c15bb",
+          "5ebc9135990b71c9f748945c628cc45540ee851f923f629a3e2e7d0bbb4ae35c"
+        ],
+        "indices_sha256": "3ce7e2dc9ba21615590720d2af2c8d7d09fdd3bbf09078495dd7b9bd78117fce",
+        "consumed_bytes": 33870,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 1139,
+          "literal": 19264,
+          "5": 1620,
+          "2": 268,
+          "3": 144,
+          "6": 510,
+          "4": 170
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "ANIME04.OZM-reference.png",
+      "reference_sha256": "377c85d744c52f7a00408fd64694cd4aa0b713ebb4893e87f5ecaff3da047144",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately",
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "3c0db6ba1c74eba6d8e1060ea3f8fbda24c19eed0b32417c8233abb1a6261511",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME04.OZM-0-reference.png",
+          "reference_sha256": "e654e12b82ba53f815ca83b106090fca453a87a37221e544df2be32e62273648"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "b7cc322ef2b12c402bb60b6cc8742121284ed4d44bc0796d7a199a68a22bd031",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME04.OZM-1-reference.png",
+          "reference_sha256": "d03755758790881d19459c327cddc1f04fd29142cc8ae8bfc55d9f565a0b8598"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "2e847b9de4017f4d16ffec6a6a0ef4ae4f7b1f89b5fc522fcb95915147ab4b09",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME04.OZM-2-reference.png",
+          "reference_sha256": "36415a58ce5dbf32c9c99a5ba1addb66c36618e708cba8e23fbaccc6e33096e8"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "5dddeffd8618f61ba9d50c41210cd3f784bc99d05a65f5a2ee0532c8cf4f5890",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME04.OZM-3-reference.png",
+          "reference_sha256": "2a44e216380fedd7c954ea9d5a74935af21d38bef6c75b90d2462478b6e4a7a1"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "c4cef47d55e5a7282c90da3d686aad7ff50c471599cc5c597794e61775533523",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME04.OZM-4-reference.png",
+          "reference_sha256": "e09c8ef1fbd7c7759b2a19619422ad881d521f9f1af5da4238d94586f27b1c36"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "a3c4111128a60d240f1e13baf5bad9b8b0e7d196ca78ec743665e9142cf40324",
+          "nonzero_pixels": 0,
+          "reference": "frames/ANIME04.OZM-5-reference.png",
+          "reference_sha256": "8a53b5ca0c8f4f86242ecd23e501c91ca49d7ae056c651181367f4b2bba11054"
+        }
+      ]
+    },
+    {
+      "source": {
+        "name": "ANIME05.OZM",
+        "dat_file_offset": 844316,
+        "payload_bytes": 44924,
+        "payload_sha256": "d453d7477a6a87d37e4ad65b39330038b00fbd092b7fc7dec1f02664e7611f15",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "832ea5305d7aaeb470aced8bae73584570cd65d06e1c9d13f1d5d9ad9cc86796",
+          "29eb19b240cc1d6ba4960b557eaf72238f674407ce21da4eb5b6e57504f2a385",
+          "09b6988f2576e27ab8e89999c81bbd2b8a4ab1ad0dd32311f07dc45dd8f4a61f",
+          "a62d177182f042a94193d9ed47a50d4673b3ce5ca28523e28c21748ec0a92edf"
+        ],
+        "indices_sha256": "ebfd5ebbc9bdcff89f5332dd1eab56a12dce5fef85535c4d0c2a6c1b3ed86585",
+        "consumed_bytes": 44924,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 989,
+          "literal": 27433,
+          "5": 2403,
+          "2": 486,
+          "6": 254,
+          "4": 281,
+          "3": 218
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "ANIME05.OZM-reference.png",
+      "reference_sha256": "b38eb58d836db7ab7fdf45d130a9afbfd20dbb866950dee7de0d7d4a34ec930c",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately",
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "a7272aa2111bb68a28a582641f0b3f1151d5698d248a73744aaca108ac9557a6",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME05.OZM-0-reference.png",
+          "reference_sha256": "ef5d8eac191750eb766f89fa246e9f54f2aa4b2edd1261b5eaac143369c6523e"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "8cd8b332e80af3526c4ee7e1dc2c0771491d9321a764c9660e1cf0f2eca54320",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME05.OZM-1-reference.png",
+          "reference_sha256": "16e01874489d4a502794eb160c23f0500c400ae9f27654cc1652fe5f2ab73ee5"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "68c0db83161de989f2f2c3790ab07b226c340358c70613039151ec49b097cc26",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME05.OZM-2-reference.png",
+          "reference_sha256": "954ef26febf713404aa2153f255801e6f6c85cd751001a89590e1dcdae6a163a"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "443a0781044941a0ddbbf82b2c53a9483e88471e91d9dd4c3cc014457b9a10ad",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME05.OZM-3-reference.png",
+          "reference_sha256": "8d08de0471f14e78e96f53753d660ccbcf9c2e7d9fa1a3148d475e6f37cb1d2a"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "cb7285885ea1413f734f9528357512e8f9767c0c0626d3b21bb70d24cafc1a05",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME05.OZM-4-reference.png",
+          "reference_sha256": "f33a0e62902d7e584fc1dbcc18eda5c65a51a8547f423feb590f882663d12f51"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "07d7fa100f6aed3b7a46d759196747aa60a5137724bc2d152ec1956bec0c0e04",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME05.OZM-5-reference.png",
+          "reference_sha256": "fac91585be118ea8863da1f14a7603c605ee483a57e24700c2849d5556474415"
+        }
+      ]
+    },
+    {
+      "source": {
+        "name": "ANIME06.OZM",
+        "dat_file_offset": 889240,
+        "payload_bytes": 44916,
+        "payload_sha256": "9db4b3498d6c9bdf871ae8f12cf7c8d032db5dd3d15eb81f224ecb8e972a6481",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "22ca2fe889d14ffbeff57caef317bcb5f004317c7b1b742945c82662b69dd54c",
+          "b9888996c0434a1fc7ec853a52db8473d4df46f9b63bab8fe5e93017c762be58",
+          "95e573fc3cb7ffabe0617f90f4ea80a06c9b07d7e46483ce6b3130f6227ec6e4",
+          "8476f03ae4d793e1681867fcda80d0975a683cc351af9fd692090170c26b719e"
+        ],
+        "indices_sha256": "5e5bacbe4273a042c294bf4e9a023384079bc87da8fb73857f2bfc79940e1733",
+        "consumed_bytes": 44916,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 982,
+          "literal": 27476,
+          "5": 2400,
+          "2": 484,
+          "3": 221,
+          "6": 250,
+          "4": 281
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "ANIME06.OZM-reference.png",
+      "reference_sha256": "5f44cae5dfd76dd2308d7cbd592149375bb8878acc718ede7c2730cc043d6cec",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately",
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "98becb4ebb023bb35b5419e88e2beb256c048b9909429a1fbe2dd4950b942521",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME06.OZM-0-reference.png",
+          "reference_sha256": "74254e7f68d9e03506164f2efc97188982abf27cc7d79c9c877cedc9f31b6257"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "5c0582a34d8ba091497d4f640ba0db4bad571f4f1d8e79d346b2e903b2ffc15b",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME06.OZM-1-reference.png",
+          "reference_sha256": "2bebd2bb73d5ab36a7a4ab45e19c2717ef050e56caffd21f1613a89d91106ebb"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "669d9f048c247319e6d9ee551711518e637c31dc20e44dd6953aa91373b94a19",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME06.OZM-2-reference.png",
+          "reference_sha256": "36ce9934cd5555477bd1231bf849900431deeb612011a6d0b1a043d22169a6c3"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "bc621cbd7b3b47c6ffe74cc64df846d28f78760ab5f554df9fb7e2f1e0a481cc",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME06.OZM-3-reference.png",
+          "reference_sha256": "cfec74e9f3c0d8d4259154f5354c7eed80df588edebbfd695d5ee1dc98c484f1"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "5417939ccdb6ac3caea39a3b1202a615d554a8c00bb3e1f0486fea554b215f9e",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME06.OZM-4-reference.png",
+          "reference_sha256": "ae93999b4b9a5b13fa357e32043cbad804f581f1072bf62daf33bb51c7d52f6b"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "7f22875fdb0364378c19cd70c54524c0982552ba38cb57e34e501f8fb70ebf4c",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME06.OZM-5-reference.png",
+          "reference_sha256": "36c664bd7636c4fe0f82b673b5390497b50a2b0635c21fc4340d457d8faaddc4"
+        }
+      ]
+    },
+    {
+      "source": {
+        "name": "ANIME07.OZM",
+        "dat_file_offset": 934156,
+        "payload_bytes": 34698,
+        "payload_sha256": "776f286c2d302ca433de7dfb1583ead5d40689fada6f83133fc32c02f388c776",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "6c56cf4d4ea0d7cf79eabe669b5db03a8203758064b1d9d26000f71797c61c1a",
+          "bc7b5c5cc96bb38d876bc64c243b79a150aac930ef482feef7efdab3a96121c5",
+          "06179d3da7eb755a6c44f751b986e17041e29f5060c34b0e19de1070648a4fb8",
+          "56f48d7e450ebedaf871633d96fdee851dd89a5a519766e9f9c6a92c6f86eda8"
+        ],
+        "indices_sha256": "3bb850ee24692a585536e328ed4a8048a1e9900ee3433cf06ffa0dcbd565e075",
+        "consumed_bytes": 34698,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 1044,
+          "literal": 20091,
+          "5": 1753,
+          "2": 390,
+          "3": 166,
+          "6": 361,
+          "4": 236
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "ANIME07.OZM-reference.png",
+      "reference_sha256": "9a5c09ed9fec6a41d7356c0858c73e82d2defa9a080ca71e91c86a981119c28d",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately",
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "61e594b63759e7cb9019466a5ca9474f897fbcc14f0a7fdb865ceae44cb3940b",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME07.OZM-0-reference.png",
+          "reference_sha256": "fcc2d10cb3480cf80b6fe3987dc1e596831788054557d905f031786bc0c46938"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "533720c2d2aa988531ea082e5769afcaa43f4f745f55245894da77a746f20110",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME07.OZM-1-reference.png",
+          "reference_sha256": "865584e2b4c087e279297f65ca5aa770045aa4fd86adbda13e2b608595e0453b"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "c3d44b7bc072f1b07aeceffea3a8f31bdad5aa3899a46b2cab450e0a664848da",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME07.OZM-2-reference.png",
+          "reference_sha256": "7c7eb652327b8e0eb5b755bd1a14946d63da742a78bf431bf27cb9374dc123f6"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "3c2dc4ab8badfe6dca8ab3e0af70831878920ab66df0d97c0fb4276cb93d1524",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME07.OZM-3-reference.png",
+          "reference_sha256": "e209fcc9da72b1f933dfad2286c98c9cf0a46a2d7548d331a8e1905bbd18aa0e"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "e5601691d12298b21108775fcaf1027864176a7db922ff085ffe06e74aabef6f",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME07.OZM-4-reference.png",
+          "reference_sha256": "0417815621c4474ac87c17fcffac5425562b9bc1bc94ec2e667937e1183b7cc0"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "6d702f1210e98f0717c072ca4eac404fe7adb2df9765c60b2e0fc56200068dbc",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME07.OZM-5-reference.png",
+          "reference_sha256": "eb75758b502505695300eb23af8f5f604dbbe7145334691957ebdb9c4601ac77"
+        }
+      ]
+    },
+    {
+      "source": {
+        "name": "ANIME08.OZM",
+        "dat_file_offset": 968854,
+        "payload_bytes": 34698,
+        "payload_sha256": "6077160dcaf2ec4a975b9690e12b7d78122fdd30accd7449bda948d3644e68e5",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "84895cc9ba665081b65d8ee1c6122df1bb1b781bc8166a0b8476280420637a7c",
+          "f0a124db1739e0883d110631d5c7c94d61afd10fe8cf3f82cc8b5a1f28833b14",
+          "9f7f45867a4ef6664c12df5c056a66a8e3dfe4061504a43dc083700cb7f9f59d",
+          "65a32cb3617c8ede63674fa112c17274690637d660acd623c2f772cdbcfe0a57"
+        ],
+        "indices_sha256": "7cca319beacd144d39ab16b4b9774c46484826fe9cb0e139e8c6fa60a25112a4",
+        "consumed_bytes": 34698,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 1044,
+          "literal": 20091,
+          "5": 1753,
+          "2": 390,
+          "3": 166,
+          "6": 361,
+          "4": 236
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "ANIME08.OZM-reference.png",
+      "reference_sha256": "e57a4bb97e2fb235fc36f58a4d2043d236a5568b182c339ee669235dbbe59582",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately",
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "d099ddfb26519887aca30ed8c23260d58f5f1c19cba6a137317f75b62abfbd63",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME08.OZM-0-reference.png",
+          "reference_sha256": "d1526412369adb8c768f88ed10fc97babb54798098671129351058239146edd6"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "8c6736992a8bf6c7364d3d84ee30bd5a590e4db71d76a38697dc9f7179d9a2a0",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME08.OZM-1-reference.png",
+          "reference_sha256": "7ab847655bc76f9aeb18bb2d86fa9d36d650f54c3b26592c1716a30661a55508"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "347691a17bed697fcc86855500c734ecb82b7df573314b0d56f563b321288b99",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME08.OZM-2-reference.png",
+          "reference_sha256": "b8024d6243e64f32ce90fc92d840a3d6f50b416c59b0d3826d9230726ee3b7d7"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "d8c2b15b3e37ca2f8afed52aa6366d2901aac571d9760b49b470dca073e628df",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME08.OZM-3-reference.png",
+          "reference_sha256": "edcae06226509250249e31ae5afe7fd4852436850502163cb3cdd57c2ad6c907"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "2e9fcf9b3d029a41b9b2db62f148fc359ca546a92e3606feda07b6303d1f8ab7",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME08.OZM-4-reference.png",
+          "reference_sha256": "b84690035f7ffe01d08d946cb9cd773cc9e6822c17697ce45d76930155a5a688"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "c4548e4ce175b44b7fa04c647733b91a375656799c752b51a4c15b0ab56ad65c",
+          "nonzero_pixels": 31196,
+          "reference": "frames/ANIME08.OZM-5-reference.png",
+          "reference_sha256": "c92a5392371d0027ee0b75b5e57d9134843977d8f4bd4605704ea2303810116a"
+        }
+      ]
+    },
+    {
+      "source": {
+        "name": "BATTLE.OZM",
+        "dat_file_offset": 1097765,
+        "payload_bytes": 40891,
+        "payload_sha256": "37cec2781dc62b399f94cdeb246d5e4f989861bff216bd94319a88698fda12a4",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "bddd6e53eaa1816b8ed00aff7c09cf36fd26a0c8f0353922507e9700e2f06467",
+          "fd8b30fa49beddc8e95255f7b65af31785f1a2793b83c72411239acfd9bc49a7",
+          "1dbb908438708494d151c9f37f99d1c1be8985e74f0777ea567061ee226896d3",
+          "5bb2135667b01857772b29bcf1cd2820d9e6ec28ee1fad9a8d22be078d5a960f"
+        ],
+        "indices_sha256": "97283a356553217bad5d12a2f4615e408d4db81cb283df4f69d18166e9f3b1e2",
+        "consumed_bytes": 40891,
+        "trailing_bytes": 0,
+        "commands": {
+          "literal": 27510,
+          "6": 784,
+          "5": 1157,
+          "1": 1172,
+          "4": 116,
+          "2": 142,
+          "3": 14
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "BATTLE.OZM-reference.png",
+      "reference_sha256": "962c87e7883396231fdbc5cd9eb2b4eea5e1c1112817d25a6771343bc5cbdf83",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "END-11.OZM",
+        "dat_file_offset": 1641749,
+        "payload_bytes": 48711,
+        "payload_sha256": "5a05d81a4010ab0c3770b456515b4058270b3ae9af05ab4bc642db43b8d3fcc2",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 399,
+        "plane_sha256": [
+          "6f2cda1ffcc0cb8dfbc6c58d5bf4772a28a7f3896ea847a7411913c0ed7aa968",
+          "a574658a88a8de5f5fb80d20fa4dc3e53efc3b0bbded041caa648453bd3b7d88",
+          "5e68b6bbb225605bb1ad9baad77f630cac967b198cefc545b082ccc06bc41d64",
+          "3599d960b5db8b74c50d8b6b363bdc82a45aed741ea9ed022357e4e6771ba3d7"
+        ],
+        "indices_sha256": "2677cacee9000d6fa8c5ffdccc3d352604b1537004281236b21aacd587d95046",
+        "consumed_bytes": 48711,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 1562,
+          "literal": 36671,
+          "6": 236,
+          "1": 906,
+          "4": 109,
+          "2": 250,
+          "3": 140
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "END-11.OZM-reference.png",
+      "reference_sha256": "f5b93d10b9790354295ad58448a9f570a6df532da09409b06a0378e593784b10",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "END-11B.OZM",
+        "dat_file_offset": 1690460,
+        "payload_bytes": 47479,
+        "payload_sha256": "95dcb6e2d651986e71546c79d36d813ce7a7eef170dc17ac17749d2faa77d89c",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 399,
+        "plane_sha256": [
+          "c09a8481bbd78b3a5176d482caf50996b23a8f3f2e9d1f99edc04b0550bef792",
+          "332bb032db210125e6b2fcb7c6a69394dea35395dbfe9f130c2d365f5a1c1ebc",
+          "9b00182df03d25afc317497104fcd8b0d4f91d62bdbf0546fdef86b39cadcaed",
+          "96b8256771a46de276da3fcc8b5bb34c1935f329db9a7028b8819ff1db99d673"
+        ],
+        "indices_sha256": "57fc9d95c6767828bb6e96ed882650023696cb16856d42ffd23bc4b959848ed8",
+        "consumed_bytes": 47479,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 1887,
+          "literal": 34212,
+          "6": 238,
+          "1": 777,
+          "4": 92,
+          "2": 210,
+          "3": 121
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "END-11B.OZM-reference.png",
+      "reference_sha256": "63857ed9511eaed4ef43fd1ae802a1854c07ce982e42a96ffaf40bde0c022b24",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "END-2.OZM",
+        "dat_file_offset": 1737939,
+        "payload_bytes": 19517,
+        "payload_sha256": "8d33306803ef557e770a6c568065f9c2777bbcaf369e855bb575a1ac38875ad8",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "6727566be2212f80b537cfa21d4d5f054982593970d9b4fcb7e9d1a1d5365cc9",
+          "29c205f66763e9526586cc9d9297933f61ce9c1abad9f68ec5521aa16cee3ece",
+          "cb5a93e8057bb44f66d91e88583cc531ae4754121276e395e9d8bfef9f28d79c",
+          "d5848048d87f64592d7821b0267729d5146f8b78b32c728481f8fc11702565a3"
+        ],
+        "indices_sha256": "b2aa5040cba120939881b9c1ae7bafa1de492aece744bce745df66c3f83b7682",
+        "consumed_bytes": 19517,
+        "trailing_bytes": 0,
+        "commands": {
+          "literal": 11330,
+          "1": 2022,
+          "5": 705,
+          "6": 82,
+          "2": 23,
+          "3": 34,
+          "4": 4
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "END-2.OZM-reference.png",
+      "reference_sha256": "a86c1712457bd68617914c70d00064c0b24c09c395b745287b574370cba37a46",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "END-2B.OZM",
+        "dat_file_offset": 1757456,
+        "payload_bytes": 26547,
+        "payload_sha256": "439fd274d6722f6a5d14a50297a9d171eca1abfab96590e3571b129a3efd9724",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "2ef1a398ea58473aaa7d3bc571acee8b41858d32d4da7fa9444e11a6973d530a",
+          "2851cd96813ec3404c0c1a3239f5df70340cffcab7d7b251f2790e9a7ec256ef",
+          "eef158b5133dea25a9c3ab42fd876980cf21afbcd5c9ac271914b830a5615667",
+          "9eaf87b12942436e1634c27367bc66ee872125b5d5041dd4cee3c6a4b32f9829"
+        ],
+        "indices_sha256": "46ea5bfa38ef86b4613263c9ef265b2e285cc47e35dddba4793b91c57fdec6b0",
+        "consumed_bytes": 26547,
+        "trailing_bytes": 0,
+        "commands": {
+          "literal": 18453,
+          "1": 2791,
+          "5": 338,
+          "6": 136,
+          "4": 1
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "END-2B.OZM-reference.png",
+      "reference_sha256": "1df86ac733e14100f62dfae561ad0ee2615c0634ab891bbed20c0551fa3811c1",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "MAP_WAKU.OZM",
+        "dat_file_offset": 2354996,
+        "payload_bytes": 7618,
+        "payload_sha256": "79aede54124b1e0523373d3a7362abc9bac7519de66203e2e098e4820a66a804",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 384,
+        "height": 120,
+        "plane_sha256": [
+          "c63b617ae90f846bac76ebba359b3fa7d2440f5312eb8a9dec47afa2d9f3f31d",
+          "918562f61baf1eac4ddb3249d5ed2db3f124ff2e6ea35ff6a724c5c795dff965",
+          "363917b1bb338a5fa9180b5e391df5e923a81e52b75d5631f6bd6f5dd85c428a",
+          "d8fb2ecaa2a155321c58df7faea7fd1f3c2eddf6f11779cfb143e02cd353078c"
+        ],
+        "indices_sha256": "1d0ee5b9b52142beb6813ae52f1db215e5224fae1935a64ea83fe07b97fe9a6b",
+        "consumed_bytes": 7618,
+        "trailing_bytes": 0,
+        "commands": {
+          "literal": 3179,
+          "1": 769,
+          "5": 459,
+          "2": 87,
+          "3": 126,
+          "6": 16,
+          "4": 40
+        },
+        "normal_path_matches": 1
+      },
+      "reference": "MAP_WAKU.OZM-reference.png",
+      "reference_sha256": "fca30b7fb222524b8ef954008994c659db593806d5ead6732ecd354f667666b9",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "OP2_P.OZM",
+        "dat_file_offset": 2454687,
+        "payload_bytes": 14800,
+        "payload_sha256": "4778b57bd28ba00ba1b37ec1b6dd297c803d28b86222d4307e1dca65463adfed",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 384,
+        "height": 119,
+        "plane_sha256": [
+          "0f31ece9a348a31952b02bfae11bab7b25bf896d0b74098556c9fbfa7570afbd",
+          "f0603f1bedc28b64f80cc597e4ba31d59dc17bfb4fee7e757989775ed9e4a7f0",
+          "98c8eab4fd6e86764e78d1f689ff1f18daa63c3fa85a0484a171350092c2146b",
+          "624c650015354abec5999978ea88b910c027b34a4e331e2f7723d1792f7a4252"
+        ],
+        "indices_sha256": "2e28b62e3af1d0ddf11200321c3e762a323c303efd6c270a0955c8048aea69f0",
+        "consumed_bytes": 14800,
+        "trailing_bytes": 0,
+        "commands": {
+          "literal": 9964,
+          "3": 85,
+          "2": 43,
+          "5": 512,
+          "4": 20,
+          "1": 766,
+          "6": 74
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "OP2_P.OZM-reference.png",
+      "reference_sha256": "7b92eb8d06da7fe1ea33e4796a6f86656cf7e56d610c7fdb1f04ffa7983679e9",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "OP5.OZM",
+        "dat_file_offset": 2491704,
+        "payload_bytes": 37923,
+        "payload_sha256": "af8b2c563e12bf436793dab1e2b475eff0e704e606becac3fe9ce73ea1ff2148",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "6b96ea398506433fd2eb7375541e585ef123bf11c87fbe3e2a181b83f223d83f",
+          "7f2d9591b51ea6a86a67eb5e8a7d571eb287b6f674bac0e9f8936c51f3b4a20a",
+          "b84778c0089684938ec4826a3f53fe5f9988cc88b490cca99a41faa7daa3a7a6",
+          "93e7b28bc385f810e554bc8be8ee96ef5e03ffc18b7ee72f6eba85b92a452d87"
+        ],
+        "indices_sha256": "39a6813ba03cf0517b43d9d04536ff0dbd264f556339959ebca376cb57ff61c8",
+        "consumed_bytes": 37923,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 1244,
+          "literal": 27363,
+          "1": 1255,
+          "6": 155,
+          "2": 192,
+          "3": 187,
+          "4": 69
+        },
+        "normal_path_matches": 1
+      },
+      "reference": "OP5.OZM-reference.png",
+      "reference_sha256": "536397f3506ebb1018521504d2fb3bc93533a6ea70fd5f527785bbe816db6a84",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "OP6.OZM",
+        "dat_file_offset": 2529627,
+        "payload_bytes": 86029,
+        "payload_sha256": "075c04e48b27f9f55d4abb916310230165095e204981e39654d8f4d4260d89f7",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "8923e6404c117d740e3da030ee8287273beabea847ff01af582e58584e752441",
+          "af9a83e0565ebaa0bc01bca89f713f76df593d38f4da30d52fcade4548780c49",
+          "702705b8d9ea3ea264874197d6bfba80bb919c5c5cd0cffbdbf8dcf122b836c9",
+          "d3b4f3699c4cc06a58afa04038ea9bb4a2291aa8c632bdf63bce1d434f765559"
+        ],
+        "indices_sha256": "f8d66768f9b876197d82b89232382618b1b339ac5c73b090ba213dbc62b7c0da",
+        "consumed_bytes": 86029,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 2067,
+          "literal": 54478,
+          "6": 611,
+          "1": 6531,
+          "2": 1604,
+          "3": 477,
+          "4": 161
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "OP6.OZM-reference.png",
+      "reference_sha256": "7612216126300b36edba7d66325bb58c15a22ebeda9525a6bca5706d20c853c5",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "OP9.OZM",
+        "dat_file_offset": 2652596,
+        "payload_bytes": 40344,
+        "payload_sha256": "ccb0a2eefaed2d480d3ee9c6736774696b562313b0afd1ecf33735508dc422dd",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "1e673d60ce01c3e829ba5974ce4454189c45e7a64d1cfcd7ac566e0a6b06aed1",
+          "fcffabc68aa3080720786a2653e8f880e33798206d9fba66203a76cd5bdad943",
+          "f2414f8916c9965e36df14640918a9dd7bcf1f7c603a0d912b281994a4ae094a",
+          "c0d176e5f9017820c1373b9f330807841cda1266eed0261d2599d43ec1c77926"
+        ],
+        "indices_sha256": "b015f51daeaad83157c86fab388e3d0b276e2e41a14da991f6c9411b189d2864",
+        "consumed_bytes": 40344,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 2478,
+          "literal": 24858,
+          "6": 247,
+          "1": 412,
+          "3": 134,
+          "4": 83,
+          "2": 176
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "OP9.OZM-reference.png",
+      "reference_sha256": "68dc3badfa3c49b3eb59f5f1d39a7f8efb139551c61c94995d0b6d0d2cb5096f",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "JIMEN_0.OZM",
+        "dat_file_offset": 2814036,
+        "payload_bytes": 8480,
+        "payload_sha256": "53f3f6c349fdfd452d82b86fe4d2adedc72696f3676ee09f4be244acb3d0885f",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 352,
+        "height": 136,
+        "plane_sha256": [
+          "31779a6b3e9a5e040abbcf029ae57fb8cd556751ce2e6e9cf42457d5e12e766a",
+          "914a94e40d965d147deca40719e53462cb53f84363af36ce239f42d2344338cd",
+          "f98d16c21bf25c1338b1dbde83df3f26acafa25ff1ba636ea53b464d7a1f46ab",
+          "623d3f9eab2b3373c022ad60adb2d16437dc83915e08c186c51bbd0e924a4a89"
+        ],
+        "indices_sha256": "dc7426719be118bcaa9394f7b4ec9485607691669d7987ef5e38b84a2e9710af",
+        "consumed_bytes": 8480,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 1166,
+          "5": 262,
+          "6": 132,
+          "literal": 3296,
+          "2": 337,
+          "3": 36
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "JIMEN_0.OZM-reference.png",
+      "reference_sha256": "6df0a38e6307a746569d1be414b376fc8d05f9643c162fbd4d54aa5bd0423cb0",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    },
+    {
+      "source": {
+        "name": "JIMEN_1.OZM",
+        "dat_file_offset": 2822516,
+        "payload_bytes": 8098,
+        "payload_sha256": "6603c6961abfc9479acd263498da4950a3e3fc4d05a2074efc505212ff5af127",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 352,
+        "height": 136,
+        "plane_sha256": [
+          "45dff3dd6dbe530a7d3be9380f822940fda448fe79003a6e48f2e04de527bbb0",
+          "33d55cf93612739bfa3d676f3b62d09bb789020645d5b37b83a92bb5f1e8e661",
+          "535386ab15dcd766d55e38a2531ef3fa5931f59d89937ff27a54dede7ad98803",
+          "4b8a6a85d5f8fdd22315dfffc123a5b3e77b1d2795196306f6d342702f340750"
+        ],
+        "indices_sha256": "55951d294cb08436432367e2d4aa6fc8ae8a4c341da6f3bca73a58b1c040f397",
+        "consumed_bytes": 8098,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 152,
+          "literal": 3276,
+          "1": 1190,
+          "6": 132,
+          "2": 442,
+          "4": 1
+        },
+        "normal_path_matches": 0
+      },
+      "reference": "JIMEN_1.OZM-reference.png",
+      "reference_sha256": "5f348414441697fdfe9f68c60862fa57eb3ec6ef556c5295d16101b4d2d25565",
+      "palette_basis": "canonical battle palette only; normal custom palette must be verified separately"
+    }
+  ]
+}

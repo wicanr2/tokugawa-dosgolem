@@ -26,6 +26,7 @@ README = """# 戰國手繪 HD 素材
 - [戰鬥背景與開場徽記草稿](art/remaining-generation-v1.json)，保留原版參考定位、完整提示詞及未校準的原始生成圖。
 - [校準背景、徽記與開場圖](art/static/)，五項有效美術區及原版緩衝區的幾何紀錄。
 - [Family Soft 字標](art/static/logo/)，保留原始品牌字樣與位置，另存生成圖與完整提示詞。
+- [動畫、標題與剩餘介面素材](art/remaining/)，20 項來源的逐格裁切、鏡像與留白核對；美術準備與執行器接入分開記錄。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。
@@ -152,6 +153,8 @@ def main():
     opening_art = {r["asset"]:r for r in json.loads(opening_path.read_text())["records"]} if opening_path.exists() else {}
     remaining_drafts_path = catalog/"art/remaining-generation-v1.json"
     remaining_drafts = {r["asset"]:r for r in json.loads(remaining_drafts_path.read_text())["records"]} if remaining_drafts_path.exists() else {}
+    remaining_full_generation_path = catalog/"art/remaining-full-generation-v1.json"
+    remaining_full_generation = {r["asset"]:r for r in json.loads(remaining_full_generation_path.read_text())["records"]} if remaining_full_generation_path.exists() else {}
     background_root = catalog/"graphics/static"
     background_profiles_path = background_root/"profiles.json"
     calibrated_inputs = {}
@@ -169,6 +172,9 @@ def main():
     for source in sorted((catalog/"art").glob("*-hd-b-v*.png")):
         name = source.name
         status = "draft; integration and review pending"
+        if name in remaining_full_generation:
+            assert sha(source) == remaining_full_generation[name]["sha256"]
+            status = "source-referenced generated art; calibrated selection and runtime status recorded in remaining profiles"
         if name in remaining_drafts:
             assert sha(source) == remaining_drafts[name]["sha256"]
             status = "source-referenced artwork draft; black padding, geometry and runtime draw eligibility pending"
@@ -493,6 +499,49 @@ def main():
             source = material_root/name
             if source.exists():
                 copy(source,"terrain/materials/"+name,"preparation-metadata")
+    if remaining_full_generation_path.exists():
+        copy(remaining_full_generation_path,"art/remaining-full-generation-v1.json","generation-metadata")
+        remaining_full_root = catalog/"remaining"
+        copy(remaining_full_root/"sources.json","art/remaining/sources.json","source-metadata")
+        copy(remaining_full_root/"intake-source.txt","art/remaining/intake-source.txt","preparation-metadata")
+        if (remaining_full_root/"generation-inputs-v1.json").exists():
+            copy(remaining_full_root/"generation-inputs-v1.json","art/remaining/generation-inputs-v1.json","generation-metadata")
+        for folder in sorted(remaining_full_root.glob("draft-v*")):
+            manifest_path = folder/"draft-manifest.json"
+            if not manifest_path.exists():
+                continue
+            manifest = json.loads(manifest_path.read_text())
+            assert manifest["tool_sha256"] == sha(folder/"prepare-source.txt")
+            for record in manifest["records"]:
+                source = folder/record["prepared"]
+                assert sha(source) == record["asset_sha256"]
+                copy(source,"art/remaining/"+folder.name+"/"+record["prepared"],"png",derivation=record,
+                     prompts=["art/"+r["prompt"] for r in record["inputs"]],
+                     status="calibrated art draft; runtime registration separately required")
+                if record["name"].startswith("ANIME"):
+                    for frame in record["frames"]:
+                        source = folder/frame["prepared"]
+                        assert sha(source) == frame["asset_sha256"]
+                        copy(source,"art/remaining/"+folder.name+"/"+frame["prepared"],"png",derivation=frame,
+                             status="generated animation crop or proven source mirror; original empty frame preserved")
+            for gallery in manifest["galleries"]:
+                source = folder/gallery["asset"]
+                assert sha(source) == gallery["sha256"]
+                copy(source,"art/remaining/"+folder.name+"/"+gallery["asset"],"png",status="generated-only HD overview")
+            for name in ["draft-manifest.json","prepare-source.txt","review.json"]:
+                if (folder/name).exists():
+                    copy(folder/name,"art/remaining/"+folder.name+"/"+name,"preparation-metadata")
+        remaining_full_profiles_path = remaining_full_root/"profiles.json"
+        if remaining_full_profiles_path.exists():
+            selected = json.loads(remaining_full_profiles_path.read_text())
+            assert selected["tool_sha256"] == sha(project/"tools/hd-remaining-prepare.py")
+            for record in selected["records"]:
+                source = remaining_full_root/record["prepared"]
+                assert sha(source) == record["asset_sha256"]
+                copy(source,"art/"+record["asset"],"png",derivation=record,
+                     prompts=["art/"+r["prompt"] for r in record["inputs"]],
+                     status="reviewed calibrated art; runtime source registration and normal path validation pending")
+            copy(remaining_full_profiles_path,"art/remaining/profiles.json","preparation-metadata")
     for page in range(9):
         name = f"page-{page:02d}-hd-b-v1.png"
         picture(catalog/"kao"/name, "kao/"+name, (catalog/"kao"/name).with_suffix(".prompt.txt"), "kao/"+Path(name).with_suffix(".prompt.txt").name, "generated portrait atlas")

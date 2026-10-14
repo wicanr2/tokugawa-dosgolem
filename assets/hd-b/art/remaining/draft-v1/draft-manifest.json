@@ -1,0 +1,2667 @@
+{
+  "classification": "source-calibrated generated HD drafts; not a runtime-completion claim",
+  "version": 1,
+  "tool_sha256": "9b0d27b9aaabb616318992a1c2871e01816a4b14f527a82aa3509ef56f4cf93d",
+  "source_intake_sha256": "91a015928bd2e10689b68cb3d3d2bf05f2b576f59a2c464ab76a1adb4442fa54",
+  "generation_metadata_sha256": "b7b9a394b98d1b0d56e843ba49369544f7adfe50799430179582e28df35847e4",
+  "records": [
+    {
+      "name": "ANIME01.OZM",
+      "source": {
+        "name": "ANIME01.OZM",
+        "dat_file_offset": 701299,
+        "payload_bytes": 37165,
+        "payload_sha256": "b7d7b84aea888c364a2e82c390f6ac00cc5decf282440d48e26ecbc44054185f",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "89da11f8dd0a6a2ffeaf5541f0d0dfcbf97e723aa1875e384c718a6317cf63b2",
+          "6c665a4b051435770e297deca88a5764452c31631e88325c818e91aedb6f23e7",
+          "f879cffd9f9af2317d737fb056d0938a0387d819996a879fbfa455002cce96b6",
+          "71c37193e7f9764c92904261407437478a74af4d1faec28f1408e3c54b093819"
+        ],
+        "indices_sha256": "53e0e68deda3b36ba8690961c76194c18fd66b9747e859e934850368e83d2d7a",
+        "consumed_bytes": 37165,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 982,
+          "literal": 22566,
+          "5": 1929,
+          "2": 415,
+          "4": 265,
+          "3": 132,
+          "6": 227
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/ANIME01.OZM-hd-v1.png",
+      "prepared": "prepared/ANIME01.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "raw_grid": [
+        [
+          0,
+          598,
+          1198,
+          1808
+        ],
+        [
+          0,
+          436,
+          866
+        ]
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "192c5f04bb5a22aba54bfa6e76dabf3c24d0f7f03a5d965e929255307e0893f0",
+          "raw_crop": [
+            0,
+            0,
+            598,
+            436
+          ],
+          "art_owner": "ANIME01.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME01.OZM-0-hd-v1.png",
+          "asset_sha256": "59e56e5c8304e8f19881215650b5a798378cf1531d7606589d92ef3d09e0f416"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "73d4f3319c03070a77068eb9f894f537dc3adbc5b1e60fe687e35ae6817acce7",
+          "raw_crop": [
+            598,
+            0,
+            1198,
+            436
+          ],
+          "art_owner": "ANIME01.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME01.OZM-1-hd-v1.png",
+          "asset_sha256": "065952a128c32ae3f1eca8a7eb1ca85cee94c64a8219d4e1f464596ae192324d"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "bbf9174095fbc7ba416514bc500f8b562ad6607eb45d37893558cf6bdc8725f5",
+          "raw_crop": [
+            1198,
+            0,
+            1808,
+            436
+          ],
+          "art_owner": "ANIME01.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME01.OZM-2-hd-v1.png",
+          "asset_sha256": "b536dd1b17fbb28c6b5d820308892bbda541849a260ed1afb2fedcf75ce10e05"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "fd72f3d3504bb011caa2c3f512d7e7001b83b7e8ed35719b6b8299bdb2df5209",
+          "raw_crop": [
+            0,
+            436,
+            598,
+            866
+          ],
+          "art_owner": "ANIME01.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME01.OZM-3-hd-v1.png",
+          "asset_sha256": "b374992bf5571eb5d806b6d5644fd622e89e9fe202542c8311ed77cc70067653"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "29681b523a1c286ed4cbb9efec38318d5a0ed0bca2dab235023bb012237d76d7",
+          "raw_crop": [
+            598,
+            436,
+            1198,
+            866
+          ],
+          "art_owner": "ANIME01.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME01.OZM-4-hd-v1.png",
+          "asset_sha256": "e21d6418b92fa5ffe3fe9b457721507469132cd63f32fc339d4efc02eb4d7227"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "82ee84101da72779178e6f7143de7d665f41ac1d0c896b7e9cf3d82eedc3841f",
+          "raw_crop": [
+            1198,
+            436,
+            1808,
+            866
+          ],
+          "art_owner": "ANIME01.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME01.OZM-5-hd-v1.png",
+          "asset_sha256": "dffad7c6fccb6639071f94347f9fea94d4ceec6d2581bfad21e3b6f04b19d9c5"
+        }
+      ],
+      "asset_sha256": "18cd1cb070fbd5fca1329844cc7b97ae45fcd0a252a209fe6b633d9eb3bafe20",
+      "size": [
+        1248,
+        600
+      ],
+      "inputs": [
+        {
+          "source": "ANIME01.OZM",
+          "asset": "ANIME01-hd-b-v1.png",
+          "sha256": "bab74043e7aefb0869c9bf5081baea822ac093fc2ffdfd6cfb9149895f3df93b",
+          "prompt": "ANIME01-hd-b-v1.prompt.txt",
+          "prompt_sha256": "b1ee3cef6a6c1970d4c3456da29a31158d072010ca6716a4dbb7b67c1fb004cb",
+          "reference": "workplace/hd-prototype/catalog/remaining/ANIME01.OZM-reference.png",
+          "reference_sha256": "9ce76b2e091611455aa84f2c765f980863a061e18890c87db3d2c8e77b269a61",
+          "size": [
+            1808,
+            870
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "ANIME02.OZM",
+      "source": {
+        "name": "ANIME02.OZM",
+        "dat_file_offset": 738464,
+        "payload_bytes": 37165,
+        "payload_sha256": "78f1379a558a1932e75cdffe01de5e7b8857f749c2774e600c594a98cc025e9c",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "7bd0779b8d393c7108e4772ec3cef74383301992aaf7895078b11c5f2ec618aa",
+          "a89d6a4b96cda163c73a1c5e5e85e2d63f78c69efbbfbba0c34c1c7ccb238bd3",
+          "aefe1cd131c2f82f7ceae4db7dac22dbd0469b8405db89563b9f1ff8e5d87d21",
+          "840fdc78e336c085427963a97f474e38b34c0d34c86698a40c843e2c8717c512"
+        ],
+        "indices_sha256": "d4e6a3a0573ddbf97375f4e2a15be22b5b2dfbd4f3143a8a773379886cca4eac",
+        "consumed_bytes": 37165,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 982,
+          "literal": 22566,
+          "5": 1929,
+          "6": 227,
+          "2": 415,
+          "4": 265,
+          "3": 132
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/ANIME02.OZM-hd-v1.png",
+      "prepared": "prepared/ANIME02.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "raw_grid": null,
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "3716128832112dc70cccb7e1084105e2d02752dffb612f139cef98dd4975f1eb",
+          "art_owner": "ANIME01.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME02.OZM-0-hd-v1.png",
+          "asset_sha256": "c826e393803fcad7eb221fc06a5ee0dfae355b3b4118d1b05b4b1aa0ea885437"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "6c259c847c9663d5b2e1aad1f151ab65d92de5d7ad18eced7c24aee7bb8d1099",
+          "art_owner": "ANIME01.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME02.OZM-1-hd-v1.png",
+          "asset_sha256": "97e2b30ff6f25d70d9583afe9e08e485222e2de6772d23753aa2bdfb673f234c"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "af737042ef26cc8e4728bb09e856c153210a004083817bf1df665ac97029a34b",
+          "art_owner": "ANIME01.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME02.OZM-2-hd-v1.png",
+          "asset_sha256": "e105acf54d8fd56e77d86c8b9f7f2ef5d382044357340342b205aebb2b500f88"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "1eaa4e5ae06ffde06d9f2d6410b918e1d7e70409df3630ae79bb168a340409e1",
+          "art_owner": "ANIME01.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME02.OZM-3-hd-v1.png",
+          "asset_sha256": "c4c84ad9fdcd5fbc150fc73509802c608b38db177f3ab6c4a194f636c01fab01"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "8394bcbc9bd49dbd52d3b8411ab3373aea82707e96587e47acbda6777a30e0aa",
+          "art_owner": "ANIME01.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME02.OZM-4-hd-v1.png",
+          "asset_sha256": "18b91fa99c6eb3b2001b73d3a2ec3b05632f75e0912ef05574dd224908e9dadd"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "c770d0bb32ce42cae9b7cc44ed63c761d0780b45d4fde71207841c9dc04f895b",
+          "art_owner": "ANIME01.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME02.OZM-5-hd-v1.png",
+          "asset_sha256": "316080c139a9bb15a5863c70cf9d588cc6ddc3da8ca797e845989f3201280efd"
+        }
+      ],
+      "asset_sha256": "5a9154a9bc5dbf60617798416beff101d3208ce97c87ea1054b9b89ba3fe29d5",
+      "size": [
+        1248,
+        600
+      ],
+      "inputs": [
+        {
+          "source": "ANIME01.OZM",
+          "asset": "ANIME01-hd-b-v1.png",
+          "sha256": "bab74043e7aefb0869c9bf5081baea822ac093fc2ffdfd6cfb9149895f3df93b",
+          "prompt": "ANIME01-hd-b-v1.prompt.txt",
+          "prompt_sha256": "b1ee3cef6a6c1970d4c3456da29a31158d072010ca6716a4dbb7b67c1fb004cb",
+          "reference": "workplace/hd-prototype/catalog/remaining/ANIME01.OZM-reference.png",
+          "reference_sha256": "9ce76b2e091611455aa84f2c765f980863a061e18890c87db3d2c8e77b269a61",
+          "size": [
+            1808,
+            870
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "ANIME03.OZM",
+      "source": {
+        "name": "ANIME03.OZM",
+        "dat_file_offset": 775629,
+        "payload_bytes": 34817,
+        "payload_sha256": "df047c4f14364ca8471687bd9c01bc3acf83c8e18bfd2701ac58a290988eb48c",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "999a92ffedcaa80aaeb131c186954d8cec451c45a030db3180313c4aed6dce13",
+          "3ce4ba6d61fa4ac3fda6c32336cd1aa5fa83d16287611172b6d9a1c1ad2f977c",
+          "c8c855503389dad4cef10568ab744104cc1317e343816132ff63bb38f29d2576",
+          "3704a37cf5566a62918a0247a45bf3645d57e13f5eea965cecdd04d658a334df"
+        ],
+        "indices_sha256": "09d2d0e1d22727a13f8fb147a91c797da979c989fac17599ecf735d004e182cc",
+        "consumed_bytes": 34817,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 835,
+          "literal": 21445,
+          "5": 1782,
+          "2": 407,
+          "3": 153,
+          "6": 192,
+          "4": 258
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/ANIME03.OZM-hd-v1.png",
+      "prepared": "prepared/ANIME03.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "raw_grid": [
+        [
+          0,
+          598,
+          1199,
+          1808
+        ],
+        [
+          0,
+          409,
+          866
+        ]
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "f7583d5036e6d98061ab6d84099fb016ccb7f47b4398aed879b02a1475721d48",
+          "raw_crop": [
+            0,
+            0,
+            598,
+            409
+          ],
+          "art_owner": "ANIME03.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME03.OZM-0-hd-v1.png",
+          "asset_sha256": "aa27e9b65b3e06d213da61fa28d482d7f082c3d3ca11605903fe75f6770a1a4e"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "8aa46b55ab2fdab436ddb96419ed880a6c4bf463145f44282cbb03ec74088add",
+          "raw_crop": [
+            598,
+            0,
+            1199,
+            409
+          ],
+          "art_owner": "ANIME03.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME03.OZM-1-hd-v1.png",
+          "asset_sha256": "945a972e8ea7c8ba0cfc894114da9d76a3aa0b48151d94de0f237b84c2885cd9"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "a5d0dc3bb38f67d38c725b2ad8f3e513a2d52d640b1ae2b21c98ed714f591183",
+          "raw_crop": [
+            1199,
+            0,
+            1808,
+            409
+          ],
+          "art_owner": "ANIME03.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME03.OZM-2-hd-v1.png",
+          "asset_sha256": "681300669bbeb09097f89cf2202c20ce6727889ec0d4518ffbe09716ea459c3f"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "14f4e06cc3602b42527578fff49396daf2ac6ca0e287024aa46ca75f917bb8a8",
+          "raw_crop": [
+            0,
+            409,
+            598,
+            866
+          ],
+          "art_owner": "ANIME03.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME03.OZM-3-hd-v1.png",
+          "asset_sha256": "c65011bbf6afea33011aea905f256abadc23909a86f431ec7c455c4a668c8ad6"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "36b57482369fea62bc8a29287e00492fc33ceb4622e581198fbf96ced85279f4",
+          "raw_crop": [
+            598,
+            409,
+            1199,
+            866
+          ],
+          "art_owner": "ANIME03.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME03.OZM-4-hd-v1.png",
+          "asset_sha256": "0b848e4cda3a56972885f78bf90ebc3b3826fab616d29a6c76678409df1a6ec1"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "179618fc62ffb7c92696c6b00238c99b6321728f21071cd80e8bae023df2540a",
+          "raw_crop": [
+            1199,
+            409,
+            1808,
+            866
+          ],
+          "art_owner": "ANIME03.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME03.OZM-5-hd-v1.png",
+          "asset_sha256": "d25e614e4cb4391873881d7613aed4e7177afe41a866bb4b79d988c1fd1556af"
+        }
+      ],
+      "asset_sha256": "6f1ca5f5fbd5929bc080f203c7b240680d15557bf4aa5089906cbbb5bb74fbf1",
+      "size": [
+        1248,
+        600
+      ],
+      "inputs": [
+        {
+          "source": "ANIME03.OZM",
+          "asset": "ANIME03-hd-b-v1.png",
+          "sha256": "24c02ef0508ed35ae8b087569b845146efb2acbb699f64cc0c47c6b34cabd4b4",
+          "prompt": "ANIME03-hd-b-v1.prompt.txt",
+          "prompt_sha256": "e8a749fc5a945ed2043b9b487e4724289092c5d5c8e51c5597794c9bb6c4c212",
+          "reference": "workplace/hd-prototype/catalog/remaining/ANIME03.OZM-reference.png",
+          "reference_sha256": "2a025b05930333f525277c0f376e927bcdbf616f3ea8f41d09a925a4ead87b66",
+          "size": [
+            1808,
+            870
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "ANIME04.OZM",
+      "source": {
+        "name": "ANIME04.OZM",
+        "dat_file_offset": 810446,
+        "payload_bytes": 33870,
+        "payload_sha256": "495e89b1a56e0ba1d481a265a715a4975b57ae5b0b18086069efad6df5cdf5de",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "e7e83ca6d7716b803a1c8d206e4956a46d76a0f151cc0410b8753946c992e17b",
+          "cb472734a1e48f9f6d64b5a7f3d41cf5d7408157b4eb7c43cbe04290366dd0bd",
+          "fd987c5d89696c2f9316f21a6fbcbcfec81e0a633269f0a8e7fcd1996a2c15bb",
+          "5ebc9135990b71c9f748945c628cc45540ee851f923f629a3e2e7d0bbb4ae35c"
+        ],
+        "indices_sha256": "3ce7e2dc9ba21615590720d2af2c8d7d09fdd3bbf09078495dd7b9bd78117fce",
+        "consumed_bytes": 33870,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 1139,
+          "literal": 19264,
+          "5": 1620,
+          "2": 268,
+          "3": 144,
+          "6": 510,
+          "4": 170
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/ANIME04.OZM-hd-v1.png",
+      "prepared": "prepared/ANIME04.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "raw_grid": [
+        [
+          0,
+          607,
+          1199,
+          1808
+        ],
+        [
+          0,
+          413,
+          853
+        ]
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "3c0db6ba1c74eba6d8e1060ea3f8fbda24c19eed0b32417c8233abb1a6261511",
+          "raw_crop": [
+            0,
+            0,
+            607,
+            413
+          ],
+          "art_owner": "ANIME04.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME04.OZM-0-hd-v1.png",
+          "asset_sha256": "939017152ac695b04014f89ae83e52ca3dd58e5ba6b82db124fbed57ad8804c4"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "b7cc322ef2b12c402bb60b6cc8742121284ed4d44bc0796d7a199a68a22bd031",
+          "raw_crop": [
+            607,
+            0,
+            1199,
+            413
+          ],
+          "art_owner": "ANIME04.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME04.OZM-1-hd-v1.png",
+          "asset_sha256": "0a1e661a8599487f8eb6e6c698f77d72e8ef47869a5515d69ab3b6a666b23395"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "2e847b9de4017f4d16ffec6a6a0ef4ae4f7b1f89b5fc522fcb95915147ab4b09",
+          "raw_crop": [
+            1199,
+            0,
+            1808,
+            413
+          ],
+          "art_owner": "ANIME04.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME04.OZM-2-hd-v1.png",
+          "asset_sha256": "bc551bc5b559ca3cb91fabe4934d8d31eedf24681b59be0b6b5a168e37d497bd"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "5dddeffd8618f61ba9d50c41210cd3f784bc99d05a65f5a2ee0532c8cf4f5890",
+          "raw_crop": [
+            0,
+            413,
+            607,
+            853
+          ],
+          "art_owner": "ANIME04.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME04.OZM-3-hd-v1.png",
+          "asset_sha256": "5e764e233d5da669089f8b70e1389949c2af4f0b7e7509e5b79abcdf04f4fe33"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "c4cef47d55e5a7282c90da3d686aad7ff50c471599cc5c597794e61775533523",
+          "raw_crop": [
+            607,
+            413,
+            1199,
+            853
+          ],
+          "art_owner": "ANIME04.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME04.OZM-4-hd-v1.png",
+          "asset_sha256": "24d850a265736098bc7199d0ee55bfb6cac570e82427e3344c05386be2b19054"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "a3c4111128a60d240f1e13baf5bad9b8b0e7d196ca78ec743665e9142cf40324",
+          "derivation": "original empty frame; no generated image painted",
+          "prepared": "frames/ANIME04.OZM-5-hd-v1.png",
+          "asset_sha256": "e21e64d07c26361de84a1cd0742fc3093b6cd500e56586ac1bcd126b63a2943e"
+        }
+      ],
+      "asset_sha256": "3ab28ff523c4bf6da414a0bb2c1629dcf52b7c3693ec68e8355d9ffde5ed31ef",
+      "size": [
+        1248,
+        600
+      ],
+      "inputs": [
+        {
+          "source": "ANIME04.OZM",
+          "asset": "ANIME04-hd-b-v1.png",
+          "sha256": "cd26617f343494ea94fd47a4053988a096ef8e646a1da77d1ba96bbbf32193b5",
+          "prompt": "ANIME04-hd-b-v1.prompt.txt",
+          "prompt_sha256": "e107d095249c33ac2c3cd67dc77468afb677643d9ef99039764c7033ed78b03c",
+          "reference": "workplace/hd-prototype/catalog/remaining/ANIME04.OZM-reference.png",
+          "reference_sha256": "377c85d744c52f7a00408fd64694cd4aa0b713ebb4893e87f5ecaff3da047144",
+          "size": [
+            1808,
+            870
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "ANIME05.OZM",
+      "source": {
+        "name": "ANIME05.OZM",
+        "dat_file_offset": 844316,
+        "payload_bytes": 44924,
+        "payload_sha256": "d453d7477a6a87d37e4ad65b39330038b00fbd092b7fc7dec1f02664e7611f15",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "832ea5305d7aaeb470aced8bae73584570cd65d06e1c9d13f1d5d9ad9cc86796",
+          "29eb19b240cc1d6ba4960b557eaf72238f674407ce21da4eb5b6e57504f2a385",
+          "09b6988f2576e27ab8e89999c81bbd2b8a4ab1ad0dd32311f07dc45dd8f4a61f",
+          "a62d177182f042a94193d9ed47a50d4673b3ce5ca28523e28c21748ec0a92edf"
+        ],
+        "indices_sha256": "ebfd5ebbc9bdcff89f5332dd1eab56a12dce5fef85535c4d0c2a6c1b3ed86585",
+        "consumed_bytes": 44924,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 989,
+          "literal": 27433,
+          "5": 2403,
+          "2": 486,
+          "6": 254,
+          "4": 281,
+          "3": 218
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/ANIME05.OZM-hd-v1.png",
+      "prepared": "prepared/ANIME05.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "raw_grid": [
+        [
+          0,
+          599,
+          1199,
+          1807
+        ],
+        [
+          0,
+          405,
+          843
+        ]
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "a7272aa2111bb68a28a582641f0b3f1151d5698d248a73744aaca108ac9557a6",
+          "raw_crop": [
+            0,
+            0,
+            599,
+            405
+          ],
+          "art_owner": "ANIME05.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME05.OZM-0-hd-v1.png",
+          "asset_sha256": "80960e5e06f1e4d23c267bfb22794e5edabab238b5e423cc8a3a528b563cf8e7"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "8cd8b332e80af3526c4ee7e1dc2c0771491d9321a764c9660e1cf0f2eca54320",
+          "raw_crop": [
+            599,
+            0,
+            1199,
+            405
+          ],
+          "art_owner": "ANIME05.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME05.OZM-1-hd-v1.png",
+          "asset_sha256": "a50fe95e4f52375a3dc6614fa38ac225a9f9c8f43e284c28cb54c28213204dd3"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "68c0db83161de989f2f2c3790ab07b226c340358c70613039151ec49b097cc26",
+          "raw_crop": [
+            1199,
+            0,
+            1807,
+            405
+          ],
+          "art_owner": "ANIME05.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME05.OZM-2-hd-v1.png",
+          "asset_sha256": "35d9bd75e5a63835dff0c3f16c6ab8ac3a29d0af64c18235ece2a1fa6ea68695"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "443a0781044941a0ddbbf82b2c53a9483e88471e91d9dd4c3cc014457b9a10ad",
+          "raw_crop": [
+            0,
+            405,
+            599,
+            843
+          ],
+          "art_owner": "ANIME05.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME05.OZM-3-hd-v1.png",
+          "asset_sha256": "4da220e3a18e26bff510eff6918b557a756ae8024ab2aa026d7fce870cc25806"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "cb7285885ea1413f734f9528357512e8f9767c0c0626d3b21bb70d24cafc1a05",
+          "raw_crop": [
+            599,
+            405,
+            1199,
+            843
+          ],
+          "art_owner": "ANIME05.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME05.OZM-4-hd-v1.png",
+          "asset_sha256": "b9642ea7d542b13c71482464cd63d35b8e1b0a8625b8bc17393b5f539fed5a47"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "07d7fa100f6aed3b7a46d759196747aa60a5137724bc2d152ec1956bec0c0e04",
+          "raw_crop": [
+            1199,
+            405,
+            1807,
+            843
+          ],
+          "art_owner": "ANIME05.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME05.OZM-5-hd-v1.png",
+          "asset_sha256": "be9737ad0f29ea65d385361baace93eedc95c5f38a0eb6a1370bf76a0b8ecd14"
+        }
+      ],
+      "asset_sha256": "304911568da319aec1f92fb174a49631be41fd220e2329b93a08e546fd8184ea",
+      "size": [
+        1248,
+        600
+      ],
+      "inputs": [
+        {
+          "source": "ANIME05.OZM",
+          "asset": "ANIME05-hd-b-v1.png",
+          "sha256": "4d16d75a4abc8021a54eaed1bd9a2b04a9b982d739ec3c5541c691693c0be6c8",
+          "prompt": "ANIME05-hd-b-v1.prompt.txt",
+          "prompt_sha256": "1b18298a2988d98e858d20d9929ba80466e3e795fec58a1ccfa0b2fb2450418d",
+          "reference": "workplace/hd-prototype/catalog/remaining/ANIME05.OZM-reference.png",
+          "reference_sha256": "b38eb58d836db7ab7fdf45d130a9afbfd20dbb866950dee7de0d7d4a34ec930c",
+          "size": [
+            1807,
+            870
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "ANIME06.OZM",
+      "source": {
+        "name": "ANIME06.OZM",
+        "dat_file_offset": 889240,
+        "payload_bytes": 44916,
+        "payload_sha256": "9db4b3498d6c9bdf871ae8f12cf7c8d032db5dd3d15eb81f224ecb8e972a6481",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "22ca2fe889d14ffbeff57caef317bcb5f004317c7b1b742945c82662b69dd54c",
+          "b9888996c0434a1fc7ec853a52db8473d4df46f9b63bab8fe5e93017c762be58",
+          "95e573fc3cb7ffabe0617f90f4ea80a06c9b07d7e46483ce6b3130f6227ec6e4",
+          "8476f03ae4d793e1681867fcda80d0975a683cc351af9fd692090170c26b719e"
+        ],
+        "indices_sha256": "5e5bacbe4273a042c294bf4e9a023384079bc87da8fb73857f2bfc79940e1733",
+        "consumed_bytes": 44916,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 982,
+          "literal": 27476,
+          "5": 2400,
+          "2": 484,
+          "3": 221,
+          "6": 250,
+          "4": 281
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/ANIME06.OZM-hd-v1.png",
+      "prepared": "prepared/ANIME06.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "raw_grid": [
+        [
+          0,
+          602,
+          1199,
+          1808
+        ],
+        [
+          0,
+          438,
+          866
+        ]
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "98becb4ebb023bb35b5419e88e2beb256c048b9909429a1fbe2dd4950b942521",
+          "art_owner": "ANIME05.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME06.OZM-0-hd-v1.png",
+          "asset_sha256": "8e7019a7fa65d1bd9f9c2ee14af1595ca733585ad3c6e92c7a2088c9d78cc4e4"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "5c0582a34d8ba091497d4f640ba0db4bad571f4f1d8e79d346b2e903b2ffc15b",
+          "art_owner": "ANIME05.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME06.OZM-1-hd-v1.png",
+          "asset_sha256": "2419b128c8942a0ab17e96cf916b3c327f99bf8ef2452acb6e6731f5aa2641e7"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "669d9f048c247319e6d9ee551711518e637c31dc20e44dd6953aa91373b94a19",
+          "art_owner": "ANIME05.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME06.OZM-2-hd-v1.png",
+          "asset_sha256": "47ce958184d09190829f094b3bb271da56c5c617f25ade0dac0cea726b2ec9be"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "bc621cbd7b3b47c6ffe74cc64df846d28f78760ab5f554df9fb7e2f1e0a481cc",
+          "art_owner": "ANIME05.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME06.OZM-3-hd-v1.png",
+          "asset_sha256": "d6738ee2e4599b1237dcadee76f2df5741f9c6924380f95fbe05e228537243fe"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "5417939ccdb6ac3caea39a3b1202a615d554a8c00bb3e1f0486fea554b215f9e",
+          "raw_crop": [
+            602,
+            438,
+            1199,
+            866
+          ],
+          "art_owner": "ANIME06.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME06.OZM-4-hd-v1.png",
+          "asset_sha256": "e1ab40ecaaf530f2874a14beb707da3953adf15bcc5d0ffec0f903fd75d7f289"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "7f22875fdb0364378c19cd70c54524c0982552ba38cb57e34e501f8fb70ebf4c",
+          "raw_crop": [
+            1199,
+            438,
+            1808,
+            866
+          ],
+          "art_owner": "ANIME06.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME06.OZM-5-hd-v1.png",
+          "asset_sha256": "30963930c499a238e623291805b200a0f05e6fb813aae222877ea62aaa7d5b98"
+        }
+      ],
+      "asset_sha256": "4ea86abc739d33bd9845ef244a4f72fb718f2b11e6dc7ad422a8fae6b83a117f",
+      "size": [
+        1248,
+        600
+      ],
+      "inputs": [
+        {
+          "source": "ANIME06.OZM",
+          "asset": "ANIME06-hd-b-v1.png",
+          "sha256": "1f0186d0d47b46df4e7cdf370a42c500c2b5ded816d208790c67595fb39fadfd",
+          "prompt": "ANIME06-hd-b-v1.prompt.txt",
+          "prompt_sha256": "c7153c75d1c3c313e61b3c00c8a8637e9c68e19911b03fe8049bcd4899705ac6",
+          "reference": "workplace/hd-prototype/catalog/remaining/ANIME06.OZM-reference.png",
+          "reference_sha256": "5f44cae5dfd76dd2308d7cbd592149375bb8878acc718ede7c2730cc043d6cec",
+          "size": [
+            1808,
+            870
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        },
+        {
+          "source": "ANIME05.OZM",
+          "asset": "ANIME05-hd-b-v1.png",
+          "sha256": "4d16d75a4abc8021a54eaed1bd9a2b04a9b982d739ec3c5541c691693c0be6c8",
+          "prompt": "ANIME05-hd-b-v1.prompt.txt",
+          "prompt_sha256": "1b18298a2988d98e858d20d9929ba80466e3e795fec58a1ccfa0b2fb2450418d",
+          "reference": "workplace/hd-prototype/catalog/remaining/ANIME05.OZM-reference.png",
+          "reference_sha256": "b38eb58d836db7ab7fdf45d130a9afbfd20dbb866950dee7de0d7d4a34ec930c",
+          "size": [
+            1807,
+            870
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "ANIME07.OZM",
+      "source": {
+        "name": "ANIME07.OZM",
+        "dat_file_offset": 934156,
+        "payload_bytes": 34698,
+        "payload_sha256": "776f286c2d302ca433de7dfb1583ead5d40689fada6f83133fc32c02f388c776",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "6c56cf4d4ea0d7cf79eabe669b5db03a8203758064b1d9d26000f71797c61c1a",
+          "bc7b5c5cc96bb38d876bc64c243b79a150aac930ef482feef7efdab3a96121c5",
+          "06179d3da7eb755a6c44f751b986e17041e29f5060c34b0e19de1070648a4fb8",
+          "56f48d7e450ebedaf871633d96fdee851dd89a5a519766e9f9c6a92c6f86eda8"
+        ],
+        "indices_sha256": "3bb850ee24692a585536e328ed4a8048a1e9900ee3433cf06ffa0dcbd565e075",
+        "consumed_bytes": 34698,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 1044,
+          "literal": 20091,
+          "5": 1753,
+          "2": 390,
+          "3": 166,
+          "6": 361,
+          "4": 236
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/ANIME07.OZM-hd-v1.png",
+      "prepared": "prepared/ANIME07.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "raw_grid": [
+        [
+          0,
+          597,
+          1200,
+          1808
+        ],
+        [
+          0,
+          429,
+          861
+        ]
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "61e594b63759e7cb9019466a5ca9474f897fbcc14f0a7fdb865ceae44cb3940b",
+          "raw_crop": [
+            0,
+            0,
+            597,
+            429
+          ],
+          "art_owner": "ANIME07.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME07.OZM-0-hd-v1.png",
+          "asset_sha256": "33db813a207e3d6c5cedfa5c9b8e586c77e39a8224a86484e6526778d23ed123"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "533720c2d2aa988531ea082e5769afcaa43f4f745f55245894da77a746f20110",
+          "raw_crop": [
+            597,
+            0,
+            1200,
+            429
+          ],
+          "art_owner": "ANIME07.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME07.OZM-1-hd-v1.png",
+          "asset_sha256": "a58ad68157bb8bbaf936851675052062fbe07964975f65ca59b415b4f7220129"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "c3d44b7bc072f1b07aeceffea3a8f31bdad5aa3899a46b2cab450e0a664848da",
+          "raw_crop": [
+            1200,
+            0,
+            1808,
+            429
+          ],
+          "art_owner": "ANIME07.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME07.OZM-2-hd-v1.png",
+          "asset_sha256": "f4a33e7ddab422ed6dc503ecc462aaa0154ab779bb58adbd20d734814c6ac4ac"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "3c2dc4ab8badfe6dca8ab3e0af70831878920ab66df0d97c0fb4276cb93d1524",
+          "raw_crop": [
+            0,
+            429,
+            597,
+            861
+          ],
+          "art_owner": "ANIME07.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME07.OZM-3-hd-v1.png",
+          "asset_sha256": "8b9536fc87273ea3b2eee8544d8160d318bd6c890714ad3268afe12f0c9b310a"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "e5601691d12298b21108775fcaf1027864176a7db922ff085ffe06e74aabef6f",
+          "raw_crop": [
+            597,
+            429,
+            1200,
+            861
+          ],
+          "art_owner": "ANIME07.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME07.OZM-4-hd-v1.png",
+          "asset_sha256": "8673be2c54b6f00ef6e79c45eed2cbecea2e35c52d7b95fb577fcf7c59c37419"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "6d702f1210e98f0717c072ca4eac404fe7adb2df9765c60b2e0fc56200068dbc",
+          "raw_crop": [
+            1200,
+            429,
+            1808,
+            861
+          ],
+          "art_owner": "ANIME07.OZM",
+          "derivation": "own frame from reviewed generated atlas",
+          "prepared": "frames/ANIME07.OZM-5-hd-v1.png",
+          "asset_sha256": "83004849d51e40664aa05978a67ed8040222e5633e10cbf4767b0148f8385030"
+        }
+      ],
+      "asset_sha256": "c02d978f792442674b3809f43911d6b417039fe53f5e8eecf9237985a146f5c5",
+      "size": [
+        1248,
+        600
+      ],
+      "inputs": [
+        {
+          "source": "ANIME07.OZM",
+          "asset": "ANIME07-hd-b-v1.png",
+          "sha256": "7751549b98b751c813009053b2397f6d9ae0638a393cb2e65631f5d80fcc33fc",
+          "prompt": "ANIME07-hd-b-v1.prompt.txt",
+          "prompt_sha256": "edc44cc76d3fbc84c1bdf7c523d34937f6286707164d815ba5ef405172d36169",
+          "reference": "workplace/hd-prototype/catalog/remaining/ANIME07.OZM-reference.png",
+          "reference_sha256": "9a5c09ed9fec6a41d7356c0858c73e82d2defa9a080ca71e91c86a981119c28d",
+          "size": [
+            1808,
+            870
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "ANIME08.OZM",
+      "source": {
+        "name": "ANIME08.OZM",
+        "dat_file_offset": 968854,
+        "payload_bytes": 34698,
+        "payload_sha256": "6077160dcaf2ec4a975b9690e12b7d78122fdd30accd7449bda948d3644e68e5",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 624,
+        "height": 300,
+        "plane_sha256": [
+          "84895cc9ba665081b65d8ee1c6122df1bb1b781bc8166a0b8476280420637a7c",
+          "f0a124db1739e0883d110631d5c7c94d61afd10fe8cf3f82cc8b5a1f28833b14",
+          "9f7f45867a4ef6664c12df5c056a66a8e3dfe4061504a43dc083700cb7f9f59d",
+          "65a32cb3617c8ede63674fa112c17274690637d660acd623c2f772cdbcfe0a57"
+        ],
+        "indices_sha256": "7cca319beacd144d39ab16b4b9774c46484826fe9cb0e139e8c6fa60a25112a4",
+        "consumed_bytes": 34698,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 1044,
+          "literal": 20091,
+          "5": 1753,
+          "2": 390,
+          "3": 166,
+          "6": 361,
+          "4": 236
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/ANIME08.OZM-hd-v1.png",
+      "prepared": "prepared/ANIME08.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "raw_grid": null,
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            208,
+            150
+          ],
+          "indices_sha256": "d099ddfb26519887aca30ed8c23260d58f5f1c19cba6a137317f75b62abfbd63",
+          "art_owner": "ANIME07.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME08.OZM-0-hd-v1.png",
+          "asset_sha256": "f68ef7349ebb629715047d3c23fe0e8d33870136b98bd80f50c9d4f36673efb7"
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            208,
+            0,
+            416,
+            150
+          ],
+          "indices_sha256": "8c6736992a8bf6c7364d3d84ee30bd5a590e4db71d76a38697dc9f7179d9a2a0",
+          "art_owner": "ANIME07.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME08.OZM-1-hd-v1.png",
+          "asset_sha256": "6525aa88fb954ad70f315aaa658502057688dd227c05a94b86ee90a272f12ff8"
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            416,
+            0,
+            624,
+            150
+          ],
+          "indices_sha256": "347691a17bed697fcc86855500c734ecb82b7df573314b0d56f563b321288b99",
+          "art_owner": "ANIME07.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME08.OZM-2-hd-v1.png",
+          "asset_sha256": "1f72d473b08b86a6aaf0a74fcdd619a8db3261f47f36f3906d8185144fb0ee32"
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            0,
+            150,
+            208,
+            300
+          ],
+          "indices_sha256": "d8c2b15b3e37ca2f8afed52aa6366d2901aac571d9760b49b470dca073e628df",
+          "art_owner": "ANIME07.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME08.OZM-3-hd-v1.png",
+          "asset_sha256": "b11a5498e67b143299e77a33cd8920e6491525a6a7c389f3c4aaa7228cbf09d3"
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            208,
+            150,
+            416,
+            300
+          ],
+          "indices_sha256": "2e9fcf9b3d029a41b9b2db62f148fc359ca546a92e3606feda07b6303d1f8ab7",
+          "art_owner": "ANIME07.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME08.OZM-4-hd-v1.png",
+          "asset_sha256": "cc0d023988f1349cde9b60c39e3fa922ae3c9b73d928155b054a44fdfd698607"
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            416,
+            150,
+            624,
+            300
+          ],
+          "indices_sha256": "c4548e4ce175b44b7fa04c647733b91a375656799c752b51a4c15b0ab56ad65c",
+          "art_owner": "ANIME07.OZM",
+          "derivation": "proven exact horizontal source mirror",
+          "prepared": "frames/ANIME08.OZM-5-hd-v1.png",
+          "asset_sha256": "f5def2f774be2cc68f23d00fb29203215df063d12a88f7a318a2ccab8f6518d6"
+        }
+      ],
+      "asset_sha256": "33c44129bcf1b50581941ad001f33cd487ebd9d521f65ab21143f4ba8a2a9eee",
+      "size": [
+        1248,
+        600
+      ],
+      "inputs": [
+        {
+          "source": "ANIME07.OZM",
+          "asset": "ANIME07-hd-b-v1.png",
+          "sha256": "7751549b98b751c813009053b2397f6d9ae0638a393cb2e65631f5d80fcc33fc",
+          "prompt": "ANIME07-hd-b-v1.prompt.txt",
+          "prompt_sha256": "edc44cc76d3fbc84c1bdf7c523d34937f6286707164d815ba5ef405172d36169",
+          "reference": "workplace/hd-prototype/catalog/remaining/ANIME07.OZM-reference.png",
+          "reference_sha256": "9a5c09ed9fec6a41d7356c0858c73e82d2defa9a080ca71e91c86a981119c28d",
+          "size": [
+            1808,
+            870
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "BATTLE.OZM",
+      "source": {
+        "name": "BATTLE.OZM",
+        "dat_file_offset": 1097765,
+        "payload_bytes": 40891,
+        "payload_sha256": "37cec2781dc62b399f94cdeb246d5e4f989861bff216bd94319a88698fda12a4",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "bddd6e53eaa1816b8ed00aff7c09cf36fd26a0c8f0353922507e9700e2f06467",
+          "fd8b30fa49beddc8e95255f7b65af31785f1a2793b83c72411239acfd9bc49a7",
+          "1dbb908438708494d151c9f37f99d1c1be8985e74f0777ea567061ee226896d3",
+          "5bb2135667b01857772b29bcf1cd2820d9e6ec28ee1fad9a8d22be078d5a960f"
+        ],
+        "indices_sha256": "97283a356553217bad5d12a2f4615e408d4db81cb283df4f69d18166e9f3b1e2",
+        "consumed_bytes": 40891,
+        "trailing_bytes": 0,
+        "commands": {
+          "literal": 27510,
+          "6": 784,
+          "5": 1157,
+          "1": 1172,
+          "4": 116,
+          "2": 142,
+          "3": 14
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/BATTLE.OZM-hd-v1.png",
+      "prepared": "prepared/BATTLE.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        245
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "black_reserve_pixels": 107680,
+      "black_reserve_sha256": "df207d9ed3976b9735c19ee693b04e4bfdb8f6c852eadad9edcb741512b2cb08",
+      "asset_sha256": "61e40e41de6fd86e16b9a1aacf25027339e8497c289a16d7aa2b45941e90454c",
+      "size": [
+        1280,
+        800
+      ],
+      "inputs": [
+        {
+          "source": "BATTLE.OZM",
+          "asset": "BATTLE-hd-b-v1.png",
+          "sha256": "31e3b1a76147aae5de075e813f2a6ebe8ef176bcb38ea727bd90c98a45149f83",
+          "prompt": "BATTLE-hd-b-v1.prompt.txt",
+          "prompt_sha256": "0f91623a03599b5cb151ca0c7f1e8b228ece1e95d3038c902b737b6b5cbff006",
+          "reference": "workplace/hd-prototype/catalog/remaining/BATTLE.OZM-reference.png",
+          "reference_sha256": "962c87e7883396231fdbc5cd9eb2b4eea5e1c1112817d25a6771343bc5cbdf83",
+          "size": [
+            1586,
+            992
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "END-11.OZM",
+      "source": {
+        "name": "END-11.OZM",
+        "dat_file_offset": 1641749,
+        "payload_bytes": 48711,
+        "payload_sha256": "5a05d81a4010ab0c3770b456515b4058270b3ae9af05ab4bc642db43b8d3fcc2",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 399,
+        "plane_sha256": [
+          "6f2cda1ffcc0cb8dfbc6c58d5bf4772a28a7f3896ea847a7411913c0ed7aa968",
+          "a574658a88a8de5f5fb80d20fa4dc3e53efc3b0bbded041caa648453bd3b7d88",
+          "5e68b6bbb225605bb1ad9baad77f630cac967b198cefc545b082ccc06bc41d64",
+          "3599d960b5db8b74c50d8b6b363bdc82a45aed741ea9ed022357e4e6771ba3d7"
+        ],
+        "indices_sha256": "2677cacee9000d6fa8c5ffdccc3d352604b1537004281236b21aacd587d95046",
+        "consumed_bytes": 48711,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 1562,
+          "literal": 36671,
+          "6": 236,
+          "1": 906,
+          "4": 109,
+          "2": 250,
+          "3": 140
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/END-11.OZM-hd-v1.png",
+      "prepared": "prepared/END-11.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        399
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "asset_sha256": "67c500ab755c943678313d585db10be9185bc8a0f8f238f8fa70bb1b4c80f51e",
+      "size": [
+        1280,
+        798
+      ],
+      "inputs": [
+        {
+          "source": "END-11.OZM",
+          "asset": "END-11-hd-b-v1.png",
+          "sha256": "49e1452c8e31e73fcafd92b6781c3fcdd5507e265f6ac5ff281a0dac7452fff6",
+          "prompt": "END-11-hd-b-v1.prompt.txt",
+          "prompt_sha256": "02225761b8dc42451c604d2cfa24462bba5c4df9b93eb6ff21d8ba4933ae62a9",
+          "reference": "workplace/hd-prototype/catalog/remaining/END-11.OZM-reference.png",
+          "reference_sha256": "f5b93d10b9790354295ad58448a9f570a6df532da09409b06a0378e593784b10",
+          "size": [
+            1586,
+            992
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "END-11B.OZM",
+      "source": {
+        "name": "END-11B.OZM",
+        "dat_file_offset": 1690460,
+        "payload_bytes": 47479,
+        "payload_sha256": "95dcb6e2d651986e71546c79d36d813ce7a7eef170dc17ac17749d2faa77d89c",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 399,
+        "plane_sha256": [
+          "c09a8481bbd78b3a5176d482caf50996b23a8f3f2e9d1f99edc04b0550bef792",
+          "332bb032db210125e6b2fcb7c6a69394dea35395dbfe9f130c2d365f5a1c1ebc",
+          "9b00182df03d25afc317497104fcd8b0d4f91d62bdbf0546fdef86b39cadcaed",
+          "96b8256771a46de276da3fcc8b5bb34c1935f329db9a7028b8819ff1db99d673"
+        ],
+        "indices_sha256": "57fc9d95c6767828bb6e96ed882650023696cb16856d42ffd23bc4b959848ed8",
+        "consumed_bytes": 47479,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 1887,
+          "literal": 34212,
+          "6": 238,
+          "1": 777,
+          "4": 92,
+          "2": 210,
+          "3": 121
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/END-11B.OZM-hd-v1.png",
+      "prepared": "prepared/END-11B.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        399
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "reuse": {
+        "unchanged_art": "END-11.OZM",
+        "native_difference_bounds": [
+          89,
+          37,
+          262,
+          210
+        ],
+        "replacement_crest": [
+          55,
+          20,
+          295,
+          256
+        ],
+        "basis": "original indices identical outside the complete ending Kanji region"
+      },
+      "asset_sha256": "e2a5aa25d0bcc0f08a0d48fb379aa69626b9d56dea8d3cb865da476d4455eeea",
+      "size": [
+        1280,
+        798
+      ],
+      "inputs": [
+        {
+          "source": "END-11B.OZM",
+          "asset": "END-11B-hd-b-v1.png",
+          "sha256": "b75b965684b7c6b7c8f18f6c09feba721142c3ad004cc3836687080ef20d7ab3",
+          "prompt": "END-11B-hd-b-v1.prompt.txt",
+          "prompt_sha256": "16aef559c9ffee927949322030fedf3834a631c70f10d953a26909fc8f17f7e9",
+          "reference": "workplace/hd-prototype/catalog/remaining/END-11B.OZM-reference.png",
+          "reference_sha256": "63857ed9511eaed4ef43fd1ae802a1854c07ce982e42a96ffaf40bde0c022b24",
+          "size": [
+            1586,
+            992
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        },
+        {
+          "source": "END-11.OZM",
+          "asset": "END-11-hd-b-v1.png",
+          "sha256": "49e1452c8e31e73fcafd92b6781c3fcdd5507e265f6ac5ff281a0dac7452fff6",
+          "prompt": "END-11-hd-b-v1.prompt.txt",
+          "prompt_sha256": "02225761b8dc42451c604d2cfa24462bba5c4df9b93eb6ff21d8ba4933ae62a9",
+          "reference": "workplace/hd-prototype/catalog/remaining/END-11.OZM-reference.png",
+          "reference_sha256": "f5b93d10b9790354295ad58448a9f570a6df532da09409b06a0378e593784b10",
+          "size": [
+            1586,
+            992
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "END-2.OZM",
+      "source": {
+        "name": "END-2.OZM",
+        "dat_file_offset": 1737939,
+        "payload_bytes": 19517,
+        "payload_sha256": "8d33306803ef557e770a6c568065f9c2777bbcaf369e855bb575a1ac38875ad8",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "6727566be2212f80b537cfa21d4d5f054982593970d9b4fcb7e9d1a1d5365cc9",
+          "29c205f66763e9526586cc9d9297933f61ce9c1abad9f68ec5521aa16cee3ece",
+          "cb5a93e8057bb44f66d91e88583cc531ae4754121276e395e9d8bfef9f28d79c",
+          "d5848048d87f64592d7821b0267729d5146f8b78b32c728481f8fc11702565a3"
+        ],
+        "indices_sha256": "b2aa5040cba120939881b9c1ae7bafa1de492aece744bce745df66c3f83b7682",
+        "consumed_bytes": 19517,
+        "trailing_bytes": 0,
+        "commands": {
+          "literal": 11330,
+          "1": 2022,
+          "5": 705,
+          "6": 82,
+          "2": 23,
+          "3": 34,
+          "4": 4
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/END-2.OZM-hd-v1.png",
+      "prepared": "prepared/END-2.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        150
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "asset_sha256": "99570473d3b797ef56c2c9606337ec13449b4857f78fb4e9adcc0aa3aea2fd14",
+      "size": [
+        1280,
+        800
+      ],
+      "inputs": [
+        {
+          "source": "END-2.OZM",
+          "asset": "END-2-hd-b-v1.png",
+          "sha256": "c923b2b586fe5874f0545e7af894bffc0c0771e4904a52186b77ac1685ff1f40",
+          "prompt": "END-2-hd-b-v1.prompt.txt",
+          "prompt_sha256": "62d19903866fcccab9dd73945b5bd4a130984e5f41069b852b456786e959f485",
+          "reference": "workplace/hd-prototype/catalog/remaining/END-2.OZM-reference.png",
+          "reference_sha256": "a86c1712457bd68617914c70d00064c0b24c09c395b745287b574370cba37a46",
+          "size": [
+            1586,
+            992
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "END-2B.OZM",
+      "source": {
+        "name": "END-2B.OZM",
+        "dat_file_offset": 1757456,
+        "payload_bytes": 26547,
+        "payload_sha256": "439fd274d6722f6a5d14a50297a9d171eca1abfab96590e3571b129a3efd9724",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "2ef1a398ea58473aaa7d3bc571acee8b41858d32d4da7fa9444e11a6973d530a",
+          "2851cd96813ec3404c0c1a3239f5df70340cffcab7d7b251f2790e9a7ec256ef",
+          "eef158b5133dea25a9c3ab42fd876980cf21afbcd5c9ac271914b830a5615667",
+          "9eaf87b12942436e1634c27367bc66ee872125b5d5041dd4cee3c6a4b32f9829"
+        ],
+        "indices_sha256": "46ea5bfa38ef86b4613263c9ef265b2e285cc47e35dddba4793b91c57fdec6b0",
+        "consumed_bytes": 26547,
+        "trailing_bytes": 0,
+        "commands": {
+          "literal": 18453,
+          "1": 2791,
+          "5": 338,
+          "6": 136,
+          "4": 1
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/END-2B.OZM-hd-v1.png",
+      "prepared": "prepared/END-2B.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        512,
+        336
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            256,
+            84
+          ],
+          "indices_sha256": "84d3a4e4de4aa0c9ecec0687c17060ca22992ec9eeb1776cf65f988f7f8dd046",
+          "raw_crop": [
+            0,
+            0,
+            634,
+            208
+          ]
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            256,
+            0,
+            512,
+            84
+          ],
+          "indices_sha256": "4526a2f3b309794936e0144ccc08c40d7f8572d522c72861cb24a53a86348e2e",
+          "raw_crop": [
+            634,
+            0,
+            1269,
+            208
+          ]
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            0,
+            84,
+            256,
+            168
+          ],
+          "indices_sha256": "f655c21875352efbaf1e3299c76bc120581cdf997e607de145b14636df20a39e",
+          "raw_crop": [
+            0,
+            208,
+            634,
+            417
+          ]
+        },
+        {
+          "index": 3,
+          "source_rect": [
+            256,
+            84,
+            512,
+            168
+          ],
+          "indices_sha256": "176c4ef4ce470c6262ca4603ffcc7547bd8fbf5d3038063c1e71089070011e17",
+          "raw_crop": [
+            634,
+            208,
+            1269,
+            417
+          ]
+        },
+        {
+          "index": 4,
+          "source_rect": [
+            0,
+            168,
+            256,
+            252
+          ],
+          "indices_sha256": "129e3caddcfb0c7b6af918f4c1df848d90360226561809d0c896cb0555160de0",
+          "raw_crop": [
+            0,
+            417,
+            634,
+            625
+          ]
+        },
+        {
+          "index": 5,
+          "source_rect": [
+            256,
+            168,
+            512,
+            252
+          ],
+          "indices_sha256": "0f5814f58815a918a7e5440211866ed9dd641276bcb8e195e8ac79ce42a750c4",
+          "raw_crop": [
+            634,
+            417,
+            1269,
+            625
+          ]
+        },
+        {
+          "index": 6,
+          "source_rect": [
+            0,
+            252,
+            256,
+            336
+          ],
+          "indices_sha256": "47be817aa813aaacb7a86cc6f32af48b07c9bf1eb17cb1073c7270190ad546cc",
+          "raw_crop": [
+            0,
+            625,
+            634,
+            833
+          ]
+        },
+        {
+          "index": 7,
+          "source_rect": [
+            256,
+            252,
+            512,
+            336
+          ],
+          "indices_sha256": "7715863f767dd00181b74a02bbfae64ac1f34fea009c2f85da8208c448ebdc8a",
+          "raw_crop": [
+            634,
+            625,
+            1269,
+            833
+          ]
+        }
+      ],
+      "reserved_buffer_rects": [
+        [
+          512,
+          0,
+          640,
+          400
+        ],
+        [
+          0,
+          336,
+          512,
+          400
+        ]
+      ],
+      "asset_sha256": "7d48c909845eaec23e6356ff2aa3670773af063b0a7962331103799840bdf911",
+      "size": [
+        1280,
+        800
+      ],
+      "inputs": [
+        {
+          "source": "END-2B.OZM",
+          "asset": "END-2B-hd-b-v1.png",
+          "sha256": "2a92009df8e61c5789d8eb36b118714e3a6b9777a0a312b3bbb0c4c6b84da33e",
+          "prompt": "END-2B-hd-b-v1.prompt.txt",
+          "prompt_sha256": "0b4bad5370117e56d59ca3ca04ec0acd0cb26946cf8e4c5d364edb9b9ab7ab4b",
+          "reference": "workplace/hd-prototype/catalog/remaining/END-2B.OZM-reference.png",
+          "reference_sha256": "1df86ac733e14100f62dfae561ad0ee2615c0634ab891bbed20c0551fa3811c1",
+          "size": [
+            1586,
+            992
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "MAP_WAKU.OZM",
+      "source": {
+        "name": "MAP_WAKU.OZM",
+        "dat_file_offset": 2354996,
+        "payload_bytes": 7618,
+        "payload_sha256": "79aede54124b1e0523373d3a7362abc9bac7519de66203e2e098e4820a66a804",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 384,
+        "height": 120,
+        "plane_sha256": [
+          "c63b617ae90f846bac76ebba359b3fa7d2440f5312eb8a9dec47afa2d9f3f31d",
+          "918562f61baf1eac4ddb3249d5ed2db3f124ff2e6ea35ff6a724c5c795dff965",
+          "363917b1bb338a5fa9180b5e391df5e923a81e52b75d5631f6bd6f5dd85c428a",
+          "d8fb2ecaa2a155321c58df7faea7fd1f3c2eddf6f11779cfb143e02cd353078c"
+        ],
+        "indices_sha256": "1d0ee5b9b52142beb6813ae52f1db215e5224fae1935a64ea83fe07b97fe9a6b",
+        "consumed_bytes": 7618,
+        "trailing_bytes": 0,
+        "commands": {
+          "literal": 3179,
+          "1": 769,
+          "5": 459,
+          "2": 87,
+          "3": 126,
+          "6": 16,
+          "4": 40
+        },
+        "normal_path_matches": 1
+      },
+      "asset": "remaining/prepared/MAP_WAKU.OZM-hd-v1.png",
+      "prepared": "prepared/MAP_WAKU.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        384,
+        120
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "vertical_anchors": {
+        "raw": [
+          0,
+          116,
+          319,
+          522,
+          725
+        ],
+        "prepared": [
+          0,
+          30,
+          110,
+          176,
+          240
+        ]
+      },
+      "preserve_regions": [
+        {
+          "rect": [
+            134,
+            92,
+            192,
+            104
+          ],
+          "indices": "all",
+          "reason": "original buffer/debug glyphs; not new HD lettering"
+        }
+      ],
+      "black_reserve_pixels": 0,
+      "black_reserve_sha256": "7e36bec0af80ff78cd2cba3643b862a6c0e3ec56e52acabe92b246dcd6ad4816",
+      "asset_sha256": "87fbd4113e24f10aefcb02defbcaa1da3db61a9b155e3cdc221ab67121941f50",
+      "size": [
+        768,
+        240
+      ],
+      "inputs": [
+        {
+          "source": "MAP_WAKU.OZM",
+          "asset": "MAP_WAKU-hd-b-v1.png",
+          "sha256": "bfcb4ca8c725ea85c2e36eb21676b7f290aaf7df1d673aa8097b3e555ccddec2",
+          "prompt": "MAP_WAKU-hd-b-v1.prompt.txt",
+          "prompt_sha256": "93cba108f79a7e4247576bd6c52ac59f2a4136aefa43996c59be481355973ce4",
+          "reference": "workplace/hd-prototype/catalog/remaining/MAP_WAKU.OZM-reference.png",
+          "reference_sha256": "fca30b7fb222524b8ef954008994c659db593806d5ead6732ecd354f667666b9",
+          "size": [
+            2170,
+            725
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "OP2_P.OZM",
+      "source": {
+        "name": "OP2_P.OZM",
+        "dat_file_offset": 2454687,
+        "payload_bytes": 14800,
+        "payload_sha256": "4778b57bd28ba00ba1b37ec1b6dd297c803d28b86222d4307e1dca65463adfed",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 384,
+        "height": 119,
+        "plane_sha256": [
+          "0f31ece9a348a31952b02bfae11bab7b25bf896d0b74098556c9fbfa7570afbd",
+          "f0603f1bedc28b64f80cc597e4ba31d59dc17bfb4fee7e757989775ed9e4a7f0",
+          "98c8eab4fd6e86764e78d1f689ff1f18daa63c3fa85a0484a171350092c2146b",
+          "624c650015354abec5999978ea88b910c027b34a4e331e2f7723d1792f7a4252"
+        ],
+        "indices_sha256": "2e28b62e3af1d0ddf11200321c3e762a323c303efd6c270a0955c8048aea69f0",
+        "consumed_bytes": 14800,
+        "trailing_bytes": 0,
+        "commands": {
+          "literal": 9964,
+          "3": 85,
+          "2": 43,
+          "5": 512,
+          "4": 20,
+          "1": 766,
+          "6": 74
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/OP2_P.OZM-hd-v1.png",
+      "prepared": "prepared/OP2_P.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        384,
+        119
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "frames": [
+        {
+          "index": 0,
+          "source_rect": [
+            0,
+            0,
+            128,
+            119
+          ],
+          "indices_sha256": "ed1511b3dc3063d3e6692731a5e21d8a298f52ab7cbc47678e0bc04a12caec57",
+          "raw_crop": [
+            0,
+            0,
+            723,
+            725
+          ]
+        },
+        {
+          "index": 1,
+          "source_rect": [
+            128,
+            0,
+            256,
+            119
+          ],
+          "indices_sha256": "946380bf5dcfd8ff144f8ebe2285dd5d5b8bb4a8c99e78013da47e513df82a11",
+          "raw_crop": [
+            723,
+            0,
+            1447,
+            725
+          ]
+        },
+        {
+          "index": 2,
+          "source_rect": [
+            256,
+            0,
+            384,
+            119
+          ],
+          "indices_sha256": "46f02c0a12b48e3d5b83d5061615d20790feffb9f17e9cc9db8d01d909527dce",
+          "raw_crop": [
+            1447,
+            0,
+            2170,
+            725
+          ]
+        }
+      ],
+      "asset_sha256": "361a31c32fc582ea9ca809891dd5ef3522a0563b5ae96a82567b67c8737cb2f4",
+      "size": [
+        768,
+        238
+      ],
+      "inputs": [
+        {
+          "source": "OP2_P.OZM",
+          "asset": "OP2_P-hd-b-v1.png",
+          "sha256": "7dcc2a7e286762afdb79054bd4d4c1088f598fe3bf94547beba63840a3b58b3c",
+          "prompt": "OP2_P-hd-b-v1.prompt.txt",
+          "prompt_sha256": "47ca8aeb98441fc1e44b8f4f1921f70d74a8adcee5fc0f45b401f9e0db03a3bb",
+          "reference": "workplace/hd-prototype/catalog/remaining/OP2_P.OZM-reference.png",
+          "reference_sha256": "7b92eb8d06da7fe1ea33e4796a6f86656cf7e56d610c7fdb1f04ffa7983679e9",
+          "size": [
+            2170,
+            725
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "OP5.OZM",
+      "source": {
+        "name": "OP5.OZM",
+        "dat_file_offset": 2491704,
+        "payload_bytes": 37923,
+        "payload_sha256": "af8b2c563e12bf436793dab1e2b475eff0e704e606becac3fe9ce73ea1ff2148",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "6b96ea398506433fd2eb7375541e585ef123bf11c87fbe3e2a181b83f223d83f",
+          "7f2d9591b51ea6a86a67eb5e8a7d571eb287b6f674bac0e9f8936c51f3b4a20a",
+          "b84778c0089684938ec4826a3f53fe5f9988cc88b490cca99a41faa7daa3a7a6",
+          "93e7b28bc385f810e554bc8be8ee96ef5e03ffc18b7ee72f6eba85b92a452d87"
+        ],
+        "indices_sha256": "39a6813ba03cf0517b43d9d04536ff0dbd264f556339959ebca376cb57ff61c8",
+        "consumed_bytes": 37923,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 1244,
+          "literal": 27363,
+          "1": 1255,
+          "6": 155,
+          "2": 192,
+          "3": 187,
+          "4": 69
+        },
+        "normal_path_matches": 1
+      },
+      "asset": "remaining/prepared/OP5.OZM-hd-v1.png",
+      "prepared": "prepared/OP5.OZM-hd-v1.png",
+      "paint_rect": [
+        56,
+        53,
+        594,
+        350
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "calibration": {
+        "prepared_content_crop": [
+          100,
+          96,
+          1191,
+          701
+        ],
+        "native_art_bounds": [
+          56,
+          53,
+          594,
+          350
+        ]
+      },
+      "asset_sha256": "308e76bfe558167ee1c7e04b2e6559607ccf78503ea0ec9a1b78db34aebcd3bc",
+      "size": [
+        1280,
+        800
+      ],
+      "inputs": [
+        {
+          "source": "OP5.OZM",
+          "asset": "OP5-hd-b-v1.png",
+          "sha256": "b0a7ab1fe27e8801354b0346095dbcf13dfa84fbbb835be6ccb1738b90f53070",
+          "prompt": "OP5-hd-b-v1.prompt.txt",
+          "prompt_sha256": "af2f2f418a9a507499a8b0ac769a2ffaad8f8d6113e11ac744b975450289b42e",
+          "reference": "workplace/hd-prototype/catalog/remaining/OP5.OZM-reference.png",
+          "reference_sha256": "536397f3506ebb1018521504d2fb3bc93533a6ea70fd5f527785bbe816db6a84",
+          "size": [
+            1586,
+            992
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "OP6.OZM",
+      "source": {
+        "name": "OP6.OZM",
+        "dat_file_offset": 2529627,
+        "payload_bytes": 86029,
+        "payload_sha256": "075c04e48b27f9f55d4abb916310230165095e204981e39654d8f4d4260d89f7",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "8923e6404c117d740e3da030ee8287273beabea847ff01af582e58584e752441",
+          "af9a83e0565ebaa0bc01bca89f713f76df593d38f4da30d52fcade4548780c49",
+          "702705b8d9ea3ea264874197d6bfba80bb919c5c5cd0cffbdbf8dcf122b836c9",
+          "d3b4f3699c4cc06a58afa04038ea9bb4a2291aa8c632bdf63bce1d434f765559"
+        ],
+        "indices_sha256": "f8d66768f9b876197d82b89232382618b1b339ac5c73b090ba213dbc62b7c0da",
+        "consumed_bytes": 86029,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 2067,
+          "literal": 54478,
+          "6": 611,
+          "1": 6531,
+          "2": 1604,
+          "3": 477,
+          "4": 161
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/OP6.OZM-hd-v1.png",
+      "prepared": "prepared/OP6.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        400
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "preserve_regions": [
+        {
+          "rect": [
+            448,
+            188,
+            624,
+            240
+          ],
+          "indices": [
+            15
+          ],
+          "reason": "original chapter caption"
+        },
+        {
+          "rect": [
+            464,
+            258,
+            616,
+            366
+          ],
+          "indices": [
+            0,
+            1,
+            8
+          ],
+          "reason": "original year and location"
+        },
+        {
+          "rect": [
+            60,
+            350,
+            192,
+            374
+          ],
+          "indices": [
+            0,
+            1,
+            8
+          ],
+          "reason": "original coordinate text"
+        },
+        {
+          "rect": [
+            274,
+            350,
+            410,
+            374
+          ],
+          "indices": [
+            0,
+            1,
+            8
+          ],
+          "reason": "original bottom status"
+        }
+      ],
+      "asset_sha256": "7bd47a2128e6c670b8a025704cbee1db01238bb045e94ff1e765ff722a029b5e",
+      "size": [
+        1280,
+        800
+      ],
+      "inputs": [
+        {
+          "source": "OP6.OZM",
+          "asset": "OP6-hd-b-v1.png",
+          "sha256": "52a02d2ad98a8accf237e5b01c2c952a552a201002b794083cb90b828654c6c8",
+          "prompt": "OP6-hd-b-v1.prompt.txt",
+          "prompt_sha256": "e7ddb5a08b99685ef38681c08f9fce47fe5f72e01e78e58697e930494cbb20d3",
+          "reference": "workplace/hd-prototype/catalog/remaining/OP6.OZM-reference.png",
+          "reference_sha256": "7612216126300b36edba7d66325bb58c15a22ebeda9525a6bca5706d20c853c5",
+          "size": [
+            1587,
+            991
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "OP9.OZM",
+      "source": {
+        "name": "OP9.OZM",
+        "dat_file_offset": 2652596,
+        "payload_bytes": 40344,
+        "payload_sha256": "ccb0a2eefaed2d480d3ee9c6736774696b562313b0afd1ecf33735508dc422dd",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "1e673d60ce01c3e829ba5974ce4454189c45e7a64d1cfcd7ac566e0a6b06aed1",
+          "fcffabc68aa3080720786a2653e8f880e33798206d9fba66203a76cd5bdad943",
+          "f2414f8916c9965e36df14640918a9dd7bcf1f7c603a0d912b281994a4ae094a",
+          "c0d176e5f9017820c1373b9f330807841cda1266eed0261d2599d43ec1c77926"
+        ],
+        "indices_sha256": "b015f51daeaad83157c86fab388e3d0b276e2e41a14da991f6c9411b189d2864",
+        "consumed_bytes": 40344,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 2478,
+          "literal": 24858,
+          "6": 247,
+          "1": 412,
+          "3": 134,
+          "4": 83,
+          "2": 176
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/OP9.OZM-hd-v1.png",
+      "prepared": "prepared/OP9.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        400
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "reserved_buffer_rects": [
+        [
+          624,
+          0,
+          640,
+          200
+        ],
+        [
+          488,
+          200,
+          640,
+          308
+        ],
+        [
+          416,
+          308,
+          640,
+          400
+        ]
+      ],
+      "paint_rects": [
+        [
+          0,
+          0,
+          624,
+          200
+        ],
+        [
+          0,
+          200,
+          416,
+          400
+        ],
+        [
+          416,
+          200,
+          488,
+          308
+        ]
+      ],
+      "eye_strip_source_rects": [
+        [
+          416,
+          200,
+          488,
+          227
+        ],
+        [
+          416,
+          227,
+          488,
+          254
+        ],
+        [
+          416,
+          254,
+          488,
+          281
+        ],
+        [
+          416,
+          281,
+          488,
+          308
+        ]
+      ],
+      "asset_sha256": "d5f23a5628b5b9be1f042e70aa3ad6f61f79b6469d45597df7080ec4cecd2a2e",
+      "size": [
+        1280,
+        800
+      ],
+      "inputs": [
+        {
+          "source": "OP9.OZM",
+          "asset": "OP9-hd-b-v1.png",
+          "sha256": "4fc875b21a8d16f538ffff948de81539f7b615ab8557186559589b02ee15d63e",
+          "prompt": "OP9-hd-b-v1.prompt.txt",
+          "prompt_sha256": "87a52fe19115903f6c48fb03b0e1ba1c8aa1f83ce0f37ea726c846f510258db6",
+          "reference": "workplace/hd-prototype/catalog/remaining/OP9.OZM-reference.png",
+          "reference_sha256": "68dc3badfa3c49b3eb59f5f1d39a7f8efb139551c61c94995d0b6d0d2cb5096f",
+          "size": [
+            1586,
+            992
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "JIMEN_0.OZM",
+      "source": {
+        "name": "JIMEN_0.OZM",
+        "dat_file_offset": 2814036,
+        "payload_bytes": 8480,
+        "payload_sha256": "53f3f6c349fdfd452d82b86fe4d2adedc72696f3676ee09f4be244acb3d0885f",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 352,
+        "height": 136,
+        "plane_sha256": [
+          "31779a6b3e9a5e040abbcf029ae57fb8cd556751ce2e6e9cf42457d5e12e766a",
+          "914a94e40d965d147deca40719e53462cb53f84363af36ce239f42d2344338cd",
+          "f98d16c21bf25c1338b1dbde83df3f26acafa25ff1ba636ea53b464d7a1f46ab",
+          "623d3f9eab2b3373c022ad60adb2d16437dc83915e08c186c51bbd0e924a4a89"
+        ],
+        "indices_sha256": "dc7426719be118bcaa9394f7b4ec9485607691669d7987ef5e38b84a2e9710af",
+        "consumed_bytes": 8480,
+        "trailing_bytes": 0,
+        "commands": {
+          "1": 1166,
+          "5": 262,
+          "6": 132,
+          "literal": 3296,
+          "2": 337,
+          "3": 36
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/JIMEN_0.OZM-hd-v1.png",
+      "prepared": "prepared/JIMEN_0.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        352,
+        136
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "material_geometry": "source-zero reserved background; grass original diagonal and horizontal y=64 split; generated grass/earth material only",
+      "original_zero_padding_pixels": 7040,
+      "asset_sha256": "3feee2c43079387ff1199924661d8a894ac6cf5b3825f7dc4d064770240b3291",
+      "size": [
+        704,
+        272
+      ],
+      "inputs": [
+        {
+          "source": "JIMEN_0.OZM",
+          "asset": "JIMEN_0-hd-b-v1.png",
+          "sha256": "94d9722bd73c83c91c7a90f2d70b2c3bd74a84a1e37008e490ce11b6d1374827",
+          "prompt": "JIMEN_0-hd-b-v1.prompt.txt",
+          "prompt_sha256": "77e9c540479eddad96ea72b4be9b0893d240e575cd60f82111a288d38ed14f4a",
+          "reference": "workplace/hd-prototype/catalog/remaining/JIMEN_0.OZM-reference.png",
+          "reference_sha256": "6df0a38e6307a746569d1be414b376fc8d05f9643c162fbd4d54aa5bd0423cb0",
+          "size": [
+            2019,
+            779
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    },
+    {
+      "name": "JIMEN_1.OZM",
+      "source": {
+        "name": "JIMEN_1.OZM",
+        "dat_file_offset": 2822516,
+        "payload_bytes": 8098,
+        "payload_sha256": "6603c6961abfc9479acd263498da4950a3e3fc4d05a2074efc505212ff5af127",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 352,
+        "height": 136,
+        "plane_sha256": [
+          "45dff3dd6dbe530a7d3be9380f822940fda448fe79003a6e48f2e04de527bbb0",
+          "33d55cf93612739bfa3d676f3b62d09bb789020645d5b37b83a92bb5f1e8e661",
+          "535386ab15dcd766d55e38a2531ef3fa5931f59d89937ff27a54dede7ad98803",
+          "4b8a6a85d5f8fdd22315dfffc123a5b3e77b1d2795196306f6d342702f340750"
+        ],
+        "indices_sha256": "55951d294cb08436432367e2d4aa6fc8ae8a4c341da6f3bca73a58b1c040f397",
+        "consumed_bytes": 8098,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 152,
+          "literal": 3276,
+          "1": 1190,
+          "6": 132,
+          "2": 442,
+          "4": 1
+        },
+        "normal_path_matches": 0
+      },
+      "asset": "remaining/prepared/JIMEN_1.OZM-hd-v1.png",
+      "prepared": "prepared/JIMEN_1.OZM-hd-v1.png",
+      "paint_rect": [
+        0,
+        0,
+        352,
+        136
+      ],
+      "runtime_status": "not yet registered; geometry review and rendering contract required",
+      "material_geometry": "source-zero reserved background; grass original diagonal and horizontal y=64 split; generated grass/earth material only",
+      "original_zero_padding_pixels": 1953,
+      "asset_sha256": "b70737c1243ebe25f9ece2d404acf07784d81ad301f11b4f9208c130864dd9dc",
+      "size": [
+        704,
+        272
+      ],
+      "inputs": [
+        {
+          "source": "JIMEN_1.OZM",
+          "asset": "JIMEN_1-hd-b-v1.png",
+          "sha256": "9f23809f480c71c8161fb972c83ad54bbeefdce1a00fb97f7f1099ede9304d3a",
+          "prompt": "JIMEN_1-hd-b-v1.prompt.txt",
+          "prompt_sha256": "fb05fcf05f4759465723fe682745288b3b93743f0dfc8e4580e963914d7d76f9",
+          "reference": "workplace/hd-prototype/catalog/remaining/JIMEN_1.OZM-reference.png",
+          "reference_sha256": "5f348414441697fdfe9f68c60862fa57eb3ec6ef556c5295d16101b4d2d25565",
+          "size": [
+            2020,
+            778
+          ],
+          "generator": "built-in image_gen.imagegen",
+          "style": "B 戰國手繪風",
+          "status": "draft; visually reviewed, geometry and integration pending"
+        }
+      ]
+    }
+  ],
+  "exact_mirrored_frames": 16,
+  "galleries": [
+    {
+      "asset": "HD-remaining-1-v1.png",
+      "sha256": "ecfc965fb2f16afb201975ada7f4435e9aa56dc75589af7fa6b9418f93edf508"
+    },
+    {
+      "asset": "HD-remaining-2-v1.png",
+      "sha256": "194e164a195c596e119de9234bf2a8afc29653dfb4c333565a0a591b41901eb7"
+    },
+    {
+      "asset": "HD-remaining-3-v1.png",
+      "sha256": "fd674fad77fdd22bee3ac89469adf09ee902eaa97aaace3dc466dbed2ad6dfdd"
+    }
+  ]
+}

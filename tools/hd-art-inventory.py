@@ -55,6 +55,20 @@ def main():
     opening = {r['source']:r for r in json.loads(opening_path.read_text())['records']} if opening_path.exists() else {}
     remaining_path = ROOT/'art/remaining-generation-v1.json'
     remaining_art = {r['source']:r for r in json.loads(remaining_path.read_text())['records']} if remaining_path.exists() else {}
+    pending_generation_path = ROOT/'art/remaining-full-generation-v1.json'
+    pending_generation = {r['source']:r for r in json.loads(pending_generation_path.read_text())['records']} if pending_generation_path.exists() else {}
+    pending_profile_path = ROOT/'remaining/profiles.json'
+    pending_profiles = {}
+    pending_art_proof = None
+    if pending_profile_path.exists():
+        pending_selected = json.loads(pending_profile_path.read_text())
+        assert pending_selected['tool_sha256'] == sha(PROJECT/'tools/hd-remaining-prepare.py')
+        pending_profiles = {r['name']:r for r in pending_selected['records']}
+        proof_path = ROOT/'remaining'/pending_selected['selected_draft']/'art-verification.json'
+        pending_art_proof = json.loads(proof_path.read_text())
+        assert pending_art_proof['verified'] and pending_art_proof['source_count'] == 20
+        assert pending_selected['art_verification_sha256'] == sha(proof_path)
+        assert pending_art_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-remaining.py')
     static_profiles = {}
     for relative, tool in [('graphics/static/profiles.json', 'hd-background-prepare.py'),
                            ('graphics/static/logo/profiles.json', 'hd-logo-prepare.py')]:
@@ -79,7 +93,7 @@ def main():
         proof_sources_frame = {'verification':str(frame_summary_path.relative_to(PROJECT)),'sha256':sha(frame_summary_path)}
     direct = {}
     for record in decoded["records"]:
-        if record['name'] in ui_drafts or record['name'] in weather or record['name'] in opening or record['name'] in remaining_art or record['name'] in static_profiles:
+        if record['name'] in ui_drafts or record['name'] in weather or record['name'] in opening or record['name'] in remaining_art or record['name'] in static_profiles or record['name'] in pending_generation or record['name'] in pending_profiles:
             continue
         stem = record["name"].removesuffix(".OZM")
         path = ROOT / "art" / f"{stem}-hd-b-v1.png"
@@ -370,6 +384,20 @@ def main():
             if static_proof and name in static_proof['normal_new_source_names']:
                 record.update(runtime_status='normal idle opening HD and original toggles verified; complete 200M original state comparison',
                               runtime_proof_sha256=sha(static_proof_path))
+        if name in pending_generation:
+            generation = pending_generation[name]
+            path = ROOT/'art'/generation['asset']
+            assert sha(path) == generation['sha256']
+            record.update(art_status='draft',art=art_info(path,ROOT/'art'/generation['prompt']),
+                          runtime_status='generated art; source geometry and runtime registration pending')
+        if name in pending_profiles:
+            profile = pending_profiles[name]
+            path = ROOT/'remaining'/profile['prepared']
+            assert sha(path) == profile['asset_sha256']
+            assert source['indices_sha256'] == profile['source']['indices_sha256']
+            record.update(art_status='prepared',art=art_info(path,ROOT/'art'/profile['inputs'][0]['prompt']),
+                          source_profile=profile,art_proof_sha256=pending_selected['art_verification_sha256'],
+                          runtime_status='reviewed calibrated art only; new runtime consumer registration pending')
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]
@@ -398,7 +426,11 @@ def main():
               "generated_weather_sources":len(weather), "approved_weather_sources":len(weather_profiles),
               "normal_weather_sources_verified":1 if weather_proof else 0,
               "generated_opening_drafts":len(set(opening)-set(static_profiles)),
-              "generated_remaining_OZM_drafts":len(set(remaining_art)-set(static_profiles)),
+              "generated_remaining_OZM_drafts":len(set(remaining_art)-set(static_profiles))+len(set(pending_generation)-set(pending_profiles)),
+              "approved_remaining_art_sources":len(pending_profiles),
+              "remaining_animation_atlases_prepared":8 if pending_art_proof else 0,
+              "remaining_animation_frames_prepared":48 if pending_art_proof else 0,
+              "remaining_sources_runtime_registered":0,
               "approved_static_sources":len(static_profiles),
               "normal_static_sources_verified":len(static_proof['normal_new_source_names']) if static_proof else 0,
               "approved_MAP_CHIP_floor_art": approved_floor_count,

@@ -50,6 +50,10 @@
 | [tools/hd-kao-extract.py](tools/hd-kao-extract.py) | 擷取 81 張 80×80 KAO.GRP 頭像、九頁來源圖集與收據；核對正常路徑載入的完整資料及第 76 張的 6400 原生像素 |
 | [tools/hd-kao-prepare.py](tools/hd-kao-prepare.py) | 依已檢視的實際格線裁切九張 HD 圖集，補黑底保持人物比例；輸出 `workplace/hd-prototype/catalog/kao/selected/` 的 81 張素材、manifest 與總覽 |
 | [tools/hd-art-inventory.py](tools/hd-art-inventory.py) | 重生 `workplace/hd-prototype/catalog/art-coverage.json`，區分已製作、逐項替換、正常路徑驗證與未知素材；資源數不當成圖集完成百分比 |
+| [tools/hd-remaining-intake.py](tools/hd-remaining-intake.py) | 從唯一覆蓋清單核對剩餘已解碼 OZM，保存來源、原圖總覽及動畫逐格參考；不猜補五項解碼未知 |
+| [tools/hd-remaining-prepare.py](tools/hd-remaining-prepare.py) | 依原始格線準備 20 項美術，逐格驗證 16 項鏡像、保留動畫空格、黑色及彩色緩衝區。固定 GUI image 內專案唯讀掛 `/project`、remaining 可寫覆掛原路徑，`--version 3` 產生 draft-v3；審查及核對通過後加 `--approve` 選定美術，不修改 Go 執行器。draft-v1／2 保留單像素緩衝區邊界及 BATTLE 美術末列修正前版本 |
+| [tools/verify-hd-remaining.py](tools/verify-hd-remaining.py) | 固定 GUI image 與相同掛載執行 `--version 3`，核對 20 張圖、48 動畫格、16 鏡像、空格、緩衝區及來源。輸出 art-verification，不作正常玩家路徑或執行器接入收據 |
+| `workplace/hd-prototype/catalog/remaining/` | 剩餘開場、動畫與介面的原版參考、生成圖、提示詞、逐項準備及隔離驗證；原圖與收據留本機，生成美術另保存至 assets/hd-b |
 | [tools/hd-frame-prepare.py](tools/hd-frame-prepare.py) | 既有手繪 VISUAL 上方框架依原版矩形分區縮放；輸出 `workplace/hd-prototype/scroll/frame/` 的來源、HD 圖與幾何收據，遊戲內驗證另列 |
 | [tools/hd-frame.go](tools/hd-frame.go)、[tools/hd-frame_test.go](tools/hd-frame_test.go) | VISUAL 上方紅金框架的來源核對與呈現；中央劇情圖及下方捲軸保持獨立，遮擋時完整備援 |
 | [tools/hd-window-extract.py](tools/hd-window-extract.py) | 核對 WINDOW.OZM 九個 16×16 圖塊、原版 buffer 與正常視窗；輸出 `workplace/hd-prototype/catalog/window/` 的來源、原始圖塊、手繪參考與來源收據 |

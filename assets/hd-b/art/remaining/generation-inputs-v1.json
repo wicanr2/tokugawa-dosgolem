@@ -1,0 +1,287 @@
+{
+  "classification": "ordered imagegen input and role supplement; original references stay local",
+  "records": [
+    {
+      "source": "OP5.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/OP5.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "536397f3506ebb1018521504d2fb3bc93533a6ea70fd5f527785bbe816db6a84"
+        }
+      ],
+      "prompt": "OP5-hd-b-v1.prompt.txt",
+      "prompt_sha256": "af2f2f418a9a507499a8b0ac769a2ffaad8f8d6113e11ac744b975450289b42e",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "ANIME01.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/ANIME01.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "9ce76b2e091611455aa84f2c765f980863a061e18890c87db3d2c8e77b269a61"
+        }
+      ],
+      "prompt": "ANIME01-hd-b-v1.prompt.txt",
+      "prompt_sha256": "b1ee3cef6a6c1970d4c3456da29a31158d072010ca6716a4dbb7b67c1fb004cb",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "END-11.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/END-11.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "f5b93d10b9790354295ad58448a9f570a6df532da09409b06a0378e593784b10"
+        }
+      ],
+      "prompt": "END-11-hd-b-v1.prompt.txt",
+      "prompt_sha256": "02225761b8dc42451c604d2cfa24462bba5c4df9b93eb6ff21d8ba4933ae62a9",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "ANIME03.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/ANIME03.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "2a025b05930333f525277c0f376e927bcdbf616f3ea8f41d09a925a4ead87b66"
+        },
+        {
+          "path": "workplace/hd-prototype/catalog/art/ANIME01-hd-b-v1.png",
+          "role": "approved generated style and identity reference",
+          "sha256": "bab74043e7aefb0869c9bf5081baea822ac093fc2ffdfd6cfb9149895f3df93b"
+        }
+      ],
+      "prompt": "ANIME03-hd-b-v1.prompt.txt",
+      "prompt_sha256": "e8a749fc5a945ed2043b9b487e4724289092c5d5c8e51c5597794c9bb6c4c212",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "ANIME04.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/ANIME04.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "377c85d744c52f7a00408fd64694cd4aa0b713ebb4893e87f5ecaff3da047144"
+        },
+        {
+          "path": "workplace/hd-prototype/catalog/art/ANIME01-hd-b-v1.png",
+          "role": "approved generated style and identity reference",
+          "sha256": "bab74043e7aefb0869c9bf5081baea822ac093fc2ffdfd6cfb9149895f3df93b"
+        }
+      ],
+      "prompt": "ANIME04-hd-b-v1.prompt.txt",
+      "prompt_sha256": "e107d095249c33ac2c3cd67dc77468afb677643d9ef99039764c7033ed78b03c",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "ANIME05.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/ANIME05.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "b38eb58d836db7ab7fdf45d130a9afbfd20dbb866950dee7de0d7d4a34ec930c"
+        },
+        {
+          "path": "workplace/hd-prototype/catalog/art/ANIME01-hd-b-v1.png",
+          "role": "approved generated style and identity reference",
+          "sha256": "bab74043e7aefb0869c9bf5081baea822ac093fc2ffdfd6cfb9149895f3df93b"
+        }
+      ],
+      "prompt": "ANIME05-hd-b-v1.prompt.txt",
+      "prompt_sha256": "1b18298a2988d98e858d20d9929ba80466e3e795fec58a1ccfa0b2fb2450418d",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "ANIME06.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/ANIME06.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "5f44cae5dfd76dd2308d7cbd592149375bb8878acc718ede7c2730cc043d6cec"
+        },
+        {
+          "path": "workplace/hd-prototype/catalog/art/ANIME05-hd-b-v1.png",
+          "role": "approved generated style and identity reference",
+          "sha256": "4d16d75a4abc8021a54eaed1bd9a2b04a9b982d739ec3c5541c691693c0be6c8"
+        }
+      ],
+      "prompt": "ANIME06-hd-b-v1.prompt.txt",
+      "prompt_sha256": "c7153c75d1c3c313e61b3c00c8a8637e9c68e19911b03fe8049bcd4899705ac6",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "ANIME07.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/ANIME07.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "9a5c09ed9fec6a41d7356c0858c73e82d2defa9a080ca71e91c86a981119c28d"
+        },
+        {
+          "path": "workplace/hd-prototype/catalog/art/ANIME03-hd-b-v1.png",
+          "role": "approved generated style and identity reference",
+          "sha256": "24c02ef0508ed35ae8b087569b845146efb2acbb699f64cc0c47c6b34cabd4b4"
+        }
+      ],
+      "prompt": "ANIME07-hd-b-v1.prompt.txt",
+      "prompt_sha256": "edc44cc76d3fbc84c1bdf7c523d34937f6286707164d815ba5ef405172d36169",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "END-11B.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/art/END-11-hd-b-v1.png",
+          "role": "edit target; preserve commander and all art except ending Kanji",
+          "sha256": "49e1452c8e31e73fcafd92b6781c3fcdd5507e265f6ac5ff281a0dac7452fff6"
+        },
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/END-11B.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "63857ed9511eaed4ef43fd1ae802a1854c07ce982e42a96ffaf40bde0c022b24"
+        }
+      ],
+      "prompt": "END-11B-hd-b-v1.prompt.txt",
+      "prompt_sha256": "16aef559c9ffee927949322030fedf3834a631c70f10d953a26909fc8f17f7e9",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "END-2.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/END-2.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "a86c1712457bd68617914c70d00064c0b24c09c395b745287b574370cba37a46"
+        }
+      ],
+      "prompt": "END-2-hd-b-v1.prompt.txt",
+      "prompt_sha256": "62d19903866fcccab9dd73945b5bd4a130984e5f41069b852b456786e959f485",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "OP2_P.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/OP2_P.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "7b92eb8d06da7fe1ea33e4796a6f86656cf7e56d610c7fdb1f04ffa7983679e9"
+        }
+      ],
+      "prompt": "OP2_P-hd-b-v1.prompt.txt",
+      "prompt_sha256": "47ca8aeb98441fc1e44b8f4f1921f70d74a8adcee5fc0f45b401f9e0db03a3bb",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "OP9.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/OP9.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "68dc3badfa3c49b3eb59f5f1d39a7f8efb139551c61c94995d0b6d0d2cb5096f"
+        }
+      ],
+      "prompt": "OP9-hd-b-v1.prompt.txt",
+      "prompt_sha256": "87a52fe19115903f6c48fb03b0e1ba1c8aa1f83ce0f37ea726c846f510258db6",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "BATTLE.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/BATTLE.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "962c87e7883396231fdbc5cd9eb2b4eea5e1c1112817d25a6771343bc5cbdf83"
+        }
+      ],
+      "prompt": "BATTLE-hd-b-v1.prompt.txt",
+      "prompt_sha256": "0f91623a03599b5cb151ca0c7f1e8b228ece1e95d3038c902b737b6b5cbff006",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "MAP_WAKU.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/MAP_WAKU.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "fca30b7fb222524b8ef954008994c659db593806d5ead6732ecd354f667666b9"
+        }
+      ],
+      "prompt": "MAP_WAKU-hd-b-v1.prompt.txt",
+      "prompt_sha256": "93cba108f79a7e4247576bd6c52ac59f2a4136aefa43996c59be481355973ce4",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "OP6.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/OP6.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "7612216126300b36edba7d66325bb58c15a22ebeda9525a6bca5706d20c853c5"
+        }
+      ],
+      "prompt": "OP6-hd-b-v1.prompt.txt",
+      "prompt_sha256": "e7ddb5a08b99685ef38681c08f9fce47fe5f72e01e78e58697e930494cbb20d3",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "END-2B.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/END-2B.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "1df86ac733e14100f62dfae561ad0ee2615c0634ab891bbed20c0551fa3811c1"
+        }
+      ],
+      "prompt": "END-2B-hd-b-v1.prompt.txt",
+      "prompt_sha256": "0b4bad5370117e56d59ca3ca04ec0acd0cb26946cf8e4c5d364edb9b9ab7ab4b",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "JIMEN_0.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/JIMEN_0.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "6df0a38e6307a746569d1be414b376fc8d05f9643c162fbd4d54aa5bd0423cb0"
+        }
+      ],
+      "prompt": "JIMEN_0-hd-b-v1.prompt.txt",
+      "prompt_sha256": "77e9c540479eddad96ea72b4be9b0893d240e575cd60f82111a288d38ed14f4a",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "source": "JIMEN_1.OZM",
+      "ordered_input_images": [
+        {
+          "path": "workplace/hd-prototype/catalog/remaining/JIMEN_1.OZM-reference.png",
+          "role": "original composition and source geometry reference",
+          "sha256": "5f348414441697fdfe9f68c60862fa57eb3ec6ef556c5295d16101b4d2d25565"
+        }
+      ],
+      "prompt": "JIMEN_1-hd-b-v1.prompt.txt",
+      "prompt_sha256": "fb05fcf05f4759465723fe682745288b3b93743f0dfc8e4580e963914d7d76f9",
+      "transparent_background": false,
+      "generator": "built-in image_gen.imagegen"
+    }
+  ]
+}
