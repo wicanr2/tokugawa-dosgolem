@@ -251,3 +251,5 @@
 地面切片實作與四套件通過。準備格式化命令首次 shell 引號錯誤，未啟動工作負載；改用具名 heredoc 後成功，未改產品行為來處理腳本錯誤。兩次真實視窗驗證各完成 750M／390 普通輸入，總表 SHA-256 `3902facc85f45e23495935031addeb8d76b27fbdd2b0c4cf793637509f585fdd`。50 矩形、六種來源使用 HD，遮擋整格保留原圖；已目視核對此階段的原版／HD 混合畫面，物件與單位尚待接入。
 
 本批保存新增 20 張生成素材及三張總覽、20 份提示詞，含兩張水面誤生的修正前草稿。素材總量 183 PNG／95 提示詞，透明單位 alpha 0..255 原樣保存。PNG、提示詞、生成記錄與索引已核對；GitHub 推送與最後清理接續記錄。
+
+提交 `5462fd4` 已推送私人 main，主機 gh 核對遠端 SHA 相同。遠端 287 個圖片、提示詞與索引檔逐項符合本機 Git blob SHA，沒有 original/ 或 workplace/ 資料。Issue #5 維持 OPEN，進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6167356430 。最後語法、來源綁定、文件索引正對照、Git whitespace、UID/GID、root-owned／誤建 .md 目錄檢查通過；所有 tokugawa 容器均已刪除，沿用原 image，沒有留下持續程序。後續依 WORKLIST 的物件／單位自然繪製切片進行。
