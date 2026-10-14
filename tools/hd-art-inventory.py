@@ -23,7 +23,7 @@ def art_info(path, prompt):
     return {"path": str(path.relative_to(PROJECT)), "sha256": sha(path), "size": size,
             "prompt": str(prompt.relative_to(PROJECT)), "prompt_sha256": sha(prompt),
             "generator": "built-in image_gen.imagegen", "style": "B 戰國手繪風",
-            "rights": "original-derived; local only; excluded from Git and distribution"}
+            "rights": "generated derivative; user authorized private Git archive on 2026-10-14; public distribution pending"}
 
 
 def main():
@@ -91,6 +91,19 @@ def main():
             path = PROJECT / "workplace/hd-prototype/scroll/scroll-hd-b-v1.png"
             record.update(art_status="partial", art=art_info(path, path.with_suffix(".prompt.txt")),
                           logical_region=[0, 250, 640, 150], runtime_status="scroll region verified separately; upper frame pending")
+            frame_root = PROJECT / "workplace/hd-prototype/scroll/frame"
+            frame_proof = frame_root / "desktop/verification-frame.json"
+            if frame_proof.exists():
+                proof = json.loads(frame_proof.read_text())
+                frame_receipt = frame_root / "desktop/desktop-frame.json"
+                assert proof["verified"] and proof["receipt_sha256"] == sha(frame_receipt)
+                info = art_info(frame_root / "frame-hd-b-v2.png", path.with_suffix(".prompt.txt"))
+                loaded = json.loads(frame_receipt.read_text())["desktop"]["assets"]["frame"]
+                assert loaded["validation"] == "ready" and loaded["hd_sha256"] == info["sha256"]
+                record.update(frame_art=info, frame_logical_region=[0, 0, 640, 250],
+                              preserve_central_logical_region=[160, 50, 320, 150],
+                              runtime_status="upper decorative frame and scroll verified; central scene is a separate layer",
+                              frame_runtime_check=proof["frame_checks"], frame_proof_sha256=sha(frame_proof))
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]

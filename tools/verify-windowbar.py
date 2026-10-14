@@ -9,7 +9,7 @@ import time
 
 assert Path("/.dockerenv").exists() and os.getuid() == 1000
 parser = argparse.ArgumentParser()
-parser.add_argument("--mode", choices=["hd", "mouse", "missing"], default="hd")
+parser.add_argument("--mode", choices=["hd", "mouse", "missing", "frame-only"], default="hd")
 mode = parser.parse_args().mode
 root = Path("/output")
 assert root.stat().st_uid == 1000
@@ -104,6 +104,8 @@ try:
         assert hashlib.sha256(source.read_bytes()).hexdigest() == "cc23a9dc6353d066e12a1097224c1c8472940ade33365f880d01aff5ba6fe736"
         command += ["-mouse-file", str(source)]
     if mode == "missing":
+        command += ["-hd-asset", "/output/no-hd.png", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-portrait-dir", "/output/no-portraits", "-hd-kao-dir", "/output/no-kao", "-hd-frame-asset", "/output/no-frame.png"]
+    if mode == "frame-only":
         command += ["-hd-asset", "/output/no-hd.png", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-portrait-dir", "/output/no-portraits", "-hd-kao-dir", "/output/no-kao"]
     stdout_path = root / f"windowbar-{mode}.json"
     stdout = stdout_path.open("wb")
@@ -132,6 +134,8 @@ try:
     click(150, 128)
     wait_for(lambda s: s["bar_menu"] == -1)
     assert status()["enabled"] == (mode != "missing")
+    if mode == "frame-only":
+        assert status()["frame_mode"] == "hd", status()["frame_mode"]
     assert status()["step"] == frozen
     move(400, 2)
     wait_for(lambda s: s["bar_visible"] and s["window_size"] == [1280, 864])

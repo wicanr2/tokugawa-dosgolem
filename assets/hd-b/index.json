@@ -1,0 +1,4325 @@
+{
+  "classification": "private repository HD art archive; not a production asset-pack schema",
+  "authorization_date": "2026-10-14",
+  "authorization": "目前這些圖片都很棒 記得保存在 github repo 當中喔",
+  "generator": "built-in image_gen.imagegen",
+  "rights": "private project archive; no public release authorization",
+  "counts": {
+    "png": 139,
+    "prompts": 54,
+    "bytes": 182357874
+  },
+  "archive_tool_sha256": "7e1ce45ee45a38e8d7f81338c356e72bfe8744b7ab739b5504098601b689c60f",
+  "files": [
+    {
+      "path": "A-0-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2638423,
+      "sha256": "503bbecf951fe5f8a8c30e797304433c62657d1906f461018440a9207f11a225",
+      "local_source": "workplace/hd-prototype/A-0-hd-b-v1.png",
+      "prompt": "A-0-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "A-0-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1917,
+      "sha256": "3ac001b76201e555117ff650b524c9754f64d4bbb5a92b8e67ed7f1798534fac",
+      "local_source": "workplace/hd-prototype/A-0-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/11-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2813076,
+      "sha256": "a8835885296bbdc9a14367c7c05d548c4db6ce1e9a0944de54a98c6a3ea0d211",
+      "local_source": "workplace/hd-prototype/catalog/art/11-hd-b-v1.png",
+      "prompt": "art/11-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/11-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1109,
+      "sha256": "40a005de35e239de795fd25b8e6b186ae332b7df4a4f9e676c48b965a7a96449",
+      "local_source": "workplace/hd-prototype/catalog/art/11-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/19-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2518243,
+      "sha256": "b37934b35e42d480c2b06828cd0f27f50e8be690c614271fd0bab94213cbfdab",
+      "local_source": "workplace/hd-prototype/catalog/art/19-hd-b-v1.png",
+      "prompt": "art/19-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/19-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1048,
+      "sha256": "8fc15023149348b6cd3e39cb35235f6bf88912950b4b6094cde60d3839a30a68",
+      "local_source": "workplace/hd-prototype/catalog/art/19-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/28-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2656503,
+      "sha256": "34d5a876947e5729d6a3d9b41ef0fb051b698e2d16bde95cc9809f9dab054020",
+      "local_source": "workplace/hd-prototype/catalog/art/28-hd-b-v1.png",
+      "prompt": "art/28-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/28-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1076,
+      "sha256": "fb8f53923fa694b2acf2b1e3c369f1fab9d0b08bb09a464eec63f8fa2aa8f3a7",
+      "local_source": "workplace/hd-prototype/catalog/art/28-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/43-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2853968,
+      "sha256": "421afae1db798cadb086ae15d6d13d8842ce9c2c89d38b0cf1b4225da389ade5",
+      "local_source": "workplace/hd-prototype/catalog/art/43-hd-b-v1.png",
+      "prompt": "art/43-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/43-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1143,
+      "sha256": "4045872a08643d953e9cf695d2b626669ccda6942af4a35a77df8021fc99428d",
+      "local_source": "workplace/hd-prototype/catalog/art/43-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/6-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2845029,
+      "sha256": "6bbc003ea7b6d7e23b81a036afe1e36ccc1a36dc75dae05d80c7405d960c6ee5",
+      "local_source": "workplace/hd-prototype/catalog/art/6-hd-b-v1.png",
+      "prompt": "art/6-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/6-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1084,
+      "sha256": "63352cb97c377db1f3672f92807b3fe387f53a9edc67db25b4aa6d2bb14aa1ed",
+      "local_source": "workplace/hd-prototype/catalog/art/6-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/A-1-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2756238,
+      "sha256": "00d08381591fd39f807eac8e2b7098b57a7d004cef31aed2ef0d660cf32f63ec",
+      "local_source": "workplace/hd-prototype/catalog/art/A-1-hd-b-v1.png",
+      "prompt": "art/A-1-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/A-1-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1232,
+      "sha256": "964dcaa46975096ba7415ccfc4da821c59f4528cb30a681085099dff902fb833",
+      "local_source": "workplace/hd-prototype/catalog/art/A-1-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/A-2-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2816476,
+      "sha256": "4455212de39ebe39b8388b82103103eb698bece3dab090a822a212b2d3ac57a0",
+      "local_source": "workplace/hd-prototype/catalog/art/A-2-hd-b-v1.png",
+      "prompt": "art/A-2-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/A-2-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1053,
+      "sha256": "f3c5d06db39dce19afa60bea5f62362461857ea5f7441fa5ad65c0a74568ad3f",
+      "local_source": "workplace/hd-prototype/catalog/art/A-2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/A-3-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2813929,
+      "sha256": "1871b84e01bcc662ca15fb69a02f1f62aad5473553a8d4a9e5aae4c0f03cb67d",
+      "local_source": "workplace/hd-prototype/catalog/art/A-3-hd-b-v1.png",
+      "prompt": "art/A-3-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/A-3-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1064,
+      "sha256": "7108a3f45753562a8550fc090e2975afd74914b98b53442a787c30bc9dd6e577",
+      "local_source": "workplace/hd-prototype/catalog/art/A-3-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/A-4-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2606132,
+      "sha256": "4195ffc4410a1a8adb881d8e74ddd636b12889fb2c48df8edb772bfaea81518e",
+      "local_source": "workplace/hd-prototype/catalog/art/A-4-hd-b-v1.png",
+      "prompt": "art/A-4-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/A-4-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1135,
+      "sha256": "52640fe869e1433c3facd2c90d27aff1ddc355a9351edbf20efcd2a3627cbf45",
+      "local_source": "workplace/hd-prototype/catalog/art/A-4-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/A-5-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2776648,
+      "sha256": "e3df5439897c3971484044ea1d70cf73dd5b839ad9e015eb03cfd8064d8e658e",
+      "local_source": "workplace/hd-prototype/catalog/art/A-5-hd-b-v1.png",
+      "prompt": "art/A-5-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/A-5-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 963,
+      "sha256": "cbd0a4b488293125979c483dff310775bf8514b9687f0427166c06d5c3ed371c",
+      "local_source": "workplace/hd-prototype/catalog/art/A-5-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/A-6-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3108567,
+      "sha256": "0a607b8445ede1a0ab029438cf0972058441f605ee2e55f4be6815f2a500b233",
+      "local_source": "workplace/hd-prototype/catalog/art/A-6-hd-b-v1.png",
+      "prompt": "art/A-6-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "size": [
+        1833,
+        858
+      ]
+    },
+    {
+      "path": "art/A-6-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1075,
+      "sha256": "beb005c10a3ae68d2d49fb7441015ced00c074ec99c76e53d3743fb53eebef85",
+      "local_source": "workplace/hd-prototype/catalog/art/A-6-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/A-7-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3226189,
+      "sha256": "9c1ed353c00f50a8c6307e3cc6e21a68a03a2c47ae23fa0a1e65a18257090434",
+      "local_source": "workplace/hd-prototype/catalog/art/A-7-hd-b-v1.png",
+      "prompt": "art/A-7-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "size": [
+        1835,
+        857
+      ]
+    },
+    {
+      "path": "art/A-7-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1209,
+      "sha256": "7fb56a961b0bef1d34accf30609523d39c134c8b85d4014e765aea5253efb68e",
+      "local_source": "workplace/hd-prototype/catalog/art/A-7-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/A-8-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2620405,
+      "sha256": "ef5a7bc8f09b00eb27f531fae83a29d5a5be9bb5fe09243aac586a4fc6ff0b34",
+      "local_source": "workplace/hd-prototype/catalog/art/A-8-hd-b-v1.png",
+      "prompt": "art/A-8-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/A-8-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1073,
+      "sha256": "efababe7736e9245350a9d5a6935068326c4ee0f3d317284fbde5ad3b242a3e5",
+      "local_source": "workplace/hd-prototype/catalog/art/A-8-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/B-1-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2079555,
+      "sha256": "8178f2dcaa46ed0885980aa8deff194d1a0ba013dfec3a002275afa332fae9d7",
+      "local_source": "workplace/hd-prototype/catalog/art/B-1-hd-b-v1.png",
+      "prompt": "art/B-1-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/B-1-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1180,
+      "sha256": "3e8a2ea33ec5601f26593caaa6abc8ac95df0fe4ad871603e25fb6a43c45f139",
+      "local_source": "workplace/hd-prototype/catalog/art/B-1-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/B-2-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3166343,
+      "sha256": "5fef2836b3b18019b0e5e49fb7988ea408fef5bae8222563c85786563d143823",
+      "local_source": "workplace/hd-prototype/catalog/art/B-2-hd-b-v1.png",
+      "prompt": "art/B-2-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/B-2-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1173,
+      "sha256": "c0d5937998b97731f60d877bbe486b0d4daf77693a58aeee57e76aa605b2a2a5",
+      "local_source": "workplace/hd-prototype/catalog/art/B-2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/B-3-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2792777,
+      "sha256": "782bbe50cdbc7b1aaa270993d5127f3dfb2b787a8654da2142f5db95e985e055",
+      "local_source": "workplace/hd-prototype/catalog/art/B-3-hd-b-v1.png",
+      "prompt": "art/B-3-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/B-3-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1261,
+      "sha256": "8bd33376e937ed0e31e8c816bb1fc9832da83840aa55a04743492ef7978b7e75",
+      "local_source": "workplace/hd-prototype/catalog/art/B-3-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/B-4-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2563168,
+      "sha256": "009baa0c38dfe9f95e297b0dd0d461138f6a975d4b072e8030365751355b7235",
+      "local_source": "workplace/hd-prototype/catalog/art/B-4-hd-b-v1.png",
+      "prompt": "art/B-4-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/B-4-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1229,
+      "sha256": "64591349989a92d6baf6f4eed766912a87f4c4075135aca2456ff62e75ddaf38",
+      "local_source": "workplace/hd-prototype/catalog/art/B-4-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/C-1'-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2786718,
+      "sha256": "9fad494c6b5e2d2079e16d1957cae02a0edc3efa3bde702ddce03e43db39b426",
+      "local_source": "workplace/hd-prototype/catalog/art/C-1'-hd-b-v1.png",
+      "prompt": "art/C-1'-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/C-1'-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1126,
+      "sha256": "e1ae54f087665463b66effc0db6e85d748a1c6a6282e80980353afaba6942642",
+      "local_source": "workplace/hd-prototype/catalog/art/C-1'-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/C-1-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3011281,
+      "sha256": "cb2ef60695ba43dd029c10b9a2fcafff6bba49d341d2bdb3d0027464cc75e746",
+      "local_source": "workplace/hd-prototype/catalog/art/C-1-hd-b-v1.png",
+      "prompt": "art/C-1-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/C-1-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1125,
+      "sha256": "f832c87da5cffb59d8c45711a8f556c2fbb17a005ed61e92a7e7fd2a4a07b2dc",
+      "local_source": "workplace/hd-prototype/catalog/art/C-1-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/C-11-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2818649,
+      "sha256": "25e4b299603459dca481e6ee30384228ea413eac44a5da7e4d962eddccb4fb65",
+      "local_source": "workplace/hd-prototype/catalog/art/C-11-hd-b-v1.png",
+      "prompt": "art/C-11-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/C-11-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1228,
+      "sha256": "f44377da4b7403ce2bf995567ddcd18f9543f1dfa9ac92c5a47e2900d08e4ade",
+      "local_source": "workplace/hd-prototype/catalog/art/C-11-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/C-2-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2805904,
+      "sha256": "2da5b794330d6e1ac6549e88f15027957060536122aa035ba183b2a50a448d6c",
+      "local_source": "workplace/hd-prototype/catalog/art/C-2-hd-b-v1.png",
+      "prompt": "art/C-2-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/C-2-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1107,
+      "sha256": "34f860fef24682272afd3296850c052ed3e51044184f2beb47b28086ba334c9b",
+      "local_source": "workplace/hd-prototype/catalog/art/C-2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/C-4-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2808861,
+      "sha256": "4f24482274d9886b8e320ace040e4135d86ca98a9fdf81bc25fc9e0b48ec5e6f",
+      "local_source": "workplace/hd-prototype/catalog/art/C-4-hd-b-v1.png",
+      "prompt": "art/C-4-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/C-4-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1171,
+      "sha256": "b03d8340b98aaa12e38b7fbed0478e68685ee9c8cea0b23da9bf45f9a840330b",
+      "local_source": "workplace/hd-prototype/catalog/art/C-4-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/C-5-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2668991,
+      "sha256": "6edb6d49bb8381dab9bc0d1c91145f26633e5a2256e6a281c40fa72b200e808d",
+      "local_source": "workplace/hd-prototype/catalog/art/C-5-hd-b-v1.png",
+      "prompt": "art/C-5-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/C-5-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1064,
+      "sha256": "ed18b16b81ceee734996dfa709f420c9e46f7af4f16081c774b8eb1ee1173578",
+      "local_source": "workplace/hd-prototype/catalog/art/C-5-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/C-6-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2872432,
+      "sha256": "a07d481a6a0a8860c584572e5f77260f9586765ec71e74bf3f5e079e1226ccf8",
+      "local_source": "workplace/hd-prototype/catalog/art/C-6-hd-b-v1.png",
+      "prompt": "art/C-6-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/C-6-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1235,
+      "sha256": "d569da3cbac8eaad4c7d9176392c020f1b9ebb12f66a488fd65a93d310465e17",
+      "local_source": "workplace/hd-prototype/catalog/art/C-6-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/C-7-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2794509,
+      "sha256": "6ef3ae2e5bcb872dd4d2f40a4bd986ac6e475d3f24169ec8ad053f2e5149305f",
+      "local_source": "workplace/hd-prototype/catalog/art/C-7-hd-b-v1.png",
+      "prompt": "art/C-7-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/C-7-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1077,
+      "sha256": "212e92489d49ff1224fe4cceb3ba291579f6ac410f38739af0519a7c5ba73668",
+      "local_source": "workplace/hd-prototype/catalog/art/C-7-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/C-8-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3162492,
+      "sha256": "161bad1c5434d174f32645173aeefee142a1519fdd534125e78009c18c2b2173",
+      "local_source": "workplace/hd-prototype/catalog/art/C-8-hd-b-v1.png",
+      "prompt": "art/C-8-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/C-8-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1101,
+      "sha256": "17645321405687d7da65979c5778560301f72e5c75f07ae3d4a6aa71c1922f12",
+      "local_source": "workplace/hd-prototype/catalog/art/C-8-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/C-9-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3052151,
+      "sha256": "a266e378163edec7bcc7667277a9a09d5556052720c62988a0fd3bbe67579fa4",
+      "local_source": "workplace/hd-prototype/catalog/art/C-9-hd-b-v1.png",
+      "prompt": "art/C-9-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/C-9-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1142,
+      "sha256": "6807ae99cea67164e262dc6db20bb0c76c36a25354ebd30db662e29d65cb0c57",
+      "local_source": "workplace/hd-prototype/catalog/art/C-9-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/D-1-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2813984,
+      "sha256": "901093ee5c8b326ce07f7412ebbfbf45275be436c0a92b5ea33c19455b059ad1",
+      "local_source": "workplace/hd-prototype/catalog/art/D-1-hd-b-v1.png",
+      "prompt": "art/D-1-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/D-1-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1127,
+      "sha256": "f01222343a2b382209dcfbf9883cb1d60cd9f573a4694926835643f0cb1ddf03",
+      "local_source": "workplace/hd-prototype/catalog/art/D-1-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/D-2-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3238795,
+      "sha256": "edc878aee8ea380d47dd36edb5ef8d6ab9b37d74b7880cb1556bf29683e249c3",
+      "local_source": "workplace/hd-prototype/catalog/art/D-2-hd-b-v1.png",
+      "prompt": "art/D-2-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1834,
+        858
+      ]
+    },
+    {
+      "path": "art/D-2-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1186,
+      "sha256": "9f6bc8be79abd99f38c18db1b2e0f9e085a8d2c19f6e1c211427ca54c2a7dccd",
+      "local_source": "workplace/hd-prototype/catalog/art/D-2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/D-3-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2356875,
+      "sha256": "17557a731dc5e10d3b75b7ee0acd0c56f3eead7f8df7023661e77585a1fcae6a",
+      "local_source": "workplace/hd-prototype/catalog/art/D-3-hd-b-v1.png",
+      "prompt": "art/D-3-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/D-3-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1165,
+      "sha256": "eb909153a570254b379b157793c1693b6efe7205a114198c754b0ccfd21c04c5",
+      "local_source": "workplace/hd-prototype/catalog/art/D-3-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/D-4-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2720432,
+      "sha256": "892ba874f1e333f5bfc9d35eee2388520fb67ee3e806d42085fe526ed6c50842",
+      "local_source": "workplace/hd-prototype/catalog/art/D-4-hd-b-v1.png",
+      "prompt": "art/D-4-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/D-4-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1193,
+      "sha256": "d387dc83a7d6a570b4a426eba69099d742e6980e0be79cd75f5d23dab5646915",
+      "local_source": "workplace/hd-prototype/catalog/art/D-4-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/D-8-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2916849,
+      "sha256": "a12a4ed0d7c65b1c6e7f2256473d65eca9a5fb80bfebbee74a66fbc8b42077c4",
+      "local_source": "workplace/hd-prototype/catalog/art/D-8-hd-b-v1.png",
+      "prompt": "art/D-8-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/D-8-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1163,
+      "sha256": "39540bea7623dcf32e201ef443e07a783cffa369ebe5546a4da9e2fba43235c0",
+      "local_source": "workplace/hd-prototype/catalog/art/D-8-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/E-1-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2810989,
+      "sha256": "ea228a1626a0dbe58a9689baee6a20468fc9cae9d7f5306b13679f45e2b7a3c5",
+      "local_source": "workplace/hd-prototype/catalog/art/E-1-hd-b-v1.png",
+      "prompt": "art/E-1-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/E-1-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1203,
+      "sha256": "09c38aa370a15054ae66bdc2293d8c023270135fd0cda4a6f8eab4f82e764366",
+      "local_source": "workplace/hd-prototype/catalog/art/E-1-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/E-2-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2739757,
+      "sha256": "62d0b35ce294d2342ea0ea0b686de3702377f09ead027aa215d52d8fcdeead82",
+      "local_source": "workplace/hd-prototype/catalog/art/E-2-hd-b-v1.png",
+      "prompt": "art/E-2-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/E-2-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1175,
+      "sha256": "fe1381fce82dfa4235e942825fe11ff8c86d7f63c9f946d8b342b7c9b29a83e1",
+      "local_source": "workplace/hd-prototype/catalog/art/E-2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/E-3-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2958712,
+      "sha256": "1c948564082c529fab86c5445c980acfc633e429a6c516b6a24c91a38b19f74d",
+      "local_source": "workplace/hd-prototype/catalog/art/E-3-hd-b-v1.png",
+      "prompt": "art/E-3-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/E-3-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1167,
+      "sha256": "6a80a44123b2ad47c701c1c7c0cefd11cd13684cd6f09fe4ae462b788b119188",
+      "local_source": "workplace/hd-prototype/catalog/art/E-3-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/E-6-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2585784,
+      "sha256": "0dd42f36c5d09ce3a203788192fece17bf27817df23601b2f55a4c5ee7cf4d2e",
+      "local_source": "workplace/hd-prototype/catalog/art/E-6-hd-b-v1.png",
+      "prompt": "art/E-6-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/E-6-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1071,
+      "sha256": "af3d4987556662145825398bc549f60aeea0151c6af4904c7dca9c90a4ed9876",
+      "local_source": "workplace/hd-prototype/catalog/art/E-6-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/F-1-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2640081,
+      "sha256": "0cdc10b53d0bf1bc8dfb2f8a9e5a741846025ebd749b0b06236786b1f511a7b0",
+      "local_source": "workplace/hd-prototype/catalog/art/F-1-hd-b-v1.png",
+      "prompt": "art/F-1-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/F-1-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1113,
+      "sha256": "8a0395383187276a1793b94a95add775763085b8d0901edef5d8d20857a45687",
+      "local_source": "workplace/hd-prototype/catalog/art/F-1-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/F-2-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2576003,
+      "sha256": "0bc075f452b331cc02c2dc32b0efa1041d5762ad5e2e7ebcfe3213993745fe06",
+      "local_source": "workplace/hd-prototype/catalog/art/F-2-hd-b-v1.png",
+      "prompt": "art/F-2-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1834,
+        858
+      ]
+    },
+    {
+      "path": "art/F-2-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1189,
+      "sha256": "f0639a375fa411da6c2ad603ebc6ca0642c5ff928bc9d69dab2e5e30db82fc12",
+      "local_source": "workplace/hd-prototype/catalog/art/F-2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/F-5-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2826072,
+      "sha256": "202c4ffa17d6ae88ab6203fdfa67af93e73653144d0db116152dfb408b3e3350",
+      "local_source": "workplace/hd-prototype/catalog/art/F-5-hd-b-v1.png",
+      "prompt": "art/F-5-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/F-5-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1258,
+      "sha256": "196a475a70c40b9971f0062faa2d6b44f03d9cb68350c2d6eb44266a1839c3c4",
+      "local_source": "workplace/hd-prototype/catalog/art/F-5-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/G-1-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3039389,
+      "sha256": "4f8f9ee1129b7447fe2c30ce14cdaa16156f89a308e5022d7ef9837d8b8d6ce0",
+      "local_source": "workplace/hd-prototype/catalog/art/G-1-hd-b-v1.png",
+      "prompt": "art/G-1-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/G-1-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1205,
+      "sha256": "da66675198823d81f0b6e3870ebfbeecb3425f4d0f841e2f497cbc292a07b898",
+      "local_source": "workplace/hd-prototype/catalog/art/G-1-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/G-2-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3022892,
+      "sha256": "e78c66d4d71e1e44b4436105ee76e36d6b58fc93df51fa163e31f017893c07eb",
+      "local_source": "workplace/hd-prototype/catalog/art/G-2-hd-b-v1.png",
+      "prompt": "art/G-2-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/G-2-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1317,
+      "sha256": "7258d70c3e17654120b7a10d43d7a41d88511fa3a512b978d70f0284558a5cf0",
+      "local_source": "workplace/hd-prototype/catalog/art/G-2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "concept/style-comparison-v1.png",
+      "kind": "png",
+      "bytes": 2689226,
+      "sha256": "906216c9e8bf00cb303b2e8ee956d5626b106cf3fc8a7e9f7eeafd120a8ceab1",
+      "local_source": "workplace/hd-prototype/style-comparison-v1.png",
+      "prompt": "concept/style-comparison-v1.prompt.txt",
+      "status": "style comparison; B selected",
+      "size": [
+        1586,
+        992
+      ]
+    },
+    {
+      "path": "concept/style-comparison-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1821,
+      "sha256": "20d3b4bec3e1e8d977eaa8b40c13a382eac1404beb78de30fc0498e4c680134a",
+      "local_source": "workplace/hd-prototype/style-comparison-v1.prompt.txt"
+    },
+    {
+      "path": "kao/page-00-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2715892,
+      "sha256": "aead3caa7b2eb018fc7758f3d72459dfcc2059c2c45f40c4f0d47c6b8b405b8b",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-00-hd-b-v1.png",
+      "prompt": "kao/page-00-hd-b-v1.prompt.txt",
+      "status": "generated portrait atlas",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "kao/page-00-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1593,
+      "sha256": "8b1d06381a6df3127511ad6dcff3e08dbaa667bbfa5e79fee7dd7639287963e6",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-00-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "kao/page-01-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2844308,
+      "sha256": "0875cff3e1aa776b87b89c4ba311e1b2b492b74edbdf377521a8dd1d54d737e8",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-01-hd-b-v1.png",
+      "prompt": "kao/page-01-hd-b-v1.prompt.txt",
+      "status": "generated portrait atlas",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "kao/page-01-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1289,
+      "sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-01-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "kao/page-02-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2962349,
+      "sha256": "70183ab47641cb53062e90034365589104c07ffd7bc34ab0289398adac0c3bbc",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-02-hd-b-v1.png",
+      "prompt": "kao/page-02-hd-b-v1.prompt.txt",
+      "status": "generated portrait atlas",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "kao/page-02-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1289,
+      "sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-02-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "kao/page-03-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2923616,
+      "sha256": "a9bd821381e073aacd6cd53d2eaf9a4729aea786130cd14c4e03144d23050fda",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-03-hd-b-v1.png",
+      "prompt": "kao/page-03-hd-b-v1.prompt.txt",
+      "status": "generated portrait atlas",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "kao/page-03-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1289,
+      "sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-03-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "kao/page-04-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2890757,
+      "sha256": "dc2fa978801138568e35d50b8604275162e03ca23e46604282e37c4fb431157f",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-04-hd-b-v1.png",
+      "prompt": "kao/page-04-hd-b-v1.prompt.txt",
+      "status": "generated portrait atlas",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "kao/page-04-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1289,
+      "sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-04-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "kao/page-05-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2779512,
+      "sha256": "d2b358f794b30c8772c31476225dc13338082fb50d7b8a39bc268d4ebffd9b45",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-05-hd-b-v1.png",
+      "prompt": "kao/page-05-hd-b-v1.prompt.txt",
+      "status": "generated portrait atlas",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "kao/page-05-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1289,
+      "sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-05-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "kao/page-06-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2719625,
+      "sha256": "2641f4f2dce8eccdcac517e3a6d6fd92227975f6b45967c16b855873ab5889d4",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-06-hd-b-v1.png",
+      "prompt": "kao/page-06-hd-b-v1.prompt.txt",
+      "status": "generated portrait atlas",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "kao/page-06-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1289,
+      "sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-06-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "kao/page-07-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2739711,
+      "sha256": "a2005c363fada30c09d651ca819106debde65321b38d3ef6f14e62edda0b3983",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-07-hd-b-v1.png",
+      "prompt": "kao/page-07-hd-b-v1.prompt.txt",
+      "status": "generated portrait atlas",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "kao/page-07-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1289,
+      "sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-07-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "kao/page-08-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2952910,
+      "sha256": "30c2db3bd0159a971937557a5c77d2c2f38d26d9fa3b3d2728a7f225dcfa0e53",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-08-hd-b-v1.png",
+      "prompt": "kao/page-08-hd-b-v1.prompt.txt",
+      "status": "generated portrait atlas",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "kao/page-08-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1610,
+      "sha256": "e7670c567f6445d2e31ec1fc2504e9edf37904c7fcc5a56651cb66402df02e9a",
+      "local_source": "workplace/hd-prototype/catalog/kao/page-08-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "kao/selected/contact-sheet.png",
+      "kind": "png",
+      "bytes": 3113017,
+      "sha256": "bf4548f139e42e738c43fe31e0caef733949e127ae3067bf2995c189a6edd132",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/contact-sheet.png",
+      "status": "generated HD portrait overview",
+      "size": [
+        1296,
+        1476
+      ]
+    },
+    {
+      "path": "kao/selected/kao-00-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 327158,
+      "sha256": "f497d84ea88906dc3dabf0744401d0a70ccbf3e28706f5892abf329166d8f6f8",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-00-hd-b-v1.png",
+      "prompt": "kao/page-00-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 0,
+        "asset": "kao-00-hd-b-v1.png",
+        "asset_sha256": "f497d84ea88906dc3dabf0744401d0a70ccbf3e28706f5892abf329166d8f6f8",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-00-hd-b-v1.png",
+        "atlas_sha256": "aead3caa7b2eb018fc7758f3d72459dfcc2059c2c45f40c4f0d47c6b8b405b8b",
+        "prompt": "page-00-hd-b-v1.prompt.txt",
+        "prompt_sha256": "8b1d06381a6df3127511ad6dcff3e08dbaa667bbfa5e79fee7dd7639287963e6",
+        "crop_xyxy": [
+          0,
+          0,
+          418,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-00-original.png",
+        "original_png_sha256": "e4708f0dd48dbdb8dbe1f1eb4e15f5b2f2054572239425fbb956044d65b077f4"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-01-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 281344,
+      "sha256": "2c853493c2c2fe3b14cbdd4bec598da0db7944833effc3380223fde623cee5cb",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-01-hd-b-v1.png",
+      "prompt": "kao/page-00-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 1,
+        "asset": "kao-01-hd-b-v1.png",
+        "asset_sha256": "2c853493c2c2fe3b14cbdd4bec598da0db7944833effc3380223fde623cee5cb",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-00-hd-b-v1.png",
+        "atlas_sha256": "aead3caa7b2eb018fc7758f3d72459dfcc2059c2c45f40c4f0d47c6b8b405b8b",
+        "prompt": "page-00-hd-b-v1.prompt.txt",
+        "prompt_sha256": "8b1d06381a6df3127511ad6dcff3e08dbaa667bbfa5e79fee7dd7639287963e6",
+        "crop_xyxy": [
+          418,
+          0,
+          836,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-01-original.png",
+        "original_png_sha256": "863f7a406112043e7cf62e7e3831c4d3fc122a05601cc468c2da88178bd82f5a"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-02-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 280986,
+      "sha256": "16bf64af2c3b2702676ca34786b04bcc9d6710b4f5a2e4cbb21c9a98dd08480a",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-02-hd-b-v1.png",
+      "prompt": "kao/page-00-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 2,
+        "asset": "kao-02-hd-b-v1.png",
+        "asset_sha256": "16bf64af2c3b2702676ca34786b04bcc9d6710b4f5a2e4cbb21c9a98dd08480a",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-00-hd-b-v1.png",
+        "atlas_sha256": "aead3caa7b2eb018fc7758f3d72459dfcc2059c2c45f40c4f0d47c6b8b405b8b",
+        "prompt": "page-00-hd-b-v1.prompt.txt",
+        "prompt_sha256": "8b1d06381a6df3127511ad6dcff3e08dbaa667bbfa5e79fee7dd7639287963e6",
+        "crop_xyxy": [
+          836,
+          0,
+          1254,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-02-original.png",
+        "original_png_sha256": "fc460aa7001b3bd86e429dbe79c2c96af2c2a99838b15fd7fb19f6b270ef8b98"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-03-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 289314,
+      "sha256": "53f984a17490c5ca3fd8074986f848de1c168c9278e1af527a7adeb47b2650e4",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-03-hd-b-v1.png",
+      "prompt": "kao/page-00-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 3,
+        "asset": "kao-03-hd-b-v1.png",
+        "asset_sha256": "53f984a17490c5ca3fd8074986f848de1c168c9278e1af527a7adeb47b2650e4",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-00-hd-b-v1.png",
+        "atlas_sha256": "aead3caa7b2eb018fc7758f3d72459dfcc2059c2c45f40c4f0d47c6b8b405b8b",
+        "prompt": "page-00-hd-b-v1.prompt.txt",
+        "prompt_sha256": "8b1d06381a6df3127511ad6dcff3e08dbaa667bbfa5e79fee7dd7639287963e6",
+        "crop_xyxy": [
+          0,
+          418,
+          418,
+          834
+        ],
+        "black_padding_xy": [
+          0,
+          1
+        ],
+        "original": "kao-03-original.png",
+        "original_png_sha256": "24e8fb6bbc1298d9592b1119d96e233b3c7f1bbaa7458c6cb202bde83f392614"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-04-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 279759,
+      "sha256": "d9bd83b45a84f3f3335995640e619b7ac3d5a5a27afa8d4fed15f96dfd7242e7",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-04-hd-b-v1.png",
+      "prompt": "kao/page-00-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 4,
+        "asset": "kao-04-hd-b-v1.png",
+        "asset_sha256": "d9bd83b45a84f3f3335995640e619b7ac3d5a5a27afa8d4fed15f96dfd7242e7",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-00-hd-b-v1.png",
+        "atlas_sha256": "aead3caa7b2eb018fc7758f3d72459dfcc2059c2c45f40c4f0d47c6b8b405b8b",
+        "prompt": "page-00-hd-b-v1.prompt.txt",
+        "prompt_sha256": "8b1d06381a6df3127511ad6dcff3e08dbaa667bbfa5e79fee7dd7639287963e6",
+        "crop_xyxy": [
+          418,
+          418,
+          836,
+          834
+        ],
+        "black_padding_xy": [
+          0,
+          1
+        ],
+        "original": "kao-04-original.png",
+        "original_png_sha256": "613bf7dd4810b0471223d0fac6e9fcd200a8c92b83a3d903e248ff0875a739c8"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-05-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 277553,
+      "sha256": "8e8815d087be3e3d5f4a2033442d2a067cfa8ba8acf497b103dd4d8f289d5962",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-05-hd-b-v1.png",
+      "prompt": "kao/page-00-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 5,
+        "asset": "kao-05-hd-b-v1.png",
+        "asset_sha256": "8e8815d087be3e3d5f4a2033442d2a067cfa8ba8acf497b103dd4d8f289d5962",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-00-hd-b-v1.png",
+        "atlas_sha256": "aead3caa7b2eb018fc7758f3d72459dfcc2059c2c45f40c4f0d47c6b8b405b8b",
+        "prompt": "page-00-hd-b-v1.prompt.txt",
+        "prompt_sha256": "8b1d06381a6df3127511ad6dcff3e08dbaa667bbfa5e79fee7dd7639287963e6",
+        "crop_xyxy": [
+          836,
+          418,
+          1254,
+          834
+        ],
+        "black_padding_xy": [
+          0,
+          1
+        ],
+        "original": "kao-05-original.png",
+        "original_png_sha256": "6f118e3f9f648cd9a128eaee5d4cbdae99176e7f8567bd63af74187cba25c864"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-06-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 294907,
+      "sha256": "9ab5dffb6f5601ffca3361af0ff9726b04cb7053185d1a65fec52595c788df5f",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-06-hd-b-v1.png",
+      "prompt": "kao/page-00-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 6,
+        "asset": "kao-06-hd-b-v1.png",
+        "asset_sha256": "9ab5dffb6f5601ffca3361af0ff9726b04cb7053185d1a65fec52595c788df5f",
+        "size": [
+          420,
+          420
+        ],
+        "atlas": "page-00-hd-b-v1.png",
+        "atlas_sha256": "aead3caa7b2eb018fc7758f3d72459dfcc2059c2c45f40c4f0d47c6b8b405b8b",
+        "prompt": "page-00-hd-b-v1.prompt.txt",
+        "prompt_sha256": "8b1d06381a6df3127511ad6dcff3e08dbaa667bbfa5e79fee7dd7639287963e6",
+        "crop_xyxy": [
+          0,
+          834,
+          418,
+          1254
+        ],
+        "black_padding_xy": [
+          1,
+          0
+        ],
+        "original": "kao-06-original.png",
+        "original_png_sha256": "a35c1d4b49d94d6d8362fc5a5a5ede05b6f554e5212cc9f25da2bfe868f711c3"
+      },
+      "size": [
+        420,
+        420
+      ]
+    },
+    {
+      "path": "kao/selected/kao-07-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 286848,
+      "sha256": "80b7b3fb50576e7d9d785af90e4f0187710771bbe50f56b6fbe7afee0e5757e9",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-07-hd-b-v1.png",
+      "prompt": "kao/page-00-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 7,
+        "asset": "kao-07-hd-b-v1.png",
+        "asset_sha256": "80b7b3fb50576e7d9d785af90e4f0187710771bbe50f56b6fbe7afee0e5757e9",
+        "size": [
+          420,
+          420
+        ],
+        "atlas": "page-00-hd-b-v1.png",
+        "atlas_sha256": "aead3caa7b2eb018fc7758f3d72459dfcc2059c2c45f40c4f0d47c6b8b405b8b",
+        "prompt": "page-00-hd-b-v1.prompt.txt",
+        "prompt_sha256": "8b1d06381a6df3127511ad6dcff3e08dbaa667bbfa5e79fee7dd7639287963e6",
+        "crop_xyxy": [
+          418,
+          834,
+          836,
+          1254
+        ],
+        "black_padding_xy": [
+          1,
+          0
+        ],
+        "original": "kao-07-original.png",
+        "original_png_sha256": "3baab76e85a3e5939b9823b406b86eea48315bede126661738a6373d21f1774d"
+      },
+      "size": [
+        420,
+        420
+      ]
+    },
+    {
+      "path": "kao/selected/kao-08-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 275095,
+      "sha256": "aa9ad085dfd8db10edd3591d231ed3e3af93d02176ad5be61d731e7365fe7b1a",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-08-hd-b-v1.png",
+      "prompt": "kao/page-00-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 8,
+        "asset": "kao-08-hd-b-v1.png",
+        "asset_sha256": "aa9ad085dfd8db10edd3591d231ed3e3af93d02176ad5be61d731e7365fe7b1a",
+        "size": [
+          420,
+          420
+        ],
+        "atlas": "page-00-hd-b-v1.png",
+        "atlas_sha256": "aead3caa7b2eb018fc7758f3d72459dfcc2059c2c45f40c4f0d47c6b8b405b8b",
+        "prompt": "page-00-hd-b-v1.prompt.txt",
+        "prompt_sha256": "8b1d06381a6df3127511ad6dcff3e08dbaa667bbfa5e79fee7dd7639287963e6",
+        "crop_xyxy": [
+          836,
+          834,
+          1254,
+          1254
+        ],
+        "black_padding_xy": [
+          1,
+          0
+        ],
+        "original": "kao-08-original.png",
+        "original_png_sha256": "ff7d9974f4d70cebef13abfc68b3bef86ddc63d0a42b97e356dedebcaa9a3d10"
+      },
+      "size": [
+        420,
+        420
+      ]
+    },
+    {
+      "path": "kao/selected/kao-09-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 290051,
+      "sha256": "9ec2eec1885c66c42d390b2600f1b1fcfd9f5c53f4372fd6ab56747c503de6f8",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-09-hd-b-v1.png",
+      "prompt": "kao/page-01-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 9,
+        "asset": "kao-09-hd-b-v1.png",
+        "asset_sha256": "9ec2eec1885c66c42d390b2600f1b1fcfd9f5c53f4372fd6ab56747c503de6f8",
+        "size": [
+          411,
+          411
+        ],
+        "atlas": "page-01-hd-b-v1.png",
+        "atlas_sha256": "0875cff3e1aa776b87b89c4ba311e1b2b492b74edbdf377521a8dd1d54d737e8",
+        "prompt": "page-01-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          0,
+          411,
+          397
+        ],
+        "black_padding_xy": [
+          0,
+          7
+        ],
+        "original": "kao-09-original.png",
+        "original_png_sha256": "7689341d531afcb8c06aec8556724fc77fa1243787055024af3086d42686b802"
+      },
+      "size": [
+        411,
+        411
+      ]
+    },
+    {
+      "path": "kao/selected/kao-10-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 301124,
+      "sha256": "df7e73ee30898e51e45b35a1537a490d3f308e12d86b84e9aa756ce4a24c26b3",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-10-hd-b-v1.png",
+      "prompt": "kao/page-01-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 10,
+        "asset": "kao-10-hd-b-v1.png",
+        "asset_sha256": "df7e73ee30898e51e45b35a1537a490d3f308e12d86b84e9aa756ce4a24c26b3",
+        "size": [
+          408,
+          408
+        ],
+        "atlas": "page-01-hd-b-v1.png",
+        "atlas_sha256": "0875cff3e1aa776b87b89c4ba311e1b2b492b74edbdf377521a8dd1d54d737e8",
+        "prompt": "page-01-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          411,
+          0,
+          819,
+          397
+        ],
+        "black_padding_xy": [
+          0,
+          5
+        ],
+        "original": "kao-10-original.png",
+        "original_png_sha256": "a2353286bfcd9e8bcb850b3faee276ab09811f35000e32e7b192d3e94fcb6456"
+      },
+      "size": [
+        408,
+        408
+      ]
+    },
+    {
+      "path": "kao/selected/kao-11-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 316333,
+      "sha256": "9f58393ce3aa6a4ed5c5a7e7bba703bc8776da2b9ce842adea7aeeab8c90c5aa",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-11-hd-b-v1.png",
+      "prompt": "kao/page-01-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 11,
+        "asset": "kao-11-hd-b-v1.png",
+        "asset_sha256": "9f58393ce3aa6a4ed5c5a7e7bba703bc8776da2b9ce842adea7aeeab8c90c5aa",
+        "size": [
+          435,
+          435
+        ],
+        "atlas": "page-01-hd-b-v1.png",
+        "atlas_sha256": "0875cff3e1aa776b87b89c4ba311e1b2b492b74edbdf377521a8dd1d54d737e8",
+        "prompt": "page-01-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          819,
+          0,
+          1254,
+          397
+        ],
+        "black_padding_xy": [
+          0,
+          19
+        ],
+        "original": "kao-11-original.png",
+        "original_png_sha256": "09d6277055854d63887a32535ba30387f50cc30d7db290bf06649e1a252990d1"
+      },
+      "size": [
+        435,
+        435
+      ]
+    },
+    {
+      "path": "kao/selected/kao-12-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 224663,
+      "sha256": "38d9dd42d5cbf16a52263eaad9b686efe7ba29b359c62e5502d4e93e704f3339",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-12-hd-b-v1.png",
+      "prompt": "kao/page-01-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 12,
+        "asset": "kao-12-hd-b-v1.png",
+        "asset_sha256": "38d9dd42d5cbf16a52263eaad9b686efe7ba29b359c62e5502d4e93e704f3339",
+        "size": [
+          411,
+          411
+        ],
+        "atlas": "page-01-hd-b-v1.png",
+        "atlas_sha256": "0875cff3e1aa776b87b89c4ba311e1b2b492b74edbdf377521a8dd1d54d737e8",
+        "prompt": "page-01-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          397,
+          411,
+          789
+        ],
+        "black_padding_xy": [
+          0,
+          9
+        ],
+        "original": "kao-12-original.png",
+        "original_png_sha256": "a5a41e5030ea51aea47cb2820cff2c4dd8f55544e0115fbdb64a24a6cbfaf26d"
+      },
+      "size": [
+        411,
+        411
+      ]
+    },
+    {
+      "path": "kao/selected/kao-13-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 272611,
+      "sha256": "1054b719f6a7b45927f3e1807e9df4a52e5d40bdb8a051132b560ba0936946d4",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-13-hd-b-v1.png",
+      "prompt": "kao/page-01-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 13,
+        "asset": "kao-13-hd-b-v1.png",
+        "asset_sha256": "1054b719f6a7b45927f3e1807e9df4a52e5d40bdb8a051132b560ba0936946d4",
+        "size": [
+          408,
+          408
+        ],
+        "atlas": "page-01-hd-b-v1.png",
+        "atlas_sha256": "0875cff3e1aa776b87b89c4ba311e1b2b492b74edbdf377521a8dd1d54d737e8",
+        "prompt": "page-01-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          411,
+          397,
+          819,
+          789
+        ],
+        "black_padding_xy": [
+          0,
+          8
+        ],
+        "original": "kao-13-original.png",
+        "original_png_sha256": "2b26389365d19c2edabeada849469be69a2850a73be40f051aa64c85d8d38b41"
+      },
+      "size": [
+        408,
+        408
+      ]
+    },
+    {
+      "path": "kao/selected/kao-14-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 276166,
+      "sha256": "dc32e527cacba16e0c0981e472ed7f1749ce9c88fba746be727a55018161b42e",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-14-hd-b-v1.png",
+      "prompt": "kao/page-01-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 14,
+        "asset": "kao-14-hd-b-v1.png",
+        "asset_sha256": "dc32e527cacba16e0c0981e472ed7f1749ce9c88fba746be727a55018161b42e",
+        "size": [
+          435,
+          435
+        ],
+        "atlas": "page-01-hd-b-v1.png",
+        "atlas_sha256": "0875cff3e1aa776b87b89c4ba311e1b2b492b74edbdf377521a8dd1d54d737e8",
+        "prompt": "page-01-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          819,
+          397,
+          1254,
+          789
+        ],
+        "black_padding_xy": [
+          0,
+          21
+        ],
+        "original": "kao-14-original.png",
+        "original_png_sha256": "8beac67aadcb3ed5cbb6105b5eac795c27b374ff767bbfbfcd4ff80e13937502"
+      },
+      "size": [
+        435,
+        435
+      ]
+    },
+    {
+      "path": "kao/selected/kao-15-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 274174,
+      "sha256": "54148f6bcb8facbfce2c507723c7bcf262cd97a9843c84245c483330712824f5",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-15-hd-b-v1.png",
+      "prompt": "kao/page-01-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 15,
+        "asset": "kao-15-hd-b-v1.png",
+        "asset_sha256": "54148f6bcb8facbfce2c507723c7bcf262cd97a9843c84245c483330712824f5",
+        "size": [
+          465,
+          465
+        ],
+        "atlas": "page-01-hd-b-v1.png",
+        "atlas_sha256": "0875cff3e1aa776b87b89c4ba311e1b2b492b74edbdf377521a8dd1d54d737e8",
+        "prompt": "page-01-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          789,
+          411,
+          1254
+        ],
+        "black_padding_xy": [
+          27,
+          0
+        ],
+        "original": "kao-15-original.png",
+        "original_png_sha256": "1706fa55ae6f55d5e050c56e7debc0547eac2be62f7bef13a960408ad7de96bb"
+      },
+      "size": [
+        465,
+        465
+      ]
+    },
+    {
+      "path": "kao/selected/kao-16-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 372271,
+      "sha256": "cd58a99ff0c1867e6b552a64fb0c14f4136db112236fc811b150073e6bc5c2b8",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-16-hd-b-v1.png",
+      "prompt": "kao/page-01-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 16,
+        "asset": "kao-16-hd-b-v1.png",
+        "asset_sha256": "cd58a99ff0c1867e6b552a64fb0c14f4136db112236fc811b150073e6bc5c2b8",
+        "size": [
+          465,
+          465
+        ],
+        "atlas": "page-01-hd-b-v1.png",
+        "atlas_sha256": "0875cff3e1aa776b87b89c4ba311e1b2b492b74edbdf377521a8dd1d54d737e8",
+        "prompt": "page-01-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          411,
+          789,
+          819,
+          1254
+        ],
+        "black_padding_xy": [
+          28,
+          0
+        ],
+        "original": "kao-16-original.png",
+        "original_png_sha256": "81ae6e8c109a2c41ae5ed9621faffa4d55bee28c61250f0aae55a9c3e25e00da"
+      },
+      "size": [
+        465,
+        465
+      ]
+    },
+    {
+      "path": "kao/selected/kao-17-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 348545,
+      "sha256": "9350c3f1e9af9334aab8422d86c33ac585c9452aca74a328fc4ecf55bbc3b025",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-17-hd-b-v1.png",
+      "prompt": "kao/page-01-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 17,
+        "asset": "kao-17-hd-b-v1.png",
+        "asset_sha256": "9350c3f1e9af9334aab8422d86c33ac585c9452aca74a328fc4ecf55bbc3b025",
+        "size": [
+          465,
+          465
+        ],
+        "atlas": "page-01-hd-b-v1.png",
+        "atlas_sha256": "0875cff3e1aa776b87b89c4ba311e1b2b492b74edbdf377521a8dd1d54d737e8",
+        "prompt": "page-01-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          819,
+          789,
+          1254,
+          1254
+        ],
+        "black_padding_xy": [
+          15,
+          0
+        ],
+        "original": "kao-17-original.png",
+        "original_png_sha256": "7dd997b81e912d8ca76491765ffb3040ca7188bf46a9ac4b1d3dad34e498d6f2"
+      },
+      "size": [
+        465,
+        465
+      ]
+    },
+    {
+      "path": "kao/selected/kao-18-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 303742,
+      "sha256": "cabc61577984c2f8fc904c62532376b30f5d7b84b7ac447b5f481c82bb55a4e3",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-18-hd-b-v1.png",
+      "prompt": "kao/page-02-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 18,
+        "asset": "kao-18-hd-b-v1.png",
+        "asset_sha256": "cabc61577984c2f8fc904c62532376b30f5d7b84b7ac447b5f481c82bb55a4e3",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-02-hd-b-v1.png",
+        "atlas_sha256": "70183ab47641cb53062e90034365589104c07ffd7bc34ab0289398adac0c3bbc",
+        "prompt": "page-02-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          0,
+          418,
+          417
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-18-original.png",
+        "original_png_sha256": "4c3ebab6c199930f619c1004a3af11b42d45d0242169a5f8e8a1885b0df29fab"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-19-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 298854,
+      "sha256": "512d68e969c352f2a1af6e8d9fcdca2b44053b129383d32ba750bd07f5876c94",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-19-hd-b-v1.png",
+      "prompt": "kao/page-02-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 19,
+        "asset": "kao-19-hd-b-v1.png",
+        "asset_sha256": "512d68e969c352f2a1af6e8d9fcdca2b44053b129383d32ba750bd07f5876c94",
+        "size": [
+          419,
+          419
+        ],
+        "atlas": "page-02-hd-b-v1.png",
+        "atlas_sha256": "70183ab47641cb53062e90034365589104c07ffd7bc34ab0289398adac0c3bbc",
+        "prompt": "page-02-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          0,
+          837,
+          417
+        ],
+        "black_padding_xy": [
+          0,
+          1
+        ],
+        "original": "kao-19-original.png",
+        "original_png_sha256": "32b86f4d286c14ea5f2a299a98eae3ac39f410bd3879dd1adfd6cc014d67ccd0"
+      },
+      "size": [
+        419,
+        419
+      ]
+    },
+    {
+      "path": "kao/selected/kao-20-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 301651,
+      "sha256": "439120747b675be673ad9b09f85353e467cc891e758b85055a1497b043704546",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-20-hd-b-v1.png",
+      "prompt": "kao/page-02-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 20,
+        "asset": "kao-20-hd-b-v1.png",
+        "asset_sha256": "439120747b675be673ad9b09f85353e467cc891e758b85055a1497b043704546",
+        "size": [
+          417,
+          417
+        ],
+        "atlas": "page-02-hd-b-v1.png",
+        "atlas_sha256": "70183ab47641cb53062e90034365589104c07ffd7bc34ab0289398adac0c3bbc",
+        "prompt": "page-02-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          837,
+          0,
+          1254,
+          417
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-20-original.png",
+        "original_png_sha256": "03f977a5ee300b7fcf4774e387e2bfb8217193cea2e1d131784a9629a9b7eba8"
+      },
+      "size": [
+        417,
+        417
+      ]
+    },
+    {
+      "path": "kao/selected/kao-21-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 368314,
+      "sha256": "32fbc1edf78d1fa6625c29a29f7a0857176ff70b3b2c24364efc74e97cbb2241",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-21-hd-b-v1.png",
+      "prompt": "kao/page-02-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 21,
+        "asset": "kao-21-hd-b-v1.png",
+        "asset_sha256": "32fbc1edf78d1fa6625c29a29f7a0857176ff70b3b2c24364efc74e97cbb2241",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-02-hd-b-v1.png",
+        "atlas_sha256": "70183ab47641cb53062e90034365589104c07ffd7bc34ab0289398adac0c3bbc",
+        "prompt": "page-02-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          417,
+          418,
+          825
+        ],
+        "black_padding_xy": [
+          0,
+          5
+        ],
+        "original": "kao-21-original.png",
+        "original_png_sha256": "b75cee30b77c25831ce746d326ad463909ace4dba58a2ca9ba2c8dc64535e0e7"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-22-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 295870,
+      "sha256": "6bf080310d862afd03ed64da0d6808c3ef840da31b6ab150a8159b764ae2a471",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-22-hd-b-v1.png",
+      "prompt": "kao/page-02-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 22,
+        "asset": "kao-22-hd-b-v1.png",
+        "asset_sha256": "6bf080310d862afd03ed64da0d6808c3ef840da31b6ab150a8159b764ae2a471",
+        "size": [
+          419,
+          419
+        ],
+        "atlas": "page-02-hd-b-v1.png",
+        "atlas_sha256": "70183ab47641cb53062e90034365589104c07ffd7bc34ab0289398adac0c3bbc",
+        "prompt": "page-02-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          417,
+          837,
+          825
+        ],
+        "black_padding_xy": [
+          0,
+          5
+        ],
+        "original": "kao-22-original.png",
+        "original_png_sha256": "285151b7962cf4e45d64066658588ea294d9448f00dc1b491c4a383b3f37d9ad"
+      },
+      "size": [
+        419,
+        419
+      ]
+    },
+    {
+      "path": "kao/selected/kao-23-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 285236,
+      "sha256": "7d81e06bce870f986dadf74c5b8cbfd9a67787c92de9a78cc1c71b2ef4160b98",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-23-hd-b-v1.png",
+      "prompt": "kao/page-02-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 23,
+        "asset": "kao-23-hd-b-v1.png",
+        "asset_sha256": "7d81e06bce870f986dadf74c5b8cbfd9a67787c92de9a78cc1c71b2ef4160b98",
+        "size": [
+          417,
+          417
+        ],
+        "atlas": "page-02-hd-b-v1.png",
+        "atlas_sha256": "70183ab47641cb53062e90034365589104c07ffd7bc34ab0289398adac0c3bbc",
+        "prompt": "page-02-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          837,
+          417,
+          1254,
+          825
+        ],
+        "black_padding_xy": [
+          0,
+          4
+        ],
+        "original": "kao-23-original.png",
+        "original_png_sha256": "1d5c2d3352dc7926ef53efd279fdacd30b92d230d64e02e66b38477deffa94bc"
+      },
+      "size": [
+        417,
+        417
+      ]
+    },
+    {
+      "path": "kao/selected/kao-24-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 299757,
+      "sha256": "9723a33869d8acb334a51abc2dfd806f18c2d27a3949ff9a2eca8b52fe259c6c",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-24-hd-b-v1.png",
+      "prompt": "kao/page-02-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 24,
+        "asset": "kao-24-hd-b-v1.png",
+        "asset_sha256": "9723a33869d8acb334a51abc2dfd806f18c2d27a3949ff9a2eca8b52fe259c6c",
+        "size": [
+          429,
+          429
+        ],
+        "atlas": "page-02-hd-b-v1.png",
+        "atlas_sha256": "70183ab47641cb53062e90034365589104c07ffd7bc34ab0289398adac0c3bbc",
+        "prompt": "page-02-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          825,
+          418,
+          1254
+        ],
+        "black_padding_xy": [
+          5,
+          0
+        ],
+        "original": "kao-24-original.png",
+        "original_png_sha256": "8607c352c5ff3e9fa655b390cf840f098b1a6edcc9f7b114be6601303fa06079"
+      },
+      "size": [
+        429,
+        429
+      ]
+    },
+    {
+      "path": "kao/selected/kao-25-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 295952,
+      "sha256": "5058e0c29c2a56d692a992f32d7a6833fb659e7faf9fe099e7e034e5204ec560",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-25-hd-b-v1.png",
+      "prompt": "kao/page-02-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 25,
+        "asset": "kao-25-hd-b-v1.png",
+        "asset_sha256": "5058e0c29c2a56d692a992f32d7a6833fb659e7faf9fe099e7e034e5204ec560",
+        "size": [
+          429,
+          429
+        ],
+        "atlas": "page-02-hd-b-v1.png",
+        "atlas_sha256": "70183ab47641cb53062e90034365589104c07ffd7bc34ab0289398adac0c3bbc",
+        "prompt": "page-02-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          825,
+          837,
+          1254
+        ],
+        "black_padding_xy": [
+          5,
+          0
+        ],
+        "original": "kao-25-original.png",
+        "original_png_sha256": "af0a91863a2bbbe76f5bead7fff22bdbcb7c7c6f6c198edb95a61ac1103aff07"
+      },
+      "size": [
+        429,
+        429
+      ]
+    },
+    {
+      "path": "kao/selected/kao-26-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 337953,
+      "sha256": "3e9aa1568e39974178318b888c9b90b12cfbeaa4547c1a35e2c1d79d12c3e690",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-26-hd-b-v1.png",
+      "prompt": "kao/page-02-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 26,
+        "asset": "kao-26-hd-b-v1.png",
+        "asset_sha256": "3e9aa1568e39974178318b888c9b90b12cfbeaa4547c1a35e2c1d79d12c3e690",
+        "size": [
+          429,
+          429
+        ],
+        "atlas": "page-02-hd-b-v1.png",
+        "atlas_sha256": "70183ab47641cb53062e90034365589104c07ffd7bc34ab0289398adac0c3bbc",
+        "prompt": "page-02-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          837,
+          825,
+          1254,
+          1254
+        ],
+        "black_padding_xy": [
+          6,
+          0
+        ],
+        "original": "kao-26-original.png",
+        "original_png_sha256": "2dc22b224555d404ae2fd45676a3f5e509f350c66943f5c3eeb91c048b6c700d"
+      },
+      "size": [
+        429,
+        429
+      ]
+    },
+    {
+      "path": "kao/selected/kao-27-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 314824,
+      "sha256": "f00fbbc0b33f1425ec7424e6933517e3bff0949b965f65b83bee01234c887f14",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-27-hd-b-v1.png",
+      "prompt": "kao/page-03-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 27,
+        "asset": "kao-27-hd-b-v1.png",
+        "asset_sha256": "f00fbbc0b33f1425ec7424e6933517e3bff0949b965f65b83bee01234c887f14",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-03-hd-b-v1.png",
+        "atlas_sha256": "a9bd821381e073aacd6cd53d2eaf9a4729aea786130cd14c4e03144d23050fda",
+        "prompt": "page-03-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          0,
+          418,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-27-original.png",
+        "original_png_sha256": "10362716bdde6dec0a1827a8e77a36f81349903079b596ffb7c28bb9c7b16767"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-28-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 312178,
+      "sha256": "e9ff851dd62b2077b01e8154aa3bd5377bf91941130165e46ee6987b54464a51",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-28-hd-b-v1.png",
+      "prompt": "kao/page-03-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 28,
+        "asset": "kao-28-hd-b-v1.png",
+        "asset_sha256": "e9ff851dd62b2077b01e8154aa3bd5377bf91941130165e46ee6987b54464a51",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-03-hd-b-v1.png",
+        "atlas_sha256": "a9bd821381e073aacd6cd53d2eaf9a4729aea786130cd14c4e03144d23050fda",
+        "prompt": "page-03-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          0,
+          836,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-28-original.png",
+        "original_png_sha256": "517d7d9b8ad89e3effd7b771f02897b50e97629cf96e6082b60390588d4f4de2"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-29-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 262653,
+      "sha256": "bd80282e60643af4c7c843539b114055abed200fba45d33ac34d14d973404461",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-29-hd-b-v1.png",
+      "prompt": "kao/page-03-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 29,
+        "asset": "kao-29-hd-b-v1.png",
+        "asset_sha256": "bd80282e60643af4c7c843539b114055abed200fba45d33ac34d14d973404461",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-03-hd-b-v1.png",
+        "atlas_sha256": "a9bd821381e073aacd6cd53d2eaf9a4729aea786130cd14c4e03144d23050fda",
+        "prompt": "page-03-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          0,
+          1254,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-29-original.png",
+        "original_png_sha256": "e6f13c1bd02717b4a824a22395d1fdbb41b886d9b6deeb01be3154a1c2feae5a"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-30-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 287054,
+      "sha256": "1396465b2906658e0068bd81dd84c326997bee4769730f6c6af1f17b0514da10",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-30-hd-b-v1.png",
+      "prompt": "kao/page-03-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 30,
+        "asset": "kao-30-hd-b-v1.png",
+        "asset_sha256": "1396465b2906658e0068bd81dd84c326997bee4769730f6c6af1f17b0514da10",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-03-hd-b-v1.png",
+        "atlas_sha256": "a9bd821381e073aacd6cd53d2eaf9a4729aea786130cd14c4e03144d23050fda",
+        "prompt": "page-03-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          418,
+          418,
+          836
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-30-original.png",
+        "original_png_sha256": "d60a61245dd5fcaea2eb7b11e58e2b7040632775da0ef61ea8350eef6c1655cc"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-31-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 328786,
+      "sha256": "a94c54dc4b3f9662cafc74374bd425fac87f69e2bf4041f31fad6fe2358c59c8",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-31-hd-b-v1.png",
+      "prompt": "kao/page-03-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 31,
+        "asset": "kao-31-hd-b-v1.png",
+        "asset_sha256": "a94c54dc4b3f9662cafc74374bd425fac87f69e2bf4041f31fad6fe2358c59c8",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-03-hd-b-v1.png",
+        "atlas_sha256": "a9bd821381e073aacd6cd53d2eaf9a4729aea786130cd14c4e03144d23050fda",
+        "prompt": "page-03-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          418,
+          836,
+          836
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-31-original.png",
+        "original_png_sha256": "0e6cfef751d494a76ec739173b36725c9a5d2ac291b633b263e07e80c81e135f"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-32-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 287175,
+      "sha256": "6bac76c26866ec124b2d06cecec182f00749bc530c939469e8cc3607211e8bb8",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-32-hd-b-v1.png",
+      "prompt": "kao/page-03-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 32,
+        "asset": "kao-32-hd-b-v1.png",
+        "asset_sha256": "6bac76c26866ec124b2d06cecec182f00749bc530c939469e8cc3607211e8bb8",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-03-hd-b-v1.png",
+        "atlas_sha256": "a9bd821381e073aacd6cd53d2eaf9a4729aea786130cd14c4e03144d23050fda",
+        "prompt": "page-03-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          418,
+          1254,
+          836
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-32-original.png",
+        "original_png_sha256": "32354e81d375b11db3a2ad8aca097b1750d8708a872ecb1f520507b047c492aa"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-33-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 303540,
+      "sha256": "11ed48e7e9497c7040f960c93f86913995ae9641ae05b0cb3f00c3fb5758f9b8",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-33-hd-b-v1.png",
+      "prompt": "kao/page-03-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 33,
+        "asset": "kao-33-hd-b-v1.png",
+        "asset_sha256": "11ed48e7e9497c7040f960c93f86913995ae9641ae05b0cb3f00c3fb5758f9b8",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-03-hd-b-v1.png",
+        "atlas_sha256": "a9bd821381e073aacd6cd53d2eaf9a4729aea786130cd14c4e03144d23050fda",
+        "prompt": "page-03-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          836,
+          418,
+          1254
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-33-original.png",
+        "original_png_sha256": "3f797d2b29c658b734a6cd679bf8bf05a6ec832e16f542d5d3f2de6bc2dfa728"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-34-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 372282,
+      "sha256": "8e3848a53e9f7045c6e51aba9e487fcfe3cc88c8e1da64a1a6d7fceb4e2278f3",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-34-hd-b-v1.png",
+      "prompt": "kao/page-03-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 34,
+        "asset": "kao-34-hd-b-v1.png",
+        "asset_sha256": "8e3848a53e9f7045c6e51aba9e487fcfe3cc88c8e1da64a1a6d7fceb4e2278f3",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-03-hd-b-v1.png",
+        "atlas_sha256": "a9bd821381e073aacd6cd53d2eaf9a4729aea786130cd14c4e03144d23050fda",
+        "prompt": "page-03-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          836,
+          836,
+          1254
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-34-original.png",
+        "original_png_sha256": "7c3e0a987a8992e3969bc27fd97e3c2fa7c1762ed2b26f8f2915e63b74258a41"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-35-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 269704,
+      "sha256": "7077ff5868eb0e02b1a7260b39bded62ca81050e2c7c3d465570661bfe92e0dd",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-35-hd-b-v1.png",
+      "prompt": "kao/page-03-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 35,
+        "asset": "kao-35-hd-b-v1.png",
+        "asset_sha256": "7077ff5868eb0e02b1a7260b39bded62ca81050e2c7c3d465570661bfe92e0dd",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-03-hd-b-v1.png",
+        "atlas_sha256": "a9bd821381e073aacd6cd53d2eaf9a4729aea786130cd14c4e03144d23050fda",
+        "prompt": "page-03-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          836,
+          1254,
+          1254
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-35-original.png",
+        "original_png_sha256": "4cc263355414d39d1fe0791786ba1bb71e350037fedc67c19451e6f756cd9d97"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-36-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 252047,
+      "sha256": "162d505bbae3ac789146768e599621acdebb65668c91087763866fbd29cb9f2a",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-36-hd-b-v1.png",
+      "prompt": "kao/page-04-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 36,
+        "asset": "kao-36-hd-b-v1.png",
+        "asset_sha256": "162d505bbae3ac789146768e599621acdebb65668c91087763866fbd29cb9f2a",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-04-hd-b-v1.png",
+        "atlas_sha256": "dc2fa978801138568e35d50b8604275162e03ca23e46604282e37c4fb431157f",
+        "prompt": "page-04-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          0,
+          418,
+          365
+        ],
+        "black_padding_xy": [
+          0,
+          26
+        ],
+        "original": "kao-36-original.png",
+        "original_png_sha256": "48059d739e6fc0ca94b7924ea0ed06cde36ff4052803893740ae75ca1a81ef15"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-37-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 297717,
+      "sha256": "5f61c2335110c96295911f63a98f133e8b9b517bfe779711ff6e5684ef2bbf8c",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-37-hd-b-v1.png",
+      "prompt": "kao/page-04-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 37,
+        "asset": "kao-37-hd-b-v1.png",
+        "asset_sha256": "5f61c2335110c96295911f63a98f133e8b9b517bfe779711ff6e5684ef2bbf8c",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-04-hd-b-v1.png",
+        "atlas_sha256": "dc2fa978801138568e35d50b8604275162e03ca23e46604282e37c4fb431157f",
+        "prompt": "page-04-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          0,
+          836,
+          377
+        ],
+        "black_padding_xy": [
+          0,
+          20
+        ],
+        "original": "kao-37-original.png",
+        "original_png_sha256": "eb7c647002f38be12daf2b0cda7352a1cdea01d1ea3c650f4fae6f2836c0e1fa"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-38-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 303404,
+      "sha256": "256d0b9c2cedf39c3ffb49c5fadc8b30547bd6a7742f6542f9fa4577b94a1f3f",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-38-hd-b-v1.png",
+      "prompt": "kao/page-04-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 38,
+        "asset": "kao-38-hd-b-v1.png",
+        "asset_sha256": "256d0b9c2cedf39c3ffb49c5fadc8b30547bd6a7742f6542f9fa4577b94a1f3f",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-04-hd-b-v1.png",
+        "atlas_sha256": "dc2fa978801138568e35d50b8604275162e03ca23e46604282e37c4fb431157f",
+        "prompt": "page-04-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          0,
+          1254,
+          389
+        ],
+        "black_padding_xy": [
+          0,
+          14
+        ],
+        "original": "kao-38-original.png",
+        "original_png_sha256": "1a2928c873fb79275cdb2db1b7e73f0e2bc18a8ede32390c50e7ab2b36b12d7a"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-39-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 330058,
+      "sha256": "dec2995c0e7127e5c7fee9f15526a72a02d18d3089821297c4850aa029e088a0",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-39-hd-b-v1.png",
+      "prompt": "kao/page-04-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 39,
+        "asset": "kao-39-hd-b-v1.png",
+        "asset_sha256": "dec2995c0e7127e5c7fee9f15526a72a02d18d3089821297c4850aa029e088a0",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-04-hd-b-v1.png",
+        "atlas_sha256": "dc2fa978801138568e35d50b8604275162e03ca23e46604282e37c4fb431157f",
+        "prompt": "page-04-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          365,
+          418,
+          783
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-39-original.png",
+        "original_png_sha256": "7d872eb783b2fba40b934ead9c508aa62ef00f4fef88ee25951d79da983f26ef"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-40-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 291241,
+      "sha256": "557308a6b16d57c9d7c3675ef5644b82141b1651b02dc7429c787b6c8cfe1929",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-40-hd-b-v1.png",
+      "prompt": "kao/page-04-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 40,
+        "asset": "kao-40-hd-b-v1.png",
+        "asset_sha256": "557308a6b16d57c9d7c3675ef5644b82141b1651b02dc7429c787b6c8cfe1929",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-04-hd-b-v1.png",
+        "atlas_sha256": "dc2fa978801138568e35d50b8604275162e03ca23e46604282e37c4fb431157f",
+        "prompt": "page-04-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          377,
+          836,
+          783
+        ],
+        "black_padding_xy": [
+          0,
+          6
+        ],
+        "original": "kao-40-original.png",
+        "original_png_sha256": "95a1879b9292d79a1039f1283b65af05531f1642a70407c31de0e821a15987e0"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-41-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 262942,
+      "sha256": "d5d80f9710272ab876ece3478af484ffaa339641d83066e0a9670dfd67c45a43",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-41-hd-b-v1.png",
+      "prompt": "kao/page-04-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 41,
+        "asset": "kao-41-hd-b-v1.png",
+        "asset_sha256": "d5d80f9710272ab876ece3478af484ffaa339641d83066e0a9670dfd67c45a43",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-04-hd-b-v1.png",
+        "atlas_sha256": "dc2fa978801138568e35d50b8604275162e03ca23e46604282e37c4fb431157f",
+        "prompt": "page-04-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          389,
+          1254,
+          783
+        ],
+        "black_padding_xy": [
+          0,
+          12
+        ],
+        "original": "kao-41-original.png",
+        "original_png_sha256": "c9e539260e560f59f0b6fb4266ac24e10358d69806a18a19cd49460851fc8916"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-42-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 325491,
+      "sha256": "7c41eb4aa50beec70dd7245fd7fd3ab60103a800b5123f440e1ec69bf7218bf6",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-42-hd-b-v1.png",
+      "prompt": "kao/page-04-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 42,
+        "asset": "kao-42-hd-b-v1.png",
+        "asset_sha256": "7c41eb4aa50beec70dd7245fd7fd3ab60103a800b5123f440e1ec69bf7218bf6",
+        "size": [
+          471,
+          471
+        ],
+        "atlas": "page-04-hd-b-v1.png",
+        "atlas_sha256": "dc2fa978801138568e35d50b8604275162e03ca23e46604282e37c4fb431157f",
+        "prompt": "page-04-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          783,
+          418,
+          1254
+        ],
+        "black_padding_xy": [
+          26,
+          0
+        ],
+        "original": "kao-42-original.png",
+        "original_png_sha256": "c48772bcfd799ba2e3c94ae9b0008353e112abf9cf5bb11b8102a771f7ae9193"
+      },
+      "size": [
+        471,
+        471
+      ]
+    },
+    {
+      "path": "kao/selected/kao-43-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 339550,
+      "sha256": "da75370005b2fcf9bbc4d54afd455b23756e1e823c2ed359fff407c45a5e17cf",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-43-hd-b-v1.png",
+      "prompt": "kao/page-04-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 43,
+        "asset": "kao-43-hd-b-v1.png",
+        "asset_sha256": "da75370005b2fcf9bbc4d54afd455b23756e1e823c2ed359fff407c45a5e17cf",
+        "size": [
+          471,
+          471
+        ],
+        "atlas": "page-04-hd-b-v1.png",
+        "atlas_sha256": "dc2fa978801138568e35d50b8604275162e03ca23e46604282e37c4fb431157f",
+        "prompt": "page-04-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          783,
+          836,
+          1254
+        ],
+        "black_padding_xy": [
+          26,
+          0
+        ],
+        "original": "kao-43-original.png",
+        "original_png_sha256": "8d10ecb29002c90b443eec34c3c30ad27eb9851f11a68fc06be53a82102e33a7"
+      },
+      "size": [
+        471,
+        471
+      ]
+    },
+    {
+      "path": "kao/selected/kao-44-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 340290,
+      "sha256": "5a7bc10a225efd3bcc65c69ff2cd825f886d5ce6f67ebc25490e22208530859f",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-44-hd-b-v1.png",
+      "prompt": "kao/page-04-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 44,
+        "asset": "kao-44-hd-b-v1.png",
+        "asset_sha256": "5a7bc10a225efd3bcc65c69ff2cd825f886d5ce6f67ebc25490e22208530859f",
+        "size": [
+          471,
+          471
+        ],
+        "atlas": "page-04-hd-b-v1.png",
+        "atlas_sha256": "dc2fa978801138568e35d50b8604275162e03ca23e46604282e37c4fb431157f",
+        "prompt": "page-04-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          783,
+          1254,
+          1254
+        ],
+        "black_padding_xy": [
+          26,
+          0
+        ],
+        "original": "kao-44-original.png",
+        "original_png_sha256": "d5a442ad910516671f37030536f1d5ebebf61f336c08f581c7008c03c89a0341"
+      },
+      "size": [
+        471,
+        471
+      ]
+    },
+    {
+      "path": "kao/selected/kao-45-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 295094,
+      "sha256": "21dcab850886dd91368171517d4862115b753c4cdd60c6728ab1890b8c8ffb49",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-45-hd-b-v1.png",
+      "prompt": "kao/page-05-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 45,
+        "asset": "kao-45-hd-b-v1.png",
+        "asset_sha256": "21dcab850886dd91368171517d4862115b753c4cdd60c6728ab1890b8c8ffb49",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-05-hd-b-v1.png",
+        "atlas_sha256": "d2b358f794b30c8772c31476225dc13338082fb50d7b8a39bc268d4ebffd9b45",
+        "prompt": "page-05-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          0,
+          418,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-45-original.png",
+        "original_png_sha256": "cc4684ef69bc4c391f04697cdcb4edcb526a90e8612e1fafcf62fe829a6f5b76"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-46-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 324504,
+      "sha256": "90e5ae6dbba6d92bc73a9b7fa1c9773854d73c1dd6e612380419da184ee0d1a2",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-46-hd-b-v1.png",
+      "prompt": "kao/page-05-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 46,
+        "asset": "kao-46-hd-b-v1.png",
+        "asset_sha256": "90e5ae6dbba6d92bc73a9b7fa1c9773854d73c1dd6e612380419da184ee0d1a2",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-05-hd-b-v1.png",
+        "atlas_sha256": "d2b358f794b30c8772c31476225dc13338082fb50d7b8a39bc268d4ebffd9b45",
+        "prompt": "page-05-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          0,
+          836,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-46-original.png",
+        "original_png_sha256": "181db7b310e0eabff1843007ab2a198b8923565bffd91c45d288726cbe5dcec6"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-47-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 263833,
+      "sha256": "ecafef052b6b6d6d2f3f67704c6a42adef689bb2d3ab668af85decce4d87a347",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-47-hd-b-v1.png",
+      "prompt": "kao/page-05-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 47,
+        "asset": "kao-47-hd-b-v1.png",
+        "asset_sha256": "ecafef052b6b6d6d2f3f67704c6a42adef689bb2d3ab668af85decce4d87a347",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-05-hd-b-v1.png",
+        "atlas_sha256": "d2b358f794b30c8772c31476225dc13338082fb50d7b8a39bc268d4ebffd9b45",
+        "prompt": "page-05-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          0,
+          1254,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-47-original.png",
+        "original_png_sha256": "d7f019b3b486bf468291dfafbfbedb6a6fad9c7860dca42e5f1846f74baa1b4c"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-48-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 257041,
+      "sha256": "5b0365e075658cece99b410726843fa92a22d696975705e96bcd4bba4022b0d4",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-48-hd-b-v1.png",
+      "prompt": "kao/page-05-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 48,
+        "asset": "kao-48-hd-b-v1.png",
+        "asset_sha256": "5b0365e075658cece99b410726843fa92a22d696975705e96bcd4bba4022b0d4",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-05-hd-b-v1.png",
+        "atlas_sha256": "d2b358f794b30c8772c31476225dc13338082fb50d7b8a39bc268d4ebffd9b45",
+        "prompt": "page-05-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          418,
+          418,
+          836
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-48-original.png",
+        "original_png_sha256": "f9695eb1d767500c2c31514fcf2c7a93dd0a10db2951b2787913843e197cbb30"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-49-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 264718,
+      "sha256": "9d3b5cee09492d7ccdb88c0c529119996109dd2d97d9b63ae697088215d950ba",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-49-hd-b-v1.png",
+      "prompt": "kao/page-05-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 49,
+        "asset": "kao-49-hd-b-v1.png",
+        "asset_sha256": "9d3b5cee09492d7ccdb88c0c529119996109dd2d97d9b63ae697088215d950ba",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-05-hd-b-v1.png",
+        "atlas_sha256": "d2b358f794b30c8772c31476225dc13338082fb50d7b8a39bc268d4ebffd9b45",
+        "prompt": "page-05-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          418,
+          836,
+          836
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-49-original.png",
+        "original_png_sha256": "b1ccf906312196d72729be39c635f4a6df188d8c9fabc3e2688edc3f5c0da566"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-50-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 290447,
+      "sha256": "e85f16399e4245e7c4bedca088180c67ecc88abd3d88f268fc9071ced0e8e406",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-50-hd-b-v1.png",
+      "prompt": "kao/page-05-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 50,
+        "asset": "kao-50-hd-b-v1.png",
+        "asset_sha256": "e85f16399e4245e7c4bedca088180c67ecc88abd3d88f268fc9071ced0e8e406",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-05-hd-b-v1.png",
+        "atlas_sha256": "d2b358f794b30c8772c31476225dc13338082fb50d7b8a39bc268d4ebffd9b45",
+        "prompt": "page-05-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          418,
+          1254,
+          836
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-50-original.png",
+        "original_png_sha256": "432968379188cdaea71de96159f43bcc03c74d87e2b3b89fc17598ce58233a75"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-51-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 360465,
+      "sha256": "749469327cdc160a0834cccc826889388d70c641e7c4a5dbd7f6010466979f19",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-51-hd-b-v1.png",
+      "prompt": "kao/page-05-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 51,
+        "asset": "kao-51-hd-b-v1.png",
+        "asset_sha256": "749469327cdc160a0834cccc826889388d70c641e7c4a5dbd7f6010466979f19",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-05-hd-b-v1.png",
+        "atlas_sha256": "d2b358f794b30c8772c31476225dc13338082fb50d7b8a39bc268d4ebffd9b45",
+        "prompt": "page-05-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          836,
+          418,
+          1254
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-51-original.png",
+        "original_png_sha256": "7656644a9408c3e43978ace975a53878868d7b2a123eecaf9991008eaf3a90b9"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-52-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 253052,
+      "sha256": "89d884bb5d333b7b8792287737c50d77d12807d079a2988d2716c6f712c197e5",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-52-hd-b-v1.png",
+      "prompt": "kao/page-05-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 52,
+        "asset": "kao-52-hd-b-v1.png",
+        "asset_sha256": "89d884bb5d333b7b8792287737c50d77d12807d079a2988d2716c6f712c197e5",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-05-hd-b-v1.png",
+        "atlas_sha256": "d2b358f794b30c8772c31476225dc13338082fb50d7b8a39bc268d4ebffd9b45",
+        "prompt": "page-05-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          836,
+          836,
+          1254
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-52-original.png",
+        "original_png_sha256": "14a9255f9dbb34a4c86fff8ab604a59979ab6a93b487a27111f3d91d04cd9c78"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-53-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 303580,
+      "sha256": "7356226a189530d0631a25a63a13200bdea6e597d0c773c22e66bdfab2807998",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-53-hd-b-v1.png",
+      "prompt": "kao/page-05-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 53,
+        "asset": "kao-53-hd-b-v1.png",
+        "asset_sha256": "7356226a189530d0631a25a63a13200bdea6e597d0c773c22e66bdfab2807998",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-05-hd-b-v1.png",
+        "atlas_sha256": "d2b358f794b30c8772c31476225dc13338082fb50d7b8a39bc268d4ebffd9b45",
+        "prompt": "page-05-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          836,
+          1254,
+          1254
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-53-original.png",
+        "original_png_sha256": "96615f7ed02252a867a7afe391769dba4a49fdff0ae253f8dedd06f19c514095"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-54-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 292168,
+      "sha256": "83df6cf1f022d59fcb320104ad8b1c5c741db51de47b9d056bd44fdeb26e91c2",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-54-hd-b-v1.png",
+      "prompt": "kao/page-06-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 54,
+        "asset": "kao-54-hd-b-v1.png",
+        "asset_sha256": "83df6cf1f022d59fcb320104ad8b1c5c741db51de47b9d056bd44fdeb26e91c2",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-06-hd-b-v1.png",
+        "atlas_sha256": "2641f4f2dce8eccdcac517e3a6d6fd92227975f6b45967c16b855873ab5889d4",
+        "prompt": "page-06-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          0,
+          418,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-54-original.png",
+        "original_png_sha256": "f638d750daae23855d4755afecd0e7688af74f2b1f7084ec53afaf745e058b1d"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-55-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 278652,
+      "sha256": "73321dc1c7ecba9e4a31fd398480a95e190e135d6ad8aa5748ab934e7bfac34e",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-55-hd-b-v1.png",
+      "prompt": "kao/page-06-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 55,
+        "asset": "kao-55-hd-b-v1.png",
+        "asset_sha256": "73321dc1c7ecba9e4a31fd398480a95e190e135d6ad8aa5748ab934e7bfac34e",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-06-hd-b-v1.png",
+        "atlas_sha256": "2641f4f2dce8eccdcac517e3a6d6fd92227975f6b45967c16b855873ab5889d4",
+        "prompt": "page-06-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          0,
+          836,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-55-original.png",
+        "original_png_sha256": "351c2c1b580561d7790a67efb2a6317f358323c46b015b4c8c22c4570af25147"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-56-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 276640,
+      "sha256": "b7ac207b111bd88ce4596079e1be5e63c5d8066420edd7afda3eab219cae5c83",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-56-hd-b-v1.png",
+      "prompt": "kao/page-06-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 56,
+        "asset": "kao-56-hd-b-v1.png",
+        "asset_sha256": "b7ac207b111bd88ce4596079e1be5e63c5d8066420edd7afda3eab219cae5c83",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-06-hd-b-v1.png",
+        "atlas_sha256": "2641f4f2dce8eccdcac517e3a6d6fd92227975f6b45967c16b855873ab5889d4",
+        "prompt": "page-06-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          0,
+          1254,
+          418
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-56-original.png",
+        "original_png_sha256": "126cb02e3622da1b8d88b9cf3a04d2666df38372df3b7a0ecba9c5135c6b46f0"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-57-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 262972,
+      "sha256": "e735a60908fc413e9b002122915a4b32a685c8bbca8dd443e99d711749706563",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-57-hd-b-v1.png",
+      "prompt": "kao/page-06-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 57,
+        "asset": "kao-57-hd-b-v1.png",
+        "asset_sha256": "e735a60908fc413e9b002122915a4b32a685c8bbca8dd443e99d711749706563",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-06-hd-b-v1.png",
+        "atlas_sha256": "2641f4f2dce8eccdcac517e3a6d6fd92227975f6b45967c16b855873ab5889d4",
+        "prompt": "page-06-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          418,
+          418,
+          836
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-57-original.png",
+        "original_png_sha256": "2ca91b5dae68141436a4be96016b90fa6a21cfac4ef4debe3f3570f7e81196dc"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-58-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 320508,
+      "sha256": "3f6c1c756d27e4e0ba2b64426f78d1d93588f793404f681dca671c1cff9bdb5b",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-58-hd-b-v1.png",
+      "prompt": "kao/page-06-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 58,
+        "asset": "kao-58-hd-b-v1.png",
+        "asset_sha256": "3f6c1c756d27e4e0ba2b64426f78d1d93588f793404f681dca671c1cff9bdb5b",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-06-hd-b-v1.png",
+        "atlas_sha256": "2641f4f2dce8eccdcac517e3a6d6fd92227975f6b45967c16b855873ab5889d4",
+        "prompt": "page-06-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          418,
+          836,
+          836
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-58-original.png",
+        "original_png_sha256": "90ab271045ac25a5bc73ee8338edf8361132093a4868468a0d6ea3bf6b62e954"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-59-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 323534,
+      "sha256": "c2567569f0a75f9c0b6e6903563052b70be3b15921ad39988e39da1c16f34c7f",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-59-hd-b-v1.png",
+      "prompt": "kao/page-06-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 59,
+        "asset": "kao-59-hd-b-v1.png",
+        "asset_sha256": "c2567569f0a75f9c0b6e6903563052b70be3b15921ad39988e39da1c16f34c7f",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-06-hd-b-v1.png",
+        "atlas_sha256": "2641f4f2dce8eccdcac517e3a6d6fd92227975f6b45967c16b855873ab5889d4",
+        "prompt": "page-06-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          418,
+          1254,
+          836
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-59-original.png",
+        "original_png_sha256": "be74228ef4adf0d98535ab3254aa76197227bc02997d839a4dd74132dc6acc7e"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-60-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 294065,
+      "sha256": "6c4b422821b9554b631786a6b697e23856e8d034faafa78b32e968701842eca7",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-60-hd-b-v1.png",
+      "prompt": "kao/page-06-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 60,
+        "asset": "kao-60-hd-b-v1.png",
+        "asset_sha256": "6c4b422821b9554b631786a6b697e23856e8d034faafa78b32e968701842eca7",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-06-hd-b-v1.png",
+        "atlas_sha256": "2641f4f2dce8eccdcac517e3a6d6fd92227975f6b45967c16b855873ab5889d4",
+        "prompt": "page-06-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          836,
+          418,
+          1254
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-60-original.png",
+        "original_png_sha256": "9e3c926aaaa54039fd3c92bd81f903277ebbc82475525af6223ceb1f72397d6b"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-61-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 276376,
+      "sha256": "7024d27e1ef440235ad923e714e118f13c5b5bde87331dd1879beb5c67579e83",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-61-hd-b-v1.png",
+      "prompt": "kao/page-06-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 61,
+        "asset": "kao-61-hd-b-v1.png",
+        "asset_sha256": "7024d27e1ef440235ad923e714e118f13c5b5bde87331dd1879beb5c67579e83",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-06-hd-b-v1.png",
+        "atlas_sha256": "2641f4f2dce8eccdcac517e3a6d6fd92227975f6b45967c16b855873ab5889d4",
+        "prompt": "page-06-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          418,
+          836,
+          836,
+          1254
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-61-original.png",
+        "original_png_sha256": "7ceac81a242d1b4794e68e3c1c8d15ac52175b2110eb07a56999dd8935d87d22"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-62-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 272904,
+      "sha256": "02a53fe1388e190ecd08858d79fb1d78e8d2670161599f16fbd8ffed6e03b50c",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-62-hd-b-v1.png",
+      "prompt": "kao/page-06-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 62,
+        "asset": "kao-62-hd-b-v1.png",
+        "asset_sha256": "02a53fe1388e190ecd08858d79fb1d78e8d2670161599f16fbd8ffed6e03b50c",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-06-hd-b-v1.png",
+        "atlas_sha256": "2641f4f2dce8eccdcac517e3a6d6fd92227975f6b45967c16b855873ab5889d4",
+        "prompt": "page-06-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          836,
+          836,
+          1254,
+          1254
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-62-original.png",
+        "original_png_sha256": "b6f17a017a54b8497fb9ea96fb4de5d896deb144898ef56fe16953cb81c9cf33"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-63-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 315163,
+      "sha256": "62d96b78e69914b2c053bdd6330da8bf0b6ae2bb5f79bb66ab4179dd5ddaee74",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-63-hd-b-v1.png",
+      "prompt": "kao/page-07-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 63,
+        "asset": "kao-63-hd-b-v1.png",
+        "asset_sha256": "62d96b78e69914b2c053bdd6330da8bf0b6ae2bb5f79bb66ab4179dd5ddaee74",
+        "size": [
+          419,
+          419
+        ],
+        "atlas": "page-07-hd-b-v1.png",
+        "atlas_sha256": "a2005c363fada30c09d651ca819106debde65321b38d3ef6f14e62edda0b3983",
+        "prompt": "page-07-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          0,
+          419,
+          403
+        ],
+        "black_padding_xy": [
+          0,
+          8
+        ],
+        "original": "kao-63-original.png",
+        "original_png_sha256": "89b627dedfbf0c546f2d70d0c13c763ae81986c488ef38dede2b9ce5dcbe6c65"
+      },
+      "size": [
+        419,
+        419
+      ]
+    },
+    {
+      "path": "kao/selected/kao-64-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 311928,
+      "sha256": "e4b6424bfb9b2c5d844d2154fb409b551f25953511b73d433b498121d61846e0",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-64-hd-b-v1.png",
+      "prompt": "kao/page-07-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 64,
+        "asset": "kao-64-hd-b-v1.png",
+        "asset_sha256": "e4b6424bfb9b2c5d844d2154fb409b551f25953511b73d433b498121d61846e0",
+        "size": [
+          419,
+          419
+        ],
+        "atlas": "page-07-hd-b-v1.png",
+        "atlas_sha256": "a2005c363fada30c09d651ca819106debde65321b38d3ef6f14e62edda0b3983",
+        "prompt": "page-07-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          419,
+          0,
+          838,
+          403
+        ],
+        "black_padding_xy": [
+          0,
+          8
+        ],
+        "original": "kao-64-original.png",
+        "original_png_sha256": "9185e4f404257de27fa1152a3ec1b88f824352140ba3b60fcad9007b25d642ae"
+      },
+      "size": [
+        419,
+        419
+      ]
+    },
+    {
+      "path": "kao/selected/kao-65-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 284013,
+      "sha256": "3a8d8bc7f1cfc61e01057a0e2d98bcb24504e6956b0da104eee4d52020a1b03b",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-65-hd-b-v1.png",
+      "prompt": "kao/page-07-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 65,
+        "asset": "kao-65-hd-b-v1.png",
+        "asset_sha256": "3a8d8bc7f1cfc61e01057a0e2d98bcb24504e6956b0da104eee4d52020a1b03b",
+        "size": [
+          416,
+          416
+        ],
+        "atlas": "page-07-hd-b-v1.png",
+        "atlas_sha256": "a2005c363fada30c09d651ca819106debde65321b38d3ef6f14e62edda0b3983",
+        "prompt": "page-07-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          838,
+          0,
+          1254,
+          403
+        ],
+        "black_padding_xy": [
+          0,
+          6
+        ],
+        "original": "kao-65-original.png",
+        "original_png_sha256": "5e8324a3e56a1e5f25d5b150ba2f73593b26090288a503c121e04bed6d695cf4"
+      },
+      "size": [
+        416,
+        416
+      ]
+    },
+    {
+      "path": "kao/selected/kao-66-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 312378,
+      "sha256": "1b170f8e45702bd76ab7db1e5dbe1f99ebbf14f2e08fa93a346c092ca4494b21",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-66-hd-b-v1.png",
+      "prompt": "kao/page-07-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 66,
+        "asset": "kao-66-hd-b-v1.png",
+        "asset_sha256": "1b170f8e45702bd76ab7db1e5dbe1f99ebbf14f2e08fa93a346c092ca4494b21",
+        "size": [
+          419,
+          419
+        ],
+        "atlas": "page-07-hd-b-v1.png",
+        "atlas_sha256": "a2005c363fada30c09d651ca819106debde65321b38d3ef6f14e62edda0b3983",
+        "prompt": "page-07-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          403,
+          419,
+          815
+        ],
+        "black_padding_xy": [
+          0,
+          3
+        ],
+        "original": "kao-66-original.png",
+        "original_png_sha256": "6f6510cdd4b47e77bfcc851e68599504d8326ce64b754000d1d640c1692ec547"
+      },
+      "size": [
+        419,
+        419
+      ]
+    },
+    {
+      "path": "kao/selected/kao-67-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 257385,
+      "sha256": "6acbcd15313a0d27047aa60cc073cbd7bac4c1d25b0f30cc95492d6bf7683f33",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-67-hd-b-v1.png",
+      "prompt": "kao/page-07-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 67,
+        "asset": "kao-67-hd-b-v1.png",
+        "asset_sha256": "6acbcd15313a0d27047aa60cc073cbd7bac4c1d25b0f30cc95492d6bf7683f33",
+        "size": [
+          419,
+          419
+        ],
+        "atlas": "page-07-hd-b-v1.png",
+        "atlas_sha256": "a2005c363fada30c09d651ca819106debde65321b38d3ef6f14e62edda0b3983",
+        "prompt": "page-07-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          419,
+          403,
+          838,
+          815
+        ],
+        "black_padding_xy": [
+          0,
+          3
+        ],
+        "original": "kao-67-original.png",
+        "original_png_sha256": "e667cfd721570dea23bdfb5f3f949910037f06771ed78b531bccfc516fd024c8"
+      },
+      "size": [
+        419,
+        419
+      ]
+    },
+    {
+      "path": "kao/selected/kao-68-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 241391,
+      "sha256": "fe3a8fd5cdaee9887cc1b95ad5e31985687a24eddd3df0e3a011e5c2d37eef03",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-68-hd-b-v1.png",
+      "prompt": "kao/page-07-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 68,
+        "asset": "kao-68-hd-b-v1.png",
+        "asset_sha256": "fe3a8fd5cdaee9887cc1b95ad5e31985687a24eddd3df0e3a011e5c2d37eef03",
+        "size": [
+          416,
+          416
+        ],
+        "atlas": "page-07-hd-b-v1.png",
+        "atlas_sha256": "a2005c363fada30c09d651ca819106debde65321b38d3ef6f14e62edda0b3983",
+        "prompt": "page-07-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          838,
+          403,
+          1254,
+          815
+        ],
+        "black_padding_xy": [
+          0,
+          2
+        ],
+        "original": "kao-68-original.png",
+        "original_png_sha256": "e67d8434871f1fb617af331b50403fb476aad7b73bae3ef05d882ec1d070c26e"
+      },
+      "size": [
+        416,
+        416
+      ]
+    },
+    {
+      "path": "kao/selected/kao-69-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 287706,
+      "sha256": "83a88fbb591715b94ad849c021e0e4ed4ee877b4227f1687c683930fd9baf5bb",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-69-hd-b-v1.png",
+      "prompt": "kao/page-07-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 69,
+        "asset": "kao-69-hd-b-v1.png",
+        "asset_sha256": "83a88fbb591715b94ad849c021e0e4ed4ee877b4227f1687c683930fd9baf5bb",
+        "size": [
+          439,
+          439
+        ],
+        "atlas": "page-07-hd-b-v1.png",
+        "atlas_sha256": "a2005c363fada30c09d651ca819106debde65321b38d3ef6f14e62edda0b3983",
+        "prompt": "page-07-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          0,
+          815,
+          419,
+          1254
+        ],
+        "black_padding_xy": [
+          10,
+          0
+        ],
+        "original": "kao-69-original.png",
+        "original_png_sha256": "00b6538f3d7ab680b71f88adbc56a9a9823ce07cb6b5a4810a6cc93d495ff747"
+      },
+      "size": [
+        439,
+        439
+      ]
+    },
+    {
+      "path": "kao/selected/kao-70-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 300272,
+      "sha256": "b323e59dc993221bc92b907b1b75e70eb002c9fdd9915a20f292b3fb85415f2f",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-70-hd-b-v1.png",
+      "prompt": "kao/page-07-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 70,
+        "asset": "kao-70-hd-b-v1.png",
+        "asset_sha256": "b323e59dc993221bc92b907b1b75e70eb002c9fdd9915a20f292b3fb85415f2f",
+        "size": [
+          439,
+          439
+        ],
+        "atlas": "page-07-hd-b-v1.png",
+        "atlas_sha256": "a2005c363fada30c09d651ca819106debde65321b38d3ef6f14e62edda0b3983",
+        "prompt": "page-07-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          419,
+          815,
+          838,
+          1254
+        ],
+        "black_padding_xy": [
+          10,
+          0
+        ],
+        "original": "kao-70-original.png",
+        "original_png_sha256": "72adc2f3d61a35ba0164a79c7c2d3603800c078f8304ced43009e3a195d31529"
+      },
+      "size": [
+        439,
+        439
+      ]
+    },
+    {
+      "path": "kao/selected/kao-71-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 269992,
+      "sha256": "cc3219c5592931ba9e214c56a88a0a10be47754b94ad695741a588952dcd1745",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-71-hd-b-v1.png",
+      "prompt": "kao/page-07-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 71,
+        "asset": "kao-71-hd-b-v1.png",
+        "asset_sha256": "cc3219c5592931ba9e214c56a88a0a10be47754b94ad695741a588952dcd1745",
+        "size": [
+          439,
+          439
+        ],
+        "atlas": "page-07-hd-b-v1.png",
+        "atlas_sha256": "a2005c363fada30c09d651ca819106debde65321b38d3ef6f14e62edda0b3983",
+        "prompt": "page-07-hd-b-v1.prompt.txt",
+        "prompt_sha256": "90140e389eb79084e50f1ebe6b02914fce3a074047fc0484aff71de17eedd8c1",
+        "crop_xyxy": [
+          838,
+          815,
+          1254,
+          1254
+        ],
+        "black_padding_xy": [
+          11,
+          0
+        ],
+        "original": "kao-71-original.png",
+        "original_png_sha256": "c425dffd4291db61d5765d508a7f68e34bd349c9105c2371605d02bab3fe0637"
+      },
+      "size": [
+        439,
+        439
+      ]
+    },
+    {
+      "path": "kao/selected/kao-72-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 293260,
+      "sha256": "3258a939a628350265ab717398150752d9ddc5408b1a19c3bf308e1b0fa31cad",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-72-hd-b-v1.png",
+      "prompt": "kao/page-08-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 72,
+        "asset": "kao-72-hd-b-v1.png",
+        "asset_sha256": "3258a939a628350265ab717398150752d9ddc5408b1a19c3bf308e1b0fa31cad",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-08-hd-b-v1.png",
+        "atlas_sha256": "30c2db3bd0159a971937557a5c77d2c2f38d26d9fa3b3d2728a7f225dcfa0e53",
+        "prompt": "page-08-hd-b-v1.prompt.txt",
+        "prompt_sha256": "e7670c567f6445d2e31ec1fc2504e9edf37904c7fcc5a56651cb66402df02e9a",
+        "crop_xyxy": [
+          0,
+          0,
+          418,
+          413
+        ],
+        "black_padding_xy": [
+          0,
+          2
+        ],
+        "original": "kao-72-original.png",
+        "original_png_sha256": "3407fab5d81dd818f81fdcf4c95e54ef71e0808759f1c58dbe85c233684bc981"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-73-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 311908,
+      "sha256": "760c26ad64bd76048a406c707eece489d4e526c6ab6a8a3a22061b6d939ac2a5",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-73-hd-b-v1.png",
+      "prompt": "kao/page-08-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 73,
+        "asset": "kao-73-hd-b-v1.png",
+        "asset_sha256": "760c26ad64bd76048a406c707eece489d4e526c6ab6a8a3a22061b6d939ac2a5",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-08-hd-b-v1.png",
+        "atlas_sha256": "30c2db3bd0159a971937557a5c77d2c2f38d26d9fa3b3d2728a7f225dcfa0e53",
+        "prompt": "page-08-hd-b-v1.prompt.txt",
+        "prompt_sha256": "e7670c567f6445d2e31ec1fc2504e9edf37904c7fcc5a56651cb66402df02e9a",
+        "crop_xyxy": [
+          418,
+          0,
+          836,
+          415
+        ],
+        "black_padding_xy": [
+          0,
+          1
+        ],
+        "original": "kao-73-original.png",
+        "original_png_sha256": "b758a9afab29916052f6a085c63eab38202149e973459952323912ca181040e9"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-74-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 278484,
+      "sha256": "5776b837fc3a92dac5f27cf249370d900bf40bfc2c5a87d116d889e45627bcf2",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-74-hd-b-v1.png",
+      "prompt": "kao/page-08-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 74,
+        "asset": "kao-74-hd-b-v1.png",
+        "asset_sha256": "5776b837fc3a92dac5f27cf249370d900bf40bfc2c5a87d116d889e45627bcf2",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-08-hd-b-v1.png",
+        "atlas_sha256": "30c2db3bd0159a971937557a5c77d2c2f38d26d9fa3b3d2728a7f225dcfa0e53",
+        "prompt": "page-08-hd-b-v1.prompt.txt",
+        "prompt_sha256": "e7670c567f6445d2e31ec1fc2504e9edf37904c7fcc5a56651cb66402df02e9a",
+        "crop_xyxy": [
+          836,
+          0,
+          1254,
+          415
+        ],
+        "black_padding_xy": [
+          0,
+          1
+        ],
+        "original": "kao-74-original.png",
+        "original_png_sha256": "af0a5ba9f4c2d305598858ae8850efef1f1cce5e52a3190e4e2cc710d1105394"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-75-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 279777,
+      "sha256": "1b1000db081ce5ed5f6f0feabd5564cdc33f65e1b1387a4546cd360e83bb50e5",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-75-hd-b-v1.png",
+      "prompt": "kao/page-08-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 75,
+        "asset": "kao-75-hd-b-v1.png",
+        "asset_sha256": "1b1000db081ce5ed5f6f0feabd5564cdc33f65e1b1387a4546cd360e83bb50e5",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-08-hd-b-v1.png",
+        "atlas_sha256": "30c2db3bd0159a971937557a5c77d2c2f38d26d9fa3b3d2728a7f225dcfa0e53",
+        "prompt": "page-08-hd-b-v1.prompt.txt",
+        "prompt_sha256": "e7670c567f6445d2e31ec1fc2504e9edf37904c7fcc5a56651cb66402df02e9a",
+        "crop_xyxy": [
+          0,
+          413,
+          418,
+          831
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-75-original.png",
+        "original_png_sha256": "6297d50138492a3e4d6b5ace75058d4d1c2f6a3e6e6a38d2ecb996477c01ec2d"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-76-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 372306,
+      "sha256": "24323728429ed2dacb42141ac5d3923f2d37ee6759c72df2963efd8c1255187f",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-76-hd-b-v1.png",
+      "prompt": "kao/page-08-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "derivation": {
+        "index": 76,
+        "asset": "kao-76-hd-b-v1.png",
+        "asset_sha256": "24323728429ed2dacb42141ac5d3923f2d37ee6759c72df2963efd8c1255187f",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-08-hd-b-v1.png",
+        "atlas_sha256": "30c2db3bd0159a971937557a5c77d2c2f38d26d9fa3b3d2728a7f225dcfa0e53",
+        "prompt": "page-08-hd-b-v1.prompt.txt",
+        "prompt_sha256": "e7670c567f6445d2e31ec1fc2504e9edf37904c7fcc5a56651cb66402df02e9a",
+        "crop_xyxy": [
+          418,
+          415,
+          836,
+          833
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-76-original.png",
+        "original_png_sha256": "145c59ab44bfe0db496c655c8d9572b6fb96cc67f27e78750ec4d827a24cb5cc"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-77-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 333240,
+      "sha256": "edd84c6c7ba641a54162dd4fb69d33b000cc48c29bed6057b4b6b17098479dbb",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-77-hd-b-v1.png",
+      "prompt": "kao/page-08-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "derivation": {
+        "index": 77,
+        "asset": "kao-77-hd-b-v1.png",
+        "asset_sha256": "edd84c6c7ba641a54162dd4fb69d33b000cc48c29bed6057b4b6b17098479dbb",
+        "size": [
+          418,
+          418
+        ],
+        "atlas": "page-08-hd-b-v1.png",
+        "atlas_sha256": "30c2db3bd0159a971937557a5c77d2c2f38d26d9fa3b3d2728a7f225dcfa0e53",
+        "prompt": "page-08-hd-b-v1.prompt.txt",
+        "prompt_sha256": "e7670c567f6445d2e31ec1fc2504e9edf37904c7fcc5a56651cb66402df02e9a",
+        "crop_xyxy": [
+          836,
+          415,
+          1254,
+          833
+        ],
+        "black_padding_xy": [
+          0,
+          0
+        ],
+        "original": "kao-77-original.png",
+        "original_png_sha256": "ce3d907a0f079bb948003597c3cb605ea83f34d917737d33c9fbdcc416861b23"
+      },
+      "size": [
+        418,
+        418
+      ]
+    },
+    {
+      "path": "kao/selected/kao-78-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 330247,
+      "sha256": "6df692c9e1e9cd735e0fcf2767408847e92c44a126f96afe36331a17509661fb",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-78-hd-b-v1.png",
+      "prompt": "kao/page-08-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "derivation": {
+        "index": 78,
+        "asset": "kao-78-hd-b-v1.png",
+        "asset_sha256": "6df692c9e1e9cd735e0fcf2767408847e92c44a126f96afe36331a17509661fb",
+        "size": [
+          423,
+          423
+        ],
+        "atlas": "page-08-hd-b-v1.png",
+        "atlas_sha256": "30c2db3bd0159a971937557a5c77d2c2f38d26d9fa3b3d2728a7f225dcfa0e53",
+        "prompt": "page-08-hd-b-v1.prompt.txt",
+        "prompt_sha256": "e7670c567f6445d2e31ec1fc2504e9edf37904c7fcc5a56651cb66402df02e9a",
+        "crop_xyxy": [
+          0,
+          831,
+          418,
+          1254
+        ],
+        "black_padding_xy": [
+          2,
+          0
+        ],
+        "original": "kao-78-original.png",
+        "original_png_sha256": "a66ccaadb188beed6bac4965ee043d90c5ced623d4feab3067c0f44f1271d460"
+      },
+      "size": [
+        423,
+        423
+      ]
+    },
+    {
+      "path": "kao/selected/kao-79-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 330154,
+      "sha256": "0c24d83f8e9fbdc4fece6832854a4fd348714449796e2d2e278054dda29d3e59",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-79-hd-b-v1.png",
+      "prompt": "kao/page-08-hd-b-v1.prompt.txt",
+      "status": "normal player path verified",
+      "derivation": {
+        "index": 79,
+        "asset": "kao-79-hd-b-v1.png",
+        "asset_sha256": "0c24d83f8e9fbdc4fece6832854a4fd348714449796e2d2e278054dda29d3e59",
+        "size": [
+          421,
+          421
+        ],
+        "atlas": "page-08-hd-b-v1.png",
+        "atlas_sha256": "30c2db3bd0159a971937557a5c77d2c2f38d26d9fa3b3d2728a7f225dcfa0e53",
+        "prompt": "page-08-hd-b-v1.prompt.txt",
+        "prompt_sha256": "e7670c567f6445d2e31ec1fc2504e9edf37904c7fcc5a56651cb66402df02e9a",
+        "crop_xyxy": [
+          418,
+          833,
+          836,
+          1254
+        ],
+        "black_padding_xy": [
+          1,
+          0
+        ],
+        "original": "kao-79-original.png",
+        "original_png_sha256": "e3a8588e67490c580eb8d61612d22cbcc89444198d95542ab1e9a239de40226b"
+      },
+      "size": [
+        421,
+        421
+      ]
+    },
+    {
+      "path": "kao/selected/kao-80-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 285531,
+      "sha256": "cb49c0d9ccd77d0d532a3a8bed8dcf311ca61455232b1918ce051f6d66b86180",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/kao-80-hd-b-v1.png",
+      "prompt": "kao/page-08-hd-b-v1.prompt.txt",
+      "status": "common draw consumer integrated; native case not sampled",
+      "derivation": {
+        "index": 80,
+        "asset": "kao-80-hd-b-v1.png",
+        "asset_sha256": "cb49c0d9ccd77d0d532a3a8bed8dcf311ca61455232b1918ce051f6d66b86180",
+        "size": [
+          421,
+          421
+        ],
+        "atlas": "page-08-hd-b-v1.png",
+        "atlas_sha256": "30c2db3bd0159a971937557a5c77d2c2f38d26d9fa3b3d2728a7f225dcfa0e53",
+        "prompt": "page-08-hd-b-v1.prompt.txt",
+        "prompt_sha256": "e7670c567f6445d2e31ec1fc2504e9edf37904c7fcc5a56651cb66402df02e9a",
+        "crop_xyxy": [
+          836,
+          833,
+          1254,
+          1254
+        ],
+        "black_padding_xy": [
+          1,
+          0
+        ],
+        "original": "kao-80-original.png",
+        "original_png_sha256": "80bcefeda03b8498e5e6962a66d91ce8100e42dd183d02d4963f75a135707785"
+      },
+      "size": [
+        421,
+        421
+      ]
+    },
+    {
+      "path": "kao/selected/manifest.json",
+      "kind": "preparation-metadata",
+      "bytes": 61188,
+      "sha256": "ad9323558ec88eec4664f74b74e849c27e6460e2a2288878d26d73cce090deff",
+      "local_source": "workplace/hd-prototype/catalog/kao/selected/manifest.json"
+    },
+    {
+      "path": "scroll/frame/frame-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1131371,
+      "sha256": "25a4c2a1a028cfc85faafa79bf43f00842022de0cc9ddc4066610d1c177afbaa",
+      "local_source": "workplace/hd-prototype/scroll/frame/frame-hd-b-v1.png",
+      "prompt": "scroll/scroll-hd-b-v1.prompt.txt",
+      "status": "unused geometry draft",
+      "derivation": {
+        "classification": "local HD frame preparation; runtime validation pending",
+        "source_original_sha256": "cd8d249121f87e9a86fa5d4aa7e51609a68ae3252864be46dcb9142cb3f1542b",
+        "source_generated_sha256": "b2abace38962a2aa957d5b15361929c3ee71bbc5728786a7a95c2830dc2d58c9",
+        "generator": "built-in image_gen.imagegen",
+        "prompt_sha256": "28b81238fdd2fcadc88a6aefad0b565ac1ad9b0e232b36e7136f6f19632b2a08",
+        "source_crop_xyxy": [
+          0,
+          0,
+          640,
+          250
+        ],
+        "frame_source_png_sha256": "7686cb21cbf195893ac0f75e495fa304446fd6d1e4f41f1d78300890ffdb9116",
+        "frame_hd_png_sha256": "25a4c2a1a028cfc85faafa79bf43f00842022de0cc9ddc4066610d1c177afbaa",
+        "source_grid_x": [
+          0,
+          394,
+          1194,
+          1586
+        ],
+        "source_grid_y": [
+          0,
+          124,
+          534,
+          620
+        ],
+        "destination_grid_x": [
+          0,
+          320,
+          960,
+          1280
+        ],
+        "destination_grid_y": [
+          0,
+          100,
+          400,
+          500
+        ],
+        "preserve_original_logical_rect": [
+          160,
+          50,
+          320,
+          150
+        ],
+        "tool_sha256": "7ead8c2d9d105173fcc0349cf4f076cc05eef8bea276cb627e4eb61f95febf76",
+        "pillow_version": "9.4.0"
+      },
+      "size": [
+        1280,
+        500
+      ]
+    },
+    {
+      "path": "scroll/frame/frame-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 1136190,
+      "sha256": "e38ddf2ba19ae73e06f1906d06467e7a6f8571ef9e6fe261a447aa203098c209",
+      "local_source": "workplace/hd-prototype/scroll/frame/frame-hd-b-v2.png",
+      "prompt": "scroll/scroll-hd-b-v1.prompt.txt",
+      "status": "upper frame region verified",
+      "derivation": {
+        "classification": "local HD frame preparation; runtime validation pending",
+        "source_original_sha256": "cd8d249121f87e9a86fa5d4aa7e51609a68ae3252864be46dcb9142cb3f1542b",
+        "source_generated_sha256": "b2abace38962a2aa957d5b15361929c3ee71bbc5728786a7a95c2830dc2d58c9",
+        "generator": "built-in image_gen.imagegen",
+        "prompt_sha256": "28b81238fdd2fcadc88a6aefad0b565ac1ad9b0e232b36e7136f6f19632b2a08",
+        "source_crop_xyxy": [
+          0,
+          0,
+          640,
+          250
+        ],
+        "frame_source_png_sha256": "7686cb21cbf195893ac0f75e495fa304446fd6d1e4f41f1d78300890ffdb9116",
+        "frame_hd_png_sha256": "e38ddf2ba19ae73e06f1906d06467e7a6f8571ef9e6fe261a447aa203098c209",
+        "source_grid_x": [
+          0,
+          396,
+          1189,
+          1586
+        ],
+        "source_grid_y": [
+          0,
+          123,
+          495,
+          620
+        ],
+        "destination_grid_x": [
+          0,
+          320,
+          960,
+          1280
+        ],
+        "destination_grid_y": [
+          0,
+          100,
+          400,
+          500
+        ],
+        "preserve_original_logical_rect": [
+          160,
+          50,
+          320,
+          150
+        ],
+        "tool_sha256": "0802f704a9132f298e6669c2ff49beee9c6e473a41fef74634bdb40e67aa1e76",
+        "pillow_version": "9.4.0"
+      },
+      "size": [
+        1280,
+        500
+      ]
+    },
+    {
+      "path": "scroll/scroll-full-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2959133,
+      "sha256": "b2abace38962a2aa957d5b15361929c3ee71bbc5728786a7a95c2830dc2d58c9",
+      "local_source": "workplace/hd-prototype/scroll/scroll-full-hd-b-v1.png",
+      "prompt": "scroll/scroll-hd-b-v1.prompt.txt",
+      "status": "generated parent texture",
+      "size": [
+        1586,
+        992
+      ]
+    },
+    {
+      "path": "scroll/scroll-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1050595,
+      "sha256": "b08c787b1431c2e890bf0dd33779a0a9b1551ebe531ec829450566404be5b488",
+      "local_source": "workplace/hd-prototype/scroll/scroll-hd-b-v1.png",
+      "prompt": "scroll/scroll-hd-b-v1.prompt.txt",
+      "status": "scroll region verified",
+      "size": [
+        1586,
+        372
+      ]
+    },
+    {
+      "path": "scroll/scroll-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 2343,
+      "sha256": "28b81238fdd2fcadc88a6aefad0b565ac1ad9b0e232b36e7136f6f19632b2a08",
+      "local_source": "workplace/hd-prototype/scroll/scroll-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "window/window-skin-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2798737,
+      "sha256": "ae2dbf50f7d00cc6d6617bf50911aa05ef461cb1f937f1cf3249b0d3838527f5",
+      "local_source": "workplace/hd-prototype/catalog/window/window-skin-hd-b-v1.png",
+      "prompt": "window/window-skin-hd-b-v1.prompt.txt",
+      "status": "generated; live integration pending",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "window/window-skin-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1289,
+      "sha256": "2d398912ec7a71bc0eeff1d27dd44e9c7ea553daba235adec8e3dde2787d69e9",
+      "local_source": "workplace/hd-prototype/catalog/window/window-skin-hd-b-v1.prompt.txt"
+    }
+  ]
+}

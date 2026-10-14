@@ -10,7 +10,7 @@ import time
 
 assert Path("/.dockerenv").exists() and os.getuid() == 1000
 parser = argparse.ArgumentParser()
-parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing"], default="hd")
+parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only"], default="hd")
 args = parser.parse_args()
 root = Path("/output")
 assert root.stat().st_uid == os.getuid()
@@ -23,6 +23,8 @@ is_scroll = args.mode.startswith("scroll")
 is_portraits = args.mode.startswith("portraits")
 portrait_checks = []
 kao_checks = []
+is_frame = args.mode.startswith("frame")
+frame_checks = []
 
 
 def run(*command, **kwargs):
@@ -133,7 +135,7 @@ try:
         time.sleep(0.05)
     for name in ("desktop-status.json", "desktop-status.pending"):
         (root / name).unlink(missing_ok=True)
-    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-desktop-speed", "5" if is_scroll else "60" if is_portraits else "20",
+    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-desktop-speed", "5" if is_scroll else "60" if is_portraits or is_frame else "20",
                "-steps", "750000000" if is_portraits else "150000000", "-hd-trace"]
     if args.mode != "mouse":
         source = Path("/project/tools/player-path.json") if is_portraits else Path("/project/workplace/cd-trace/first-play-input.json")
@@ -151,6 +153,10 @@ try:
         command += ["-hd-asset", "/output/nonexistent-hd-asset.png"]
     if args.mode == "portraits-missing":
         command += ["-hd-portrait-dir", "/output/nonexistent-portrait-directory", "-hd-kao-dir", "/output/nonexistent-kao-directory"]
+    if not is_frame or args.mode == "frame-missing":
+        command += ["-hd-frame-asset", "/output/nonexistent-frame.png"]
+    if args.mode == "frame-only":
+        command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png"]
     stdout_path = root / f"desktop-{args.mode}.json"
     stdout = stdout_path.open("wb")
     stderr = (root / f"desktop-{args.mode}.stderr.log").open("wb")
@@ -275,6 +281,26 @@ try:
             assert pictures[3]["presented"]["frame"]["png_sha256"] == pictures[5]["presented"]["frame"]["png_sha256"]
             check_scroll_pair(pictures[3], pictures[4])
             assert scroll_checks[0]["foreground_output_pixels"] != scroll_checks[1]["foreground_output_pixels"], "must exercise different original text pages"
+        if is_frame:
+            expected = "fallback_missing_asset" if args.mode == "frame-missing" else "hd"
+            assert status()["frame_mode"] == expected, status()["frame_mode"]
+            assert pictures[0]["presented"]["proof"] == pictures[1]["presented"]["proof"]
+            a = decoded(Path(pictures[0]["actual_png"]))
+            b = decoded(Path(pictures[1]["actual_png"]))
+            changed = preserved = 0
+            for y in range(800):
+                for x in range(1280):
+                    i = (y*1280+x)*4
+                    central = 320 <= x < 960 and 100 <= y < 400
+                    if y < 500 and not central:
+                        changed += a[i:i+4] != b[i:i+4]
+                    elif args.mode == "frame-only":
+                        assert a[i:i+4] == b[i:i+4], ("frame changed independent layer", x, y)
+                        preserved += 1
+            assert (changed > 0) == (expected == "hd"), (expected, changed)
+            frame_checks.append({"mode": expected, "step": pictures[0]["presented"]["step"],
+                                 "changed_frame_pixels": changed, "preserved_other_pixels": preserved,
+                                 "guest_unchanged": True})
         key("F7")
     else:
         wait_for(lambda s: s.get("step", 0) >= 85_000_000)
@@ -333,6 +359,7 @@ try:
               "scroll_checks": scroll_checks,
               "portrait_checks": portrait_checks,
               "kao_checks": kao_checks,
+              "frame_checks": frame_checks,
               "scope": "Linux container prototype; no physical audio or other OS verification"}
     (root / f"verification-{args.mode}.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(f"desktop {args.mode}: verified", flush=True)

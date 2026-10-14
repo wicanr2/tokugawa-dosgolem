@@ -26,6 +26,8 @@ var desktopKaoSourceDir = flag.String("hd-kao-source-dir", "/project/workplace/h
 var desktopKaoDir = flag.String("hd-kao-dir", "/project/workplace/hd-prototype/catalog/kao/selected", "local HD 80x80 portrait replacement directory")
 var desktopScrollSource = flag.String("hd-scroll-source", "/project/workplace/hd-prototype/scroll/scroll-original.png", "verified local VISUAL scroll PNG")
 var desktopScrollAsset = flag.String("hd-scroll-asset", "/project/workplace/hd-prototype/scroll/scroll-hd-b-v1.png", "local HD scroll PNG; missing asset falls back individually")
+var desktopFrameSource = flag.String("hd-frame-source", "/project/workplace/hd-prototype/scroll/frame/frame-original.png", "verified original upper VISUAL frame PNG")
+var desktopFrameAsset = flag.String("hd-frame-asset", "/project/workplace/hd-prototype/scroll/frame/frame-hd-b-v2.png", "local HD upper frame PNG; central story layer is preserved")
 
 type desktopGame struct {
 	c                           *desktopContext
@@ -51,6 +53,8 @@ type desktopGame struct {
 	kao                         [81]desktopPortrait
 	kaoModes                    map[int]string
 	kaoHD                       int
+	frame                       *hdFrame
+	frameMode                   string
 }
 
 type desktopPortrait struct {
@@ -186,6 +190,29 @@ func runDesktopWindow(c *desktopContext) error {
 	g.scroll = newHDScroll(scrollSource, scrollAsset, 2)
 	scrollInfo["validation"] = g.scroll.Reason
 	g.assetInfo["scroll"] = scrollInfo
+	var frameSource, frameAsset image.Image
+	frameInfo := map[string]any{}
+	if data, e := os.ReadFile(*desktopFrameSource); e == nil {
+		sum := fmt.Sprintf("%x", sha256.Sum256(data))
+		frameInfo["source_sha256"] = sum
+		if sum == "7686cb21cbf195893ac0f75e495fa304446fd6d1e4f41f1d78300890ffdb9116" {
+			frameSource, e = previewPNG(*desktopFrameSource)
+			if e != nil {
+				frameInfo["source_error"] = e.Error()
+			}
+		}
+	}
+	if data, e := os.ReadFile(*desktopFrameAsset); e == nil {
+		frameInfo["hd_sha256"] = fmt.Sprintf("%x", sha256.Sum256(data))
+		frameAsset, e = previewPNG(*desktopFrameAsset)
+		if e != nil {
+			frameInfo["hd_error"] = e.Error()
+			frameAsset = nil
+		}
+	}
+	g.frame = newHDFrame(frameSource, frameAsset, 2)
+	frameInfo["validation"] = g.frame.Reason
+	g.assetInfo["frame"] = frameInfo
 	ebiten.SetWindowSize(1280, 800)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("德川家康｜原版｜F6 切換 HD｜F7 暫停")
@@ -194,7 +221,7 @@ func runDesktopWindow(c *desktopContext) error {
 	g.texture = ebiten.NewImage(1280, 800)
 	g.barTexture = ebiten.NewImage(640, barHeight+2*barRowHeight)
 	err = ebiten.RunGame(g)
-	c.Report = map[string]any{"classification": "desktop prototype; source-matched story portraits, scroll and KAO portraits", "updates": g.updates, "draws": g.draws, "events": g.events, "windowbar_events": g.barEvents, "hd_observation": c.Live, "physical_mouse_events": g.mouseEvents, "scripted_mouse": c.Scripted, "hd_enabled": g.enabled, "last_mode": g.mode, "portrait_mode": g.portraitMode, "scroll_mode": g.scrollMode, "scroll_foreground_pixels": g.scrollForeground, "kao_modes": g.kaoModes, "kao_hd_count": g.kaoHD, "assets": g.assetInfo, "virtual_speed": *desktopSpeed, "audio_output": "PCM receipt only; desktop playback not enabled", "listening_verified": false}
+	c.Report = map[string]any{"classification": "desktop prototype; source-matched story portraits, scroll, upper frame and KAO portraits", "updates": g.updates, "draws": g.draws, "events": g.events, "windowbar_events": g.barEvents, "hd_observation": c.Live, "physical_mouse_events": g.mouseEvents, "scripted_mouse": c.Scripted, "hd_enabled": g.enabled, "last_mode": g.mode, "portrait_mode": g.portraitMode, "scroll_mode": g.scrollMode, "frame_mode": g.frameMode, "scroll_foreground_pixels": g.scrollForeground, "kao_modes": g.kaoModes, "kao_hd_count": g.kaoHD, "assets": g.assetInfo, "virtual_speed": *desktopSpeed, "audio_output": "PCM receipt only; desktop playback not enabled", "listening_verified": false}
 	return err
 }
 
@@ -223,6 +250,13 @@ func (g *desktopGame) render() error {
 	g.portraitMode = mode
 	if mode == "hd" {
 		preservePortraitLabels(out, s.Image, g.c.Live.LastName, 2)
+	}
+	g.frameMode = g.frame.apply(out, s.Image, g.enabled && g.c.Live.ScrollActive)
+	if g.enabled && !g.c.Live.ScrollActive {
+		g.frameMode = "fallback_no_original_background"
+	}
+	if g.frameMode == "hd" {
+		mode = "hd"
 	}
 	g.scrollMode, g.scrollForeground = g.scroll.apply(out, s.Image, g.enabled && g.c.Live.ScrollActive)
 	if g.enabled && !g.c.Live.ScrollActive {
@@ -372,7 +406,7 @@ func (g *desktopGame) Update() error {
 	}
 	ebiten.SetWindowTitle("德川家康｜" + title + "｜頂端設定／Esc｜F6 HD｜F7 暫停")
 	w, h := ebiten.WindowSize()
-	status := map[string]any{"step": g.c.Steps(), "mode": g.mode, "eligible": g.c.Live.Active, "portrait_resource": g.c.Live.LastName, "scroll_eligible": g.c.Live.ScrollActive, "scroll_mode": g.scrollMode, "scroll_foreground_pixels": g.scrollForeground, "portrait_mode": g.portraitMode, "kao_modes": g.kaoModes, "kao_hd_count": g.kaoHD, "kao_draws": g.c.Live.Kao.Draws, "enabled": g.enabled, "paused": g.paused, "events": g.events, "mouse_events": g.mouseEvents, "bar_visible": g.bar.Visible, "bar_pinned": g.bar.Pinned, "bar_menu": g.bar.Menu, "bar_focus": g.bar.Focus, "bar_hover": g.bar.Hover, "bar_events": g.barEvents, "window_size": []int{w, h}, "mouse_blocked": g.blockMouse}
+	status := map[string]any{"step": g.c.Steps(), "mode": g.mode, "eligible": g.c.Live.Active, "portrait_resource": g.c.Live.LastName, "scroll_eligible": g.c.Live.ScrollActive, "scroll_mode": g.scrollMode, "frame_mode": g.frameMode, "scroll_foreground_pixels": g.scrollForeground, "portrait_mode": g.portraitMode, "kao_modes": g.kaoModes, "kao_hd_count": g.kaoHD, "kao_draws": g.c.Live.Kao.Draws, "enabled": g.enabled, "paused": g.paused, "events": g.events, "mouse_events": g.mouseEvents, "bar_visible": g.bar.Visible, "bar_pinned": g.bar.Pinned, "bar_menu": g.bar.Menu, "bar_focus": g.bar.Focus, "bar_hover": g.bar.Hover, "bar_events": g.barEvents, "window_size": []int{w, h}, "mouse_blocked": g.blockMouse}
 	b, err := json.Marshal(status)
 	if err != nil {
 		return err

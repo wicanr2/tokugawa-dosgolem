@@ -35,10 +35,14 @@
 | [tools/hd-kao-prepare.py](tools/hd-kao-prepare.py) | 依已檢視的實際格線裁切九張 HD 圖集，補黑底保持人物比例；輸出 `workplace/hd-prototype/catalog/kao/selected/` 的 81 張素材、manifest 與總覽 |
 | [tools/hd-art-inventory.py](tools/hd-art-inventory.py) | 重生 `workplace/hd-prototype/catalog/art-coverage.json`，區分已製作、逐項替換、正常路徑驗證與未知素材；資源數不當成圖集完成百分比 |
 | [tools/hd-frame-prepare.py](tools/hd-frame-prepare.py) | 既有手繪 VISUAL 上方框架依原版矩形分區縮放；輸出 `workplace/hd-prototype/scroll/frame/` 的來源、HD 圖與幾何收據，遊戲內驗證另列 |
+| [tools/hd-frame.go](tools/hd-frame.go)、[tools/hd-frame_test.go](tools/hd-frame_test.go) | VISUAL 上方紅金框架的來源核對與呈現；中央劇情圖及下方捲軸保持獨立，遮擋時完整備援 |
+| [tools/hd-window-extract.py](tools/hd-window-extract.py) | 核對 WINDOW.OZM 九個 16×16 圖塊、原版 buffer 與正常視窗；輸出 `workplace/hd-prototype/catalog/window/` 的來源、原始圖塊、手繪參考與來源收據 |
+| [tools/archive-hd-art.py](tools/archive-hd-art.py) | 依 2026-10-14 使用者授權保存生成的 HD 圖與提示詞；固定 GUI Docker 內以專案掛 `/project` 可寫執行，`--verify-only` 核對索引與檔案 |
+| [assets/hd-b/README.md](assets/hd-b/README.md)、[圖片索引](assets/hd-b/index.json) | 私人儲存庫內的生成圖、生成圖裁切素材與提示詞。使用者已明確授權保存；不是正式發行包或公開散布授權 |
 | [tools/hd-kao-profiles.go](tools/hd-kao-profiles.go) | KAO.GRP 原版 0..80 索引的逐張指紋，不以推測武將姓名命名 |
 | [tools/hd-kao.go](tools/hd-kao.go)、[tools/hd-kao_test.go](tools/hd-kao_test.go) | 原版頭像繪製的唯讀參數／返回觀測與來源、遮擋、缺圖備援；原版全畫面複製撤銷舊頭像 |
-| `workplace/hd-prototype/catalog/kao/` | 原版武將頭像、HD 圖集與逐格素材、來源指紋及 IDA／原生畫面對照；只留本機 |
-| `workplace/hd-prototype/catalog/` | HD 覆蓋盤點、正常路徑擷取及原版壓縮格式的隔離診斷，原始圖與衍生圖只留本機 |
+| `workplace/hd-prototype/catalog/kao/` | 本機原版頭像、HD 製作副本與來源證據；生成圖依使用者授權同步至 assets/hd-b |
+| `workplace/hd-prototype/catalog/` | 本機 HD 覆蓋盤點、原版擷取、格式診斷與驗證；已生成圖像另存 assets/hd-b |
 | [tools/hd-preview.go](tools/hd-preview.go)、[tools/hd-preview_test.go](tools/hd-preview_test.go) | 單張 A-0 的離線原圖／HD／缺圖預覽與範圍保護測試；不接管遊戲或代表桌面執行中切換 |
 | [tools/hd-layer.go](tools/hd-layer.go) | 離線預覽與桌面試作共用的單張素材呈現與來源像素保護 |
 | [tools/hd-portraits.go](tools/hd-portraits.go) | 正常路徑已擷取的 A-0 至 A-7 指紋、原圖來源與本機 HD 檔名；來源各自核對，不沿用上一張圖 |
@@ -50,7 +54,7 @@
 | [tools/hd-scroll-prepare.go](tools/hd-scroll-prepare.go) | 從生成的完整畫布取出既定捲軸區，保存產物及提示詞雜湊 |
 | [tools/hd-scroll.go](tools/hd-scroll.go)、[tools/hd-scroll_test.go](tools/hd-scroll_test.go) | 捲軸 HD 呈現、原版前景保留、來源及缺圖備援 |
 | [tools/verify-hd-scroll.py](tools/verify-hd-scroll.py) | 真實視窗的捲軸原圖／HD 切換、文字與原版狀態核對 |
-| `workplace/hd-prototype/scroll/` | 捲軸原圖擷取、HD 素材、完整提示詞、來源與隔離桌面驗證；只留本機 |
+| `workplace/hd-prototype/scroll/` | 本機捲軸來源、製作副本與隔離驗證；生成素材及提示詞另存 assets/hd-b/scroll |
 | [tools/windowbar.go](tools/windowbar.go)、[tools/windowbar_test.go](tools/windowbar_test.go) | 頂端隱藏列的狀態、幾何、點陣字型與純畫面測試 |
 | [tools/desktop-windowbar.go](tools/desktop-windowbar.go) | 桌面功能列輸入、視窗高度與原版輸入隔離 |
 | [tools/toolbar-font.hex.gz](tools/toolbar-font.hex.gz)、[tools/LICENSE-toolbar-font.txt](tools/LICENSE-toolbar-font.txt) | 參考專案的完整 Unifont 點陣字型與原授權全文；執行時讀取，不使用原版遊戲字模 |
@@ -112,6 +116,23 @@
 沿用固定 GUI image，內含 Pillow 9.4.0。掛載專案至 `/project` 唯讀、`original/game/` 至 `/original` 唯讀、`workplace/hd-prototype/catalog/` 至 `/output` 可寫，再依序執行上述擷取、裁切及覆蓋工具。Docker 的 UID、資源、網路與路徑檢查依本檔「Docker 邊界」。頭像桌面旗標為 `-hd-kao-source-dir` 與 `-hd-kao-dir`，預設分別讀 `catalog/kao/` 及 `catalog/kao/selected/`。原版逐張指紋保存在 `tools/hd-kao-profiles.go`。
 
 完整 GUI 驗證使用 `tools/verify-desktop.py --mode portraits` 或 `--mode portraits-missing`，必須先用 `tools/run-desktop.sh` 建置，保留輸出中的 engine、startup-probe 與執行檔。長流程依本檔既有 detached Docker 方法執行，容器內維持期限。已驗證範圍及最近收據見 CONTEXT。
+
+## 生成 HD 素材的私人儲存庫保存
+
+2026-10-14 使用者明確指定「目前這些圖片都很棒 記得保存在 github repo 當中喔」。生成的 HD 圖、生成圖的裁切素材、總覽與完整提示詞可保存於本 private repository 的 `assets/hd-b/`。這項新授權取代先前對這些生成圖的僅限本機規則；原版 EXE、DAT、光碟、音軌、擷取原圖與執行收據維持原有邊界。
+
+每批生成圖或裁切素材完成後，更新 [保存工具](tools/archive-hd-art.py) 的來源清單，在 Docker 執行保存與 `--verify-only`，再提交至已確認仍為 private 的儲存庫。圖片與提示詞保持可回查的檔名、SHA-256 及裁切依據。這是素材來源保存，正式素材包格式及公開發行另列。
+
+```sh
+test -d workplace/hd-prototype && test -f tools/archive-hd-art.py
+timeout 120s docker run --rm --name tokugawa-art-archive --network none \
+  --memory 1g --cpus 1 --pids-limit 64 --user "$(id -u):$(id -g)" \
+  --mount "type=bind,source=$PWD,target=/project" \
+  sha256:baa20f69bccc7dc8ac7a4bbcf93fbcb32019505bf1c31c1312f85aa873bbb9d4 \
+  python3 /project/tools/archive-hd-art.py
+```
+
+核對時使用同一 image，把專案掛載加上 `readonly`，命令末尾加 `--verify-only`。工具目前涵蓋劇情圖、81 張頭像及九頁圖集、捲軸、紅金框架、視窗 skin 與風格比較；新增類別先擴充清單。它拒絕覆寫內容不同的既有圖片，變體使用新檔名。
 
 ## 原版啟動契約
 

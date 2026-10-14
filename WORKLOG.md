@@ -198,3 +198,12 @@
 - 驗證工具修正：啟動 null 狀態、輸出來源未完整複製、按鍵等待實際回應、確認框遮擋時的擷取時點，以及工作階段中斷。GUI image 的模組快取沿用 /go/pkg/mod。長流程使用 detached Docker，容器內保留期限；未把環境失敗列成產品缺陷。
 - CONTEXT、WORKLIST、README 已同步實際範圍。唯一素材覆蓋清單由 hd-art-inventory.py 重生；準備 VISUAL 上方框架 v2，尚未接入。其他介面、地形、單位、動畫、結局、桌面播放與可攜封包入口仍待完成。
 - 已結束本輪驗證容器，未建新 image。提交前核對專案擁有權、Git 排除範圍及 Docker 清理狀態。
+
+
+### 上方框架完成與生成圖片保存
+
+- 53a34d5 已推送 main，並更新 Issue #5：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6161317076。
+- VISUAL 紅金框架已完成四種真實視窗驗證及 150M 原版狀態核對。共用視窗九圖塊的來源與 4864 個原生像素已核對；其繪製觀測與呈現接續處理。
+- 使用者新增明確授權，要求將生成圖片保存於私人 GitHub repo。建立 assets/hd-b 作可版控的素材來源；既有 workplace 用於本機研究且排除 Git，tools 保存程式，兩者不承擔圖像來源歸檔。
+- 保存 139 張 PNG、54 份完整提示詞、頭像裁切紀錄與索引；逐檔 SHA-256、大小及清單核對通過。GitHub repo 再確認為 private。原版資料與擷取原圖未加入來源清單。
+- 新的保存工具及入口已掛入 AGENTS、README，CONTEXT 與 WORKLIST 同步新授權及框架狀態。正式全遊戲 HD 與三平台打包仍在進行。

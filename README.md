@@ -8,9 +8,10 @@ GitHub 儲存庫：[wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokuga
 
 CDDA 裝置已支援原版 PLAY／STOP／RESUME、本機 BIN 的 PCM 串流、PREGAP 靜音與映像結尾停止。十五條音軌及正常入口至首場戰場的選曲、換曲與 PCM 已驗證，無頭收據保存事件、樣本數與音訊雜湊；桌面輸出及人耳確認待驗。後續優先製作可切換的 HD 素材包，現況見 CONTEXT。
 
-HD 採戰國手繪風。Linux 桌面試作已支援八張開場劇情圖、捲軸及 81 張頭像的共同繪圖路徑，正常流程抽測其中四張。F6 切換原版／HD，個別缺圖回原圖，捲軸文字及地名保留原版。滑鼠移到頂端可展開設定列，Esc 固定／收起，提供顯示、暫停與截圖。全遊戲美術仍在製作，完成後打包 Windows、Linux、macOS。正式素材包、四語、桌面音訊與一般鍵盤輸入仍待後續。建置與驗證入口見 AGENTS。
+HD 採戰國手繪風。Linux 桌面試作已支援八張開場劇情圖、捲軸、紅金框架及 81 張頭像的共同繪圖路徑，正常流程抽測其中四張。F6 切換原版／HD，個別缺圖回原圖，捲軸文字及地名保留原版。滑鼠移到頂端可展開設定列，Esc 固定／收起，提供顯示、暫停與截圖。全遊戲美術仍在製作，完成後打包 Windows、Linux、macOS。正式素材包、四語、桌面音訊與一般鍵盤輸入仍待後續。建置與驗證入口見 AGENTS。
 
 - [工作規則與重跑命令](AGENTS.md)
+- [HD 圖像與完整提示詞](assets/hd-b/README.md)
 - [目前狀態](CONTEXT.md)
 - [接入待辦與 CD／四語／HD 規劃](WORKLIST.md)
 - [啟動證據與平台修正契約](RESEARCH-LOG.md)
