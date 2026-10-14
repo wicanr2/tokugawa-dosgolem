@@ -364,3 +364,5 @@ GitHub 收尾：功能與素材提交 db97be7f0d17b9f898c2302fb311769b52cf95bd �
 - 保存工具新增紀錄時與舊 remaining-generation.json 變數衝突，拒絕覆寫；分開變數後以同一 Docker 命令乾淨重跑通過，舊檔未改。覆蓋工具亦將新背景草稿排除於已審查劇情計數。
 - 保存及 verify-only：538 PNG、139 提示詞、423404392 索引 bytes。覆蓋清單：80 OZM prepared、一項 partial、五項 draft、21 項已解碼未製作與五項解碼未知；81 頭像已準備，PCX 待處理。全遊戲 HD 未完成，三平台打包未開始。
 - 本輪建置與 GUI 容器均正常結束且移除，遠端與擁有權核對結果接續記錄。
+
+GitHub 收尾：功能、校準圖與新草稿提交 d8a879e495bc1a59ef134e22a39eff4c9a14d59f 已推送 main。主機 gh 確認 PRIVATE、遠端 main 相同；immutable tree 的 721 個 assets/hd-b 檔案逐項 blob SHA 與本機相符，tree 未截斷且沒有 original/ 或 workplace/。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6177319488 。最後保存核對為 538 PNG、139 提示詞；執行收據的 Go source SHA 與目前工作樹相同，完整工作根沒有 root-owned 檔案或 .md 目錄，新增工具、輸出及圖片抽查皆為 UID/GID 1000:1000，tokugawa 容器已清空，沿用既有 image。
