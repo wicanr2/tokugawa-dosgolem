@@ -18,6 +18,7 @@ README = """# 戰國手繪 HD 素材
 - [捲軸與紅金框架](scroll/)、[共用視窗邊框](window/)。
 - [戰場地面、物件與單位草稿](terrain/)，物件／單位 PNG 保留透明背景。
 - [地面圖集的材質與衍生圖](terrain/materials/)，保留兩版製作紀錄及完整提示詞。
+- [十項非空單位的透明裁切](terrain/units/)，原版三個空白來源保持空白。
 - [晴天與陰天天氣圖](art/weather-generation.json)，第二版保留原版岩峰構圖。
 - [開場騎兵與武將群像草稿](art/opening-generation.json)，保留原始生成圖，幾何與呈現待驗證。
 - [風格比較](concept/style-comparison-v1.png)。
@@ -258,15 +259,29 @@ def main():
                     profile = by_index[draw["index"]]
                     assert receipt["desktop"]["assets"]["terrain"][str(draw["index"])]["hd_sha256"] == profile["asset_sha256"]
                     normal_floor_art.add(profile["asset"])
+    unit_root = catalog/"terrain/units"
+    unit_profiles_path = unit_root/"profiles.json"
+    selected_units, unit_superseded = {}, set()
+    if unit_profiles_path.exists():
+        unit_profiles = json.loads(unit_profiles_path.read_text())
+        assert unit_profiles["tool_sha256"] == sha(project/"tools/hd-unit-prepare.py")
+        assert unit_profiles["nonempty_sources"] == 10 and unit_profiles["empty_indices"] == [10,11,12]
+        selected_units = {r["asset"]:r for r in unit_profiles["records"] if r["asset"]}
+        unit_superseded = {r["supersedes"] for r in json.loads((unit_root/"pose-revisions-v2.json").read_text())["records"]}
     if terrain.exists():
         for source in sorted(terrain.glob("*-hd-b-v*.png")):
             unit = source.name.startswith("unit-")
             object_draft = source.name.startswith("object-")
             status = "generated unit draft; original identity and footprint review pending" if unit else "superseded or unreviewed floor draft"
+            if source.name in unit_superseded:
+                status = "superseded pose or weapon-head draft; original silhouette corrected in v2"
             if source.name == "unit-006-hd-b-v1.png":
                 status = "superseded pose draft; exposed blade corrected to lower left in v2"
             if source.name == "unit-006-hd-b-v2.png":
                 status = "reviewed original pose correction; runtime integration pending"
+            if source.name in selected_units:
+                assert sha(source) == selected_units[source.name]["asset_sha256"]
+                status = "reviewed source pose and alpha crop; common unit consumer integrated, normal source not yet sampled"
             if source.name in normal_unit_assets:
                 assert sha(source) == normal_unit_assets[source.name]
                 status = "normal first-battle unit HD verified; joint floor and forest-clump composition, native visible-owner priority"
@@ -289,6 +304,32 @@ def main():
             source = terrain/name
             if source.exists():
                 copy(source, "terrain/"+name, "generation-metadata")
+    if unit_profiles_path.exists():
+        for record in unit_profiles["records"]:
+            if not record["asset"]:
+                continue
+            source = unit_root/record["prepared"]
+            assert sha(source) == record["prepared_sha256"]
+            copy(source,"terrain/units/"+record["prepared"],"png",alpha_policy="transparent",derivation=record,
+                 prompt="terrain/"+record["prompt"],status="source-bounded transparent unit preview; actual runtime uses registered raw art/crop")
+        gallery = unit_root/unit_profiles["gallery"]
+        assert sha(gallery) == unit_profiles["gallery_sha256"]
+        copy(gallery,"terrain/units/"+gallery.name,"png",status="generated-only unit gallery; original references excluded")
+        for name in ["pose-revisions.json","pose-revisions-v2.json","draft-profiles.json","review.json","profiles.json"]:
+            copy(unit_root/name,"terrain/units/"+name,"preparation-metadata")
+        attempt = unit_root/"attempt-01"
+        previous = json.loads((attempt/"draft-profiles.json").read_text())
+        assert previous["tool_sha256"] == sha(attempt/"prepare-source.txt")
+        for record in previous["records"]:
+            if not record["asset"]:
+                continue
+            source = attempt/record["prepared"]
+            assert sha(source) == record["prepared_sha256"]
+            copy(source,"terrain/units/attempt-01/"+record["prepared"],"png",alpha_policy="transparent",
+                 status="first crop review; unit008 single spearhead subsequently corrected")
+        copy(attempt/previous["gallery"],"terrain/units/attempt-01/"+previous["gallery"],"png",status="superseded generated-only unit review gallery")
+        for name in ["draft-profiles.json","pose-revisions.json","prepare-source.txt"]:
+            copy(attempt/name,"terrain/units/attempt-01/"+name,"preparation-metadata")
     material_root = catalog/"terrain/materials"
     if (material_root/"generation.json").exists():
         generation = json.loads((material_root/"generation.json").read_text())

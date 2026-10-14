@@ -8,6 +8,7 @@
 - [捲軸與紅金框架](scroll/)、[共用視窗邊框](window/)。
 - [戰場地面、物件與單位草稿](terrain/)，物件／單位 PNG 保留透明背景。
 - [地面圖集的材質與衍生圖](terrain/materials/)，保留兩版製作紀錄及完整提示詞。
+- [十項非空單位的透明裁切](terrain/units/)，原版三個空白來源保持空白。
 - [晴天與陰天天氣圖](art/weather-generation.json)，第二版保留原版岩峰構圖。
 - [開場騎兵與武將群像草稿](art/opening-generation.json)，保留原始生成圖，幾何與呈現待驗證。
 - [風格比較](concept/style-comparison-v1.png)。

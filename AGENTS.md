@@ -1,5 +1,11 @@
 # 德川家康：DOS 原版與 dosgolem
 
+完整單位圖集入口為 [tools/hd-unit-prepare.py](tools/hd-unit-prepare.py)，研究輸出在 `workplace/hd-prototype/catalog/terrain/units/`。`pose-revisions.json` 保存 002／007 的姿勢修正版與提示詞來源；`draft-profiles.json`、`review-page-*.png` 保存 13 原版索引的來源／裁切與原圖對照；`review.json` 為逐項檢視，`profiles.json` 為審查後的十張非空圖與三張空白來源。工具預設做裁切對照，`--integrate` 核對 review 才更新 `tools/hd-terrain-unit-profiles.go`；不以推測兵種或武將命名。生成圖及提示詞保存在 `assets/hd-b/terrain/`，純 HD 總覽與 metadata 在其 `units/` 子目錄，原圖對照只留本機。固定 GUI image 中專案掛 `/project` 可寫、`units/` 掛 `/output`，執行 `python3 /project/tools/hd-unit-prepare.py`。原版來源依 `terrain/objects/source-profiles.json` 及 `tools/hd-terrain-sprite-profiles.go` 的索引零 alpha 契約核對。
+
+單位圖第一次裁切對照保存於 `units/attempt-01/`，其中 `prepare-source.txt` 與 `pose-revisions.json` 保留當次輸入；008 的單尖槍頭與原版分叉輪廓不符，該次不加入正式 profile。`units/pose-revisions-v2.json` 加入 008 的局部修正版，沿原檔名重生目前裁切對照，舊目錄及圖像不覆寫。
+
+完整單位驗證入口為 [tools/verify-hd-units.py](tools/verify-hd-units.py)。`units/runtime/` 保存固定 GUI image／`tools/run-desktop.sh` 的執行檔、四套件回歸與來源快照；`units/desktop/` 沿 `tools/verify-hd-weather.py --mode weather` 自然執行原版入口至首戰。固定 GUI image 中專案唯讀掛 `/project`、`units/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-units.py`，輸出 `units/verification-summary.json`。十項來源及共同場景測試、三項原始空白與正常首戰兩項單位分開核對；正常完整畫面須等於地面全圖集版本。
+
 地面全圖集材質製作入口為 [tools/hd-terrain-materials.py](tools/hd-terrain-materials.py)，保存於 `workplace/hd-prototype/catalog/terrain/materials/`。`generation.json` 記錄新手繪材質及完整提示詞；`drafts/`、`draft-manifest.json` 及 `review-page-*.png` 保存第一版草稿。`drafts-v2/`、`draft-manifest-v2.json`、`review-v2-page-*.png` 保存清除孤立色點後的第二版；`review-v2.json` 記錄逐項檢視，`profiles.json` 為審查後的來源與 HD 對照。原版八項已通過素材與 `prepared/profiles.json` 保持歷史基準。工具預設只做草稿；`--integrate` 必須核對 review 與 manifest 才更新 `tools/hd-terrain-profiles.go`。固定 GUI image 中專案掛 `/project`、`terrain/` 掛 `/output` 可寫，原始資料只讀。生成材質、衍生圖塊及提示詞依授權同步至 `assets/hd-b/terrain/`，原版索引與遮罩維持本機。
 
 地面全圖集驗證入口為 [tools/verify-hd-terrain-materials.py](tools/verify-hd-terrain-materials.py)。`materials/runtime/` 保存沿固定 GUI image 及 `tools/run-desktop.sh` 重建的執行檔、四套件回歸與來源快照；`materials/desktop/` 使用 `tools/verify-hd-weather.py --mode weather` 跑原版入口至首戰，完整視窗另與前次天氣收據核對。固定 GUI image 中專案唯讀掛 `/project`、`materials/` 可寫掛 `/output`，執行該驗證工具，輸出 `materials/verification-summary.json`。104 個來源的圖形及共同呈現測試與正常首戰六種來源分開記錄；不把材質分類當作原版地形規則。

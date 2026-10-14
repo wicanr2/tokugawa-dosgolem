@@ -197,6 +197,14 @@ func TestSceneOverlappingHDVisibleOwnerAlphaAndPartialFloors(t *testing.T) {
 }
 
 func TestSceneApprovedUnitArtCropAndSourceGeometry(t *testing.T) {
+	if len(hdTerrainUnitProfiles) != 10 {
+		t.Fatal("all ten nonempty unit sources must have approved art")
+	}
+	for _, index := range []int{10, 11, 12} {
+		if _, ok := hdTerrainUnitProfiles[index]; ok {
+			t.Fatal("original empty unit was filled", index)
+		}
+	}
 	for index, profile := range hdTerrainUnitProfiles {
 		path := "/project/assets/hd-b/terrain/" + profile.Asset
 		data, err := os.ReadFile(path)
@@ -235,6 +243,73 @@ func TestSceneApprovedUnitArtCropAndSourceGeometry(t *testing.T) {
 		}
 		if newHDTerrainSpritePair(source, nil, 2, hdTerrainSpriteKey{"units", index}, profile.SourceBounds, profile.Crop).Reason != "fallback_missing_asset" {
 			t.Fatal("unit missing fallback")
+		}
+		// 每個實際來源走共同場景，檢查透明輪廓、缺圖及未知覆蓋。
+		grass, paper := color.NRGBA{44, 215, 44, 255}, color.NRGBA{227, 190, 93, 255}
+		solid := func(w, h int, c color.NRGBA) *image.NRGBA {
+			im := image.NewNRGBA(image.Rect(0, 0, w, h))
+			draw.Draw(im, im.Bounds(), image.NewUniform(c), image.Point{}, draw.Src)
+			return im
+		}
+		floor := newHDTerrainPair(solid(48, 32, grass), solid(96, 64, color.NRGBA{63, 108, 48, 255}), 2)
+		bg := solid(48, 48, paper)
+		draw.Draw(bg, image.Rect(0, 16, 48, 48), floor.Source, image.Point{}, draw.Src)
+		key := hdTerrainSpriteKey{"units", index}
+		sprite := hdTerrainSpriteDraw{Group: "units", Index: index, Rect: image.Rect(80, 64, 128, 112), Order: 2,
+			Background: bg, BackgroundVerified: true, BeginStep: 1, EndStep: 2,
+			BackgroundSHA: fmt.Sprintf("%x", sha256.Sum256(bg.Pix)), SourceSHA: fmt.Sprintf("%x", sha256.Sum256(p.Source.Pix))}
+		state := hdTerrainState{History: []hdTerrainDraw{{Index: 0, Rect: image.Rect(80, 80, 128, 112), Order: 1}}, Sprites: []hdTerrainSpriteDraw{sprite}}
+		native := solid(640, 400, paper)
+		draw.Draw(native, state.History[0].Rect, floor.Source, image.Point{}, draw.Src)
+		draw.Draw(native, sprite.Rect, p.Source, image.Point{}, draw.Over)
+		before := append([]byte(nil), native.Pix...)
+		out, _, _ := previewA0(native, nil, nil, 2, false)
+		original := append([]byte(nil), out.Pix...)
+		var scene hdTerrainScene
+		floors := map[int]hdTerrainPair{0: floor}
+		sources := map[hdTerrainSpriteKey]*image.NRGBA{key: p.Source}
+		report := scene.apply(out, native, state, floors, map[hdTerrainSpriteKey]hdTerrainSpritePair{key: p}, sources, 2, true)
+		if report.UnitHD != 1 || !bytes.Equal(before, native.Pix) || bytes.Equal(original, out.Pix) {
+			t.Fatal("real unit shared scene or read-only contract", index, report)
+		}
+		for y := 0; y < 800; y++ {
+			for x := 0; x < 1280; x++ {
+				if !image.Pt(x/2, y/2).In(sprite.Rect) {
+					n := (y*1280 + x) * 4
+					if !bytes.Equal(out.Pix[n:n+4], original[n:n+4]) {
+						t.Fatal("unit scene escaped rectangle", index, x, y)
+					}
+				}
+			}
+		}
+		missing := p
+		missing.Asset = nil
+		missing.Reason = "fallback_missing_asset"
+		out, _, _ = previewA0(native, nil, nil, 2, false)
+		report = scene.apply(out, native, state, floors, map[hdTerrainSpriteKey]hdTerrainSpritePair{key: missing}, sources, 2, true)
+		if report.UnitHD != 0 {
+			t.Fatal("missing unit still painted", index)
+		}
+		for y := 0; y < 48; y++ {
+			for x := 0; x < 48; x++ {
+				if p.Source.NRGBAAt(x, y).A == 255 && out.NRGBAAt((80+x)*2, (64+y)*2) != native.NRGBAAt(80+x, 64+y) {
+					t.Fatal("missing unit changed original foreground", index, x, y)
+				}
+			}
+		}
+		point := profile.SourceBounds.Min
+		for p.Source.NRGBAAt(point.X, point.Y).A == 0 {
+			point.X++
+			if point.X >= 48 {
+				point.X = 0
+				point.Y++
+			}
+		}
+		native.Pix[((64+point.Y)*640+80+point.X)*4] ^= 1
+		out, _, _ = previewA0(native, nil, nil, 2, false)
+		report = scene.apply(out, native, state, floors, map[hdTerrainSpriteKey]hdTerrainSpritePair{key: p}, sources, 2, true)
+		if report.UnitHD != 0 || out.NRGBAAt((80+point.X)*2, (64+point.Y)*2) != native.NRGBAAt(80+point.X, 64+point.Y) {
+			t.Fatal("unknown unit overlay overwritten", index)
 		}
 	}
 }

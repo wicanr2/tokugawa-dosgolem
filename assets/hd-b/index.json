@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 390,
-    "prompts": 113,
-    "bytes": 373567657
+    "png": 415,
+    "prompts": 116,
+    "bytes": 377450824
   },
-  "archive_tool_sha256": "0ae400cbbf25c88cf47e9f19e607aa18c17f725ffc3c6f473775d713ff28a97c",
+  "archive_tool_sha256": "455dc5c92dc11c8e5d017983bef0097ae6a4f7556721c8cd6c76287b2ad1b96e",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -11827,7 +11827,7 @@
       "sha256": "66ab0037c95020dd511e7d8bb3d451642b20381c38ed7b5ba9c592e01b6ce43a",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-000-hd-b-v1.png",
       "prompt": "terrain/unit-000-hd-b-v1.prompt.txt",
-      "status": "generated unit draft; original identity and footprint review pending",
+      "status": "reviewed source pose and alpha crop; common unit consumer integrated, normal source not yet sampled",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -11877,7 +11877,7 @@
       "sha256": "57358865cba98944fe379f5910d9fef251fc7887d19906b35d0369e79ff9a66b",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-002-hd-b-v1.png",
       "prompt": "terrain/unit-002-hd-b-v1.prompt.txt",
-      "status": "generated unit draft; original identity and footprint review pending",
+      "status": "superseded pose or weapon-head draft; original silhouette corrected in v2",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -11894,6 +11894,31 @@
       "bytes": 1376,
       "sha256": "f08dbdb56816c15b7efa42870bc2b3297a7fb3648a2fd502e088ddf0cf7220a9",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-002-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-002-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 1056903,
+      "sha256": "27455f1609c64c7072ae92190b590598b92bd772dd02ca649abc960114d56409",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-002-hd-b-v2.png",
+      "prompt": "terrain/unit-002-hd-b-v2.prompt.txt",
+      "status": "reviewed source pose and alpha crop; common unit consumer integrated, normal source not yet sampled",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-002-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1510,
+      "sha256": "8979846bdc4eb040379a77502300c6278da4c8230d19a48eaaf0e819aba5d207",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-002-hd-b-v2.prompt.txt"
     },
     {
       "path": "terrain/unit-003-hd-b-v1.png",
@@ -11927,7 +11952,7 @@
       "sha256": "4f445a1953a76aa3e52dd702df7ace9d36f7c15835a28e0ac9d78c496fb28ef0",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-004-hd-b-v1.png",
       "prompt": "terrain/unit-004-hd-b-v1.prompt.txt",
-      "status": "generated unit draft; original identity and footprint review pending",
+      "status": "reviewed source pose and alpha crop; common unit consumer integrated, normal source not yet sampled",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -11952,7 +11977,7 @@
       "sha256": "ea5dc08e590e4ae74f8e956103f54f0b3c726e4581f1233cfaa4123a087baf7c",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-005-hd-b-v1.png",
       "prompt": "terrain/unit-005-hd-b-v1.prompt.txt",
-      "status": "generated unit draft; original identity and footprint review pending",
+      "status": "reviewed source pose and alpha crop; common unit consumer integrated, normal source not yet sampled",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -12002,7 +12027,7 @@
       "sha256": "901d37d63d0847131787fc4f1e880a0e29d1fb6e82b0203fc1d033cb2d282cd7",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-006-hd-b-v2.png",
       "prompt": "terrain/unit-006-hd-b-v2.prompt.txt",
-      "status": "reviewed original pose correction; runtime integration pending",
+      "status": "reviewed source pose and alpha crop; common unit consumer integrated, normal source not yet sampled",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -12027,7 +12052,7 @@
       "sha256": "b40b0683758d2ef07e49c398c6759ffb5bb29dcfba9857449a78f7490b48f20b",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-007-hd-b-v1.png",
       "prompt": "terrain/unit-007-hd-b-v1.prompt.txt",
-      "status": "generated unit draft; original identity and footprint review pending",
+      "status": "superseded pose or weapon-head draft; original silhouette corrected in v2",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -12046,13 +12071,38 @@
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-007-hd-b-v1.prompt.txt"
     },
     {
+      "path": "terrain/unit-007-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 1160257,
+      "sha256": "24bc41662364464c52612993aab1fd7e1dad0ee28ae4ce3be9c9fcac7df7a195",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-007-hd-b-v2.png",
+      "prompt": "terrain/unit-007-hd-b-v2.prompt.txt",
+      "status": "reviewed source pose and alpha crop; common unit consumer integrated, normal source not yet sampled",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-007-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1511,
+      "sha256": "35cb79b5ec44e74c8a2aad29d21c4fd0cd92275c414b3b9597bfb9d0f0d9985d",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-007-hd-b-v2.prompt.txt"
+    },
+    {
       "path": "terrain/unit-008-hd-b-v1.png",
       "kind": "png",
       "bytes": 1013245,
       "sha256": "731715225ad86948c9388cabc66b13a04b617b2dc245809299278d47945aa521",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-008-hd-b-v1.png",
       "prompt": "terrain/unit-008-hd-b-v1.prompt.txt",
-      "status": "generated unit draft; original identity and footprint review pending",
+      "status": "superseded pose or weapon-head draft; original silhouette corrected in v2",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -12071,13 +12121,38 @@
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-008-hd-b-v1.prompt.txt"
     },
     {
+      "path": "terrain/unit-008-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 1074330,
+      "sha256": "7eb3c5ee49623036081ddffe747a7bea999784a1eea7db1847f39ae65a25565b",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-008-hd-b-v2.png",
+      "prompt": "terrain/unit-008-hd-b-v2.prompt.txt",
+      "status": "reviewed source pose and alpha crop; common unit consumer integrated, normal source not yet sampled",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-008-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1102,
+      "sha256": "7aa3448adfdb4e5342969d91487783fd7c338cd9f630b0f13b7745594cb5e0b7",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-008-hd-b-v2.prompt.txt"
+    },
+    {
       "path": "terrain/unit-009-hd-b-v1.png",
       "kind": "png",
       "bytes": 1299046,
       "sha256": "7d85642230559e55d173c73f20150e5eff9676f203ec4c00caf0c039780d35b8",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-009-hd-b-v1.png",
       "prompt": "terrain/unit-009-hd-b-v1.prompt.txt",
-      "status": "generated unit draft; original identity and footprint review pending",
+      "status": "reviewed source pose and alpha crop; common unit consumer integrated, normal source not yet sampled",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -12113,6 +12188,696 @@
       "bytes": 987,
       "sha256": "73e8c91e0b85e9a335d20584b1097d246480bc69221e8a2abba8af82d5d7a3cb",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-revisions.json"
+    },
+    {
+      "path": "terrain/units/attempt-01/draft-profiles.json",
+      "kind": "preparation-metadata",
+      "bytes": 11993,
+      "sha256": "3787dffce2d376ac61df479648661cf3e88c2cda7d7e6209c8cb335a0783f8b7",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/draft-profiles.json"
+    },
+    {
+      "path": "terrain/units/attempt-01/pose-revisions.json",
+      "kind": "preparation-metadata",
+      "bytes": 1843,
+      "sha256": "65fca97c51c850c33962608cc4c1fb3226e4b2e9a21d8db548e98fd1e5cee72a",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/pose-revisions.json"
+    },
+    {
+      "path": "terrain/units/attempt-01/prepare-source.txt",
+      "kind": "preparation-metadata",
+      "bytes": 8062,
+      "sha256": "7a0daa07c905c5dfa2a9ec744b97d5e413c65b566f5290c1a1889b77a80d34af",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepare-source.txt"
+    },
+    {
+      "path": "terrain/units/attempt-01/prepared/unit-000-hd-preview.png",
+      "kind": "png",
+      "bytes": 8968,
+      "sha256": "cb178a5014d2c21017586468c00bcbe4d3cd8857cce35ec69a0a8335809e8db0",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepared/unit-000-hd-preview.png",
+      "alpha_policy": "transparent",
+      "status": "first crop review; unit008 single spearhead subsequently corrected",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/attempt-01/prepared/unit-001-hd-preview.png",
+      "kind": "png",
+      "bytes": 11264,
+      "sha256": "c0bc4d7a0bf37b6632bfe2a2c6e14be4a30878bd434e218e21ef3812f652fcc0",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepared/unit-001-hd-preview.png",
+      "alpha_policy": "transparent",
+      "status": "first crop review; unit008 single spearhead subsequently corrected",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/attempt-01/prepared/unit-002-hd-preview.png",
+      "kind": "png",
+      "bytes": 10512,
+      "sha256": "cdf3a17b22d3af4ade9608ed8dc8fa8ead0a19b690ed1a6a4bbb3a2b159fa86f",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepared/unit-002-hd-preview.png",
+      "alpha_policy": "transparent",
+      "status": "first crop review; unit008 single spearhead subsequently corrected",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/attempt-01/prepared/unit-003-hd-preview.png",
+      "kind": "png",
+      "bytes": 10753,
+      "sha256": "2af29b145a1c0a34548e7f7778000b416642f43d459a6b1a363ea515f6c2f4a6",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepared/unit-003-hd-preview.png",
+      "alpha_policy": "transparent",
+      "status": "first crop review; unit008 single spearhead subsequently corrected",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/attempt-01/prepared/unit-004-hd-preview.png",
+      "kind": "png",
+      "bytes": 17321,
+      "sha256": "48eb95f2da14aad34cd7a64f7a14eddcd4618ed1d1a06884d1c2a5746b703e89",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepared/unit-004-hd-preview.png",
+      "alpha_policy": "transparent",
+      "status": "first crop review; unit008 single spearhead subsequently corrected",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/attempt-01/prepared/unit-005-hd-preview.png",
+      "kind": "png",
+      "bytes": 8720,
+      "sha256": "ef19a9e301ed43338f7be3fb87d664215801478a1b69e44548ab68087922bf14",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepared/unit-005-hd-preview.png",
+      "alpha_policy": "transparent",
+      "status": "first crop review; unit008 single spearhead subsequently corrected",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/attempt-01/prepared/unit-006-hd-preview.png",
+      "kind": "png",
+      "bytes": 11612,
+      "sha256": "83335a0eba67da94cb1bfd0b3e212292c749a2868882a7d25047a57ba834063a",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepared/unit-006-hd-preview.png",
+      "alpha_policy": "transparent",
+      "status": "first crop review; unit008 single spearhead subsequently corrected",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/attempt-01/prepared/unit-007-hd-preview.png",
+      "kind": "png",
+      "bytes": 12114,
+      "sha256": "e899f1fe04700bf4d23bec678afa73882ae8491ae980a775b5f011f76893e913",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepared/unit-007-hd-preview.png",
+      "alpha_policy": "transparent",
+      "status": "first crop review; unit008 single spearhead subsequently corrected",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/attempt-01/prepared/unit-008-hd-preview.png",
+      "kind": "png",
+      "bytes": 11177,
+      "sha256": "644c9b92ff4afc217c1fd75222b98f7c6afcf3fccb278ef3156645e7464da9a7",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepared/unit-008-hd-preview.png",
+      "alpha_policy": "transparent",
+      "status": "first crop review; unit008 single spearhead subsequently corrected",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/attempt-01/prepared/unit-009-hd-preview.png",
+      "kind": "png",
+      "bytes": 15630,
+      "sha256": "75fab73ae951b7884a5687299384ad6de8429fe59dc9247004b0b5facd065a62",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/prepared/unit-009-hd-preview.png",
+      "alpha_policy": "transparent",
+      "status": "first crop review; unit008 single spearhead subsequently corrected",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/attempt-01/unit-HD-gallery-v2.png",
+      "kind": "png",
+      "bytes": 149157,
+      "sha256": "6aafdd6c463250602f0c109c737ee9ae1b3aecd76b4905ea519bdcc7b9c3b902",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/attempt-01/unit-HD-gallery-v2.png",
+      "status": "superseded generated-only unit review gallery",
+      "size": [
+        1440,
+        624
+      ]
+    },
+    {
+      "path": "terrain/units/draft-profiles.json",
+      "kind": "preparation-metadata",
+      "bytes": 11993,
+      "sha256": "a14e8217d6ea686c15861c9ac3b99c9f0b2431f9d79e80e1a98180a1d8b3edb3",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/draft-profiles.json"
+    },
+    {
+      "path": "terrain/units/pose-revisions-v2.json",
+      "kind": "preparation-metadata",
+      "bytes": 2798,
+      "sha256": "a8562805d185640ba336cf4ae6b8321bfc2f7372d8c386501d33ab8cee01c4f5",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/pose-revisions-v2.json"
+    },
+    {
+      "path": "terrain/units/pose-revisions.json",
+      "kind": "preparation-metadata",
+      "bytes": 1843,
+      "sha256": "65fca97c51c850c33962608cc4c1fb3226e4b2e9a21d8db548e98fd1e5cee72a",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/pose-revisions.json"
+    },
+    {
+      "path": "terrain/units/prepared/unit-000-hd-preview.png",
+      "kind": "png",
+      "bytes": 8968,
+      "sha256": "cb178a5014d2c21017586468c00bcbe4d3cd8857cce35ec69a0a8335809e8db0",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/prepared/unit-000-hd-preview.png",
+      "alpha_policy": "transparent",
+      "derivation": {
+        "index": 0,
+        "source": "workplace/hd-prototype/catalog/terrain/objects/sources/units-000-original.png",
+        "source_png_sha256": "9b7c7da8413da6d2c9bd6d8a3556c745a7d700ec73f3c5a82448bb9f05fc3111",
+        "source_indices_sha256": "33232ed65070a8199b7ea889b6a0a8bf48430a8b39371253aebb359d742e25c9",
+        "source_bounds": [
+          3,
+          7,
+          47,
+          48
+        ],
+        "asset": "unit-000-hd-b-v1.png",
+        "asset_sha256": "66ab0037c95020dd511e7d8bb3d451642b20381c38ed7b5ba9c592e01b6ce43a",
+        "crop": [
+          115,
+          197,
+          1125,
+          1092
+        ],
+        "prompt": "unit-000-hd-b-v1.prompt.txt",
+        "prompt_sha256": "8243d917bb4ad3a796f7142059ce7c3f48d6350e619c67650fd2aca10ba11015",
+        "alpha_threshold": 7,
+        "crop_margin": 3,
+        "prepared": "prepared/unit-000-hd-preview.png",
+        "prepared_sha256": "cb178a5014d2c21017586468c00bcbe4d3cd8857cce35ec69a0a8335809e8db0"
+      },
+      "prompt": "terrain/unit-000-hd-b-v1.prompt.txt",
+      "status": "source-bounded transparent unit preview; actual runtime uses registered raw art/crop",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/prepared/unit-001-hd-preview.png",
+      "kind": "png",
+      "bytes": 11264,
+      "sha256": "c0bc4d7a0bf37b6632bfe2a2c6e14be4a30878bd434e218e21ef3812f652fcc0",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/prepared/unit-001-hd-preview.png",
+      "alpha_policy": "transparent",
+      "derivation": {
+        "index": 1,
+        "source": "workplace/hd-prototype/catalog/terrain/objects/sources/units-001-original.png",
+        "source_png_sha256": "e1ce3c265ff770083981cfde3109b7cf5086c1b5beb4d99a74b7635d4b63b247",
+        "source_indices_sha256": "eb5d53a6bae836d660db0c62b06c147583d7e68e486a24d3a7c24cd57a16abfc",
+        "source_bounds": [
+          2,
+          0,
+          47,
+          48
+        ],
+        "asset": "unit-001-hd-b-v1.png",
+        "asset_sha256": "a8c37f61ef22f645a58cb824758ab34620e535a2588f0fce5e71490cf3dd3a72",
+        "crop": [
+          265,
+          39,
+          1098,
+          1191
+        ],
+        "prompt": "unit-001-hd-b-v1.prompt.txt",
+        "prompt_sha256": "d6682e8f0b72d64ecddaf8633e13d4fdfd4a5792b4194c440d7de6ccf3f2cf61",
+        "alpha_threshold": 7,
+        "crop_margin": 3,
+        "prepared": "prepared/unit-001-hd-preview.png",
+        "prepared_sha256": "c0bc4d7a0bf37b6632bfe2a2c6e14be4a30878bd434e218e21ef3812f652fcc0"
+      },
+      "prompt": "terrain/unit-001-hd-b-v1.prompt.txt",
+      "status": "source-bounded transparent unit preview; actual runtime uses registered raw art/crop",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/prepared/unit-002-hd-preview.png",
+      "kind": "png",
+      "bytes": 10512,
+      "sha256": "cdf3a17b22d3af4ade9608ed8dc8fa8ead0a19b690ed1a6a4bbb3a2b159fa86f",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/prepared/unit-002-hd-preview.png",
+      "alpha_policy": "transparent",
+      "derivation": {
+        "index": 2,
+        "source": "workplace/hd-prototype/catalog/terrain/objects/sources/units-002-original.png",
+        "source_png_sha256": "3de75be869750b32eeac36aaed7a8d760fa2e19537a2d84ce9f4ea80baa247ba",
+        "source_indices_sha256": "220bcff9562c61038edc8568a4a66e16ef7b11cb589ecf7b9f085aa83b89d05d",
+        "source_bounds": [
+          3,
+          0,
+          48,
+          48
+        ],
+        "asset": "unit-002-hd-b-v2.png",
+        "asset_sha256": "27455f1609c64c7072ae92190b590598b92bd772dd02ca649abc960114d56409",
+        "crop": [
+          251,
+          28,
+          1202,
+          1226
+        ],
+        "prompt": "unit-002-hd-b-v2.prompt.txt",
+        "prompt_sha256": "8979846bdc4eb040379a77502300c6278da4c8230d19a48eaaf0e819aba5d207",
+        "alpha_threshold": 7,
+        "crop_margin": 3,
+        "prepared": "prepared/unit-002-hd-preview.png",
+        "prepared_sha256": "cdf3a17b22d3af4ade9608ed8dc8fa8ead0a19b690ed1a6a4bbb3a2b159fa86f"
+      },
+      "prompt": "terrain/unit-002-hd-b-v2.prompt.txt",
+      "status": "source-bounded transparent unit preview; actual runtime uses registered raw art/crop",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/prepared/unit-003-hd-preview.png",
+      "kind": "png",
+      "bytes": 10753,
+      "sha256": "2af29b145a1c0a34548e7f7778000b416642f43d459a6b1a363ea515f6c2f4a6",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/prepared/unit-003-hd-preview.png",
+      "alpha_policy": "transparent",
+      "derivation": {
+        "index": 3,
+        "source": "workplace/hd-prototype/catalog/terrain/objects/sources/units-003-original.png",
+        "source_png_sha256": "2ba68743233d09e86cd32384cb6fc4a764ebdebe4d2f4f2efcf3033b228abaf1",
+        "source_indices_sha256": "776344f762c56be5dda7990f4bbc075700aedf612486a95f868b06900a1e1a75",
+        "source_bounds": [
+          0,
+          0,
+          41,
+          48
+        ],
+        "asset": "unit-003-hd-b-v1.png",
+        "asset_sha256": "6c9a0ef3d9a3db01bec673fb37d7f8fca4a2f2a08cf6a14d81ecd101ec867654",
+        "crop": [
+          117,
+          90,
+          984,
+          1159
+        ],
+        "prompt": "unit-003-hd-b-v1.prompt.txt",
+        "prompt_sha256": "4d2c13ce487abcbe105fe0ce5dcdb2892c07004d7e235c76fc29f477a0b62d12",
+        "alpha_threshold": 7,
+        "crop_margin": 3,
+        "prepared": "prepared/unit-003-hd-preview.png",
+        "prepared_sha256": "2af29b145a1c0a34548e7f7778000b416642f43d459a6b1a363ea515f6c2f4a6"
+      },
+      "prompt": "terrain/unit-003-hd-b-v1.prompt.txt",
+      "status": "source-bounded transparent unit preview; actual runtime uses registered raw art/crop",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/prepared/unit-004-hd-preview.png",
+      "kind": "png",
+      "bytes": 17321,
+      "sha256": "48eb95f2da14aad34cd7a64f7a14eddcd4618ed1d1a06884d1c2a5746b703e89",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/prepared/unit-004-hd-preview.png",
+      "alpha_policy": "transparent",
+      "derivation": {
+        "index": 4,
+        "source": "workplace/hd-prototype/catalog/terrain/objects/sources/units-004-original.png",
+        "source_png_sha256": "1271022f2e75a13912422504a8fa516bf139a99b03f4f24325b6a3f4b9c9645a",
+        "source_indices_sha256": "b550ca1a4d5ad9355b42c0f2ad42a74b0363c25b2daea2c7f967a892adfdbe23",
+        "source_bounds": [
+          3,
+          0,
+          44,
+          48
+        ],
+        "asset": "unit-004-hd-b-v1.png",
+        "asset_sha256": "4f445a1953a76aa3e52dd702df7ace9d36f7c15835a28e0ac9d78c496fb28ef0",
+        "crop": [
+          321,
+          49,
+          937,
+          1208
+        ],
+        "prompt": "unit-004-hd-b-v1.prompt.txt",
+        "prompt_sha256": "cc73611214fee23015c5d987dc9f179c15d89fedf035f244c459f5114614ba63",
+        "alpha_threshold": 7,
+        "crop_margin": 3,
+        "prepared": "prepared/unit-004-hd-preview.png",
+        "prepared_sha256": "48eb95f2da14aad34cd7a64f7a14eddcd4618ed1d1a06884d1c2a5746b703e89"
+      },
+      "prompt": "terrain/unit-004-hd-b-v1.prompt.txt",
+      "status": "source-bounded transparent unit preview; actual runtime uses registered raw art/crop",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/prepared/unit-005-hd-preview.png",
+      "kind": "png",
+      "bytes": 8720,
+      "sha256": "ef19a9e301ed43338f7be3fb87d664215801478a1b69e44548ab68087922bf14",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/prepared/unit-005-hd-preview.png",
+      "alpha_policy": "transparent",
+      "derivation": {
+        "index": 5,
+        "source": "workplace/hd-prototype/catalog/terrain/objects/sources/units-005-original.png",
+        "source_png_sha256": "032b7a88435bbf56b92a5ff3e25f1cbea0a08fb33584d19cedb78a2e29d9537f",
+        "source_indices_sha256": "d279c6ad6ca6bf2e821992c1b4aa663916003e21b87f325b302a7e71bb16e87c",
+        "source_bounds": [
+          0,
+          7,
+          44,
+          48
+        ],
+        "asset": "unit-005-hd-b-v1.png",
+        "asset_sha256": "ea5dc08e590e4ae74f8e956103f54f0b3c726e4581f1233cfaa4123a087baf7c",
+        "crop": [
+          143,
+          177,
+          1234,
+          1125
+        ],
+        "prompt": "unit-005-hd-b-v1.prompt.txt",
+        "prompt_sha256": "481d7cf177fce6884662e3bfa74c8851f6d2b388cbab49264e418369dc2b13b3",
+        "alpha_threshold": 7,
+        "crop_margin": 3,
+        "prepared": "prepared/unit-005-hd-preview.png",
+        "prepared_sha256": "ef19a9e301ed43338f7be3fb87d664215801478a1b69e44548ab68087922bf14"
+      },
+      "prompt": "terrain/unit-005-hd-b-v1.prompt.txt",
+      "status": "source-bounded transparent unit preview; actual runtime uses registered raw art/crop",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/prepared/unit-006-hd-preview.png",
+      "kind": "png",
+      "bytes": 11612,
+      "sha256": "83335a0eba67da94cb1bfd0b3e212292c749a2868882a7d25047a57ba834063a",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/prepared/unit-006-hd-preview.png",
+      "alpha_policy": "transparent",
+      "derivation": {
+        "index": 6,
+        "source": "workplace/hd-prototype/catalog/terrain/objects/sources/units-006-original.png",
+        "source_png_sha256": "6cd38eb09d0c9d9b919726c0165ce7f7f856c35dd6648be842d63f2f612848c7",
+        "source_indices_sha256": "dda2e3d142dce6262ca873903ba30211d194a4a4655a84931ad55a17af6b18d0",
+        "source_bounds": [
+          2,
+          1,
+          47,
+          48
+        ],
+        "asset": "unit-006-hd-b-v2.png",
+        "asset_sha256": "901d37d63d0847131787fc4f1e880a0e29d1fb6e82b0203fc1d033cb2d282cd7",
+        "crop": [
+          75,
+          59,
+          1199,
+          1178
+        ],
+        "prompt": "unit-006-hd-b-v2.prompt.txt",
+        "prompt_sha256": "52007f1faeb3c60548ca943d431858d5464e75fb13faa547269d314698539f10",
+        "alpha_threshold": 7,
+        "crop_margin": 3,
+        "prepared": "prepared/unit-006-hd-preview.png",
+        "prepared_sha256": "83335a0eba67da94cb1bfd0b3e212292c749a2868882a7d25047a57ba834063a"
+      },
+      "prompt": "terrain/unit-006-hd-b-v2.prompt.txt",
+      "status": "source-bounded transparent unit preview; actual runtime uses registered raw art/crop",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/prepared/unit-007-hd-preview.png",
+      "kind": "png",
+      "bytes": 12114,
+      "sha256": "e899f1fe04700bf4d23bec678afa73882ae8491ae980a775b5f011f76893e913",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/prepared/unit-007-hd-preview.png",
+      "alpha_policy": "transparent",
+      "derivation": {
+        "index": 7,
+        "source": "workplace/hd-prototype/catalog/terrain/objects/sources/units-007-original.png",
+        "source_png_sha256": "0422bdaad2a86bbfb7d23973372245022738c81d5be56d28626368b7f3516ddd",
+        "source_indices_sha256": "e4169a0d92b157712669ee59615f0946addc3567a1eeeb75141397a1bfe0d9c6",
+        "source_bounds": [
+          0,
+          0,
+          43,
+          48
+        ],
+        "asset": "unit-007-hd-b-v2.png",
+        "asset_sha256": "24bc41662364464c52612993aab1fd7e1dad0ee28ae4ce3be9c9fcac7df7a195",
+        "crop": [
+          236,
+          18,
+          1123,
+          1213
+        ],
+        "prompt": "unit-007-hd-b-v2.prompt.txt",
+        "prompt_sha256": "35cb79b5ec44e74c8a2aad29d21c4fd0cd92275c414b3b9597bfb9d0f0d9985d",
+        "alpha_threshold": 7,
+        "crop_margin": 3,
+        "prepared": "prepared/unit-007-hd-preview.png",
+        "prepared_sha256": "e899f1fe04700bf4d23bec678afa73882ae8491ae980a775b5f011f76893e913"
+      },
+      "prompt": "terrain/unit-007-hd-b-v2.prompt.txt",
+      "status": "source-bounded transparent unit preview; actual runtime uses registered raw art/crop",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/prepared/unit-008-hd-preview.png",
+      "kind": "png",
+      "bytes": 11912,
+      "sha256": "d2acb0591bc847ec01ed036c57f03efe5e3da53201e125c86d112b121da3cad0",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/prepared/unit-008-hd-preview.png",
+      "alpha_policy": "transparent",
+      "derivation": {
+        "index": 8,
+        "source": "workplace/hd-prototype/catalog/terrain/objects/sources/units-008-original.png",
+        "source_png_sha256": "4956412c5b88c01366ef430864e15f98940a339aa536eb3f2f20fbdfda15dbc5",
+        "source_indices_sha256": "0cfa865611f4d2d8ad29e51d131ad9a90d68d0aa422635a7bdbbe9f27056ff92",
+        "source_bounds": [
+          4,
+          0,
+          48,
+          48
+        ],
+        "asset": "unit-008-hd-b-v2.png",
+        "asset_sha256": "7eb3c5ee49623036081ddffe747a7bea999784a1eea7db1847f39ae65a25565b",
+        "crop": [
+          238,
+          52,
+          1147,
+          1212
+        ],
+        "prompt": "unit-008-hd-b-v2.prompt.txt",
+        "prompt_sha256": "7aa3448adfdb4e5342969d91487783fd7c338cd9f630b0f13b7745594cb5e0b7",
+        "alpha_threshold": 7,
+        "crop_margin": 3,
+        "prepared": "prepared/unit-008-hd-preview.png",
+        "prepared_sha256": "d2acb0591bc847ec01ed036c57f03efe5e3da53201e125c86d112b121da3cad0"
+      },
+      "prompt": "terrain/unit-008-hd-b-v2.prompt.txt",
+      "status": "source-bounded transparent unit preview; actual runtime uses registered raw art/crop",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/prepared/unit-009-hd-preview.png",
+      "kind": "png",
+      "bytes": 15630,
+      "sha256": "75fab73ae951b7884a5687299384ad6de8429fe59dc9247004b0b5facd065a62",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/prepared/unit-009-hd-preview.png",
+      "alpha_policy": "transparent",
+      "derivation": {
+        "index": 9,
+        "source": "workplace/hd-prototype/catalog/terrain/objects/sources/units-009-original.png",
+        "source_png_sha256": "cdcbc78ffe6b23a53dd24df88455194ef9f4cf9961deb1d8c39e181634a49fce",
+        "source_indices_sha256": "7825d7add089af4050aa0961641c13986a92ac8806be6cdc81d6aa838d189cfc",
+        "source_bounds": [
+          3,
+          1,
+          43,
+          48
+        ],
+        "asset": "unit-009-hd-b-v1.png",
+        "asset_sha256": "7d85642230559e55d173c73f20150e5eff9676f203ec4c00caf0c039780d35b8",
+        "crop": [
+          283,
+          41,
+          970,
+          1214
+        ],
+        "prompt": "unit-009-hd-b-v1.prompt.txt",
+        "prompt_sha256": "c51652762c106946866e847ea60488489ebbde2d70c245587e4c3810e11fce04",
+        "alpha_threshold": 7,
+        "crop_margin": 3,
+        "prepared": "prepared/unit-009-hd-preview.png",
+        "prepared_sha256": "75fab73ae951b7884a5687299384ad6de8429fe59dc9247004b0b5facd065a62"
+      },
+      "prompt": "terrain/unit-009-hd-b-v1.prompt.txt",
+      "status": "source-bounded transparent unit preview; actual runtime uses registered raw art/crop",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        96,
+        96
+      ]
+    },
+    {
+      "path": "terrain/units/profiles.json",
+      "kind": "preparation-metadata",
+      "bytes": 12170,
+      "sha256": "3a2edcd1567a56ab1d6573356a376ed22ce7238deafab9b7133fe0c6546d2e2e",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/profiles.json"
+    },
+    {
+      "path": "terrain/units/review.json",
+      "kind": "preparation-metadata",
+      "bytes": 790,
+      "sha256": "8921f6e6a49510abc5c05345c89ade2e436ba0c44387b1f3b2f0d9399a603361",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/review.json"
+    },
+    {
+      "path": "terrain/units/unit-HD-gallery-v2.png",
+      "kind": "png",
+      "bytes": 150028,
+      "sha256": "90d6f11ad3e5a4ba08353ae5a73153f791744ff6da9a25cb7f478f22714cbf36",
+      "local_source": "workplace/hd-prototype/catalog/terrain/units/unit-HD-gallery-v2.png",
+      "status": "generated-only unit gallery; original references excluded",
+      "size": [
+        1440,
+        624
+      ]
     },
     {
       "path": "window/window-skin-hd-b-v1.png",

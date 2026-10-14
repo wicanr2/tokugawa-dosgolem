@@ -1,0 +1,33 @@
+{
+  "verified": true,
+  "reviewed_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "empty_indices": [
+    10,
+    11,
+    12
+  ],
+  "draft_profiles_sha256": "a14e8217d6ea686c15861c9ac3b99c9f0b2431f9d79e80e1a98180a1d8b3edb3",
+  "review_pages": [
+    {
+      "path": "review-page-01.png",
+      "sha256": "f7b3885c4cbb4aabdd2347e730f8b8357c2de23e0e622054557c0571847b637a"
+    },
+    {
+      "path": "review-page-02.png",
+      "sha256": "77fc4eb0134409d7ef36ced93a174db3bf49b89121729d44d3789aaebe780191"
+    }
+  ],
+  "scope": "10 original/HD pairs visually inspected; rearing002/007 and forked008 revised; 006 uses corrected v2; original001/003 unchanged",
+  "original_unit_type_mapping": "unknown; only native source indices and visual pose matched"
+}

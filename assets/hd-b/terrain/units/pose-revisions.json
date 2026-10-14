@@ -1,0 +1,41 @@
+{
+  "classification": "generated source-pose revisions, not original unit-rule mapping",
+  "records": [
+    {
+      "source_index": 2,
+      "asset": "unit-002-hd-b-v2.png",
+      "asset_sha256": "27455f1609c64c7072ae92190b590598b92bd772dd02ca649abc960114d56409",
+      "prompt": "unit-002-hd-b-v2.prompt.txt",
+      "prompt_sha256": "8979846bdc4eb040379a77502300c6278da4c8230d19a48eaaf0e819aba5d207",
+      "tool": "built-in image_gen.imagegen",
+      "transparent_background": true,
+      "size": [
+        1254,
+        1254
+      ],
+      "reference_original_png_sha256": "c566d21a67f5082db61d28029535a394f9ddb667e50017e487959f7b475b5762",
+      "style_reference_sha256": "57358865cba98944fe379f5910d9fef251fc7887d19906b35d0369e79ff9a66b",
+      "supersedes": "unit-002-hd-b-v1.png",
+      "review": "rearing pose and facing aligned to original; unit type mapping not asserted",
+      "status": "visually reviewed pose correction; runtime integration pending"
+    },
+    {
+      "source_index": 7,
+      "asset": "unit-007-hd-b-v2.png",
+      "asset_sha256": "24bc41662364464c52612993aab1fd7e1dad0ee28ae4ce3be9c9fcac7df7a195",
+      "prompt": "unit-007-hd-b-v2.prompt.txt",
+      "prompt_sha256": "35cb79b5ec44e74c8a2aad29d21c4fd0cd92275c414b3b9597bfb9d0f0d9985d",
+      "tool": "built-in image_gen.imagegen",
+      "transparent_background": true,
+      "size": [
+        1254,
+        1254
+      ],
+      "reference_original_png_sha256": "e8b1f12b59f6840839010170f3953120ef1b392bbc977d095f28adda7ffc0009",
+      "style_reference_sha256": "b40b0683758d2ef07e49c398c6759ffb5bb29dcfba9857449a78f7490b48f20b",
+      "supersedes": "unit-007-hd-b-v1.png",
+      "review": "rearing pose and facing aligned to original; unit type mapping not asserted",
+      "status": "visually reviewed pose correction; runtime integration pending"
+    }
+  ]
+}

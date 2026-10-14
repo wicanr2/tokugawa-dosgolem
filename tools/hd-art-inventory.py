@@ -175,7 +175,21 @@ def main():
             proof_sources.append({"verification": str(terrain_proof.relative_to(PROJECT)), "sha256": sha(terrain_proof)})
     generated_units, generated_objects = unit_drafts, object_drafts
     approved_units = scene_summary['approved_unit_indices'] if scene_summary else []
-    unit_drafts -= len(approved_units)
+    reviewed_unit_indices = approved_units
+    unit_profiles_path = ROOT/'terrain/units/profiles.json'
+    if unit_profiles_path.exists():
+        unit_profiles = json.loads(unit_profiles_path.read_text())
+        assert unit_profiles['tool_sha256'] == sha(PROJECT/'tools/hd-unit-prepare.py')
+        assert unit_profiles['source_slots'] == 13 and unit_profiles['nonempty_sources'] == 10 and unit_profiles['empty_indices'] == [10,11,12]
+        reviewed_unit_indices = [r['index'] for r in unit_profiles['records'] if r['asset']]
+        assert reviewed_unit_indices == list(range(10))
+        unit_proof_path = ROOT/'terrain/units/verification-summary.json'
+        if unit_proof_path.exists():
+            unit_proof = json.loads(unit_proof_path.read_text())
+            assert unit_proof['verified'] and unit_proof['profiles_sha256'] == sha(unit_profiles_path)
+            assert unit_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-units.py')
+            proof_sources.append({'verification':str(unit_proof_path.relative_to(PROJECT)),'sha256':sha(unit_proof_path)})
+    unit_drafts -= len(reviewed_unit_indices)
     object_drafts -= 1 if tree_summary else 0
     records = []
     for source in decoded["records"]:
@@ -232,12 +246,13 @@ def main():
                 proof_sources.append({"verification": str(proof_path.relative_to(PROJECT)), "sha256": sha(proof_path)})
         if name == "MAP_CHIP.OZM" and terrain_profiles:
             record.update(art_status="partial", source_grid_counts={"floor": 104, "object": 26, "unit": 13},
-                          approved_floor_art=approved_floor_count, generated_unit_drafts=unit_drafts, approved_unit_art=len(approved_units),
+                          approved_floor_art=approved_floor_count, generated_unit_drafts=unit_drafts, approved_unit_art=len(reviewed_unit_indices),
+                          reviewed_unit_source_indices=reviewed_unit_indices, original_empty_unit_indices=[10,11,12],
                           normal_unit_indices_verified=approved_units, normal_unit_instances_verified=2 if scene_summary else 0,
                           generated_object_drafts=object_drafts, approved_object_art=1 if tree_summary else 0,
                           normal_object_indices_verified=[0] if tree_summary else [], normal_object_instances_verified=tree_summary['normal_HD_object_instances'] if tree_summary else 0,
                           normal_floor_indices_verified=sorted(verified_floors),
-                          runtime_status="all 104 floor source profiles integrated; normal six-floor scene, forest clumps and units-001/003 jointly composited; remaining foreground atlas art pending" if approved_floor_count == 104 else "full-floor journal, forest clumps and units-001/003 jointly composited; remaining atlas art pending" if scene_summary else "floor consumer with native index-zero foreground preservation integrated; HD sprites and whole atlas pending",
+                          runtime_status="all 104 floor and 10 nonempty unit profiles integrated; three original empty units preserved; normal six-floor scene and units-001/003 sampled; remaining object atlas art pending" if approved_floor_count == 104 and len(reviewed_unit_indices) == 10 else "all 104 floor source profiles integrated; normal six-floor scene, forest clumps and units-001/003 jointly composited; remaining foreground atlas art pending" if approved_floor_count == 104 else "full-floor journal, forest clumps and units-001/003 jointly composited; remaining atlas art pending" if scene_summary else "floor consumer with native index-zero foreground preservation integrated; HD sprites and whole atlas pending",
                           normal_floor_draws_verified=67 if scene_summary else 65 if foreground_summary else 0,
                           floor_profiles_sha256=sha(material_profiles_path if approved_floor_count == 104 else terrain_path),
                           source_extraction_sha256=sha(ROOT / "terrain/terrain-extraction.json"))
@@ -311,7 +326,7 @@ def main():
               "normal_MAP_CHIP_floor_cases_verified": len(verified_floors),
               "generated_MAP_CHIP_unit_drafts": unit_drafts,
               "generated_MAP_CHIP_unit_art": generated_units,
-              "approved_MAP_CHIP_unit_art": len(approved_units),
+              "approved_MAP_CHIP_unit_art": len(reviewed_unit_indices),
               "normal_MAP_CHIP_unit_cases_verified": len(approved_units),
               "normal_MAP_CHIP_unit_instances_verified": 2 if scene_summary else 0,
               "generated_MAP_CHIP_object_drafts": object_drafts,
