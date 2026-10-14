@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 139,
-    "prompts": 54,
-    "bytes": 182357874
+    "png": 160,
+    "prompts": 75,
+    "bytes": 240362250
   },
-  "archive_tool_sha256": "6a0dc7ccc18d8e9d6e7620804a096e6bb6f6ae4cc7e1ed7b86aeaa19cc125c16",
+  "archive_tool_sha256": "4dd2f04e800ccb2c20710138a803c78546a7d42a5e45d5330a4ec0f9e7adb6ec",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -38,7 +38,7 @@
       "sha256": "a8835885296bbdc9a14367c7c05d548c4db6ce1e9a0944de54a98c6a3ea0d211",
       "local_source": "workplace/hd-prototype/catalog/art/11-hd-b-v1.png",
       "prompt": "art/11-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -58,7 +58,7 @@
       "sha256": "b37934b35e42d480c2b06828cd0f27f50e8be690c614271fd0bab94213cbfdab",
       "local_source": "workplace/hd-prototype/catalog/art/19-hd-b-v1.png",
       "prompt": "art/19-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -78,7 +78,7 @@
       "sha256": "34d5a876947e5729d6a3d9b41ef0fb051b698e2d16bde95cc9809f9dab054020",
       "local_source": "workplace/hd-prototype/catalog/art/28-hd-b-v1.png",
       "prompt": "art/28-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -98,7 +98,7 @@
       "sha256": "421afae1db798cadb086ae15d6d13d8842ce9c2c89d38b0cf1b4225da389ade5",
       "local_source": "workplace/hd-prototype/catalog/art/43-hd-b-v1.png",
       "prompt": "art/43-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -118,7 +118,7 @@
       "sha256": "6bbc003ea7b6d7e23b81a036afe1e36ccc1a36dc75dae05d80c7405d960c6ee5",
       "local_source": "workplace/hd-prototype/catalog/art/6-hd-b-v1.png",
       "prompt": "art/6-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -278,7 +278,7 @@
       "sha256": "ef5a7bc8f09b00eb27f531fae83a29d5a5be9bb5fe09243aac586a4fc6ff0b34",
       "local_source": "workplace/hd-prototype/catalog/art/A-8-hd-b-v1.png",
       "prompt": "art/A-8-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -298,7 +298,7 @@
       "sha256": "8178f2dcaa46ed0885980aa8deff194d1a0ba013dfec3a002275afa332fae9d7",
       "local_source": "workplace/hd-prototype/catalog/art/B-1-hd-b-v1.png",
       "prompt": "art/B-1-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -318,7 +318,7 @@
       "sha256": "5fef2836b3b18019b0e5e49fb7988ea408fef5bae8222563c85786563d143823",
       "local_source": "workplace/hd-prototype/catalog/art/B-2-hd-b-v1.png",
       "prompt": "art/B-2-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -338,7 +338,7 @@
       "sha256": "782bbe50cdbc7b1aaa270993d5127f3dfb2b787a8654da2142f5db95e985e055",
       "local_source": "workplace/hd-prototype/catalog/art/B-3-hd-b-v1.png",
       "prompt": "art/B-3-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -358,7 +358,7 @@
       "sha256": "009baa0c38dfe9f95e297b0dd0d461138f6a975d4b072e8030365751355b7235",
       "local_source": "workplace/hd-prototype/catalog/art/B-4-hd-b-v1.png",
       "prompt": "art/B-4-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -378,7 +378,7 @@
       "sha256": "9fad494c6b5e2d2079e16d1957cae02a0edc3efa3bde702ddce03e43db39b426",
       "local_source": "workplace/hd-prototype/catalog/art/C-1'-hd-b-v1.png",
       "prompt": "art/C-1'-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -398,7 +398,7 @@
       "sha256": "cb2ef60695ba43dd029c10b9a2fcafff6bba49d341d2bdb3d0027464cc75e746",
       "local_source": "workplace/hd-prototype/catalog/art/C-1-hd-b-v1.png",
       "prompt": "art/C-1-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -418,7 +418,7 @@
       "sha256": "25e4b299603459dca481e6ee30384228ea413eac44a5da7e4d962eddccb4fb65",
       "local_source": "workplace/hd-prototype/catalog/art/C-11-hd-b-v1.png",
       "prompt": "art/C-11-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -438,7 +438,7 @@
       "sha256": "2da5b794330d6e1ac6549e88f15027957060536122aa035ba183b2a50a448d6c",
       "local_source": "workplace/hd-prototype/catalog/art/C-2-hd-b-v1.png",
       "prompt": "art/C-2-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -458,7 +458,7 @@
       "sha256": "4f24482274d9886b8e320ace040e4135d86ca98a9fdf81bc25fc9e0b48ec5e6f",
       "local_source": "workplace/hd-prototype/catalog/art/C-4-hd-b-v1.png",
       "prompt": "art/C-4-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -478,7 +478,7 @@
       "sha256": "6edb6d49bb8381dab9bc0d1c91145f26633e5a2256e6a281c40fa72b200e808d",
       "local_source": "workplace/hd-prototype/catalog/art/C-5-hd-b-v1.png",
       "prompt": "art/C-5-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -498,7 +498,7 @@
       "sha256": "a07d481a6a0a8860c584572e5f77260f9586765ec71e74bf3f5e079e1226ccf8",
       "local_source": "workplace/hd-prototype/catalog/art/C-6-hd-b-v1.png",
       "prompt": "art/C-6-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -518,7 +518,7 @@
       "sha256": "6ef3ae2e5bcb872dd4d2f40a4bd986ac6e475d3f24169ec8ad053f2e5149305f",
       "local_source": "workplace/hd-prototype/catalog/art/C-7-hd-b-v1.png",
       "prompt": "art/C-7-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -538,7 +538,7 @@
       "sha256": "161bad1c5434d174f32645173aeefee142a1519fdd534125e78009c18c2b2173",
       "local_source": "workplace/hd-prototype/catalog/art/C-8-hd-b-v1.png",
       "prompt": "art/C-8-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -558,7 +558,7 @@
       "sha256": "a266e378163edec7bcc7667277a9a09d5556052720c62988a0fd3bbe67579fa4",
       "local_source": "workplace/hd-prototype/catalog/art/C-9-hd-b-v1.png",
       "prompt": "art/C-9-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -578,7 +578,7 @@
       "sha256": "901093ee5c8b326ce07f7412ebbfbf45275be436c0a92b5ea33c19455b059ad1",
       "local_source": "workplace/hd-prototype/catalog/art/D-1-hd-b-v1.png",
       "prompt": "art/D-1-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -612,13 +612,33 @@
       "local_source": "workplace/hd-prototype/catalog/art/D-2-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/D-2-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 3053320,
+      "sha256": "25e7df174da3b01f8ccc90ec5a32e926ff1c044e80b05c6a5e00d22db6bb252f",
+      "local_source": "workplace/hd-prototype/catalog/art/D-2-hd-b-v2.png",
+      "prompt": "art/D-2-hd-b-v2.prompt.txt",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/D-2-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 960,
+      "sha256": "648e1108be5479dd5c671cfeed8a525a7864c808fb8799b630813c1be6e12a80",
+      "local_source": "workplace/hd-prototype/catalog/art/D-2-hd-b-v2.prompt.txt"
+    },
+    {
       "path": "art/D-3-hd-b-v1.png",
       "kind": "png",
       "bytes": 2356875,
       "sha256": "17557a731dc5e10d3b75b7ee0acd0c56f3eead7f8df7023661e77585a1fcae6a",
       "local_source": "workplace/hd-prototype/catalog/art/D-3-hd-b-v1.png",
       "prompt": "art/D-3-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -638,7 +658,7 @@
       "sha256": "892ba874f1e333f5bfc9d35eee2388520fb67ee3e806d42085fe526ed6c50842",
       "local_source": "workplace/hd-prototype/catalog/art/D-4-hd-b-v1.png",
       "prompt": "art/D-4-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -652,13 +672,33 @@
       "local_source": "workplace/hd-prototype/catalog/art/D-4-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/D-6-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2709153,
+      "sha256": "0626d23f596d5df04c3095fd9b4eb0fb2ef453ea42ca4ed95e81e73a0ab37fe2",
+      "local_source": "workplace/hd-prototype/catalog/art/D-6-hd-b-v1.png",
+      "prompt": "art/D-6-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/D-6-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 837,
+      "sha256": "73882e89e4142653b85cb9f24e41e2ca60e2ffe00fee1b3fa3d8bf3e03f17aba",
+      "local_source": "workplace/hd-prototype/catalog/art/D-6-hd-b-v1.prompt.txt"
+    },
+    {
       "path": "art/D-8-hd-b-v1.png",
       "kind": "png",
       "bytes": 2916849,
       "sha256": "a12a4ed0d7c65b1c6e7f2256473d65eca9a5fb80bfebbee74a66fbc8b42077c4",
       "local_source": "workplace/hd-prototype/catalog/art/D-8-hd-b-v1.png",
       "prompt": "art/D-8-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -692,13 +732,33 @@
       "local_source": "workplace/hd-prototype/catalog/art/E-1-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/E-1-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 2458002,
+      "sha256": "001195ceefb47488826aa98f43b6d577adff6d23686544cb918cd3e632dc9059",
+      "local_source": "workplace/hd-prototype/catalog/art/E-1-hd-b-v2.png",
+      "prompt": "art/E-1-hd-b-v2.prompt.txt",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
+      "size": [
+        1831,
+        859
+      ]
+    },
+    {
+      "path": "art/E-1-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 595,
+      "sha256": "95245450525533ab489b077810fbd44d2a081cdf80c848a8f61f60969841f52c",
+      "local_source": "workplace/hd-prototype/catalog/art/E-1-hd-b-v2.prompt.txt"
+    },
+    {
       "path": "art/E-2-hd-b-v1.png",
       "kind": "png",
       "bytes": 2739757,
       "sha256": "62d0b35ce294d2342ea0ea0b686de3702377f09ead027aa215d52d8fcdeead82",
       "local_source": "workplace/hd-prototype/catalog/art/E-2-hd-b-v1.png",
       "prompt": "art/E-2-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -718,7 +778,7 @@
       "sha256": "1c948564082c529fab86c5445c980acfc633e429a6c516b6a24c91a38b19f74d",
       "local_source": "workplace/hd-prototype/catalog/art/E-3-hd-b-v1.png",
       "prompt": "art/E-3-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -732,13 +792,33 @@
       "local_source": "workplace/hd-prototype/catalog/art/E-3-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/E-5-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3063000,
+      "sha256": "ddd6724c896f2a92d6438e62e4809faef13784ebe4d07b55bcff544048a5e35b",
+      "local_source": "workplace/hd-prototype/catalog/art/E-5-hd-b-v1.png",
+      "prompt": "art/E-5-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/E-5-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 887,
+      "sha256": "fd2f884c593a7246f5b8eccf9e5b045fb59b5dc0bac8a1ddf530a527fd30f80b",
+      "local_source": "workplace/hd-prototype/catalog/art/E-5-hd-b-v1.prompt.txt"
+    },
+    {
       "path": "art/E-6-hd-b-v1.png",
       "kind": "png",
       "bytes": 2585784,
       "sha256": "0dd42f36c5d09ce3a203788192fece17bf27817df23601b2f55a4c5ee7cf4d2e",
       "local_source": "workplace/hd-prototype/catalog/art/E-6-hd-b-v1.png",
       "prompt": "art/E-6-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -752,13 +832,73 @@
       "local_source": "workplace/hd-prototype/catalog/art/E-6-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/END-10-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2912475,
+      "sha256": "c3a8162e408e19f98ac6656ec5027debb2b6b76ea31b3e7be1dcd15fdfaab4a9",
+      "local_source": "workplace/hd-prototype/catalog/art/END-10-hd-b-v1.png",
+      "prompt": "art/END-10-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1829,
+        860
+      ]
+    },
+    {
+      "path": "art/END-10-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 816,
+      "sha256": "6eba2fe2f55211c3291afe0847b6a3f27c8c52ec44abca388561609223c370e8",
+      "local_source": "workplace/hd-prototype/catalog/art/END-10-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/END-8-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2872345,
+      "sha256": "f7ccd514e6c5b1f794ba3ee2bcf9a9769e8ec3abc191474bde506b52850fdd82",
+      "local_source": "workplace/hd-prototype/catalog/art/END-8-hd-b-v1.png",
+      "prompt": "art/END-8-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/END-8-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 842,
+      "sha256": "c81bd5ceec25305319e03bf3ec59436d21c757bf29ee6c7dc08c6b0e84260042",
+      "local_source": "workplace/hd-prototype/catalog/art/END-8-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/END-9-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3066129,
+      "sha256": "b9cf3b5a040b3ebe164b52e90b463273e6336fd3c3b356d925e5d8bd86efa5a1",
+      "local_source": "workplace/hd-prototype/catalog/art/END-9-hd-b-v1.png",
+      "prompt": "art/END-9-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/END-9-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 852,
+      "sha256": "ea74b990a4308b3a4f4c19c664f6ec21b589b0693f6188fef5c382e18805f571",
+      "local_source": "workplace/hd-prototype/catalog/art/END-9-hd-b-v1.prompt.txt"
+    },
+    {
       "path": "art/F-1-hd-b-v1.png",
       "kind": "png",
       "bytes": 2640081,
       "sha256": "0cdc10b53d0bf1bc8dfb2f8a9e5a741846025ebd749b0b06236786b1f511a7b0",
       "local_source": "workplace/hd-prototype/catalog/art/F-1-hd-b-v1.png",
       "prompt": "art/F-1-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -778,7 +918,7 @@
       "sha256": "0bc075f452b331cc02c2dc32b0efa1041d5762ad5e2e7ebcfe3213993745fe06",
       "local_source": "workplace/hd-prototype/catalog/art/F-2-hd-b-v1.png",
       "prompt": "art/F-2-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1834,
         858
@@ -792,13 +932,33 @@
       "local_source": "workplace/hd-prototype/catalog/art/F-2-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/F-3-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2677806,
+      "sha256": "606df3227afc57eb357d37de1ba22cc91741e02a04d900da01b4f8301c91ddef",
+      "local_source": "workplace/hd-prototype/catalog/art/F-3-hd-b-v1.png",
+      "prompt": "art/F-3-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/F-3-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 746,
+      "sha256": "31597ed4d5841fbbdb82cd4b8b486b375949633098db19f5c11eab5410a3eae9",
+      "local_source": "workplace/hd-prototype/catalog/art/F-3-hd-b-v1.prompt.txt"
+    },
+    {
       "path": "art/F-5-hd-b-v1.png",
       "kind": "png",
       "bytes": 2826072,
       "sha256": "202c4ffa17d6ae88ab6203fdfa67af93e73653144d0db116152dfb408b3e3350",
       "local_source": "workplace/hd-prototype/catalog/art/F-5-hd-b-v1.png",
       "prompt": "art/F-5-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -812,13 +972,73 @@
       "local_source": "workplace/hd-prototype/catalog/art/F-5-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/F-6-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2994649,
+      "sha256": "dfd7e6a5ce7a0b2128002bff5df40693195932a25805a90fd2f6e6f633a4f1b8",
+      "local_source": "workplace/hd-prototype/catalog/art/F-6-hd-b-v1.png",
+      "prompt": "art/F-6-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/F-6-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 859,
+      "sha256": "d95a945f6a0fa4bc3272d0eae43fd10a86dc5761119986e10ebf4ee62eb88da9",
+      "local_source": "workplace/hd-prototype/catalog/art/F-6-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/F-7-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2753028,
+      "sha256": "afb312b1cb59899900b19ae8fe0c0a94c0f8aa952fc58e344be337059f2b2ae4",
+      "local_source": "workplace/hd-prototype/catalog/art/F-7-hd-b-v1.png",
+      "prompt": "art/F-7-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/F-7-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 855,
+      "sha256": "6c642ded94b2e8ceff31a2cd6b07f40b73538c16b2da16f4474cffb0f190a0f8",
+      "local_source": "workplace/hd-prototype/catalog/art/F-7-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/F-8-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2476983,
+      "sha256": "9f085f3fa481b1f38335190ba53f902692f36e85496a784b3d51b6365e576435",
+      "local_source": "workplace/hd-prototype/catalog/art/F-8-hd-b-v1.png",
+      "prompt": "art/F-8-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/F-8-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 843,
+      "sha256": "9c8f2669b57712231638be35a80159ff8c711d5d5c0265ab0ebcfed42ed80950",
+      "local_source": "workplace/hd-prototype/catalog/art/F-8-hd-b-v1.prompt.txt"
+    },
+    {
       "path": "art/G-1-hd-b-v1.png",
       "kind": "png",
       "bytes": 3039389,
       "sha256": "4f8f9ee1129b7447fe2c30ce14cdaa16156f89a308e5022d7ef9837d8b8d6ce0",
       "local_source": "workplace/hd-prototype/catalog/art/G-1-hd-b-v1.png",
       "prompt": "art/G-1-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -838,7 +1058,7 @@
       "sha256": "e78c66d4d71e1e44b4436105ee76e36d6b58fc93df51fa163e31f017893c07eb",
       "local_source": "workplace/hd-prototype/catalog/art/G-2-hd-b-v1.png",
       "prompt": "art/G-2-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -850,6 +1070,227 @@
       "bytes": 1317,
       "sha256": "7258d70c3e17654120b7a10d43d7a41d88511fa3a512b978d70f0284558a5cf0",
       "local_source": "workplace/hd-prototype/catalog/art/G-2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/G-4-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2983264,
+      "sha256": "4b9dee1ed7be663c65d501abb13a73fa441b7aa19e99cf21a5e84bb7b24444bd",
+      "local_source": "workplace/hd-prototype/catalog/art/G-4-hd-b-v1.png",
+      "prompt": "art/G-4-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/G-4-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 852,
+      "sha256": "b360d3018f3416af76b5bb5cbd9b780b0e9854aaf93483bd839e4cc63d4a9b11",
+      "local_source": "workplace/hd-prototype/catalog/art/G-4-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/G-5-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2841483,
+      "sha256": "ced41a776dfad7b17a6164ade1e7f2e61476589fd5c36ce174794d70c8495f34",
+      "local_source": "workplace/hd-prototype/catalog/art/G-5-hd-b-v1.png",
+      "prompt": "art/G-5-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/G-5-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 874,
+      "sha256": "972378a72095bbe0cc1ebb9291da935d93bd92b631d013a6832a0e60f4e4f5a3",
+      "local_source": "workplace/hd-prototype/catalog/art/G-5-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/G-7-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2876180,
+      "sha256": "39ef8cd014862296569eb9530661cc15546a87ad7da9b14d4f9b18064c9325c7",
+      "local_source": "workplace/hd-prototype/catalog/art/G-7-hd-b-v1.png",
+      "prompt": "art/G-7-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/G-7-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 826,
+      "sha256": "c5f429630ed0ce62fe8e7b7a9c14b1cfef9bb4bdfcd06b87150e4ecb4814fbd0",
+      "local_source": "workplace/hd-prototype/catalog/art/G-7-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/GUNGI-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2646018,
+      "sha256": "248259e95bdc5fca9dae3e7fdba53437e9a1b0a1145715c4ddd186290c76589c",
+      "local_source": "workplace/hd-prototype/catalog/art/GUNGI-hd-b-v1.png",
+      "prompt": "art/GUNGI-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/GUNGI-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 897,
+      "sha256": "6266b6db03832d5181e312675235f671655e109ea47c2bbf53f3fbcec2cd6eff",
+      "local_source": "workplace/hd-prototype/catalog/art/GUNGI-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/GUNGI-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 2365791,
+      "sha256": "4cb593fdb698d967cdbdc7694427fb3104adb34c73a6e665620886620397dfea",
+      "local_source": "workplace/hd-prototype/catalog/art/GUNGI-hd-b-v2.png",
+      "prompt": "art/GUNGI-hd-b-v2.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/GUNGI-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 736,
+      "sha256": "c1b7afb6b904077508cb570f4999357b4fdda777e7c9b93a347772d804d55971",
+      "local_source": "workplace/hd-prototype/catalog/art/GUNGI-hd-b-v2.prompt.txt"
+    },
+    {
+      "path": "art/H-1-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2666670,
+      "sha256": "8274e9310e86729485368a72555719afded71069bada72d2d3cc12d3b30876a6",
+      "local_source": "workplace/hd-prototype/catalog/art/H-1-hd-b-v1.png",
+      "prompt": "art/H-1-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/H-1-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 867,
+      "sha256": "fc6b1e3936f030032df22db55e33c78ad025cd7bdccb0f77c30496284203a677",
+      "local_source": "workplace/hd-prototype/catalog/art/H-1-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/H-2-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3004288,
+      "sha256": "248cc086e24527fceddc4e6e02e1be64b2f4d28ad3ca539f04d725b41fe76921",
+      "local_source": "workplace/hd-prototype/catalog/art/H-2-hd-b-v1.png",
+      "prompt": "art/H-2-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/H-2-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 890,
+      "sha256": "1aaf684b6aa2b8b547fb033ae28f54f3985acf876f6541c54474b84370a1f040",
+      "local_source": "workplace/hd-prototype/catalog/art/H-2-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/H-3-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2223629,
+      "sha256": "547ac2884670b54e8bce9d54fa22e3016b93434ebefcf387d1813124b4e570b1",
+      "local_source": "workplace/hd-prototype/catalog/art/H-3-hd-b-v1.png",
+      "prompt": "art/H-3-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/H-3-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 897,
+      "sha256": "4e2618bbc32123c1db486a39d708d6d72e4e6f469eadba79d253859852ec87eb",
+      "local_source": "workplace/hd-prototype/catalog/art/H-3-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/KOYO-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2757042,
+      "sha256": "effe0a016142e099dd5ba9ff9d653cc8ffb6a23dd04b0c93e299a8528ee1f967",
+      "local_source": "workplace/hd-prototype/catalog/art/KOYO-hd-b-v1.png",
+      "prompt": "art/KOYO-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/KOYO-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 837,
+      "sha256": "2c9916a9cd09d5e884024f5acb3c47e4f13460391a3a0461bc084cd6799d0e8d",
+      "local_source": "workplace/hd-prototype/catalog/art/KOYO-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/YOULOSE-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2572968,
+      "sha256": "7af3ffec77d74e88778f4a04e065d48ed36128e91bf18fb212cee023eda48b87",
+      "local_source": "workplace/hd-prototype/catalog/art/YOULOSE-hd-b-v1.png",
+      "prompt": "art/YOULOSE-hd-b-v1.prompt.txt",
+      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/YOULOSE-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 890,
+      "sha256": "245f0c47c288fb4f351119ebeabfcb69deb3aff1e59b25c4fe1031802aa7e885",
+      "local_source": "workplace/hd-prototype/catalog/art/YOULOSE-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/gungi-revision.json",
+      "kind": "revision-metadata",
+      "bytes": 734,
+      "sha256": "db004be4f8e245c6c5594c091ac570127b699f698c71e1392f60b6a3e43179ae",
+      "local_source": "workplace/hd-prototype/catalog/art/gungi-revision.json"
+    },
+    {
+      "path": "art/remaining-generation.json",
+      "kind": "generation-metadata",
+      "bytes": 10434,
+      "sha256": "c0d2dc0ef6a469cc13f1e405a8fea57421cd7573bb35b8e73760edc6e4c6474e",
+      "local_source": "workplace/hd-prototype/catalog/art/remaining-generation.json"
+    },
+    {
+      "path": "art/revisions.json",
+      "kind": "revision-metadata",
+      "bytes": 1327,
+      "sha256": "399e1676d098d152344d74ee4b380f9737d4163a51fbc22f8ba7faeceb318c7d",
+      "local_source": "workplace/hd-prototype/catalog/art/revisions.json"
     },
     {
       "path": "concept/style-comparison-v1.png",

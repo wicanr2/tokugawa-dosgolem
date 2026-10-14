@@ -42,6 +42,7 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/cmd/leprobe/hd_trace_test.go":"/project/tools/hd-trace_test.go",
   "/dosgolem/cmd/leprobe/hd_live.go":"/project/tools/hd-live.go",
   "/dosgolem/cmd/leprobe/hd_portraits.go":"/project/tools/hd-portraits.go",
+  "/dosgolem/cmd/leprobe/hd_story_test.go":"/project/tools/hd-story_test.go",
   "/dosgolem/cmd/leprobe/hd_kao.go":"/project/tools/hd-kao.go",
   "/dosgolem/cmd/leprobe/hd_kao_test.go":"/project/tools/hd-kao_test.go",
   "/dosgolem/cmd/leprobe/hd_kao_profiles.go":"/project/tools/hd-kao-profiles.go",

@@ -20,8 +20,8 @@ import (
 
 var desktopSpeed = flag.Int("desktop-speed", 1, "desktop virtual-time speed, 1–60; validation acceleration only")
 var desktopSource = flag.String("hd-source", "/project/workplace/hd-prototype/asset-capture/A-0-original.png", "verified local original A-0 PNG")
-var desktopAsset = flag.String("hd-asset", "/project/workplace/hd-prototype/A-0-hd-b-v1.png", "local single-asset HD PNG; missing asset falls back")
-var desktopPortraitDir = flag.String("hd-portrait-dir", "/project/workplace/hd-prototype/catalog/art", "local prototype directory for source-specific story portraits")
+var desktopAsset = flag.String("hd-asset", "/project/assets/hd-b/A-0-hd-b-v1.png", "local single-asset HD PNG; missing asset falls back")
+var desktopPortraitDir = flag.String("hd-portrait-dir", "/project/assets/hd-b/art", "reviewed source-specific story portraits from the private art archive")
 var desktopKaoSourceDir = flag.String("hd-kao-source-dir", "/project/workplace/hd-prototype/catalog/kao", "verified original 80x80 portrait PNG directory")
 var desktopKaoDir = flag.String("hd-kao-dir", "/project/workplace/hd-prototype/catalog/kao/selected", "local HD 80x80 portrait replacement directory")
 var desktopScrollSource = flag.String("hd-scroll-source", "/project/workplace/hd-prototype/scroll/scroll-original.png", "verified local VISUAL scroll PNG")

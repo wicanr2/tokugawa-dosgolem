@@ -47,7 +47,10 @@
 | `workplace/hd-prototype/catalog/` | 本機 HD 覆蓋盤點、原版擷取、格式診斷與驗證；已生成圖像另存 assets/hd-b |
 | [tools/hd-preview.go](tools/hd-preview.go)、[tools/hd-preview_test.go](tools/hd-preview_test.go) | 單張 A-0 的離線原圖／HD／缺圖預覽與範圍保護測試；不接管遊戲或代表桌面執行中切換 |
 | [tools/hd-layer.go](tools/hd-layer.go) | 離線預覽與桌面試作共用的單張素材呈現與來源像素保護 |
-| [tools/hd-portraits.go](tools/hd-portraits.go) | 正常路徑已擷取的 A-0 至 A-7 指紋、原圖來源與本機 HD 檔名；來源各自核對，不沿用上一張圖 |
+| [tools/hd-portraits.go](tools/hd-portraits.go) | 由 hd-story-prepare.py 生成的 53 個劇情來源、40／41 欄指紋、原圖、HD 檔名與圖片文字矩形；正常路徑只抽測 A-0 至 A-7 |
+| [tools/hd-story-prepare.py](tools/hd-story-prepare.py) | 核對已審查劇情圖的 DAT、四平面、精確共用、可見裁切及圖片文字矩形，產生 `catalog/story/` 原圖與 profiles.json；固定 GUI Docker，專案掛 `/project`、原版唯讀掛 `/original`、catalog 可寫掛 `/output`，`--go-output` 指定對照表輸出 |
+| [tools/hd-story_test.go](tools/hd-story_test.go) | 批次劇情來源、原版載入／繪製返回、診斷上限、裁切、地名、缺圖與遮擋測試；來源測試不作正常劇情實玩證據 |
+| [tools/verify-hd-story.py](tools/verify-hd-story.py) | 核對兩次 750M 收據、53 個來源、實際素材、二進位與建置輸入；固定 Python Docker 中專案唯讀掛 `/project`、`catalog/story/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-story.py` |
 | [tools/hd-live.go](tools/hd-live.go)、[tools/hd-live_test.go](tools/hd-live_test.go) | 只讀原版素材、A-0 矩形與 VISUAL 全畫面繪製入口／返回，限制桌面替換資格 |
 | `workplace/hd-prototype/scroll/dosgolem-base/` | 固定 a9714eb 的獨立來源副本，執行時唯讀；外部 dosgolem 前進時保留既有驗證基準 |
 | [tools/presentation.go](tools/presentation.go)、[tools/presentation_test.go](tools/presentation_test.go) | 桌面試作的步進、畫面、普通滑鼠及原版狀態核對介面與游標層測試；預設無頭 |
@@ -267,8 +270,8 @@ DAT 盤點沿用固定 Python Docker 命令，唯讀掛專案及 `original/game/
 離線預覽則將整個 `workplace/hd-prototype/` 掛為 `/output`，在同一 Go Docker 執行：
 
 ```sh
-go test /project/tools/hd-preview.go /project/tools/hd-layer.go /project/tools/hd-preview_test.go
-go run /project/tools/hd-preview.go /project/tools/hd-layer.go \
+go test /project/tools/hd-preview.go /project/tools/hd-layer.go /project/tools/hd-portraits.go /project/tools/hd-preview_test.go
+go run /project/tools/hd-preview.go /project/tools/hd-layer.go /project/tools/hd-portraits.go \
   -frame /output/asset-capture/startup-probe/frame-f8b23041cc0ab4866e40dd4d14eb92489b8c3896d2595ea5cba11f1338f0db62.png \
   -source /output/asset-capture/A-0-original.png \
   -hd /output/A-0-hd-b-v1.png -out /output/A-0-hd-preview-v1.png

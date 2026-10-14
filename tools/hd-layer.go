@@ -11,12 +11,6 @@ import (
 
 var a0Rect = image.Rect(160, 50, 480, 200)
 
-// 圖片內的原版地名暫時保留原字形，避免生成器改寫地理名稱。
-var portraitLabelRects = map[string][]image.Rectangle{
-	"A-6.OZM": {image.Rect(249, 112, 305, 136)},
-	"A-7.OZM": {image.Rect(102, 54, 146, 82), image.Rect(160, 35, 202, 61), image.Rect(110, 112, 171, 140)},
-}
-
 func preservePortraitLabels(out *image.NRGBA, native image.Image, name string, scale int) {
 	for _, rect := range portraitLabelRects[name] {
 		for y := rect.Min.Y * scale; y < rect.Max.Y*scale; y++ {

@@ -37,10 +37,20 @@ def main():
     inventory = json.loads((PROJECT / "workplace/hd-prototype/asset-inventory.json").read_text())
     assert len(decoded["records"]) == 112 and len(extraction["records"]) == len(selected["records"]) == 81
     originals = {r["name"]: r for r in inventory["records"]}
+    profile_path = ROOT / "story/profiles.json"
+    profiles = {}
+    if profile_path.exists():
+        prepared = json.loads(profile_path.read_text())
+        assert prepared["tool_sha256"] == sha(PROJECT / "tools/hd-story-prepare.py")
+        profiles = {r["resource"]: r for r in prepared["records"]}
     direct = {}
     for record in decoded["records"]:
         stem = record["name"].removesuffix(".OZM")
         path = ROOT / "art" / f"{stem}-hd-b-v1.png"
+        if record["name"] == "GUNGI.OZM" and (ROOT / "art/GUNGI-hd-b-v2.png").exists():
+            path = ROOT / "art/GUNGI-hd-b-v2.png"
+        if record["name"] in profiles and profiles[record["name"]]["art_source_resource"] == record["name"]:
+            path = ROOT / "art" / profiles[record["name"]]["asset"]
         if stem == "A-0":
             path = PROJECT / "workplace/hd-prototype/A-0-hd-b-v1.png"
         if path.exists():
@@ -87,6 +97,12 @@ def main():
             record["reuse_basis"] = "own illustration" if owner == name else "identical decoded four-plane indices"
         if name in verified_story:
             record.update(runtime_status="normal player path verified", runtime_check=verified_story[name])
+        if name in profiles:
+            profile = profiles[name]
+            assert record["art"]["sha256"] == profile["asset_sha256"]
+            record.update(source_profile=profile)
+            if name not in verified_story:
+                record.update(runtime_status="reviewed source and common draw consumer integrated; normal path not yet sampled")
         if name == "VISUAL.OZM":
             path = PROJECT / "workplace/hd-prototype/scroll/scroll-hd-b-v1.png"
             record.update(art_status="partial", art=art_info(path, path.with_suffix(".prompt.txt")),
@@ -142,7 +158,8 @@ def main():
               "OZM_sources_with_prepared_art_including_exact_reuse": sum(r["art_status"] == "prepared" for r in records[:112]),
               "OZM_partial_art": sum(r["art_status"] == "partial" for r in records[:112]),
               "prepared_KAO_portraits": 81, "native_story_cases_verified": len(verified_story),
-              "native_KAO_cases_verified": len(verified_kao), "unsupported_OZM_decodes": 5}
+              "native_KAO_cases_verified": len(verified_kao), "unsupported_OZM_decodes": 5,
+              "reviewed_story_source_profiles": len(profiles)}
     result = {"classification": "local research coverage ledger; not a production asset-pack schema",
               "whole_game_HD_complete": False,
               "count_limit": "resource counts do not count atlas tiles, animation frames or UI pieces; no completion percentage",

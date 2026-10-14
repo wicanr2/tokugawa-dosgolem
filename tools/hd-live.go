@@ -45,10 +45,10 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte) {
 		h.LastName = ""
 		h.Pending = nil
 	}
-	previous := len(h.Trace.Events)
+	previous := h.Trace.ReturnSequence
 	h.Trace.observe(step, eip, esp, mem)
-	if len(h.Trace.Events) > previous {
-		e := h.Trace.Events[len(h.Trace.Events)-1]
+	if h.Trace.ReturnSequence != previous {
+		e := h.Trace.LastReturn
 		if e["kind"] == "load_return" {
 			h.LastName, _ = e["name"].(string)
 			if h.LastName == "VISUAL.OZM" && e["raw_columns"] == uint32(80) && e["raw_rows"] == uint32(400) {
@@ -63,7 +63,7 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte) {
 					}
 				}
 			}
-			if profile, known := hdPortraitProfiles[h.LastName]; known && e["raw_columns"] == uint32(40) && e["raw_rows"] == uint32(150) {
+			if profile, known := hdPortraitProfiles[h.LastName]; known && e["raw_columns"] == profile.Columns && e["raw_rows"] == uint32(150) {
 				p, ok := e["planes"].([]map[string]any)
 				want := profile.Planes
 				h.Validated = ok && len(p) == 4

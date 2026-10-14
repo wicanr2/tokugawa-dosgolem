@@ -13,9 +13,11 @@ type hdPending struct {
 }
 
 type hdTrace struct {
-	Events  []map[string]any `json:"events"`
-	Dropped uint64           `json:"dropped_events"`
-	Pending []hdPending      `json:"pending_returns"`
+	Events         []map[string]any `json:"events"`
+	Dropped        uint64           `json:"dropped_events"`
+	Pending        []hdPending      `json:"pending_returns"`
+	LastReturn     map[string]any   `json:"-"`
+	ReturnSequence uint64           `json:"-"`
 }
 
 func (h *hdTrace) event(e map[string]any) {
@@ -57,6 +59,8 @@ func (h *hdTrace) observe(step int, eip, esp uint32, mem []byte) {
 				}
 				e["planes"] = planes
 			}
+			h.LastReturn = e
+			h.ReturnSequence++
 			h.event(e)
 		}
 	}

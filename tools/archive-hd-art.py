@@ -88,10 +88,39 @@ def main():
 
     picture(base/"style-comparison-v1.png", "concept/style-comparison-v1.png", base/"style-comparison-v1.prompt.txt", "concept/style-comparison-v1.prompt.txt", "style comparison; B selected")
     picture(base/"A-0-hd-b-v1.png", "A-0-hd-b-v1.png", base/"A-0-hd-b-v1.prompt.txt", "A-0-hd-b-v1.prompt.txt", "normal player path verified")
+    story_profiles = catalog/"story/profiles.json"
+    selected_art = {}
+    if story_profiles.exists():
+        profiles = json.loads(story_profiles.read_text())
+        assert profiles["tool_sha256"] == sha(project/"tools/hd-story-prepare.py")
+        selected_art = {r["asset"]: r["asset_sha256"] for r in profiles["records"]}
+    remaining_path = catalog/"art/remaining-generation.json"
+    reviewed_art = {}
+    if remaining_path.exists():
+        reviewed_art = {r["asset"]: r["sha256"] for r in json.loads(remaining_path.read_text())["records"]}
+    council_path = catalog/"art/gungi-revision.json"
+    council = json.loads(council_path.read_text()) if council_path.exists() else None
+    if council:
+        reviewed_art[council["asset"]] = council["sha256"]
+        reviewed_art.pop(council["superseded_asset"], None)
     for source in sorted((catalog/"art").glob("*-hd-b-v*.png")):
         name = source.name
         status = "normal player path verified" if name in {f"A-{i}-hd-b-v1.png" for i in range(1, 8)} else "draft; integration and review pending"
+        if name in selected_art:
+            assert sha(source) == selected_art[name]
+            if not name.startswith(tuple(f"A-{i}-" for i in range(1, 8))):
+                status = "reviewed source and common draw consumer integrated; normal path not yet sampled"
+        elif name in reviewed_art:
+            assert sha(source) == reviewed_art[name]
+            status = "illustration visually reviewed; source profile and runtime integration pending"
         picture(source, "art/"+name, source.with_suffix(".prompt.txt"), "art/"+source.with_suffix(".prompt.txt").name, status)
+    revisions = catalog/"art/revisions.json"
+    if revisions.exists():
+        copy(revisions, "art/revisions.json", "revision-metadata")
+    if remaining_path.exists():
+        copy(remaining_path, "art/remaining-generation.json", "generation-metadata")
+    if council:
+        copy(council_path, "art/gungi-revision.json", "revision-metadata")
     for page in range(9):
         name = f"page-{page:02d}-hd-b-v1.png"
         picture(catalog/"kao"/name, "kao/"+name, (catalog/"kao"/name).with_suffix(".prompt.txt"), "kao/"+Path(name).with_suffix(".prompt.txt").name, "generated portrait atlas")

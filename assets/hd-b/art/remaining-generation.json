@@ -1,0 +1,274 @@
+{
+  "records": [
+    {
+      "resource": "D-6.OZM",
+      "asset": "D-6-hd-b-v1.png",
+      "generation_file": "exec-f13c6654-4c41-4dc2-8586-5bf78be7355f.png",
+      "prompt": "D-6-hd-b-v1.prompt.txt",
+      "reference": "D-6.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "0626d23f596d5df04c3095fd9b4eb0fb2ef453ea42ca4ed95e81e73a0ab37fe2",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt_sha256": "73882e89e4142653b85cb9f24e41e2ca60e2ffe00fee1b3fa3d8bf3e03f17aba"
+    },
+    {
+      "resource": "E-5.OZM",
+      "asset": "E-5-hd-b-v1.png",
+      "generation_file": "exec-228523eb-9553-410f-afe3-3581eabb268b.png",
+      "prompt": "E-5-hd-b-v1.prompt.txt",
+      "reference": "E-5-visible-reference.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "ddd6724c896f2a92d6438e62e4809faef13784ebe4d07b55bcff544048a5e35b",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt_sha256": "fd2f884c593a7246f5b8eccf9e5b045fb59b5dc0bac8a1ddf530a527fd30f80b"
+    },
+    {
+      "resource": "END-10.OZM",
+      "asset": "END-10-hd-b-v1.png",
+      "generation_file": "exec-06390531-2e50-4c9d-9b1a-06bd860434f9.png",
+      "prompt": "END-10-hd-b-v1.prompt.txt",
+      "reference": "END-10.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "c3a8162e408e19f98ac6656ec5027debb2b6b76ea31b3e7be1dcd15fdfaab4a9",
+      "size": [
+        1829,
+        860
+      ],
+      "prompt_sha256": "6eba2fe2f55211c3291afe0847b6a3f27c8c52ec44abca388561609223c370e8"
+    },
+    {
+      "resource": "END-8.OZM",
+      "asset": "END-8-hd-b-v1.png",
+      "generation_file": "exec-0c7011a0-d010-487f-8dfd-df8d22c2f78f.png",
+      "prompt": "END-8-hd-b-v1.prompt.txt",
+      "reference": "END-8.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "f7ccd514e6c5b1f794ba3ee2bcf9a9769e8ec3abc191474bde506b52850fdd82",
+      "size": [
+        1832,
+        858
+      ],
+      "prompt_sha256": "c81bd5ceec25305319e03bf3ec59436d21c757bf29ee6c7dc08c6b0e84260042"
+    },
+    {
+      "resource": "END-9.OZM",
+      "asset": "END-9-hd-b-v1.png",
+      "generation_file": "exec-fa410228-beb2-4aa7-8566-c27a4c0529cf.png",
+      "prompt": "END-9-hd-b-v1.prompt.txt",
+      "reference": "END-9.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "b9cf3b5a040b3ebe164b52e90b463273e6336fd3c3b356d925e5d8bd86efa5a1",
+      "size": [
+        1832,
+        858
+      ],
+      "prompt_sha256": "ea74b990a4308b3a4f4c19c664f6ec21b589b0693f6188fef5c382e18805f571"
+    },
+    {
+      "resource": "F-3.OZM",
+      "asset": "F-3-hd-b-v1.png",
+      "generation_file": "exec-3e04628d-9997-4e85-ab2e-44de305064ae.png",
+      "prompt": "F-3-hd-b-v1.prompt.txt",
+      "reference": "F-3-visible-reference.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "606df3227afc57eb357d37de1ba22cc91741e02a04d900da01b4f8301c91ddef",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt_sha256": "31597ed4d5841fbbdb82cd4b8b486b375949633098db19f5c11eab5410a3eae9"
+    },
+    {
+      "resource": "F-6.OZM",
+      "asset": "F-6-hd-b-v1.png",
+      "generation_file": "exec-5a9165d7-651c-4ba7-bc36-06ad7af99e99.png",
+      "prompt": "F-6-hd-b-v1.prompt.txt",
+      "reference": "F-6.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "dfd7e6a5ce7a0b2128002bff5df40693195932a25805a90fd2f6e6f633a4f1b8",
+      "size": [
+        1832,
+        858
+      ],
+      "prompt_sha256": "d95a945f6a0fa4bc3272d0eae43fd10a86dc5761119986e10ebf4ee62eb88da9"
+    },
+    {
+      "resource": "F-7.OZM",
+      "asset": "F-7-hd-b-v1.png",
+      "generation_file": "exec-2ec666c0-4275-4111-aa49-8ef2dc6304f0.png",
+      "prompt": "F-7-hd-b-v1.prompt.txt",
+      "reference": "F-7.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "afb312b1cb59899900b19ae8fe0c0a94c0f8aa952fc58e344be337059f2b2ae4",
+      "size": [
+        1832,
+        858
+      ],
+      "prompt_sha256": "6c642ded94b2e8ceff31a2cd6b07f40b73538c16b2da16f4474cffb0f190a0f8"
+    },
+    {
+      "resource": "F-8.OZM",
+      "asset": "F-8-hd-b-v1.png",
+      "generation_file": "exec-d214928d-55d5-464e-8eb2-d45084aa05aa.png",
+      "prompt": "F-8-hd-b-v1.prompt.txt",
+      "reference": "F-8.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "9f085f3fa481b1f38335190ba53f902692f36e85496a784b3d51b6365e576435",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt_sha256": "9c8f2669b57712231638be35a80159ff8c711d5d5c0265ab0ebcfed42ed80950"
+    },
+    {
+      "resource": "G-4.OZM",
+      "asset": "G-4-hd-b-v1.png",
+      "generation_file": "exec-d9dffe87-ed34-4ced-96c8-b69350057647.png",
+      "prompt": "G-4-hd-b-v1.prompt.txt",
+      "reference": "G-4.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "4b9dee1ed7be663c65d501abb13a73fa441b7aa19e99cf21a5e84bb7b24444bd",
+      "size": [
+        1832,
+        858
+      ],
+      "prompt_sha256": "b360d3018f3416af76b5bb5cbd9b780b0e9854aaf93483bd839e4cc63d4a9b11"
+    },
+    {
+      "resource": "G-5.OZM",
+      "asset": "G-5-hd-b-v1.png",
+      "generation_file": "exec-f3f9a5dc-5584-47d9-8a91-8afd822c3a3f.png",
+      "prompt": "G-5-hd-b-v1.prompt.txt",
+      "reference": "G-5.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "ced41a776dfad7b17a6164ade1e7f2e61476589fd5c36ce174794d70c8495f34",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt_sha256": "972378a72095bbe0cc1ebb9291da935d93bd92b631d013a6832a0e60f4e4f5a3"
+    },
+    {
+      "resource": "G-7.OZM",
+      "asset": "G-7-hd-b-v1.png",
+      "generation_file": "exec-faf0cddc-6ba8-4427-a434-d92c7c76c10f.png",
+      "prompt": "G-7-hd-b-v1.prompt.txt",
+      "reference": "G-7.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "39ef8cd014862296569eb9530661cc15546a87ad7da9b14d4f9b18064c9325c7",
+      "size": [
+        1832,
+        858
+      ],
+      "prompt_sha256": "c5f429630ed0ce62fe8e7b7a9c14b1cfef9bb4bdfcd06b87150e4ecb4814fbd0"
+    },
+    {
+      "resource": "GUNGI.OZM",
+      "asset": "GUNGI-hd-b-v1.png",
+      "generation_file": "exec-4857fa82-15b3-47d7-b0b0-01a519a421cb.png",
+      "prompt": "GUNGI-hd-b-v1.prompt.txt",
+      "reference": "GUNGI.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "248259e95bdc5fca9dae3e7fdba53437e9a1b0a1145715c4ddd186290c76589c",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt_sha256": "6266b6db03832d5181e312675235f671655e109ea47c2bbf53f3fbcec2cd6eff"
+    },
+    {
+      "resource": "H-1.OZM",
+      "asset": "H-1-hd-b-v1.png",
+      "generation_file": "exec-ff99ba80-2d20-4ca6-97c7-f4ff7ea72dd8.png",
+      "prompt": "H-1-hd-b-v1.prompt.txt",
+      "reference": "H-1.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "8274e9310e86729485368a72555719afded71069bada72d2d3cc12d3b30876a6",
+      "size": [
+        1832,
+        858
+      ],
+      "prompt_sha256": "fc6b1e3936f030032df22db55e33c78ad025cd7bdccb0f77c30496284203a677"
+    },
+    {
+      "resource": "H-2.OZM",
+      "asset": "H-2-hd-b-v1.png",
+      "generation_file": "exec-20ce2956-bdd7-4b77-850e-fbea4fae2617.png",
+      "prompt": "H-2-hd-b-v1.prompt.txt",
+      "reference": "H-2.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "248cc086e24527fceddc4e6e02e1be64b2f4d28ad3ca539f04d725b41fe76921",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt_sha256": "1aaf684b6aa2b8b547fb033ae28f54f3985acf876f6541c54474b84370a1f040"
+    },
+    {
+      "resource": "H-3.OZM",
+      "asset": "H-3-hd-b-v1.png",
+      "generation_file": "exec-1f5a3d25-f4fd-4803-9ca5-809768b1ea02.png",
+      "prompt": "H-3-hd-b-v1.prompt.txt",
+      "reference": "H-3.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "547ac2884670b54e8bce9d54fa22e3016b93434ebefcf387d1813124b4e570b1",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt_sha256": "4e2618bbc32123c1db486a39d708d6d72e4e6f469eadba79d253859852ec87eb"
+    },
+    {
+      "resource": "KOYO.OZM",
+      "asset": "KOYO-hd-b-v1.png",
+      "generation_file": "exec-1eb45d11-81c3-49cb-8a6c-98f4b6dfe70d.png",
+      "prompt": "KOYO-hd-b-v1.prompt.txt",
+      "reference": "KOYO.OZM.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "effe0a016142e099dd5ba9ff9d653cc8ffb6a23dd04b0c93e299a8528ee1f967",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt_sha256": "2c9916a9cd09d5e884024f5acb3c47e4f13460391a3a0461bc084cd6799d0e8d"
+    },
+    {
+      "resource": "YOULOSE.OZM",
+      "asset": "YOULOSE-hd-b-v1.png",
+      "generation_file": "exec-58b54e4a-a839-4d21-ad54-9afaa1397c91.png",
+      "prompt": "YOULOSE-hd-b-v1.prompt.txt",
+      "reference": "YOULOSE-visible-reference.png",
+      "generator": "built-in image_gen.imagegen",
+      "status": "draft; visual review and runtime integration pending",
+      "sha256": "7af3ffec77d74e88778f4a04e065d48ed36128e91bf18fb212cee023eda48b87",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt_sha256": "245f0c47c288fb4f351119ebeabfcb69deb3aff1e59b25c4fe1031802aa7e885"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "records": [
+    {
+      "resource": "D-2.OZM",
+      "asset": "D-2-hd-b-v2.png",
+      "sha256": "25e7df174da3b01f8ccc90ec5a32e926ff1c044e80b05c6a5e00d22db6bb252f",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt": "D-2-hd-b-v2.prompt.txt",
+      "prompt_sha256": "648e1108be5479dd5c671cfeed8a525a7864c808fb8799b630813c1be6e12a80",
+      "generator": "built-in image_gen.imagegen",
+      "generation_file": "exec-1c9c4021-9452-4841-a531-aeb638bd505e.png",
+      "reason": "composition follows source crop [0,0,320,150] of 328x150 original",
+      "review": "composition and opaque aspect visually reviewed; runtime verification separate"
+    },
+    {
+      "resource": "E-1.OZM",
+      "asset": "E-1-hd-b-v2.png",
+      "sha256": "001195ceefb47488826aa98f43b6d577adff6d23686544cb918cd3e632dc9059",
+      "size": [
+        1831,
+        859
+      ],
+      "prompt": "E-1-hd-b-v2.prompt.txt",
+      "prompt_sha256": "95245450525533ab489b077810fbd44d2a081cdf80c848a8f61f60969841f52c",
+      "generator": "built-in image_gen.imagegen",
+      "generation_file": "exec-aa04b810-e6ed-45c3-9af4-5259db28b9cd.png",
+      "reason": "remove added star points; retain characters, tent, banner and dark sky",
+      "review": "composition and opaque aspect visually reviewed; runtime verification separate"
+    }
+  ]
+}

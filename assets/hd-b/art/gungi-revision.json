@@ -1,0 +1,17 @@
+{
+  "resource": "GUNGI.OZM",
+  "asset": "GUNGI-hd-b-v2.png",
+  "sha256": "4cb593fdb698d967cdbdc7694427fb3104adb34c73a6e665620886620397dfea",
+  "size": [
+    1832,
+    859
+  ],
+  "prompt": "GUNGI-hd-b-v2.prompt.txt",
+  "prompt_sha256": "c1b7afb6b904077508cb570f4999357b4fdda777e7c9b93a347772d804d55971",
+  "superseded_asset": "GUNGI-hd-b-v1.png",
+  "superseded_sha256": "248259e95bdc5fca9dae3e7fdba53437e9a1b0a1145715c4ddd186290c76589c",
+  "generator": "built-in image_gen.imagegen",
+  "generation_file": "exec-1f63f9bc-e996-4597-ad67-071cd3a59a3c.png",
+  "reason": "restore inanimate gold background statue; retain four seated living council members",
+  "review": "visually reviewed; source profile and runtime integration pending"
+}
