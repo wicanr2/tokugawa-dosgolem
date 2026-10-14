@@ -378,3 +378,5 @@ GitHub 收尾：功能、校準圖與新草稿提交 d8a879e495bc1a59ef134e22a39
 - 獨立總表 SHA-256：4990b8c4766bc6b83094d16e7199e2cc2639085e193ca310394a747e9e8e6379；二進位 56b7d5441afdca078b8a1073ecf0db5e6016a724284b23f543c14bf1e639f750。生成素材保存及 verify-only 通過，546 PNG、140 提示詞、428970184 索引 bytes；原版 PNG／idx／RAM／PCM 與執行收據維持本機。
 - 覆蓋清單重生為 86 OZM prepared、一項 partial、20 項已解碼待製作及五項解碼未知；81 頭像與完整 MAP_CHIP 已準備。全遊戲 HD 未完成，三平台打包尚未開始。下一批為正常標題與其餘開場、動畫及介面。
 - 製作、建置及 GUI 容器已退出並自動刪除，未重建 image。遠端、文件入口及擁有權核對結果接續記錄。
+
+GitHub 收尾：功能、六張校準圖及來源／提示詞提交 ee811e061472a10821f9d854650d357760044a3f 已推送私人 main。主機 gh 確認 PRIVATE，遠端 main SHA 一致；immutable tree 的 739 個 assets/hd-b 檔案逐項 blob SHA 與本機一致，tree 未截斷，沒有 original/ 或 workplace/。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6178913960 。來源 ZIP／12 個解包檔、CRC、UID/GID 與工具輸入核對通過；Python 語法、文件連結、入口正對照、目前 Go SHA／GUI 來源快照及 Git whitespace 通過。完整工作根沒有 root-owned 檔案或 .md 目錄，新增輸出抽查 UID/GID 1000:1000，所有 tokugawa 容器已退出並移除，沿用既有 image。
