@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 190,
-    "prompts": 101,
-    "bytes": 300172326
+    "png": 191,
+    "prompts": 102,
+    "bytes": 302088815
   },
-  "archive_tool_sha256": "46227f18c3b4410df931a467106df7495bc59631e3ae5b8d5228e562a1782571",
+  "archive_tool_sha256": "12427b340d2018aa3bba414e6a1db275d69c8770633f1008c786b5f61950baa5",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -1252,6 +1252,26 @@
       "local_source": "workplace/hd-prototype/catalog/art/KOYO-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/MAPGAMEN-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1913746,
+      "sha256": "0a8fd2e1ead2bc8c5a83bb2d4da0cb9f8e81e7fa5bdc3c7d4b7fcaaa360af93e",
+      "local_source": "workplace/hd-prototype/catalog/art/MAPGAMEN-hd-b-v1.png",
+      "prompt": "art/MAPGAMEN-hd-b-v1.prompt.txt",
+      "status": "battle UI frame visually reviewed; geometry and runtime presentation pending",
+      "size": [
+        1586,
+        992
+      ]
+    },
+    {
+      "path": "art/MAPGAMEN-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1711,
+      "sha256": "cdc2af4ce6dd0cd10b9e5e54df2894fc3056f66eb7291e140d352393d6356517",
+      "local_source": "workplace/hd-prototype/catalog/art/MAPGAMEN-hd-b-v1.prompt.txt"
+    },
+    {
       "path": "art/YOULOSE-hd-b-v1.png",
       "kind": "png",
       "bytes": 2572968,
@@ -1291,6 +1311,13 @@
       "bytes": 1327,
       "sha256": "399e1676d098d152344d74ee4b380f9737d4163a51fbc22f8ba7faeceb318c7d",
       "local_source": "workplace/hd-prototype/catalog/art/revisions.json"
+    },
+    {
+      "path": "art/ui-generation.json",
+      "kind": "generation-metadata",
+      "bytes": 1032,
+      "sha256": "9f5d62b5bee87e0055652504a0937aff404705691b136f68a89064756aa5b0da",
+      "local_source": "workplace/hd-prototype/catalog/art/ui-generation.json"
     },
     {
       "path": "concept/style-comparison-v1.png",
@@ -5180,7 +5207,7 @@
       "sha256": "a8c37f61ef22f645a58cb824758ab34620e535a2588f0fce5e71490cf3dd3a72",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-001-hd-b-v1.png",
       "prompt": "terrain/unit-001-hd-b-v1.prompt.txt",
-      "status": "generated unit draft; original identity and footprint review pending",
+      "status": "normal first-battle unit HD verified; joint floor and forest-clump composition, native visible-owner priority",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -5230,7 +5257,7 @@
       "sha256": "6c9a0ef3d9a3db01bec673fb37d7f8fca4a2f2a08cf6a14d81ecd101ec867654",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-003-hd-b-v1.png",
       "prompt": "terrain/unit-003-hd-b-v1.prompt.txt",
-      "status": "generated unit draft; original identity and footprint review pending",
+      "status": "normal first-battle unit HD verified; joint floor and forest-clump composition, native visible-owner priority",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,

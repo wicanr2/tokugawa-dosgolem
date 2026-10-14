@@ -37,6 +37,13 @@ func (g *desktopGame) selectedBar() [3]int {
 }
 
 func (g *desktopGame) hdAvailable() bool {
+	if *desktopTerrainScene {
+		for _, pair := range g.terrainUnits {
+			if pair.Reason == "ready" {
+				return true
+			}
+		}
+	}
 	if g.terrainTree.Reason == "ready" {
 		return true
 	}

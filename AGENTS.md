@@ -128,6 +128,16 @@
 
 該目錄的 `runtime/` 是後續呈現建置與測試；`desktop/`、`desktop-only/`、`desktop-missing/` 保存四個樹叢的三模式真實視窗與來源快照。頂層診斷及 `sprite-backgrounds/` 不覆寫。`tools/verify-hd-backdrop-gui.py` 核對三模式、原版狀態與實際擷取背景，使用固定 GUI image，該目錄可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-backdrop-gui.py`。
 
+`workplace/hd-prototype/catalog/terrain/scene/` 保存完整地面順序、可見碎片及重疊人物的研究與後續驗證。`tools/hd-scene-probe.py` 從既有正常路徑 145 個自然返回重建原版來源與遮罩，對照原版畫面，游標區單列排除；不把重建圖當原版收據。固定 GUI image 內將專案唯讀掛 `/project`、該目錄可寫掛 `/output`，執行 `python3 /project/tools/hd-scene-probe.py`。呈現契約與各推論等級見 RESEARCH-LOG。
+
+`tools/hd-terrain-scene.go`／`tools/hd-terrain-scene_test.go` 保存地面完整返回順序與重疊前景的共同呈現及安全測試；`tools/hd-terrain-unit-profiles.go` 只批准 units-001／003 的原始來源範圍、生成圖 SHA 與明示裁切，其他單位不沿用。`scene/runtime/`、`scene/desktop/`、`scene/desktop-only/`、`scene/desktop-missing/` 分別保存隔離建置與三模式 GUI。建置沿 run-desktop.sh；正常路徑驗證沿 verify-desktop.py 的 scene 三模式，完整收據與獨立核對完成前不稱全遊戲 HD。
+
+`tools/verify_hd_scene_pixels.py` 是 scene 真實視窗驗證的獨立 Pillow 像素核對器，依原始來源、完整順序、明示裁切與 alpha 契約計算畫面。隨 verify-desktop.py 複製至同一可寫輸出目錄，來源唯讀；游標區只從此像素公式核對排除，真實 X11／呈現圖及原版 Proof 仍完整核對。
+
+`tools/verify-hd-scene.py` 彙整 scene 三模式、完整 RAM、十五欄基準、來源快照、原始順序及素材 SHA。固定 GUI image 內專案唯讀掛 `/project`，`scene/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-scene.py`。歷史重核可用 `--runtime-source-root` 指向當次含 tools/ 的來源快照，`--verify-only` 不改寫總表。
+
+`workplace/hd-prototype/catalog/art/ui-generation.json` 保存戰場介面生成草稿的來源、參考、完整提示詞與 SHA；生成原圖與提示詞同步至 `assets/hd-b/art/`，metadata 由 archive-hd-art.py 保存。圖像布局及正式呈現資格另驗證，生成草稿不算原版介面已接入。
+
 `workplace/hd-prototype/catalog/terrain/objects/` 保存物件／單位的唯讀繪製順序研究、來源遮罩、隔離建置與 GUI 驗證。舊地面收據留在 `terrain/trace/` 及 `terrain/runtime/`，不覆寫。`-hd-terrain-trace` 同時記錄原版 `sub_1FC07` 地面及 `sub_1F9D0` 透明圖塊的原始暫存器、自然返回與平面指紋；診斷不決定呈現資格。
 
 `workplace/hd-prototype/catalog/terrain/trees/` 保存 objects-000 樹木的背景覆蓋研究、透明素材幾何、可丟棄預覽與獨立 GUI 驗證。原版前景來源沿用 `terrain/objects/sources/`，該輪收據保持不變。`tools/hd-terrain-tree-prepare.py` 核對原始順序、完整背景及實際游標，生成樹木素材指紋與裁切幾何；固定 GUI image 內專案掛 `/project` 可寫、`terrain/trees/` 掛 `/output` 可寫後執行。輪廓之外的低 alpha 雜點只在明示裁切範圍外排除，生成原始 PNG 保留。

@@ -127,6 +127,10 @@ def main():
     if council:
         reviewed_art[council["asset"]] = council["sha256"]
         reviewed_art.pop(council["superseded_asset"], None)
+    ui_generation = catalog/"art/ui-generation.json"
+    ui_drafts = {}
+    if ui_generation.exists():
+        ui_drafts = {r["asset"]:r["sha256"] for r in json.loads(ui_generation.read_text())["records"]}
     for source in sorted((catalog/"art").glob("*-hd-b-v*.png")):
         name = source.name
         status = "draft; integration and review pending"
@@ -136,6 +140,9 @@ def main():
         elif name in reviewed_art:
             assert sha(source) == reviewed_art[name]
             status = "illustration visually reviewed; source profile and runtime integration pending"
+        elif name in ui_drafts:
+            assert sha(source) == ui_drafts[name]
+            status = "battle UI frame visually reviewed; geometry and runtime presentation pending"
         picture(source, "art/"+name, source.with_suffix(".prompt.txt"), "art/"+source.with_suffix(".prompt.txt").name, status)
     revisions = catalog/"art/revisions.json"
     if revisions.exists():
@@ -144,6 +151,12 @@ def main():
         copy(remaining_path, "art/remaining-generation.json", "generation-metadata")
     if council:
         copy(council_path, "art/gungi-revision.json", "revision-metadata")
+    ui_generation = catalog/"art/ui-generation.json"
+    if ui_generation.exists():
+        for record in json.loads(ui_generation.read_text())["records"]:
+            assert sha(catalog/"art"/record["asset"]) == record["sha256"]
+            assert sha(catalog/"art"/record["prompt"]) == record["prompt_sha256"]
+        copy(ui_generation, "art/ui-generation.json", "generation-metadata")
     terrain = catalog/"terrain/art"
     terrain_profiles = catalog/"terrain/prepared/profiles.json"
     verified_tree_asset = ""
@@ -165,6 +178,18 @@ def main():
         assert backdrop_summary["background_verification_sha256"] == sha(catalog/"terrain/backgrounds/background-verification.json")
         assert backdrop_summary["asset_sha256"] == tree_source["asset_sha256"]
         tree_instances = 4
+    normal_unit_assets = {}
+    scene_summary_path = catalog/"terrain/scene/verification-summary.json"
+    if scene_summary_path.exists():
+        scene_summary = json.loads(scene_summary_path.read_text())
+        assert scene_summary["approved_unit_indices"] == [1,3] and scene_summary["normal_HD_unit_instances"] == 2
+        receipt_path = catalog/"terrain/scene/desktop/desktop-scene.json"
+        assert scene_summary["records"][0]["receipt_sha256"] == sha(receipt_path)
+        receipt = json.loads(receipt_path.read_text())
+        for index in scene_summary["approved_unit_indices"]:
+            info = receipt["desktop"]["assets"]["terrain_units"][str(index)]
+            assert info["validation"] == "ready"
+            normal_unit_assets[f"unit-{index:03d}-hd-b-v1.png"] = info["hd_sha256"]
     approved_floor = {}
     normal_floor_art = set()
     if terrain_profiles.exists():
@@ -192,6 +217,9 @@ def main():
                 status = "superseded pose draft; exposed blade corrected to lower left in v2"
             if source.name == "unit-006-hd-b-v2.png":
                 status = "reviewed original pose correction; runtime integration pending"
+            if source.name in normal_unit_assets:
+                assert sha(source) == normal_unit_assets[source.name]
+                status = "normal first-battle unit HD verified; joint floor and forest-clump composition, native visible-owner priority"
             if object_draft:
                 status = "generated object draft; cell footprint and normal HD integration pending"
                 if source.name == "object-000-hd-b-v1.png":

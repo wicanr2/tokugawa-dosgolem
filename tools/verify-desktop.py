@@ -10,7 +10,7 @@ import time
 
 assert Path("/.dockerenv").exists() and os.getuid() == 1000
 parser = argparse.ArgumentParser()
-parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only", "window", "window-missing", "window-only", "window-modal", "terrain", "terrain-missing", "trees", "trees-only", "trees-missing"], default="hd")
+parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only", "window", "window-missing", "window-only", "window-modal", "terrain", "terrain-missing", "trees", "trees-only", "trees-missing", "scene", "scene-only", "scene-missing"], default="hd")
 parser.add_argument("--include-council", action="store_true", help="於既有普通輸入路徑另抽測 GUNGI.OZM")
 args = parser.parse_args()
 root = Path("/output")
@@ -24,9 +24,11 @@ is_scroll = args.mode.startswith("scroll")
 is_portraits = args.mode.startswith("portraits")
 is_terrain = args.mode.startswith("terrain")
 is_trees = args.mode.startswith("trees")
-long_path = is_portraits or is_terrain or is_trees
+is_scene = args.mode.startswith("scene")
+long_path = is_portraits or is_terrain or is_trees or is_scene
 terrain_checks = []
 tree_checks = []
+scene_checks = []
 assert not args.include_council or is_portraits
 story_cases = 9 if args.include_council else 8
 portrait_checks = []
@@ -216,7 +218,7 @@ try:
         command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png"]
         if args.mode == "terrain-missing":
             command += ["-hd-terrain-dir", "/output/no-terrain"]
-    if not is_trees:
+    if not is_trees and not is_scene:
         command += ["-hd-terrain-tree-asset", "/output/no-tree.png"]
     if is_trees:
         command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-frame-asset", "/output/no-frame.png", "-hd-window-asset", "/output/no-window.png"]
@@ -224,6 +226,14 @@ try:
             command += ["-hd-terrain-dir", "/output/no-terrain"]
         if args.mode == "trees-missing":
             command += ["-hd-terrain-tree-asset", "/output/no-tree.png"]
+    if is_scene:
+        command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-frame-asset", "/output/no-frame.png", "-hd-window-asset", "/output/no-window.png"]
+        if args.mode in ("scene-only", "scene-missing"):
+            command += ["-hd-terrain-dir", "/output/no-terrain"]
+        if args.mode == "scene-missing":
+            command += ["-hd-terrain-tree-asset", "/output/no-tree.png", "-hd-terrain-unit-dir", "/output/no-units"]
+    else:
+        command += ["-hd-terrain-scene=false", "-hd-terrain-unit-dir", "/output/no-units"]
     stdout_path = root / f"desktop-{args.mode}.json"
     stdout = stdout_path.open("wb")
     stderr = (root / f"desktop-{args.mode}.stderr.log").open("wb")
@@ -292,6 +302,20 @@ try:
             assert not any(d["logical_rect"] == {"Min": {"X": 200, "Y": 150}, "Max": {"X": 504, "Y": 198}} for d in status()["window_draws"]), status()
             pictures += check_window_modal("after-confirmation")
             key("F7")
+    elif is_scene:
+        from verify_hd_scene_pixels import verify_scene_pixels
+        wait_for(lambda s: s.get('step',0)>=740_000_000 and len(s.get('terrain_history') or [])==134,600)
+        key('F6'); key('F7')
+        enhanced=capture('enabled'); snapshot=status()
+        assert snapshot['terrain_scene_enabled']
+        key('F6'); original=capture('original'); key('F6'); restored=capture('restored')
+        assert enhanced['presented']['proof']==original['presented']['proof']==restored['presented']['proof']
+        assert enhanced['presented']['frame']['png_sha256']==restored['presented']['frame']['png_sha256']
+        check=verify_scene_pixels(snapshot,decoded(Path(enhanced['actual_png'])),decoded(Path(original['actual_png'])),args.mode)
+        check.update(step=enhanced['presented']['step'],guest_unchanged=True)
+        scene_checks.append(check)
+        pictures += [enhanced,original,restored]
+        key('F7')
     elif is_trees:
         from PIL import Image
         wait_for(lambda s: s.get('step',0)>=740_000_000 and len(s.get('tree_draws') or [])>0,600)
@@ -652,7 +676,7 @@ try:
             assert len(loaded) == 81 and all(info.get("source_sha256") for info in loaded.values())
             if args.mode == "portraits":
                 assert all(info.get("hd_sha256") and not info.get("hd_error") for info in loaded.values())
-        elif not is_terrain and not is_trees:
+        elif not is_terrain and not is_trees and not is_scene:
             assert receipt["desktop"]["hd_observation"]["draw_completed"]
         if is_window:
             observation = receipt["desktop"]["hd_observation"]["window"]
@@ -674,6 +698,7 @@ try:
               "window_checks": window_checks,
               "terrain_checks": terrain_checks,
               "tree_checks": tree_checks,
+              "scene_checks": scene_checks,
               "scope": "Linux container prototype; no physical audio or other OS verification"}
     (root / f"verification-{args.mode}.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(f"desktop {args.mode}: verified", flush=True)

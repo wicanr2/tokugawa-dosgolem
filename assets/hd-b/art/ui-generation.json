@@ -1,0 +1,23 @@
+{
+  "classification": "generated original-layout UI drafts, not production asset-pack schema",
+  "records": [
+    {
+      "source": "MAPGAMEN.OZM",
+      "asset": "MAPGAMEN-hd-b-v1.png",
+      "sha256": "0a8fd2e1ead2bc8c5a83bb2d4da0cb9f8e81e7fa5bdc3c7d4b7fcaaa360af93e",
+      "prompt": "MAPGAMEN-hd-b-v1.prompt.txt",
+      "prompt_sha256": "cdc2af4ce6dd0cd10b9e5e54df2894fc3056f66eb7291e140d352393d6356517",
+      "tool": "built-in image_gen.imagegen",
+      "size": [
+        1586,
+        992
+      ],
+      "transparent_background": false,
+      "reference_original_indexed_sha256": "99a8497101f145c62d01934204f1c3ed74282fa6bd993fdbf4f8969eb0f7277c",
+      "reference_original_png_sha256": "998fd37004058cb794e04ea58eca72e56a87eebe349dbaafe56fc1b19bd0b24b",
+      "style_reference": "scroll/frame/frame-hd-b-v2.png",
+      "style_reference_sha256": "e38ddf2ba19ae73e06f1906d06467e7a6f8571ef9e6fe261a447aa203098c209",
+      "status": "generated and visually reviewed draft; geometry and runtime presentation pending"
+    }
+  ]
+}

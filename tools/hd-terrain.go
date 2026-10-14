@@ -33,6 +33,7 @@ type hdTerrainPending struct {
 
 type hdTerrainState struct {
 	Draws         []hdTerrainDraw       `json:"draws"`
+	History       []hdTerrainDraw       `json:"draw_history"`
 	Pending       *hdTerrainPending     `json:"pending_return"`
 	Returns       uint64                `json:"completed_returns"`
 	Sprites       []hdTerrainSpriteDraw `json:"sprites"`
@@ -40,7 +41,7 @@ type hdTerrainState struct {
 	Sequence      uint64                `json:"draw_sequence"`
 }
 
-func (h *hdTerrainState) invalidate() { h.Draws, h.Sprites, h.Pending = nil, nil, nil }
+func (h *hdTerrainState) invalidate() { h.Draws, h.History, h.Sprites, h.Pending = nil, nil, nil, nil }
 
 func hdTerrainSourceValid(mem []byte) bool {
 	if len(mem) < 0x42180 || binary.LittleEndian.Uint32(mem[0x35988:]) != 0 {
@@ -118,10 +119,11 @@ func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte
 			} else {
 				h.invalidate()
 			}
-		} else if hdTerrainSourceValid(mem) && len(h.Draws) < 256 {
+		} else if hdTerrainSourceValid(mem) && len(h.Draws) < 256 && len(h.History) < 512 {
 			h.Sequence++
 			p.Draw.Order = h.Sequence
 			h.Draws = append(h.Draws, p.Draw)
+			h.History = append(h.History, p.Draw)
 			h.Returns++
 		} else {
 			h.invalidate()

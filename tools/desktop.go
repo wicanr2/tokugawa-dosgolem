@@ -34,6 +34,8 @@ var desktopTerrainSourceDir = flag.String("hd-terrain-source-dir", "/project/wor
 var desktopTerrainDir = flag.String("hd-terrain-dir", "/project/assets/hd-b/terrain", "approved source-specific floor HD art; each missing item falls back")
 var desktopTerrainSpriteSourceDir = flag.String("hd-terrain-sprite-source-dir", "/project/workplace/hd-prototype/catalog/terrain/objects/sources", "verified index-zero masks and native object/unit pixels")
 var desktopTerrainTreeAsset = flag.String("hd-terrain-tree-asset", "/project/assets/hd-b/terrain/object-000-hd-b-v2.png", "approved transparent forest-clump HD art")
+var desktopTerrainUnitDir = flag.String("hd-terrain-unit-dir", "/project/assets/hd-b/terrain", "approved source-specific unit HD art")
+var desktopTerrainScene = flag.Bool("hd-terrain-scene", true, "compose the complete observed floor journal and qualified overlapping sprites")
 
 type desktopGame struct {
 	c                           *desktopContext
@@ -72,6 +74,9 @@ type desktopGame struct {
 	terrainTree                 hdTerrainTreePair
 	treeModes                   []string
 	treeHD, treeProtected       int
+	terrainUnits                map[hdTerrainSpriteKey]hdTerrainSpritePair
+	scene                       hdTerrainScene
+	sceneReport                 hdTerrainSceneReport
 }
 
 type desktopPortrait struct {
@@ -338,6 +343,35 @@ func runDesktopWindow(c *desktopContext) error {
 	g.terrainTree = newHDTerrainTreePair(treeSource, treeAsset, 2)
 	treeInfo["validation"] = g.terrainTree.Reason
 	g.assetInfo["terrain_tree"] = treeInfo
+	g.terrainUnits = map[hdTerrainSpriteKey]hdTerrainSpritePair{}
+	unitInfo := map[int]any{}
+	for index, profile := range hdTerrainUnitProfiles {
+		key := hdTerrainSpriteKey{"units", index}
+		info := map[string]any{}
+		if entry, ok := spriteInfo[fmt.Sprintf("units-%03d", index)].(map[string]any); ok {
+			if sum, ok := entry["source_sha256"]; ok {
+				info["source_sha256"] = sum
+			}
+		}
+		var source, asset image.Image
+		if im := g.terrainSprites[key]; im != nil {
+			source = im
+		}
+		path := filepath.Join(*desktopTerrainUnitDir, profile.Asset)
+		if data, e := os.ReadFile(path); e == nil {
+			sum := fmt.Sprintf("%x", sha256.Sum256(data))
+			info["hd_sha256"] = sum
+			if sum == profile.AssetSHA {
+				asset, _ = previewPNG(path)
+			} else {
+				info["hd_error"] = "unapproved unit fingerprint"
+			}
+		}
+		pair := newHDTerrainSpritePair(source, asset, 2, key, profile.SourceBounds, profile.Crop)
+		info["validation"] = pair.Reason
+		g.terrainUnits[key], unitInfo[index] = pair, info
+	}
+	g.assetInfo["terrain_units"] = unitInfo
 	ebiten.SetWindowSize(1280, 800)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("德川家康｜原版｜F6 切換 HD｜F7 暫停")
@@ -351,6 +385,7 @@ func runDesktopWindow(c *desktopContext) error {
 	c.Report["terrain_modes"], c.Report["terrain_hd_count"] = g.terrainModes, g.terrainHD
 	c.Report["terrain_foreground_pixels"] = g.terrainForeground
 	c.Report["tree_modes"], c.Report["tree_hd_count"], c.Report["tree_protected_pixels"] = g.treeModes, g.treeHD, g.treeProtected
+	c.Report["terrain_scene"], c.Report["terrain_scene_enabled"] = g.sceneReport, *desktopTerrainScene
 	return err
 }
 
@@ -377,29 +412,48 @@ func (g *desktopGame) render() error {
 		mode = "fallback_no_original_draw"
 	}
 	g.portraitMode = mode
-	g.terrainModes, g.terrainHD, g.terrainForeground = nil, 0, 0
-	for _, draw := range g.c.Live.Terrain.Draws {
-		result, foreground := "fallback_pending_draw", 0
-		if g.c.Live.Terrain.Pending == nil {
-			result, foreground = g.terrain[draw.Index].applyForeground(out, s.Image, draw, g.c.Live.Terrain.Sprites, g.terrainSprites, 2, g.enabled)
+	if *desktopTerrainScene {
+		pairs := map[hdTerrainSpriteKey]hdTerrainSpritePair{{"objects", 0}: g.terrainTree}
+		for key, pair := range g.terrainUnits {
+			pairs[key] = pair
 		}
-		g.terrainModes = append(g.terrainModes, result)
-		if result == "hd" {
-			g.terrainHD++
-			g.terrainForeground += foreground
+		g.sceneReport = g.scene.apply(out, s.Image, g.c.Live.Terrain, g.terrain, pairs, g.terrainSprites, 2, g.enabled)
+		g.terrainModes, g.terrainHD, g.terrainForeground = g.sceneReport.FloorModes, g.sceneReport.FloorHD, g.sceneReport.ProtectedNativePixels
+		g.treeModes = append(g.treeModes[:0], g.sceneReport.SpriteModes...)
+		for i, d := range g.c.Live.Terrain.Sprites {
+			if d.Group == "units" {
+				g.treeModes[i] = "original_unit_separate_layer"
+			}
+		}
+		g.treeHD, g.treeProtected = g.sceneReport.TreeHD, g.sceneReport.ProtectedNativePixels
+		if g.sceneReport.Reason == "hd" {
 			mode = "hd"
 		}
-	}
-	g.treeModes, g.treeHD, g.treeProtected = nil, 0, 0
-	var replacedTrees []image.Rectangle
-	for _, sprite := range g.c.Live.Terrain.Sprites {
-		result, protected := g.terrainTree.apply(out, s.Image, sprite, g.c.Live.Terrain, g.terrain, g.terrainModes, g.terrainSprites, replacedTrees, 2, g.enabled)
-		g.treeModes = append(g.treeModes, result)
-		if result == "hd" {
-			replacedTrees = append(replacedTrees, sprite.Rect)
-			g.treeHD++
-			g.treeProtected += protected
-			mode = "hd"
+	} else {
+		g.terrainModes, g.terrainHD, g.terrainForeground = nil, 0, 0
+		for _, draw := range g.c.Live.Terrain.Draws {
+			result, foreground := "fallback_pending_draw", 0
+			if g.c.Live.Terrain.Pending == nil {
+				result, foreground = g.terrain[draw.Index].applyForeground(out, s.Image, draw, g.c.Live.Terrain.Sprites, g.terrainSprites, 2, g.enabled)
+			}
+			g.terrainModes = append(g.terrainModes, result)
+			if result == "hd" {
+				g.terrainHD++
+				g.terrainForeground += foreground
+				mode = "hd"
+			}
+		}
+		g.treeModes, g.treeHD, g.treeProtected = nil, 0, 0
+		var replacedTrees []image.Rectangle
+		for _, sprite := range g.c.Live.Terrain.Sprites {
+			result, protected := g.terrainTree.apply(out, s.Image, sprite, g.c.Live.Terrain, g.terrain, g.terrainModes, g.terrainSprites, replacedTrees, 2, g.enabled)
+			g.treeModes = append(g.treeModes, result)
+			if result == "hd" {
+				replacedTrees = append(replacedTrees, sprite.Rect)
+				g.treeHD++
+				g.treeProtected += protected
+				mode = "hd"
+			}
 		}
 	}
 	if mode == "hd" {
@@ -575,6 +629,10 @@ func (g *desktopGame) Update() error {
 	status["terrain_modes"], status["terrain_hd_count"], status["terrain_draws"] = g.terrainModes, g.terrainHD, g.c.Live.Terrain.Draws
 	status["terrain_foreground_pixels"], status["terrain_sprites"] = g.terrainForeground, g.c.Live.Terrain.Sprites
 	status["tree_modes"], status["tree_hd_count"], status["tree_protected_pixels"], status["tree_draws"] = g.treeModes, g.treeHD, g.treeProtected, g.c.Live.Terrain.Sprites
+	status["terrain_scene"], status["terrain_scene_enabled"], status["terrain_history"] = g.sceneReport, *desktopTerrainScene, g.c.Live.Terrain.History
+	if *desktopTerrainScene {
+		status["terrain_draws"] = g.c.Live.Terrain.History
+	}
 	b, err := json.Marshal(status)
 	if err != nil {
 		return err

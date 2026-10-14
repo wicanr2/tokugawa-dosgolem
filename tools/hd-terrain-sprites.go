@@ -9,13 +9,20 @@ import (
 	"image/draw"
 )
 
-type hdTerrainTreePair struct {
+type hdTerrainSpritePair struct {
 	Source, Asset *image.NRGBA
 	Reason        string
+	Key           hdTerrainSpriteKey
 }
 
+type hdTerrainTreePair = hdTerrainSpritePair
+
 func newHDTerrainTreePair(source, asset image.Image, scale int) hdTerrainTreePair {
-	p := hdTerrainTreePair{Source: newHDTerrainSpriteSource(source), Reason: "fallback_source_shape"}
+	return newHDTerrainSpritePair(source, asset, scale, hdTerrainSpriteKey{"objects", 0}, hdTerrainTreeSourceBounds, hdTerrainTreeCrop)
+}
+
+func newHDTerrainSpritePair(source, asset image.Image, scale int, key hdTerrainSpriteKey, sourceBounds, crop image.Rectangle) hdTerrainSpritePair {
+	p := hdTerrainSpritePair{Source: newHDTerrainSpriteSource(source), Reason: "fallback_source_shape", Key: key}
 	if p.Source == nil || scale < 1 || scale > 4 {
 		return p
 	}
@@ -27,7 +34,7 @@ func newHDTerrainTreePair(source, asset image.Image, scale int) hdTerrainTreePai
 			}
 		}
 	}
-	if bounds != hdTerrainTreeSourceBounds {
+	if bounds != sourceBounds || sourceBounds.Empty() || !sourceBounds.In(image.Rect(0, 0, 48, 48)) {
 		return p
 	}
 	p.Reason = "fallback_missing_asset"
@@ -35,7 +42,7 @@ func newHDTerrainTreePair(source, asset image.Image, scale int) hdTerrainTreePai
 		return p
 	}
 	b := asset.Bounds()
-	if b.Min != image.Pt(0, 0) || b.Dx() != b.Dy() || b.Dx() < 48 || b.Dx() > 8192 || hdTerrainTreeCrop.Empty() || !hdTerrainTreeCrop.In(b) {
+	if b.Min != image.Pt(0, 0) || b.Dx() != b.Dy() || b.Dx() < 48 || b.Dx() > 8192 || crop.Empty() || !crop.In(b) {
 		p.Reason = "fallback_asset_geometry"
 		return p
 	}
@@ -45,7 +52,7 @@ func newHDTerrainTreePair(source, asset image.Image, scale int) hdTerrainTreePai
 			a := rgbaAt(asset, x, y).A
 			transparent = transparent || a == 0
 			visible = visible || a > 0
-			if !image.Pt(x, y).In(hdTerrainTreeCrop) && a > 7 {
+			if !image.Pt(x, y).In(crop) && a > 7 {
 				p.Reason = "fallback_unapproved_crop"
 				return p
 			}
@@ -56,10 +63,10 @@ func newHDTerrainTreePair(source, asset image.Image, scale int) hdTerrainTreePai
 		return p
 	}
 	p.Asset = image.NewNRGBA(image.Rect(0, 0, 48*scale, 48*scale))
-	target := hdTerrainTreeSourceBounds
+	target := sourceBounds
 	for y := 0; y < target.Dy()*scale; y++ {
 		for x := 0; x < target.Dx()*scale; x++ {
-			c := rgbaAt(asset, hdTerrainTreeCrop.Min.X+x*hdTerrainTreeCrop.Dx()/(target.Dx()*scale), hdTerrainTreeCrop.Min.Y+y*hdTerrainTreeCrop.Dy()/(target.Dy()*scale))
+			c := rgbaAt(asset, crop.Min.X+x*crop.Dx()/(target.Dx()*scale), crop.Min.Y+y*crop.Dy()/(target.Dy()*scale))
 			p.Asset.SetNRGBA(target.Min.X*scale+x, target.Min.Y*scale+y, c)
 		}
 	}
@@ -74,11 +81,15 @@ func blendTerrainAlpha(back, front color.NRGBA) color.NRGBA {
 }
 
 // 完整背景與原始前景逐點核對後，在新畫布重建。此函式不改 native 或原版狀態。
-func (p hdTerrainTreePair) apply(out *image.NRGBA, native image.Image, target hdTerrainSpriteDraw, state hdTerrainState, floors map[int]hdTerrainPair, floorModes []string, sources map[hdTerrainSpriteKey]*image.NRGBA, replaced []image.Rectangle, scale int, enabled bool) (string, int) {
+func (p hdTerrainSpritePair) apply(out *image.NRGBA, native image.Image, target hdTerrainSpriteDraw, state hdTerrainState, floors map[int]hdTerrainPair, floorModes []string, sources map[hdTerrainSpriteKey]*image.NRGBA, replaced []image.Rectangle, scale int, enabled bool) (string, int) {
 	if !enabled {
 		return "original", 0
 	}
-	if target.Group != "objects" || target.Index != 0 {
+	key := p.Key
+	if key.Group == "" {
+		key = hdTerrainSpriteKey{"objects", 0}
+	}
+	if target.Group != key.Group || target.Index != key.Index {
 		return "fallback_unapproved_source", 0
 	}
 	if p.Reason != "ready" {

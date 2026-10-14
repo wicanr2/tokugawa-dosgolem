@@ -43,8 +43,12 @@ def main():
         prepared = json.loads(profile_path.read_text())
         assert prepared["tool_sha256"] == sha(PROJECT / "tools/hd-story-prepare.py")
         profiles = {r["resource"]: r for r in prepared["records"]}
+    ui_path = ROOT/'art/ui-generation.json'
+    ui_drafts = {r['source']:r for r in json.loads(ui_path.read_text())['records']} if ui_path.exists() else {}
     direct = {}
     for record in decoded["records"]:
+        if record['name'] in ui_drafts:
+            continue
         stem = record["name"].removesuffix(".OZM")
         path = ROOT / "art" / f"{stem}-hd-b-v1.png"
         if record["name"] == "GUNGI.OZM" and (ROOT / "art/GUNGI-hd-b-v2.png").exists():
@@ -91,6 +95,7 @@ def main():
     object_drafts = 0
     foreground_summary = None
     tree_summary = None
+    scene_summary = None
     tree_summary_path = ROOT/'terrain/trees/verification-summary.json'
     if tree_summary_path.exists():
         tree_summary = json.loads(tree_summary_path.read_text())
@@ -105,6 +110,12 @@ def main():
         assert tree_summary['records'][0]['GUI_verification_sha256'] == sha(ROOT/'terrain/backgrounds/desktop/verification-trees.json')
         proof_sources.append({'verification':str(backdrop_summary_path.relative_to(PROJECT)),'sha256':sha(backdrop_summary_path)})
     terrain_proof = ROOT / "terrain/runtime/desktop/verification-terrain.json"
+    scene_summary_path = ROOT/'terrain/scene/verification-summary.json'
+    if scene_summary_path.exists():
+        scene_summary = json.loads(scene_summary_path.read_text())
+        assert scene_summary['approved_unit_indices'] == [1,3] and scene_summary['normal_HD_floor_draws'] == 67
+        assert scene_summary['records'][0]['GUI_verification_sha256'] == sha(ROOT/'terrain/scene/desktop/verification-scene.json')
+        proof_sources.append({'verification':str(scene_summary_path.relative_to(PROJECT)),'sha256':sha(scene_summary_path)})
     foreground_path = ROOT / "terrain/objects/verification-summary.json"
     if foreground_path.exists():
         foreground_summary = json.loads(foreground_path.read_text())
@@ -131,6 +142,10 @@ def main():
             assert proof["verified"] and proof["receipt_sha256"] == sha(terrain_proof.with_name("desktop-terrain.json"))
             verified_floors = {d["index"] for c in proof["terrain_checks"] for d in c["active_rectangles"]}
             proof_sources.append({"verification": str(terrain_proof.relative_to(PROJECT)), "sha256": sha(terrain_proof)})
+    generated_units, generated_objects = unit_drafts, object_drafts
+    approved_units = scene_summary['approved_unit_indices'] if scene_summary else []
+    unit_drafts -= len(approved_units)
+    object_drafts -= 1 if tree_summary else 0
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -186,13 +201,22 @@ def main():
                 proof_sources.append({"verification": str(proof_path.relative_to(PROJECT)), "sha256": sha(proof_path)})
         if name == "MAP_CHIP.OZM" and terrain_profiles:
             record.update(art_status="partial", source_grid_counts={"floor": 104, "object": 26, "unit": 13},
-                          approved_floor_art=8, generated_unit_drafts=unit_drafts, approved_unit_art=0,
+                          approved_floor_art=8, generated_unit_drafts=unit_drafts, approved_unit_art=len(approved_units),
+                          normal_unit_indices_verified=approved_units, normal_unit_instances_verified=2 if scene_summary else 0,
                           generated_object_drafts=object_drafts, approved_object_art=1 if tree_summary else 0,
                           normal_object_indices_verified=[0] if tree_summary else [], normal_object_instances_verified=tree_summary['normal_HD_object_instances'] if tree_summary else 0,
                           normal_floor_indices_verified=sorted(verified_floors),
-                          runtime_status="floor consumer with native index-zero foreground preservation integrated; HD sprites and whole atlas pending",
+                          runtime_status="full-floor journal, forest clumps and units-001/003 jointly composited; remaining atlas art pending" if scene_summary else "floor consumer with native index-zero foreground preservation integrated; HD sprites and whole atlas pending",
+                          normal_floor_draws_verified=67 if scene_summary else 65 if foreground_summary else 0,
                           floor_profiles_sha256=sha(terrain_path),
                           source_extraction_sha256=sha(ROOT / "terrain/terrain-extraction.json"))
+        if name in ui_drafts:
+            draft = ui_drafts[name]
+            path = ROOT/'art'/draft['asset']
+            assert sha(path) == draft['sha256']
+            record.update(kind="battle interface frame", art_status="draft",
+                          art=art_info(path, ROOT/'art'/draft['prompt']),
+                          runtime_status="visually reviewed; geometry and integration pending")
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]
@@ -211,6 +235,7 @@ def main():
                     "art_status": "missing", "runtime_status": "not integrated"})
     counts = {"OZM_resources": 112, "KAO_portraits": 81, "PCX_resources": 1,
               "generated_story_illustrations": len(direct),
+              "generated_UI_drafts": len(ui_drafts),
               "OZM_sources_with_prepared_art_including_exact_reuse": sum(r["art_status"] == "prepared" for r in records[:112]),
               "OZM_partial_art": sum(r["art_status"] == "partial" for r in records[:112]),
               "prepared_KAO_portraits": 81, "native_story_cases_verified": len(verified_story),
@@ -219,7 +244,12 @@ def main():
               "approved_MAP_CHIP_floor_art": 8 if terrain_profiles else 0,
               "normal_MAP_CHIP_floor_cases_verified": len(verified_floors),
               "generated_MAP_CHIP_unit_drafts": unit_drafts,
+              "generated_MAP_CHIP_unit_art": generated_units,
+              "approved_MAP_CHIP_unit_art": len(approved_units),
+              "normal_MAP_CHIP_unit_cases_verified": len(approved_units),
+              "normal_MAP_CHIP_unit_instances_verified": 2 if scene_summary else 0,
               "generated_MAP_CHIP_object_drafts": object_drafts,
+              "generated_MAP_CHIP_object_art": generated_objects,
               "native_MAP_CHIP_sprite_source_profiles": 39 if foreground_summary else 0,
               "approved_MAP_CHIP_object_art": 1 if tree_summary else 0,
               "normal_MAP_CHIP_object_cases_verified": 1 if tree_summary else 0,

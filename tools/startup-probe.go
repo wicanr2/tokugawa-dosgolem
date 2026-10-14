@@ -428,6 +428,13 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
+	for _, name := range []string{"tools/hd-terrain-scene.go", "tools/hd-terrain-scene_test.go", "tools/hd-terrain-unit-profiles.go"} {
+		b, e := os.ReadFile("/project/" + name)
+		if e != nil {
+			panic(e)
+		}
+		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
+	}
 	for _, name := range []string{"tools/startup-probe.go", "tools/cdrom.go", "tools/cdrom_test.go", "tools/cdda.go", "tools/cdda_test.go", "tools/hd-capture.go", "tools/hd-trace.go", "tools/hd-trace_test.go", "tools/hd-terrain-trace.go", "tools/hd-terrain-trace_test.go", "tools/hd-terrain.go", "tools/hd-terrain-profiles.go", "tools/hd-terrain_test.go", "tools/hd-story_test.go", "tools/hd-portraits.go", "tools/hd-kao.go", "tools/hd-kao_test.go", "tools/hd-kao-profiles.go", "tools/hd-live.go", "tools/hd-live_test.go", "tools/hd-layer.go", "tools/hd-scroll.go", "tools/hd-scroll_test.go", "tools/hd-frame.go", "tools/hd-frame_test.go", "tools/hd-preview_test.go", "tools/presentation.go", "tools/presentation_test.go", "tools/desktop.go", "tools/windowbar.go", "tools/windowbar_test.go", "tools/desktop-windowbar.go", "tools/toolbar-font.hex.gz", "tools/LICENSE-toolbar-font.txt", "tools/run-desktop.sh", "tools/desktop.mod", "tools/desktop.sum", "tools/video.go", "tools/video_test.go", "tools/vbe.go", "tools/vbe_test.go", "tools/keyboard.go", "tools/keyboard_test.go", "tools/dos_test.go", "tools/dosgolem.patch", "tools/dpmi-mcb.go", "tools/dpmi-mcb_test.go", "tools/cpu386-integration_test.go", "tools/run-probes.sh"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
