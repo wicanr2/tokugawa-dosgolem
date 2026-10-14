@@ -113,6 +113,20 @@ func TestSceneOverlappingHDVisibleOwnerAlphaAndPartialFloors(t *testing.T) {
 	if !bytes.Equal(nativeBefore, native.Pix) || !bytes.Equal(unitBefore, unitSource.Pix) {
 		t.Fatal("renderer changed original input")
 	}
+	// 同群組的兩個不同物件仍依原始順序與可見 owner 合成。
+	objectsState := state
+	objectsState.Sprites = append([]hdTerrainSpriteDraw(nil), state.Sprites...)
+	objectsState.Sprites[0].Group = "objects"
+	objectKey := hdTerrainSpriteKey{"objects", 1}
+	objectPair := pairs[hdTerrainSpriteKey{"units", 1}]
+	objectPair.Key = objectKey
+	objectPairs := map[hdTerrainSpriteKey]hdTerrainSpritePair{objectKey: objectPair, {"objects", 0}: pairs[hdTerrainSpriteKey{"objects", 0}]}
+	objectSources := map[hdTerrainSpriteKey]*image.NRGBA{objectKey: unitSource, {"objects", 0}: treeSource}
+	objectsOut, _, _ := previewA0(native, nil, nil, 2, false)
+	objectsReport := scene.apply(objectsOut, native, objectsState, floors, objectPairs, objectSources, 2, true)
+	if objectsReport.ObjectHD != 2 || objectsReport.TreeHD != 1 || objectsReport.UnitHD != 0 || !bytes.Equal(objectsOut.Pix, out.Pix) {
+		t.Fatal("multiple object indices changed visible-owner composition", objectsReport)
+	}
 	withIndices := state
 	withIndices.Sprites = append([]hdTerrainSpriteDraw(nil), state.Sprites...)
 	for i := range withIndices.Sprites {
@@ -196,7 +210,7 @@ func TestSceneOverlappingHDVisibleOwnerAlphaAndPartialFloors(t *testing.T) {
 	}
 }
 
-func TestSceneApprovedUnitArtCropAndSourceGeometry(t *testing.T) {
+func TestSceneApprovedSpriteArtCropAndSourceGeometry(t *testing.T) {
 	if len(hdTerrainUnitProfiles) != 10 {
 		t.Fatal("all ten nonempty unit sources must have approved art")
 	}
@@ -205,7 +219,24 @@ func TestSceneApprovedUnitArtCropAndSourceGeometry(t *testing.T) {
 			t.Fatal("original empty unit was filled", index)
 		}
 	}
-	for index, profile := range hdTerrainUnitProfiles {
+	for _, index := range []int{24, 25} {
+		if _, ok := hdTerrainObjectProfiles[index]; ok {
+			t.Fatal("original empty object was filled", index)
+		}
+	}
+	tree := hdTerrainObjectProfiles[0]
+	if tree.Asset != hdTerrainTreeAsset || tree.AssetSHA != hdTerrainTreeAssetSHA || tree.SourceBounds != hdTerrainTreeSourceBounds || tree.Crop != hdTerrainTreeCrop {
+		t.Fatal("expanded object table changed existing forest profile")
+	}
+	approved := map[hdTerrainSpriteKey]hdTerrainUnitProfile{}
+	for index, p := range hdTerrainUnitProfiles {
+		approved[hdTerrainSpriteKey{"units", index}] = p
+	}
+	for index, p := range hdTerrainObjectProfiles {
+		approved[hdTerrainSpriteKey{"objects", index}] = hdTerrainUnitProfile{p.Asset, p.AssetSHA, p.SourceBounds, p.Crop}
+	}
+	for key, profile := range approved {
+		group, index := key.Group, key.Index
 		path := "/project/assets/hd-b/terrain/" + profile.Asset
 		data, err := os.ReadFile(path)
 		if err != nil {
@@ -218,11 +249,11 @@ func TestSceneApprovedUnitArtCropAndSourceGeometry(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		source, err := previewPNG(fmt.Sprintf("/project/workplace/hd-prototype/catalog/terrain/objects/sources/units-%03d-original.png", index))
+		source, err := previewPNG(fmt.Sprintf("/project/workplace/hd-prototype/catalog/terrain/objects/sources/%s-%03d-original.png", group, index))
 		if err != nil {
 			t.Fatal(err)
 		}
-		p := newHDTerrainSpritePair(source, asset, 2, hdTerrainSpriteKey{"units", index}, profile.SourceBounds, profile.Crop)
+		p := newHDTerrainSpritePair(source, asset, 2, key, profile.SourceBounds, profile.Crop)
 		if p.Reason != "ready" {
 			t.Fatal(index, p.Reason)
 		}
@@ -241,7 +272,7 @@ func TestSceneApprovedUnitArtCropAndSourceGeometry(t *testing.T) {
 		if visible == 0 {
 			t.Fatal("empty prepared unit")
 		}
-		if newHDTerrainSpritePair(source, nil, 2, hdTerrainSpriteKey{"units", index}, profile.SourceBounds, profile.Crop).Reason != "fallback_missing_asset" {
+		if newHDTerrainSpritePair(source, nil, 2, key, profile.SourceBounds, profile.Crop).Reason != "fallback_missing_asset" {
 			t.Fatal("unit missing fallback")
 		}
 		// 每個實際來源走共同場景，檢查透明輪廓、缺圖及未知覆蓋。
@@ -254,8 +285,7 @@ func TestSceneApprovedUnitArtCropAndSourceGeometry(t *testing.T) {
 		floor := newHDTerrainPair(solid(48, 32, grass), solid(96, 64, color.NRGBA{63, 108, 48, 255}), 2)
 		bg := solid(48, 48, paper)
 		draw.Draw(bg, image.Rect(0, 16, 48, 48), floor.Source, image.Point{}, draw.Src)
-		key := hdTerrainSpriteKey{"units", index}
-		sprite := hdTerrainSpriteDraw{Group: "units", Index: index, Rect: image.Rect(80, 64, 128, 112), Order: 2,
+		sprite := hdTerrainSpriteDraw{Group: group, Index: index, Rect: image.Rect(80, 64, 128, 112), Order: 2,
 			Background: bg, BackgroundVerified: true, BeginStep: 1, EndStep: 2,
 			BackgroundSHA: fmt.Sprintf("%x", sha256.Sum256(bg.Pix)), SourceSHA: fmt.Sprintf("%x", sha256.Sum256(p.Source.Pix))}
 		state := hdTerrainState{History: []hdTerrainDraw{{Index: 0, Rect: image.Rect(80, 80, 128, 112), Order: 1}}, Sprites: []hdTerrainSpriteDraw{sprite}}
@@ -269,7 +299,7 @@ func TestSceneApprovedUnitArtCropAndSourceGeometry(t *testing.T) {
 		floors := map[int]hdTerrainPair{0: floor}
 		sources := map[hdTerrainSpriteKey]*image.NRGBA{key: p.Source}
 		report := scene.apply(out, native, state, floors, map[hdTerrainSpriteKey]hdTerrainSpritePair{key: p}, sources, 2, true)
-		if report.UnitHD != 1 || !bytes.Equal(before, native.Pix) || bytes.Equal(original, out.Pix) {
+		if report.UnitHD+report.ObjectHD != 1 || !bytes.Equal(before, native.Pix) || bytes.Equal(original, out.Pix) {
 			t.Fatal("real unit shared scene or read-only contract", index, report)
 		}
 		for y := 0; y < 800; y++ {
@@ -287,7 +317,7 @@ func TestSceneApprovedUnitArtCropAndSourceGeometry(t *testing.T) {
 		missing.Reason = "fallback_missing_asset"
 		out, _, _ = previewA0(native, nil, nil, 2, false)
 		report = scene.apply(out, native, state, floors, map[hdTerrainSpriteKey]hdTerrainSpritePair{key: missing}, sources, 2, true)
-		if report.UnitHD != 0 {
+		if report.UnitHD+report.ObjectHD != 0 {
 			t.Fatal("missing unit still painted", index)
 		}
 		for y := 0; y < 48; y++ {
@@ -308,7 +338,7 @@ func TestSceneApprovedUnitArtCropAndSourceGeometry(t *testing.T) {
 		native.Pix[((64+point.Y)*640+80+point.X)*4] ^= 1
 		out, _, _ = previewA0(native, nil, nil, 2, false)
 		report = scene.apply(out, native, state, floors, map[hdTerrainSpriteKey]hdTerrainSpritePair{key: p}, sources, 2, true)
-		if report.UnitHD != 0 || out.NRGBAAt((80+point.X)*2, (64+point.Y)*2) != native.NRGBAAt(80+point.X, 64+point.Y) {
+		if report.UnitHD+report.ObjectHD != 0 || out.NRGBAAt((80+point.X)*2, (64+point.Y)*2) != native.NRGBAAt(80+point.X, 64+point.Y) {
 			t.Fatal("unknown unit overlay overwritten", index)
 		}
 	}

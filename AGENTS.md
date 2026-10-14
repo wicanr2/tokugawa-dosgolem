@@ -58,6 +58,9 @@
 | [tools/archive-hd-art.py](tools/archive-hd-art.py) | 依 2026-10-14 使用者授權保存生成的 HD 圖與提示詞；固定 GUI Docker 內以專案掛 `/project` 可寫執行，`--verify-only` 核對索引與檔案 |
 | [assets/hd-b/README.md](assets/hd-b/README.md)、[圖片索引](assets/hd-b/index.json) | 私人儲存庫內的生成圖、生成圖裁切素材與提示詞。使用者已明確授權保存；不是正式發行包或公開散布授權 |
 | [tools/hd-kao-profiles.go](tools/hd-kao-profiles.go) | KAO.GRP 原版 0..80 索引的逐張指紋，不以推測武將姓名命名 |
+| [tools/hd-object-prepare.py](tools/hd-object-prepare.py)、[tools/hd-terrain-object-profiles.go](tools/hd-terrain-object-profiles.go) | 26 項物件來源的 alpha、裁切及審查；只有 review 的 approved_indices 進入共同呈現，兩個空白格保留 |
+| [tools/verify-hd-objects.py](tools/verify-hd-objects.py) | 固定 GUI Docker 內逐項核對物件來源索引、alpha、載入 profile、完整 RAM、切換及前版真實視窗；專案唯讀掛 /project、objects/expanded 可寫掛 /output |
+| `workplace/hd-prototype/catalog/terrain/objects/expanded/` | 物件裁切、原圖對照、審查及隔離 runtime／desktop 收據；生成圖、裁切與提示詞保存於 assets/hd-b/terrain/objects |
 | [tools/hd-kao.go](tools/hd-kao.go)、[tools/hd-kao_test.go](tools/hd-kao_test.go) | 原版頭像繪製的唯讀參數／返回觀測與來源、遮擋、缺圖備援；原版全畫面複製撤銷舊頭像 |
 | `workplace/hd-prototype/catalog/kao/` | 本機原版頭像、HD 製作副本與來源證據；生成圖依使用者授權同步至 assets/hd-b |
 | `workplace/hd-prototype/catalog/` | 本機 HD 覆蓋盤點、原版擷取、格式診斷與驗證；已生成圖像另存 assets/hd-b |
@@ -139,6 +142,8 @@
 新增目錄或文件前讀 `/home/anr2/.codex/knowledge-base/local/project-document-responsibilities.md`，並更新本表。未有可執行待辦前不另建 WORKLIST；需要時只建立一份。README 只放穩定入口，工作歷程寫入 WORKLOG。
 
 ## 全美術 HD 研究入口
+
+物件擴充入口為 `tools/hd-object-prepare.py`、`tools/hd-terrain-object-profiles.go` 與 `tools/verify-hd-objects.py`。`workplace/hd-prototype/catalog/terrain/objects/expanded/` 保存 26 項來源的裁切審查、原圖對照、準備後圖片及隔離 runtime／desktop 驗證；生成圖的裁切與提示詞另存 `assets/hd-b/terrain/objects/`。原版來源仍留在既有 `objects/sources/`，24、25 空白不得補圖。這批沿用共同前景 renderer 的來源、alpha、遮擋及備援契約，不推定地圖物件用途。
 
 `workplace/hd-prototype/catalog/terrain/backgrounds/` 保存原版圖塊繪製前後的唯讀背景診斷、來源及後續 GUI 驗證。`tools/hd-backdrop.go`／`tools/hd-backdrop_test.go` 的 `-hd-backdrop-trace` 只在原版 sub_1F9D0 入口與自然返回讀取 native snapshot、原始四平面及 DAC，輸出有界的原始背景／來源／返回圖。`tools/verify-hd-backdrops.py` 獨立核對十一項來源、原版透明合成、十五欄基準、完整 RAM 與當次來源快照。沿用固定 GUI image，專案唯讀掛 `/project`，該目錄可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-backdrops.py`。READY 呈現契約見 RESEARCH-LOG；診斷收據本身不代表 HD GUI 已驗收。
 

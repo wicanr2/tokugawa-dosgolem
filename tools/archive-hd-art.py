@@ -19,6 +19,7 @@ README = """# 戰國手繪 HD 素材
 - [戰場地面、物件與單位草稿](terrain/)，物件／單位 PNG 保留透明背景。
 - [地面圖集的材質與衍生圖](terrain/materials/)，保留兩版製作紀錄及完整提示詞。
 - [十項非空單位的透明裁切](terrain/units/)，原版三個空白來源保持空白。
+- [物件的透明裁切及審查](terrain/objects/)，獨立物件分項接入，城牆接縫草稿另列。
 - [晴天與陰天天氣圖](art/weather-generation.json)，第二版保留原版岩峰構圖。
 - [開場騎兵與武將群像草稿](art/opening-generation.json)，保留原始生成圖，幾何與呈現待驗證。
 - [風格比較](concept/style-comparison-v1.png)。
@@ -84,9 +85,15 @@ def main():
                 assert im.format == "PNG"
                 alpha = im.convert("RGBA").getextrema()[3]
                 policy = metadata.get("alpha_policy", "opaque")
-                assert policy in ("opaque", "transparent")
-                assert alpha == (255, 255) if policy == "opaque" else alpha == (0, 255)
-                if policy == "transparent":
+                assert policy in ("opaque", "transparent", "transparent_sampled")
+                if policy == "opaque":
+                    assert alpha == (255, 255)
+                elif policy == "transparent":
+                    assert alpha == (0, 255)
+                else:
+                    # 有限取樣可能沒取到原圖少數 alpha=255 像素；不改生成圖的 alpha。
+                    assert alpha[0] == 0 and 0 < alpha[1] <= 255 and "derivation" in metadata
+                if policy != "opaque":
                     record["alpha_range"] = list(alpha)
                 record["size"] = list(im.size)
         if name in files:
@@ -262,6 +269,13 @@ def main():
     unit_root = catalog/"terrain/units"
     unit_profiles_path = unit_root/"profiles.json"
     selected_units, unit_superseded = {}, set()
+    object_root = catalog/"terrain/objects/expanded"
+    object_profiles_path = object_root/"profiles.json"
+    selected_objects = {}
+    if object_profiles_path.exists():
+        object_profiles = json.loads(object_profiles_path.read_text())
+        assert object_profiles["tool_sha256"] == sha(project/"tools/hd-object-prepare.py")
+        selected_objects = {r["asset"]:r for r in object_profiles["records"] if r["index"] in object_profiles["approved_indices"]}
     if unit_profiles_path.exists():
         unit_profiles = json.loads(unit_profiles_path.read_text())
         assert unit_profiles["tool_sha256"] == sha(project/"tools/hd-unit-prepare.py")
@@ -287,6 +301,9 @@ def main():
                 status = "normal first-battle unit HD verified; joint floor and forest-clump composition, native visible-owner priority"
             if object_draft:
                 status = "generated object draft; cell footprint and normal HD integration pending"
+                if source.name in selected_objects:
+                    assert sha(source) == selected_objects[source.name]["asset_sha256"]
+                    status = "reviewed independent object silhouette and alpha crop; common consumer integrated, normal source not yet sampled"
                 if source.name == "object-000-hd-b-v1.png":
                     status = "superseded single-tree draft; original grove composition corrected in v2"
                 if source.name == verified_tree_asset:
@@ -300,10 +317,24 @@ def main():
                     alpha_policy="transparent" if unit or object_draft else "opaque")
         for source in sorted(terrain.glob("*-hd-gallery-v*.png")):
             copy(source, "terrain/"+source.name, "png", status="generated-art gallery; includes drafts")
-        for name in ("generation.json", "floor-generation.json", "floor-revisions.json", "object-generation.json", "object-revisions.json", "unit-revisions.json"):
+        for name in ("generation.json", "floor-generation.json", "floor-revisions.json", "object-generation.json", "object-generation-expanded.json", "object-revisions.json", "unit-revisions.json"):
             source = terrain/name
             if source.exists():
                 copy(source, "terrain/"+name, "generation-metadata")
+    if object_profiles_path.exists():
+        for record in object_profiles["records"]:
+            if not record["asset"]:
+                continue
+            source = object_root/record["prepared"]
+            assert sha(source) == record["prepared_sha256"]
+            status = "reviewed independent object crop; normal player path not yet sampled" if record["index"] in object_profiles["approved_indices"] else "wall crop draft; geometry and connecting roof heights not approved"
+            copy(source,"terrain/objects/"+record["prepared"],"png",alpha_policy="transparent_sampled",derivation=record,
+                 prompt="terrain/"+record["prompt"],status=status)
+        gallery = object_root/object_profiles["gallery"]
+        assert sha(gallery) == object_profiles["gallery_sha256"]
+        copy(gallery,"terrain/objects/"+gallery.name,"png",status="generated-only object gallery; includes unapproved wall geometry drafts")
+        for name in ["draft-profiles.json","review.json","profiles.json"]:
+            copy(object_root/name,"terrain/objects/"+name,"preparation-metadata")
     if unit_profiles_path.exists():
         for record in unit_profiles["records"]:
             if not record["asset"]:

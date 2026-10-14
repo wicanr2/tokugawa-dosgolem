@@ -1,0 +1,94 @@
+{
+  "verified": true,
+  "classification": "visual source/crop review; independent objects approved, connecting walls deferred",
+  "reviewed_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+  ],
+  "approved_indices": [
+    0,
+    1,
+    2,
+    3,
+    18,
+    19,
+    22,
+    23
+  ],
+  "empty_indices": [
+    24,
+    25
+  ],
+  "draft_profiles_sha256": "c23f6ab36d48817571390278effc9c4954ef294cc92fe861e826055f102eaf6d",
+  "review_pages": [
+    {
+      "path": "review-page-01.png",
+      "sha256": "ae8b1b71eee6f7a68122be17dd9295ae7ea9c69d74bc6aad39145cac06cf41f2"
+    },
+    {
+      "path": "review-page-02.png",
+      "sha256": "479fe4e447dbf74c9ad8deddbc79bf4bc4a4c91c96f2a9a348b1bb64eef611e7"
+    },
+    {
+      "path": "review-page-03.png",
+      "sha256": "faa6c02ef1865343f2c94554c8e7e0d5b0f4bb7b3eade1e63c5e8499cf8c620e"
+    },
+    {
+      "path": "review-page-04.png",
+      "sha256": "5c604cba3057bd8687bfe4a27cac541faa0a41b03e421179303b84e2e552deff"
+    }
+  ],
+  "unchanged_object_zero": true,
+  "deferred_indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    20,
+    21
+  ],
+  "deferred_reason": "independently generated wall corners, straight runs and gates have different roof heights and some extra wall bands; calibrate connecting geometry before integration",
+  "approved_observations": [
+    "rocks retain three clumps and their layout",
+    "blue and red castles retain tiered silhouettes and stone base",
+    "cloth screen retains open front and angled side wings",
+    "palisade retains transparent gaps",
+    "timber bridges retain native vertical/horizontal orientations"
+  ],
+  "limitations": [
+    "art review does not prove original object semantics",
+    "new independent objects not yet sampled in normal player paths"
+  ]
+}

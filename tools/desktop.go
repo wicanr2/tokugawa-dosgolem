@@ -35,6 +35,7 @@ var desktopTerrainDir = flag.String("hd-terrain-dir", "/project/assets/hd-b/terr
 var desktopTerrainSpriteSourceDir = flag.String("hd-terrain-sprite-source-dir", "/project/workplace/hd-prototype/catalog/terrain/objects/sources", "verified index-zero masks and native object/unit pixels")
 var desktopTerrainTreeAsset = flag.String("hd-terrain-tree-asset", "/project/assets/hd-b/terrain/object-000-hd-b-v2.png", "approved transparent forest-clump HD art")
 var desktopTerrainUnitDir = flag.String("hd-terrain-unit-dir", "/project/assets/hd-b/terrain", "approved source-specific unit HD art")
+var desktopTerrainObjectDir = flag.String("hd-terrain-object-dir", "/project/assets/hd-b/terrain", "approved source-specific object HD art; legacy tree asset flag overrides object zero")
 var desktopTerrainScene = flag.Bool("hd-terrain-scene", true, "compose the complete observed floor journal and qualified overlapping sprites")
 var desktopBattleFrameIndices = flag.String("hd-battle-frame-indices", "/project/workplace/hd-prototype/catalog/hd-assets/MAPGAMEN.OZM-"+battleFrameIndexedSHA+".idx", "verified original MAPGAMEN indexed source")
 var desktopBattleFrameAsset = flag.String("hd-battle-frame-asset", "/project/assets/hd-b/battle-frame/"+battleFrameAsset, "registered battle-frame skin; missing asset falls back")
@@ -76,6 +77,7 @@ type desktopGame struct {
 	terrainSprites              map[hdTerrainSpriteKey]*image.NRGBA
 	terrainForeground           int
 	terrainTree                 hdTerrainTreePair
+	terrainObjects              map[hdTerrainSpriteKey]hdTerrainSpritePair
 	treeModes                   []string
 	treeHD, treeProtected       int
 	terrainUnits                map[hdTerrainSpriteKey]hdTerrainSpritePair
@@ -380,6 +382,37 @@ func runDesktopWindow(c *desktopContext) error {
 		g.terrainUnits[key], unitInfo[index] = pair, info
 	}
 	g.assetInfo["terrain_units"] = unitInfo
+	g.terrainObjects = map[hdTerrainSpriteKey]hdTerrainSpritePair{}
+	objectInfo := map[int]any{}
+	for index, profile := range hdTerrainObjectProfiles {
+		key := hdTerrainSpriteKey{"objects", index}
+		info := map[string]any{}
+		if entry, ok := spriteInfo[fmt.Sprintf("objects-%03d", index)].(map[string]any); ok {
+			info["source_sha256"] = entry["source_sha256"]
+		}
+		if index == 0 {
+			g.terrainObjects[key], objectInfo[index] = g.terrainTree, treeInfo
+			continue
+		}
+		var source, asset image.Image
+		if im := g.terrainSprites[key]; im != nil {
+			source = im
+		}
+		path := filepath.Join(*desktopTerrainObjectDir, profile.Asset)
+		if data, e := os.ReadFile(path); e == nil {
+			sum := fmt.Sprintf("%x", sha256.Sum256(data))
+			info["hd_sha256"] = sum
+			if sum == profile.AssetSHA {
+				asset, _ = previewPNG(path)
+			} else {
+				info["hd_error"] = "unapproved object fingerprint"
+			}
+		}
+		pair := newHDTerrainSpritePair(source, asset, 2, key, profile.SourceBounds, profile.Crop)
+		info["validation"] = pair.Reason
+		g.terrainObjects[key], objectInfo[index] = pair, info
+	}
+	g.assetInfo["terrain_objects"] = objectInfo
 	battleInfo := map[string]any{}
 	indices, err := os.ReadFile(*desktopBattleFrameIndices)
 	if err == nil {
@@ -463,7 +496,10 @@ func (g *desktopGame) render() error {
 	g.portraitMode = mode
 	g.battleFrame.update(s, g.c.Live.BattleFrame.Active, g.enabled)
 	if *desktopTerrainScene {
-		pairs := map[hdTerrainSpriteKey]hdTerrainSpritePair{{"objects", 0}: g.terrainTree}
+		pairs := map[hdTerrainSpriteKey]hdTerrainSpritePair{}
+		for key, pair := range g.terrainObjects {
+			pairs[key] = pair
+		}
 		for key, pair := range g.terrainUnits {
 			pairs[key] = pair
 		}

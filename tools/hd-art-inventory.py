@@ -158,6 +158,11 @@ def main():
         for draft in json.loads(object_generation.read_text())['records']:
             assert sha(ROOT/'terrain/art'/draft['asset']) == draft['asset_sha256']
             object_drafts += 1
+    expanded_objects = ROOT/'terrain/art/object-generation-expanded.json'
+    if expanded_objects.exists():
+        for draft in json.loads(expanded_objects.read_text())['records']:
+            assert sha(ROOT/'terrain/art'/draft['asset']) == draft['asset_sha256']
+            object_drafts += 1
     if terrain_profiles:
         assert terrain_profiles["tool_sha256"] == sha(PROJECT / ("tools/hd-terrain-materials.py" if material_profiles_path.exists() else "tools/hd-terrain-prepare.py"))
         expected_floor_count = 104 if material_profiles_path.exists() else 8
@@ -190,7 +195,20 @@ def main():
             assert unit_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-units.py')
             proof_sources.append({'verification':str(unit_proof_path.relative_to(PROJECT)),'sha256':sha(unit_proof_path)})
     unit_drafts -= len(reviewed_unit_indices)
-    object_drafts -= 1 if tree_summary else 0
+    reviewed_object_indices = [0] if tree_summary else []
+    object_profiles_path = ROOT/'terrain/objects/expanded/profiles.json'
+    if object_profiles_path.exists():
+        object_profiles = json.loads(object_profiles_path.read_text())
+        assert object_profiles['tool_sha256'] == sha(PROJECT/'tools/hd-object-prepare.py')
+        assert object_profiles['source_slots'] == 26 and object_profiles['empty_indices'] == [24,25]
+        reviewed_object_indices = object_profiles['approved_indices']
+        object_proof_path = object_profiles_path.parent/'verification-summary.json'
+        if object_proof_path.exists():
+            object_proof = json.loads(object_proof_path.read_text())
+            assert object_proof['verified'] and object_proof['profiles_sha256'] == sha(object_profiles_path)
+            assert object_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-objects.py')
+            proof_sources.append({'verification':str(object_proof_path.relative_to(PROJECT)),'sha256':sha(object_proof_path)})
+    object_drafts -= len(reviewed_object_indices)
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -249,10 +267,11 @@ def main():
                           approved_floor_art=approved_floor_count, generated_unit_drafts=unit_drafts, approved_unit_art=len(reviewed_unit_indices),
                           reviewed_unit_source_indices=reviewed_unit_indices, original_empty_unit_indices=[10,11,12],
                           normal_unit_indices_verified=approved_units, normal_unit_instances_verified=2 if scene_summary else 0,
-                          generated_object_drafts=object_drafts, approved_object_art=1 if tree_summary else 0,
+                          generated_object_drafts=object_drafts, approved_object_art=len(reviewed_object_indices),
+                          reviewed_object_source_indices=reviewed_object_indices, original_empty_object_indices=[24,25],
                           normal_object_indices_verified=[0] if tree_summary else [], normal_object_instances_verified=tree_summary['normal_HD_object_instances'] if tree_summary else 0,
                           normal_floor_indices_verified=sorted(verified_floors),
-                          runtime_status="all 104 floor and 10 nonempty unit profiles integrated; three original empty units preserved; normal six-floor scene and units-001/003 sampled; remaining object atlas art pending" if approved_floor_count == 104 and len(reviewed_unit_indices) == 10 else "all 104 floor source profiles integrated; normal six-floor scene, forest clumps and units-001/003 jointly composited; remaining foreground atlas art pending" if approved_floor_count == 104 else "full-floor journal, forest clumps and units-001/003 jointly composited; remaining atlas art pending" if scene_summary else "floor consumer with native index-zero foreground preservation integrated; HD sprites and whole atlas pending",
+                          runtime_status=f"all 104 floor and 10 nonempty unit profiles, {len(reviewed_object_indices)} reviewed object sources integrated; original blank sources preserved; normal six-floor scene, object-000 and units-001/003 sampled; wall geometry drafts pending" if approved_floor_count == 104 and len(reviewed_unit_indices) == 10 else "full-floor journal and reviewed foreground sources integrated; remaining atlas art pending",
                           normal_floor_draws_verified=67 if scene_summary else 65 if foreground_summary else 0,
                           floor_profiles_sha256=sha(material_profiles_path if approved_floor_count == 104 else terrain_path),
                           source_extraction_sha256=sha(ROOT / "terrain/terrain-extraction.json"))
@@ -332,7 +351,7 @@ def main():
               "generated_MAP_CHIP_object_drafts": object_drafts,
               "generated_MAP_CHIP_object_art": generated_objects,
               "native_MAP_CHIP_sprite_source_profiles": 39 if foreground_summary else 0,
-              "approved_MAP_CHIP_object_art": 1 if tree_summary else 0,
+              "approved_MAP_CHIP_object_art": len(reviewed_object_indices),
               "normal_MAP_CHIP_object_cases_verified": 1 if tree_summary else 0,
               "normal_MAP_CHIP_object_instances_verified": tree_summary['normal_HD_object_instances'] if tree_summary else 0}
     result = {"classification": "local research coverage ledger; not a production asset-pack schema",

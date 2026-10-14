@@ -23,6 +23,7 @@ type hdTerrainSceneReport struct {
 	SpriteModes           []string `json:"sprite_modes"`
 	FloorHD               int      `json:"floor_hd_count"`
 	TreeHD                int      `json:"tree_hd_count"`
+	ObjectHD              int      `json:"object_hd_count"`
 	UnitHD                int      `json:"unit_hd_count"`
 	FloorNativePixels     int      `json:"floor_native_pixels"`
 	ProtectedNativePixels int      `json:"protected_original_foreground_pixels"`
@@ -244,15 +245,18 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 					approved[s.Order] = i
 					if s.Group == "units" {
 						r.UnitHD++
-					} else {
-						r.TreeHD++
+					} else if s.Group == "objects" {
+						r.ObjectHD++
+						if s.Index == 0 {
+							r.TreeHD++
+						}
 					}
 				}
 			}
 		}
 		r.SpriteModes[i] = mode
 	}
-	if r.FloorHD+r.TreeHD+r.UnitHD == 0 {
+	if r.FloorHD+r.ObjectHD+r.UnitHD == 0 {
 		r.Reason = "fallback_no_qualified_layers"
 		return r
 	}

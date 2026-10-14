@@ -1,0 +1,465 @@
+{
+  "classification": "generated hand-painted object drafts; geometry and transparent crop review pending",
+  "records": [
+    {
+      "source_index": 6,
+      "asset": "object-006-hd-b-v1.png",
+      "asset_sha256": "dc0421a3eac13094271f05f1c537f55e8e3a5803b499f0a80ce4cb599f92ae04",
+      "prompt": "object-006-hd-b-v1.prompt.txt",
+      "prompt_sha256": "758a7c588a7525020a19cc9e497a96d98e282c9aa6b0c2aa0532d40ac204bb49",
+      "reference": "refs/objects-006-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-f746fc71-b5f5-4034-97ea-d845877dc291.png",
+      "reference_sha256": "4a6aee6117eac70439ac5a9ec616a23b52700a8a6e98180db254539e1f6bcd3e",
+      "source_original_png_sha256": "293030b697011541c234527dc58d8c0dbf59f177d5d4283d370be186193ae5bf",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 4,
+      "asset": "object-004-hd-b-v1.png",
+      "asset_sha256": "e9960961a9a4a1bbc6fccbc6960b3817f9f02480a8fb144abff587d646ca0bad",
+      "prompt": "object-004-hd-b-v1.prompt.txt",
+      "prompt_sha256": "4b28184093c34c2e9daed73d570c3bd2f47c9d20d2171c4b4969ee2f21b8023f",
+      "reference": "refs/objects-004-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-3cf767fd-6e8a-4fa4-a98f-72614e5535c3.png",
+      "reference_sha256": "afdf4219b7c04b150de333e5548f313d016a8c176f8928494307274833fa2560",
+      "source_original_png_sha256": "76d845298eebeaa365822174db897997aec192fc66e4aae1dc7b353458a61ed2",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 5,
+      "asset": "object-005-hd-b-v1.png",
+      "asset_sha256": "ae6d9c426db635e78f70fd3abd589b7e420017df5d4ac14c9372b611e5b85fba",
+      "prompt": "object-005-hd-b-v1.prompt.txt",
+      "prompt_sha256": "c59fc7b6f1c3cf0ee760d039c2deefde48102ae7ef860994dc585d0d04efa567",
+      "reference": "refs/objects-005-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-2e5a2791-487d-4aab-b37e-43b600b32e4b.png",
+      "reference_sha256": "37660d2947d7ce1b4f63f379c77859d306f38b8ff408a6961b2ca8abdb76d257",
+      "source_original_png_sha256": "c24da86daf021007d14eadcec71b3486076ff76f24580a152191edb0faef3b86",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 7,
+      "asset": "object-007-hd-b-v1.png",
+      "asset_sha256": "d446c568cc7aff86c2401776a1b0d54e580e9d5da2944f6f0d4679e3602b9e47",
+      "prompt": "object-007-hd-b-v1.prompt.txt",
+      "prompt_sha256": "780e9feff12ed8c8285533076ed526dc620f2999b75a4cb8a7a611dafead0f28",
+      "reference": "refs/objects-007-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-7a134cd7-0684-45d2-a7dc-14817480eb21.png",
+      "reference_sha256": "8dbe1f1535a4eba6bd0e5f0911252d34e699ffd9970ed3bd15ca08d1b81d61cd",
+      "source_original_png_sha256": "ef148afa2de127c0b50efa49b50c1bcb42c10222edfb07d302c5cd20600aa797",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 8,
+      "asset": "object-008-hd-b-v1.png",
+      "asset_sha256": "8fe326879c01ce64cdbe36dc7ff91deb48567d3ba0385fcd4a88b8ef08f57aaa",
+      "prompt": "object-008-hd-b-v1.prompt.txt",
+      "prompt_sha256": "51790c12c27de89129769322590c7d80d561df17a665bf004a6fb1869b6dccb1",
+      "reference": "refs/objects-008-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-7f47ba51-fd18-4cc3-b185-474ddb93986d.png",
+      "reference_sha256": "9f9911200e8b3dee773ed2e3ec1c92e41279098c8739726a591e8ba40a74125f",
+      "source_original_png_sha256": "a00657e80e10389de3b924f90cc451098a345a1a67ddb12dad74a3aaa615bef2",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 9,
+      "asset": "object-009-hd-b-v1.png",
+      "asset_sha256": "080e5056b1940ff374eb30870533775bcf7bc5236f57229b9b577f5ec25ad89d",
+      "prompt": "object-009-hd-b-v1.prompt.txt",
+      "prompt_sha256": "4c248a996e1bdb4130ec3cd86694043765f431925a7670e5b255c2c600210bd5",
+      "reference": "refs/objects-009-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-5288cf53-3ab1-49f3-aec5-bd282e9aec46.png",
+      "reference_sha256": "a66c45c202a952cb1305274fca809370a0aeb6b2be507c197398c7e29b87540b",
+      "source_original_png_sha256": "11367e982030d0b95ab32a9db3893548bb38a1d02fe6096a2ef9083f70741551",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 10,
+      "asset": "object-010-hd-b-v1.png",
+      "asset_sha256": "0b7d33de2c09cedd1d437e8fd2e621cc8e6c78cd73b2d8fa6d612e180a9ff062",
+      "prompt": "object-010-hd-b-v1.prompt.txt",
+      "prompt_sha256": "57e12a9800592417fb5c8077c6a6f342af9792f4ede3a1d5b3d42f6f7ffe30c4",
+      "reference": "refs/objects-010-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-85415e48-7a0e-4452-8156-d5342bdf7157.png",
+      "reference_sha256": "f848d704f764cfaa39b7c9290badbda6ec496c2ba652709b2e9ba85b8eac032a",
+      "source_original_png_sha256": "5dc6b9f558cb2b14e37461076dd6a5a2a48bab1b3f103eb82f5b891b9674c3a9",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 11,
+      "asset": "object-011-hd-b-v1.png",
+      "asset_sha256": "cdd3d25f59940ce587dc64d8b9433a1570de1f8181b2b6b0fccd00f962dbfc80",
+      "prompt": "object-011-hd-b-v1.prompt.txt",
+      "prompt_sha256": "318f885dccb5e5133aeb9445fe03174779af87487a5511159c920e2ed803e5dd",
+      "reference": "refs/objects-011-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-33ce67be-af79-4836-a91e-de1822ac22c5.png",
+      "reference_sha256": "97f3d57c645cffc90b84e052f1f2181040c14910d798128bc86583a07040d33b",
+      "source_original_png_sha256": "56bf73f85f3714b2c047f670f2c649163dc2f9378b370fe9a03de1cd645d44cb",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 12,
+      "asset": "object-012-hd-b-v1.png",
+      "asset_sha256": "75cfecc39a9e42edd8a1c41de26f80d794a597281c6c1a892fc09d36b806b772",
+      "prompt": "object-012-hd-b-v1.prompt.txt",
+      "prompt_sha256": "f8247aefddc370d3183ba2c21a6eba116ea7e9ba864ec78d4daa2be82061807c",
+      "reference": "refs/objects-012-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-d0a2b826-cf01-40b5-bea4-37827ad01d3d.png",
+      "reference_sha256": "8b5034a00cf5c22a2cf895e7e732ddb82b0d8f763e1e49b750dceb7269eeec34",
+      "source_original_png_sha256": "42ca5b7f1b3980e2e3a612a25dc30bb7c5e5afe130c23d612823c193b4940464",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 13,
+      "asset": "object-013-hd-b-v1.png",
+      "asset_sha256": "0fe3e2bc8d5a44e2d537e219852f5c6bd823edbec2763fec0dc54301a43fd892",
+      "prompt": "object-013-hd-b-v1.prompt.txt",
+      "prompt_sha256": "c4074ac0b75847fe806a11a1d024ed9b86697b6c5327c5d81e78194ac6c740b5",
+      "reference": "refs/objects-013-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-9ea233c0-22b4-45b6-83a1-4ee0037ee505.png",
+      "reference_sha256": "4eb0770b16b8adfa5dbfa871febb01108802997de59e684142877576fca9cb36",
+      "source_original_png_sha256": "dbfb3be350697fb1a6ecd7bcbea9a97e211a874b9aea0935bb6d0917f2e73f44",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 14,
+      "asset": "object-014-hd-b-v1.png",
+      "asset_sha256": "e3aba283da21fbd916cbcbe3ae0d8514ec0e0bb3f9bd06ea744692f5a32a60ca",
+      "prompt": "object-014-hd-b-v1.prompt.txt",
+      "prompt_sha256": "915d558d4db9a84413723d41ff302c02772d4bcbc33dd8fd55ad03693b0c0e40",
+      "reference": "refs/objects-014-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-dafd7bff-8425-4812-bbd1-d8028dae300a.png",
+      "reference_sha256": "752869d01a848135f0040ed834717784885b823be2e8b2a36381b1df95b6ee21",
+      "source_original_png_sha256": "02c7528b1c6f0c959efa818a73e7fb963ab9a144bb987dcee88a57b71b43f6f2",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 15,
+      "asset": "object-015-hd-b-v1.png",
+      "asset_sha256": "901670b4e5c0c879fe1b416351cebee5096dcf0394504ee203de1f1977cb2c59",
+      "prompt": "object-015-hd-b-v1.prompt.txt",
+      "prompt_sha256": "f85618b56f3cd042a801d990e640430a08e71f2729d7928bf3ec04acbcc03a6d",
+      "reference": "refs/objects-015-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-1a01bd1a-2664-473f-ad0e-951a0a3623d4.png",
+      "reference_sha256": "157f090c0e92480a3746a89614a9dee01dcdc56ea5a17a457576d33e5b8a38f1",
+      "source_original_png_sha256": "13f78ca101c7a6e080848c76a73e44441604b14526c0533ff19bf02dd2fdd7fe",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 16,
+      "asset": "object-016-hd-b-v1.png",
+      "asset_sha256": "f00b263e97d976eb4d248d52c6b6d6d0cdcd4fb0ca239250b0b35e4fdb3903af",
+      "prompt": "object-016-hd-b-v1.prompt.txt",
+      "prompt_sha256": "17a963b55877f18fba0c5613116a223121d295da3c5d5541460f023e5cc801f3",
+      "reference": "refs/objects-016-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-4c5db313-6051-41c5-8a28-fe5e5f200ad7.png",
+      "reference_sha256": "8812a9f2ad2c0ccce171a4af219c2c5d6a22041af1f1d43f016aa733ff29a0e8",
+      "source_original_png_sha256": "1961620aea47cd79f42b481f33c4d3dbc43310feb74b502508ace6579aa6b2a9",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 17,
+      "asset": "object-017-hd-b-v1.png",
+      "asset_sha256": "098958c6f8a441f7a2b692b02a86a22a7d52adedf9d47218da60edd2481e699c",
+      "prompt": "object-017-hd-b-v1.prompt.txt",
+      "prompt_sha256": "878ea82f5d7211e0f55df0f17d1d7b0fbc4a0965cee670698e9e3871b65b9b14",
+      "reference": "refs/objects-017-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-893b7a77-8d89-45ac-9642-73240a753117.png",
+      "reference_sha256": "f8eb19cf3f07c24f5fe10c492188be37552ea07498a2cac7a88413fd9d1eadf3",
+      "source_original_png_sha256": "af578e591089002c59fbaefb845ed717e8a282c3b172a2450cd9fad6d66d35c7",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 18,
+      "asset": "object-018-hd-b-v1.png",
+      "asset_sha256": "b35699a026dd40922cad7dcf0866c2e7cafe5f32135f1780621a644080ef46fb",
+      "prompt": "object-018-hd-b-v1.prompt.txt",
+      "prompt_sha256": "3e3e28eb16690e6b8bdd7674fda56cde3fb8787e73933e57ed3ee4764e376a20",
+      "reference": "refs/objects-018-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-019e590d-31cc-41b8-8c8a-025a237483be.png",
+      "reference_sha256": "86dca966a0221d9956231b534d7b604eb51b53df0dca363e3cb8aa0a66979cc7",
+      "source_original_png_sha256": "7803cc10206adc88bc0ffbc0f0f9a8be5ae2a554241984a94d43d32a793af36b",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 19,
+      "asset": "object-019-hd-b-v1.png",
+      "asset_sha256": "c43bd59080f28d92e559ea02a824fc0a60f49739579fd5a50b7cefccbfd9e0c5",
+      "prompt": "object-019-hd-b-v1.prompt.txt",
+      "prompt_sha256": "b99403450f2354e62e638a20c92a1c9b06776b394d2ac5e99780ddc4d6eb0cc3",
+      "reference": "refs/objects-019-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-e3b5f98c-579d-4356-b538-6be0331d2252.png",
+      "reference_sha256": "1ac62e8924def735dd7add1a4f6fffeaebfe5777bae39ffd3b83f6d6d94dfb34",
+      "source_original_png_sha256": "59f4fef7229c8b5eaba0a65a9131c1a39b8cf88882327ffeb4f5beb5c42f3e3f",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 20,
+      "asset": "object-020-hd-b-v1.png",
+      "asset_sha256": "aac37069c63e7f265fe3ae4baa8361e31c969818951889c9cecacd8fe596bcb9",
+      "prompt": "object-020-hd-b-v1.prompt.txt",
+      "prompt_sha256": "b15f89bc528cf115231d9a450c34a9d43d61e918e1a5c0ea5783533501f4affd",
+      "reference": "refs/objects-020-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-b9020892-905c-4f62-b0e1-e4cf9437b270.png",
+      "reference_sha256": "e665d4cc566b1e7933bfc207a77183ee92624481c4ac38aa06535d13eba42034",
+      "source_original_png_sha256": "92634b3cfc341862b7a07fa3ee9a52401243fe2db4edc958982ed40ff679d3a8",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 21,
+      "asset": "object-021-hd-b-v1.png",
+      "asset_sha256": "50ab6e8656fd64a0f7f4659f1e3a6a49a357e745d526710fdddd4cb9343cadee",
+      "prompt": "object-021-hd-b-v1.prompt.txt",
+      "prompt_sha256": "e5583de352ee56590673b782e46df6173ed374492e1153d9d31fa8fcbdaffa65",
+      "reference": "refs/objects-021-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-a006506e-9f36-4817-bd3b-c4046d80ad76.png",
+      "reference_sha256": "29b1a87ac5e453e9808d41d5946d0401fb22fa1c026a3292d1310c9b6366e899",
+      "source_original_png_sha256": "ebe149d3ab90d0ee39f766a2d9a292ba5c619df09fc000f1f494e1011ddd5aac",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 22,
+      "asset": "object-022-hd-b-v1.png",
+      "asset_sha256": "1e0941130f94ebaf5afc8e650e85f4c4b282edc849585688bcb0cc29abf7108c",
+      "prompt": "object-022-hd-b-v1.prompt.txt",
+      "prompt_sha256": "c73ca50e7bab07765ffe7e9d838b67a4138314ee316c4d9b1b07409f164b6169",
+      "reference": "refs/objects-022-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-b8f02798-ac56-48e6-951d-7e3e4b7d2ecc.png",
+      "reference_sha256": "6c76884d7717313b91419fb07c13ef568be7150e06bcf5ceafc9ef56b26d25bf",
+      "source_original_png_sha256": "187d0e160a7717888244e46a96fc4dfb90eed8eb57831d51db2203f153c13e2d",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    },
+    {
+      "source_index": 23,
+      "asset": "object-023-hd-b-v1.png",
+      "asset_sha256": "dc3c96b41c708e1f2fb918833d5d1a0605c12b6d9cdea356cdc047781b6e2080",
+      "prompt": "object-023-hd-b-v1.prompt.txt",
+      "prompt_sha256": "ffa8cec6233d145a8c77f3179bc583f4de5b28f206bcaa5ed33c94e7b4584c0e",
+      "reference": "refs/objects-023-original-reference.png",
+      "tool": "built-in imagegen",
+      "generated_source": "/generated/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-e6f081e3-b923-42bc-9a1f-950aa4ca0cd5.png",
+      "reference_sha256": "200d88a0f77d9291de739aa9a5bfefd965e5945148fab17f3a9482786934fee2",
+      "source_original_png_sha256": "ed2fbe3c301ec093d1425e62c3bf1b62536ddefb12fc5325ec2c4461c6ba9339",
+      "style_reference": "art/object-002-hd-b-v1.png",
+      "style_reference_sha256": "f852a4b35d48c33f6dff2911318c719e59d82e6c1e0fec8d327cf9dc63f81b97",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_background": true
+    }
+  ]
+}

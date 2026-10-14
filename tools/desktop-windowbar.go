@@ -46,6 +46,11 @@ func (g *desktopGame) hdAvailable() bool {
 		return true
 	}
 	if *desktopTerrainScene {
+		for _, pair := range g.terrainObjects {
+			if pair.Reason == "ready" {
+				return true
+			}
+		}
 		for _, pair := range g.terrainUnits {
 			if pair.Reason == "ready" {
 				return true

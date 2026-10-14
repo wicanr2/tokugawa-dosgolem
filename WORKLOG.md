@@ -339,3 +339,14 @@
 - 素材庫目前 415 PNG、116 提示詞、377450824 indexed bytes。全遊戲 HD 仍未完成，接續其餘 23 非空物件、其他 OZM、介面與動畫；正式三平台打包尚未開始。製作、建置與 GUI 容器均已結束，沿用既有 image。
 
 提交 `87ab034b0bf0d91274c78d47802e8ae1dc7193c5` 已推送私人 main，主機 gh 核對 SHA 一致。563 個素材檔逐項符合遠端 Git blob，original/、workplace/ 未加入遠端。Issue #5 進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6175780323 。保存索引、來源快照、Python 語法、文件入口、Git whitespace、UID/GID、root-owned／誤建 .md 目錄檢查通過；所有 tokugawa 容器已自動刪除，沒有殘留背景程序。
+
+
+## 2026-10-15：獨立物件 HD 與城牆草稿保存
+
+- 依規格驗收與文件職責路由接續物件圖集。內建 imagegen 產出 20 張手繪物件並保存完整提示詞；24 項非空物件完成裁切及四頁原圖對照檢視，24、25 空白保留。
+- 核准 0、1、2、3、18、19、22、23，共八項。桌面載入及頂端 HD 可用性接上逐物件 profile，保留舊樹叢資產旗標；ObjectHD 計所有物件，TreeHD 只計 0。16 項城牆的屋簷與分層未對齊，留草稿，不接入正式呈現。
+- 四套件通過，研究入口 28.641 秒；新版本正常 750M／390 事件、完整 RAM、十五欄及三次切換通過。三張 X11 擷取與呈現 PNG、前次單位版均完整一致。新增七項物件僅共同場景測試，未逐項正常抽測。
+- 獨立總表：terrain/objects/expanded/verification-summary.json，SHA-256 cf75a9f0b21a450b781fb8a0f30ebe3dd41612af08e1d56cf76c5d8d33463f73。來源、審查、二進位與 GUI 雜湊由總表串接。
+- 保存工具對有限取樣 alpha=254 的分類已修正，沒有改 PNG alpha；重跑保存與 verify-only 通過，460 PNG、136 提示詞、407334935 索引 bytes。原版來源與執行產物維持本機。
+- 覆蓋清單重生：104 地面、十個非空單位、八項物件已接入，16 物件草稿、其餘 OZM／動畫及五筆解碼未知仍待完成；全遊戲 HD 未完成，三平台打包未開始。
+- 建置及 GUI 容器均正常退出並移除，後續附 GitHub 與擁有權核對結果。
