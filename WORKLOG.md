@@ -410,3 +410,5 @@ RCR 收尾：最終四套件通過，研究入口 38.639 秒；新版本正常�
 普通歷史簡介自然 600M，經 OP2／OP2_P、OP4、劇情、OP8、OP9、OP-FULL 回到主選單，未遇未支援服務；這些特殊繪圖仍待 HD 接入。正常 OP-FULL 載入的前三平面與已知來源一致，枚舉第四平面唯一未知 byte，只有 0xAA 符合完整原版 SHA。完整索引與證據只存本機，沒有補 DAT 或修改靜態解碼器，也不推廣到其他未觀測狀態。來源證據 SHA-256 d5b43b21ed717cef2a426c2fff9cb46903f916d88651345030b9e05403ee62cf。
 
 補丁新 hunk 的 context 行觸發 Git space-before-tab 誤報，以 .gitattributes 僅排除該補丁的此項規則，其餘 whitespace 檢查保留。全遊戲 HD 未完成；下一步為歷史片段特殊繪圖及 OP-FULL 已知原版來源，三平台打包尚未開始。遠端與最終清理結果接續記錄。
+
+GitHub 收尾：功能、來源契約與工具提交 f998956b63601749c61d1f2567d3f7eef406131c 已推送私人 main，主機 gh 核對遠端 SHA 相同。1023 份 assets/hd-b 檔案的 Git 子樹 SHA ca761eec8e76431b957b91077c4cd6e44adb7c25 與本機一致；配合逐檔 SHA-256 保存核對，確認圖片、提示詞與 metadata 相符。遠端 tree 未截斷，沒有 original/ 或 workplace/。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6180775383 。797 PNG／158 提示詞、原始 ZIP／12 解包檔、CRC、Python 語法、文件連結、入口正對照、228 項目前來源／快照 SHA 及 Git whitespace 均通過。完整工作根沒有 root-owned 檔案或 .md 目錄，新增工具與證據抽查 UID/GID 1000:1000；所有本批容器已退出並移除，沿用既有 image。全遊戲 HD 目標保持進行中，打包未開始。
