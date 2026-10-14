@@ -97,6 +97,13 @@ def main():
         assert tree_summary['normal_HD_object_cases']==1 and tree_summary['normal_HD_object_instances']==3
         assert tree_summary['records'][0]['GUI_verification_sha256']==sha(ROOT/'terrain/trees/desktop/verification-trees.json')
         proof_sources.append({'verification':str(tree_summary_path.relative_to(PROJECT)),'sha256':sha(tree_summary_path)})
+    backdrop_summary_path = ROOT/'terrain/backgrounds/verification-summary.json'
+    if backdrop_summary_path.exists():
+        tree_summary = json.loads(backdrop_summary_path.read_text())
+        assert tree_summary['normal_HD_object_cases'] == 1 and tree_summary['normal_HD_object_instances'] == 4
+        assert tree_summary['background_verification_sha256'] == sha(ROOT/'terrain/backgrounds/background-verification.json')
+        assert tree_summary['records'][0]['GUI_verification_sha256'] == sha(ROOT/'terrain/backgrounds/desktop/verification-trees.json')
+        proof_sources.append({'verification':str(backdrop_summary_path.relative_to(PROJECT)),'sha256':sha(backdrop_summary_path)})
     terrain_proof = ROOT / "terrain/runtime/desktop/verification-terrain.json"
     foreground_path = ROOT / "terrain/objects/verification-summary.json"
     if foreground_path.exists():
@@ -181,7 +188,7 @@ def main():
             record.update(art_status="partial", source_grid_counts={"floor": 104, "object": 26, "unit": 13},
                           approved_floor_art=8, generated_unit_drafts=unit_drafts, approved_unit_art=0,
                           generated_object_drafts=object_drafts, approved_object_art=1 if tree_summary else 0,
-                          normal_object_indices_verified=[0] if tree_summary else [], normal_object_instances_verified=3 if tree_summary else 0,
+                          normal_object_indices_verified=[0] if tree_summary else [], normal_object_instances_verified=tree_summary['normal_HD_object_instances'] if tree_summary else 0,
                           normal_floor_indices_verified=sorted(verified_floors),
                           runtime_status="floor consumer with native index-zero foreground preservation integrated; HD sprites and whole atlas pending",
                           floor_profiles_sha256=sha(terrain_path),
@@ -216,7 +223,7 @@ def main():
               "native_MAP_CHIP_sprite_source_profiles": 39 if foreground_summary else 0,
               "approved_MAP_CHIP_object_art": 1 if tree_summary else 0,
               "normal_MAP_CHIP_object_cases_verified": 1 if tree_summary else 0,
-              "normal_MAP_CHIP_object_instances_verified": 3 if tree_summary else 0}
+              "normal_MAP_CHIP_object_instances_verified": tree_summary['normal_HD_object_instances'] if tree_summary else 0}
     result = {"classification": "local research coverage ledger; not a production asset-pack schema",
               "whole_game_HD_complete": False,
               "count_limit": "resource counts do not count atlas tiles, animation frames or UI pieces; no completion percentage",

@@ -12,16 +12,23 @@ type hdTerrainDraw struct {
 }
 
 type hdTerrainSpriteDraw struct {
-	Group string          `json:"group"`
-	Index int             `json:"index"`
-	Rect  image.Rectangle `json:"logical_rect"`
-	Order uint64          `json:"draw_order"`
+	Group              string          `json:"group"`
+	Index              int             `json:"index"`
+	Rect               image.Rectangle `json:"logical_rect"`
+	Order              uint64          `json:"draw_order"`
+	Background         *image.NRGBA    `json:"-"`
+	BackgroundVerified bool            `json:"background_verified,omitempty"`
+	BackgroundSHA      string          `json:"background_rgba_sha256,omitempty"`
+	SourceSHA          string          `json:"source_rgba_sha256,omitempty"`
+	AfterSHA           string          `json:"after_rgba_sha256,omitempty"`
+	BeginStep, EndStep int
 }
 
 type hdTerrainPending struct {
 	Return, Stack uint32
 	Draw          hdTerrainDraw
 	Sprite        *hdTerrainSpriteDraw
+	Backdrop      *spriteBackdropRecord `json:"-"`
 }
 
 type hdTerrainState struct {
@@ -86,7 +93,7 @@ func hdTerrainSpriteSourceValid(mem []byte) bool {
 }
 
 // 暫存器參數只讀。新繪製先撤銷重疊項，自然返回後才啟用。
-func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte) {
+func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte, snapshots ...func() (nativeSnapshot, error)) {
 	if eip == 0x1c084 || eip == 0x1e93f {
 		h.invalidate()
 		return
@@ -97,6 +104,15 @@ func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte
 				h.Sequence++
 				d := *p.Sprite
 				d.Order = h.Sequence
+				if p.Backdrop != nil && len(snapshots) == 1 {
+					p.Backdrop.finish(step, mem, snapshots[0])
+					if p.Backdrop.Verified {
+						b := p.Backdrop
+						d.Background, d.BackgroundVerified = b.Before, true
+						d.BackgroundSHA, d.SourceSHA, d.AfterSHA = b.BeforeSHA, b.SourceSHA, b.AfterSHA
+						d.BeginStep, d.EndStep = b.BeginStep, b.EndStep
+					}
+				}
 				h.Sprites = append(h.Sprites, d)
 				h.SpriteReturns++
 			} else {
@@ -125,6 +141,9 @@ func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte
 			return
 		}
 		h.Pending = &hdTerrainPending{Return: ret, Stack: esp, Sprite: &d}
+		if len(snapshots) == 1 {
+			h.Pending.Backdrop = beginSpriteBackdrop(step, esp, esi, edi, mem, snapshots[0])
+		}
 		return
 	}
 	if eip != 0x1fc07 {

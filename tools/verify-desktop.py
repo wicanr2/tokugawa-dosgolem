@@ -306,7 +306,7 @@ try:
         a,b=decoded(Path(enhanced['actual_png'])),decoded(Path(original['actual_png']))
         active_trees=[d for d,m in zip(tree_draws,tree_modes) if m=='hd']
         active_floors=[d for d,m in zip(floor_draws,floor_modes) if m=='hd']
-        assert len(active_trees)==(0 if args.mode=='trees-missing' else 3)
+        assert len(active_trees)==(0 if args.mode=='trees-missing' else 4)
         assert len(active_floors)==(65 if args.mode=='trees' else 0)
         allowed=bytearray(1280*800)
         for d in active_trees+active_floors:
@@ -321,6 +321,18 @@ try:
                 changed+=1
         assert (changed>0)==(args.mode!='trees-missing')
         cache={}
+        backdrop_root=Path('/project/workplace/hd-prototype/catalog/terrain/backgrounds')
+        backdrop_receipt=json.loads((backdrop_root/'startup-probe/latest.json').read_text())
+        backdrop_images={}
+        for s in tree_draws:
+            matches=[r for r in backdrop_receipt['sprite_backdrop_records'] if r['draw']['group']==s['group'] and r['draw']['index']==s['index'] and r['draw']['logical_rect']==s['logical_rect']]
+            assert len(matches)==1
+            r=matches[0]
+            assert s['background_verified'] and s['BeginStep']==r['begin_step'] and s['EndStep']==r['end_step']
+            assert s['background_rgba_sha256']==r['before']['rgba_sha256'] and s['source_rgba_sha256']==r['source']['rgba_sha256'] and s['after_rgba_sha256']==r['after']['rgba_sha256']
+            im=Image.open(backdrop_root/r['before']['path']).convert('RGBA')
+            assert hashlib.sha256(im.tobytes()).hexdigest()==s['background_rgba_sha256']
+            backdrop_images[s['draw_order']]=(s,im)
         def source_image(group,index):
             key=(group,index)
             if key not in cache:
@@ -330,46 +342,65 @@ try:
             return cache[key]
         def pixel_scene(x,y,target_order):
             floor=next((f for f in floor_draws if f['logical_rect']['Min']['X']<=x<f['logical_rect']['Max']['X'] and f['logical_rect']['Min']['Y']<=y<f['logical_rect']['Max']['Y']),None)
-            assert floor is not None,('incomplete tree background',x,y)
-            fr=floor['logical_rect'];bg=source_image('floor',floor['index']).getpixel((x-fr['Min']['X'],y-fr['Min']['Y']))
-            owner=floor['draw_order']
+            if floor is None:
+                target,im=backdrop_images[target_order];tr=target['logical_rect']
+                bg=im.getpixel((x-tr['Min']['X'],y-tr['Min']['Y']))
+                floor_order=target_order-1;owner=0
+                for s in tree_draws:
+                    sr=s['logical_rect']
+                    if s['draw_order']>=target_order or not (sr['Min']['X']<=x<sr['Max']['X'] and sr['Min']['Y']<=y<sr['Max']['Y']):
+                        continue
+                    c=source_image(s['group'],s['index']).getpixel((x-sr['Min']['X'],y-sr['Min']['Y']))
+                    if c[3]==255:
+                        owner=s['draw_order'] if c==bg else 0
+            else:
+                fr=floor['logical_rect'];bg=source_image('floor',floor['index']).getpixel((x-fr['Min']['X'],y-fr['Min']['Y']))
+                floor_order=owner=floor['draw_order']
             for s in tree_draws:
                 sr=s['logical_rect']
-                if s['draw_order']<=floor['draw_order'] or not (sr['Min']['X']<=x<sr['Max']['X'] and sr['Min']['Y']<=y<sr['Max']['Y']):
+                if s['draw_order']<=floor_order or not (sr['Min']['X']<=x<sr['Max']['X'] and sr['Min']['Y']<=y<sr['Max']['Y']):
                     continue
                 c=source_image(s['group'],s['index']).getpixel((x-sr['Min']['X'],y-sr['Min']['Y']))
                 if c[3]==255:
                     owner=s['draw_order']
                     if s['draw_order']!=target_order:
                         bg=c
-            return floor['draw_order'],owner,bg
+            return floor_order,owner,bg,floor is None
         prepared_path=Path('/project/workplace/hd-prototype/catalog/terrain/trees/tree-prepared-v2.png')
         prepared=Image.open(prepared_path).convert('RGBA')
         baseline=json.loads(Path('/project/workplace/desktop-prototype/headless/startup-probe/latest.json').read_text())
         cursor=baseline['mouse_cursor'];last=baseline['mouse_input_events'][-1]
         cx,cy=last['x']-cursor['HotX'],last['y']-cursor['HotY']
-        protected=removed=0
+        protected=removed=unknown_background=unknown_ui=0
         for d in active_trees:
             r=d['logical_rect']
             for y in range(r['Min']['Y'],r['Max']['Y']):
                 for x in range(r['Min']['X'],r['Max']['X']):
-                    floor_order,owner,bg=pixel_scene(x,y,d['draw_order'])
-                    is_other=owner not in (floor_order,d['draw_order'])
+                    floor_order,owner,bg,unknown=pixel_scene(x,y,d['draw_order'])
+                    is_other=owner!=0 and owner!=d['draw_order'] and (unknown or owner!=floor_order)
                     protected+=is_other
+                    unknown_background+=unknown
+                    original_alpha=source_image(d['group'],d['index']).getpixel((x-r['Min']['X'],y-r['Min']['Y']))[3]
                     for dy in range(2):
                         for dx in range(2):
                             n=((y*2+dy)*1280+x*2+dx)*4
                             if is_other:
                                 assert a[n:n+4]==b[n:n+4],('visible original foreground changed',x,y)
+                            if unknown and original_alpha==0:
+                                assert a[n:n+4]==b[n:n+4],('original UI decoration covered',x,y)
+                                unknown_ui+=1
                             if args.mode=='trees-only' and owner==d['draw_order'] and prepared.getpixel(((x-r['Min']['X'])*2+dx,(y-r['Min']['Y'])*2+dy))[3]==0 and not (cx<=x<cx+16 and cy<=y<cy+16):
                                 assert a[n:n+4]==bytes(bg),('original tree outline not erased',x,y)
                                 removed+=1
         assert protected==snapshot['tree_protected_pixels']
         if args.mode=='trees-only':
             assert removed>0
+        assert unknown_background==(0 if args.mode=='trees-missing' else 480)
+        assert unknown_ui==(0 if args.mode=='trees-missing' else 772)
         tree_checks.append({'step':enhanced['presented']['step'],'active_tree_rectangles':active_trees,'active_floor_rectangles':active_floors,
                             'changed_pixels':changed,'other_foreground_native_pixels':protected,'original_other_foreground_unchanged':True,
-                            'old_outline_output_pixels_removed':removed,'outside_replacement_unchanged':True,'guest_unchanged':True})
+                            'old_outline_output_pixels_removed':removed,'outside_replacement_unchanged':True,'guest_unchanged':True,
+                            'captured_background_native_pixels':unknown_background,'original_UI_output_pixels_preserved':unknown_ui})
         pictures += [enhanced,original,restored]
         key('F7')
     elif is_terrain:

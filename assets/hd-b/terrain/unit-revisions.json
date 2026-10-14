@@ -1,0 +1,20 @@
+{
+  "classification": "generated unit revisions, source indices do not assert unit types",
+  "records": [
+    {
+      "source_index": 6,
+      "asset": "unit-006-hd-b-v2.png",
+      "asset_sha256": "901d37d63d0847131787fc4f1e880a0e29d1fb6e82b0203fc1d033cb2d282cd7",
+      "prompt": "unit-006-hd-b-v2.prompt.txt",
+      "prompt_sha256": "52007f1faeb3c60548ca943d431858d5464e75fb13faa547269d314698539f10",
+      "tool": "built-in image_gen.imagegen",
+      "transparent_background": true,
+      "reference_original_png_sha256": "6cd38eb09d0c9d9b919726c0165ce7f7f856c35dd6648be842d63f2f612848c7",
+      "style_reference_asset": "unit-006-hd-b-v1.png",
+      "style_reference_sha256": "827f1a86c92a7294e89b6167880acd228cede04c21a4a0256c4d4e5757e2d26e",
+      "supersedes": "unit-006-hd-b-v1.png",
+      "review": "exposed blade corrected to lower left, right-facing braced pose preserved; native game integration pending",
+      "status": "reviewed pose revision; runtime draft"
+    }
+  ]
+}

@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -94,6 +96,9 @@ func (p hdTerrainTreePair) apply(out *image.NRGBA, native image.Image, target hd
 			return "fallback_replaced_overlap", 0
 		}
 	}
+	observedBackground := target.BackgroundVerified && target.Background != nil && target.Background.Bounds() == image.Rect(0, 0, 48, 48) &&
+		target.BeginStep < target.EndStep && target.BackgroundSHA == fmt.Sprintf("%x", sha256.Sum256(target.Background.Pix)) &&
+		target.SourceSHA == fmt.Sprintf("%x", sha256.Sum256(p.Source.Pix))
 	var base [48 * 48]int
 	var expected [48 * 48]color.NRGBA
 	var floorOrder, owner [48 * 48]uint64
@@ -126,9 +131,32 @@ func (p hdTerrainTreePair) apply(out *image.NRGBA, native image.Image, target hd
 			}
 		}
 	}
-	for _, i := range base {
+	for n, i := range base {
 		if i < 0 {
-			return "fallback_background_incomplete", 0
+			if !observedBackground || target.Order == 0 {
+				return "fallback_background_incomplete", 0
+			}
+			expected[n] = target.Background.NRGBAAt(n%48, n/48)
+			if expected[n].A != 255 {
+				return "fallback_background_source", 0
+			}
+			floorOrder[n] = target.Order - 1
+			wx, wy := r.Min.X+n%48, r.Min.Y+n/48
+			for _, s := range state.Sprites {
+				if s.Order >= target.Order || !image.Pt(wx, wy).In(s.Rect) {
+					continue
+				}
+				im := sources[hdTerrainSpriteKey{s.Group, s.Index}]
+				if im == nil || im.Bounds() != image.Rect(0, 0, 48, 48) {
+					return "fallback_foreground_source", 0
+				}
+				if c := im.NRGBAAt(wx-s.Rect.Min.X, wy-s.Rect.Min.Y); c.A == 255 {
+					owner[n] = 0
+					if c == expected[n] {
+						owner[n] = s.Order
+					}
+				}
+			}
 		}
 	}
 	found := false
@@ -177,7 +205,7 @@ func (p hdTerrainTreePair) apply(out *image.NRGBA, native image.Image, target hd
 		}
 		if owner[n] == target.Order {
 			visible++
-		} else if owner[n] != floorOrder[n] {
+		} else if owner[n] != 0 && (base[n] < 0 || owner[n] != floorOrder[n]) {
 			protected++
 		}
 	}
@@ -186,14 +214,19 @@ func (p hdTerrainTreePair) apply(out *image.NRGBA, native image.Image, target hd
 	}
 	patch := image.NewNRGBA(image.Rect(0, 0, 48*scale, 48*scale))
 	for n, i := range base {
-		floor := state.Draws[i]
-		pair := floors[floor.Index]
 		wx, wy := r.Min.X+n%48, r.Min.Y+n/48
 		for dy := 0; dy < scale; dy++ {
 			for dx := 0; dx < scale; dx++ {
-				c := pair.Source.NRGBAAt(wx-floor.Rect.Min.X, wy-floor.Rect.Min.Y)
-				if floorModes[i] == "hd" {
-					c = pair.Asset.NRGBAAt((wx-floor.Rect.Min.X)*scale+dx, (wy-floor.Rect.Min.Y)*scale+dy)
+				var c color.NRGBA
+				if i < 0 {
+					c = target.Background.NRGBAAt(n%48, n/48)
+				} else {
+					floor := state.Draws[i]
+					pair := floors[floor.Index]
+					c = pair.Source.NRGBAAt(wx-floor.Rect.Min.X, wy-floor.Rect.Min.Y)
+					if floorModes[i] == "hd" {
+						c = pair.Asset.NRGBAAt((wx-floor.Rect.Min.X)*scale+dx, (wy-floor.Rect.Min.Y)*scale+dy)
+					}
 				}
 				patch.SetNRGBA(n%48*scale+dx, n/48*scale+dy, c)
 			}
@@ -215,6 +248,9 @@ func (p hdTerrainTreePair) apply(out *image.NRGBA, native image.Image, target hd
 					for dx := 0; dx < scale; dx++ {
 						px, py := (x-r.Min.X)*scale+dx, (y-r.Min.Y)*scale+dy
 						if sprite.Order == target.Order {
+							if base[n] < 0 && p.Source.NRGBAAt(x-r.Min.X, y-r.Min.Y).A == 0 {
+								continue
+							}
 							patch.SetNRGBA(px, py, blendTerrainAlpha(patch.NRGBAAt(px, py), p.Asset.NRGBAAt(px, py)))
 						} else if c := source.NRGBAAt(x-sprite.Rect.Min.X, y-sprite.Rect.Min.Y); c.A == 255 {
 							patch.SetNRGBA(px, py, c)
@@ -225,7 +261,7 @@ func (p hdTerrainTreePair) apply(out *image.NRGBA, native image.Image, target hd
 		}
 	}
 	for n, order := range owner {
-		if order == target.Order || order == floorOrder[n] {
+		if order == 0 || order == target.Order || (base[n] >= 0 && order == floorOrder[n]) {
 			continue
 		}
 		for dy := 0; dy < scale; dy++ {

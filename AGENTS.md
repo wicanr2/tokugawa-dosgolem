@@ -124,6 +124,10 @@
 
 ## 全美術 HD 研究入口
 
+`workplace/hd-prototype/catalog/terrain/backgrounds/` 保存原版圖塊繪製前後的唯讀背景診斷、來源及後續 GUI 驗證。`tools/hd-backdrop.go`／`tools/hd-backdrop_test.go` 的 `-hd-backdrop-trace` 只在原版 sub_1F9D0 入口與自然返回讀取 native snapshot、原始四平面及 DAC，輸出有界的原始背景／來源／返回圖。`tools/verify-hd-backdrops.py` 獨立核對十一項來源、原版透明合成、十五欄基準、完整 RAM 與當次來源快照。沿用固定 GUI image，專案唯讀掛 `/project`，該目錄可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-backdrops.py`。READY 呈現契約見 RESEARCH-LOG；診斷收據本身不代表 HD GUI 已驗收。
+
+該目錄的 `runtime/` 是後續呈現建置與測試；`desktop/`、`desktop-only/`、`desktop-missing/` 保存四個樹叢的三模式真實視窗與來源快照。頂層診斷及 `sprite-backgrounds/` 不覆寫。`tools/verify-hd-backdrop-gui.py` 核對三模式、原版狀態與實際擷取背景，使用固定 GUI image，該目錄可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-backdrop-gui.py`。
+
 `workplace/hd-prototype/catalog/terrain/objects/` 保存物件／單位的唯讀繪製順序研究、來源遮罩、隔離建置與 GUI 驗證。舊地面收據留在 `terrain/trace/` 及 `terrain/runtime/`，不覆寫。`-hd-terrain-trace` 同時記錄原版 `sub_1FC07` 地面及 `sub_1F9D0` 透明圖塊的原始暫存器、自然返回與平面指紋；診斷不決定呈現資格。
 
 `workplace/hd-prototype/catalog/terrain/trees/` 保存 objects-000 樹木的背景覆蓋研究、透明素材幾何、可丟棄預覽與獨立 GUI 驗證。原版前景來源沿用 `terrain/objects/sources/`，該輪收據保持不變。`tools/hd-terrain-tree-prepare.py` 核對原始順序、完整背景及實際游標，生成樹木素材指紋與裁切幾何；固定 GUI image 內專案掛 `/project` 可寫、`terrain/trees/` 掛 `/output` 可寫後執行。輪廓之外的低 alpha 雜點只在明示裁切範圍外排除，生成原始 PNG 保留。

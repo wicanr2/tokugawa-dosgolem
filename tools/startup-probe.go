@@ -40,6 +40,7 @@ func main() {
 	cdDiagnostic := flag.Bool("cd-trace", false, "record bounded read-only DPMI/CD request diagnostics")
 	hdDiagnostic := flag.Bool("hd-trace", false, "record bounded read-only original asset loader diagnostics")
 	terrainDiagnostic := flag.Bool("hd-terrain-trace", false, "record bounded read-only original floor/sprite draw registers and returns")
+	backdropDiagnostic := flag.Bool("hd-backdrop-trace", false, "capture bounded read-only native sprite backgrounds and verify original binary-alpha primitive")
 	hdExport := flag.Bool("hd-export", false, "copy validated loader-return planes and DAC to local research output; implies hd-trace")
 	desktop := flag.Bool("desktop", false, "run isolated desktop presentation prototype")
 	flag.Parse()
@@ -48,6 +49,7 @@ func main() {
 	}
 	var assetTrace hdTrace
 	var floorTrace terrainTrace
+	var backdropTrace spriteBackdropTrace
 	var live hdLive
 	var desktopReceipt map[string]any
 	if *desktop && runDesktop == nil {
@@ -320,11 +322,18 @@ func main() {
 				}
 			}
 			if *desktop {
-				live.Terrain.observe(steps, before, m.CPU.R[cpu386.ESP], m.CPU.R[cpu386.ESI], m.CPU.R[cpu386.EDI], m.Mem)
+				live.Terrain.observe(steps, before, m.CPU.R[cpu386.ESP], m.CPU.R[cpu386.ESI], m.CPU.R[cpu386.EDI], m.Mem, func() (nativeSnapshot, error) {
+					return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
+				})
 				live.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem)
 			}
 			if *terrainDiagnostic {
 				floorTrace.observe(steps, before, m.CPU.R[cpu386.ESP], m.CPU.R[cpu386.ESI], m.CPU.R[cpu386.EDI], m.Mem)
+			}
+			if *backdropDiagnostic {
+				backdropTrace.observe(steps, before, m.CPU.R[cpu386.ESP], m.CPU.R[cpu386.ESI], m.CPU.R[cpu386.EDI], m.Mem, func() (nativeSnapshot, error) {
+					return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
+				})
 			}
 			row := rawTrace{step: steps, eip: before, registers: m.CPU.R, segments: m.CPU.Seg, flags: m.CPU.EFlags}
 			for offset := uint32(0); offset < 16; offset++ {
@@ -426,7 +435,7 @@ func main() {
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
-	for _, name := range []string{"tools/hd-window.go", "tools/hd-window_test.go", "tools/hd-story_test.go", "tools/hd-terrain-sprite-profiles.go", "tools/hd-terrain-sprites.go", "tools/hd-terrain-sprites_test.go", "tools/hd-terrain-tree-profile.go"} {
+	for _, name := range []string{"tools/hd-window.go", "tools/hd-window_test.go", "tools/hd-story_test.go", "tools/hd-terrain-sprite-profiles.go", "tools/hd-terrain-sprites.go", "tools/hd-terrain-sprites_test.go", "tools/hd-terrain-tree-profile.go", "tools/hd-backdrop.go", "tools/hd-backdrop_test.go"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)
@@ -436,6 +445,13 @@ func main() {
 	frame, err := captureFrame(screen, &cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
 	if err != nil {
 		panic(err)
+	}
+	var backdropRecords []map[string]any
+	if *backdropDiagnostic {
+		backdropRecords, err = backdropTrace.export("/output")
+		if err != nil {
+			panic(err)
+		}
 	}
 	receipt := map[string]any{
 		"dosgolem_head": "a9714ebdab2ad6b529f81225472680f2b11f2842", "integration_input_sha256": toolHashes,
@@ -453,6 +469,7 @@ func main() {
 		"cd_diagnostic_enabled": *cdDiagnostic, "cd_diagnostic_events": cdTrace, "cd_diagnostic_dropped": cdTraceDropped,
 		"hd_diagnostic_enabled": *hdDiagnostic, "hd_asset_trace": assetTrace, "hd_export_enabled": *hdExport,
 		"terrain_diagnostic_enabled": *terrainDiagnostic, "terrain_draw_trace": floorTrace,
+		"sprite_backdrop_diagnostic_enabled": *backdropDiagnostic, "sprite_backdrop_records": backdropRecords, "sprite_backdrop_dropped": backdropTrace.Dropped,
 		"desktop":            desktopReceipt,
 		"mouse_calls":        mouseServices.Mouse.Calls,
 		"mouse_cursor":       cursor,

@@ -223,4 +223,100 @@ func TestTreeActualArtGeometryAndThreeNormalScenes(t *testing.T) {
 	if len(replaced) != 3 || !bytes.Equal(before, native.Pix) {
 		t.Fatal("normal tree scenes/native immutability", len(replaced))
 	}
+	data, err = os.ReadFile(root + "backgrounds/startup-probe/latest.json")
+	if err != nil {
+		t.Skip("normal pre-draw background evidence unavailable")
+	}
+	var backgrounds struct {
+		Records []struct {
+			Draw     hdTerrainSpriteDraw `json:"draw"`
+			Begin    int                 `json:"begin_step"`
+			EndStep  int                 `json:"end_step"`
+			Verified bool                `json:"primitive_verified"`
+			Before   struct {
+				Path string `json:"path"`
+				RGBA string `json:"rgba_sha256"`
+			} `json:"before"`
+			Source struct {
+				SHA string `json:"rgba_sha256"`
+			} `json:"source"`
+		} `json:"sprite_backdrop_records"`
+	}
+	if json.Unmarshal(data, &backgrounds) != nil {
+		t.Fatal("background receipt")
+	}
+	for i := range state.Sprites {
+		for _, b := range backgrounds.Records {
+			if !b.Verified || b.Draw.Group != state.Sprites[i].Group || b.Draw.Index != state.Sprites[i].Index || b.Draw.Rect != state.Sprites[i].Rect {
+				continue
+			}
+			im, e := previewPNG(root + "backgrounds/" + b.Before.Path)
+			if e != nil {
+				t.Fatal(e)
+			}
+			bg := image.NewNRGBA(image.Rect(0, 0, 48, 48))
+			for y := 0; y < 48; y++ {
+				for x := 0; x < 48; x++ {
+					bg.SetNRGBA(x, y, rgbaAt(im, x, y))
+				}
+			}
+			s := &state.Sprites[i]
+			s.Background, s.BackgroundVerified, s.BackgroundSHA = bg, true, b.Before.RGBA
+			s.SourceSHA, s.BeginStep, s.EndStep = b.Source.SHA, b.Begin, b.EndStep
+		}
+	}
+	replaced = nil
+	for _, s := range state.Sprites {
+		reason, _ := pair.apply(out, native, s, state, floors, modes, sources, replaced, 2, true)
+		if reason == "hd" {
+			replaced = append(replaced, s.Rect)
+		}
+	}
+	if len(replaced) != 4 || !bytes.Equal(before, native.Pix) {
+		t.Fatal("four normal trees with actual captured background", len(replaced))
+	}
+}
+
+func TestTreeObservedBackgroundPreservesUIAndRestoresOldOutline(t *testing.T) {
+	ui, ink, paint := color.NRGBA{200, 140, 20, 255}, color.NRGBA{10, 10, 10, 255}, color.NRGBA{40, 90, 30, 255}
+	bg := image.NewNRGBA(image.Rect(0, 0, 48, 48))
+	source := image.NewNRGBA(bg.Bounds())
+	asset := image.NewNRGBA(image.Rect(0, 0, 96, 96))
+	for y := 0; y < 48; y++ {
+		for x := 0; x < 48; x++ {
+			bg.SetNRGBA(x, y, ui)
+		}
+	}
+	source.SetNRGBA(10, 10, ink)
+	for y := 0; y < 96; y++ {
+		for x := 0; x < 96; x++ {
+			asset.SetNRGBA(x, y, paint)
+		}
+	}
+	for y := 20; y < 22; y++ {
+		for x := 20; x < 22; x++ {
+			asset.SetNRGBA(x, y, color.NRGBA{})
+		}
+	}
+	target := hdTerrainSpriteDraw{Group: "objects", Index: 0, Rect: image.Rect(80, 80, 128, 128), Order: 2, Background: bg, BackgroundVerified: true, BeginStep: 1, EndStep: 3, BackgroundSHA: fmt.Sprintf("%x", sha256.Sum256(bg.Pix)), SourceSHA: fmt.Sprintf("%x", sha256.Sum256(source.Pix))}
+	state := hdTerrainState{Sprites: []hdTerrainSpriteDraw{target}}
+	native := image.NewNRGBA(image.Rect(0, 0, 640, 400))
+	for y := 0; y < 48; y++ {
+		for x := 0; x < 48; x++ {
+			native.SetNRGBA(80+x, 80+y, ui)
+		}
+	}
+	native.SetNRGBA(90, 90, ink)
+	pair := hdTerrainTreePair{Source: source, Asset: asset, Reason: "ready"}
+	sources := map[hdTerrainSpriteKey]*image.NRGBA{{"objects", 0}: source}
+	out, _, _ := previewA0(native, nil, nil, 2, false)
+	if reason, _ := pair.apply(out, native, target, state, nil, nil, sources, nil, 2, true); reason != "hd" || out.NRGBAAt(160, 160) != ui || out.NRGBAAt(180, 180) != ui {
+		t.Fatal("UI preserved and old opaque source erased", reason)
+	}
+	native.SetNRGBA(81, 81, ink)
+	out, _, _ = previewA0(native, nil, nil, 2, false)
+	before := append([]byte(nil), out.Pix...)
+	if reason, _ := pair.apply(out, native, target, state, nil, nil, sources, nil, 2, true); reason != "fallback_scene_mismatch" || !bytes.Equal(before, out.Pix) {
+		t.Fatal("unobserved UI overwrite accepted", reason)
+	}
 }

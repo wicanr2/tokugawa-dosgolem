@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 189,
-    "prompts": 100,
-    "bytes": 298937061
+    "png": 190,
+    "prompts": 101,
+    "bytes": 300172326
   },
-  "archive_tool_sha256": "525528fa7a0dafc97c78f9de943452b513c4a3118695687f81fabadf6d2b350d",
+  "archive_tool_sha256": "46227f18c3b4410df931a467106df7495bc59631e3ae5b8d5228e562a1782571",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -5029,7 +5029,7 @@
       "sha256": "f6885ec6d1d557973fdb304fca537e095eec4c65e37439340ef2c39da2d94cd2",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/object-000-hd-b-v2.png",
       "prompt": "terrain/object-000-hd-b-v2.prompt.txt",
-      "status": "normal first-battle forest clump v2 verified in three complete scenes; clipped edge falls back",
+      "status": "normal first-battle forest clump v2 verified in 4 scenes; observed pre-draw background at UI edge",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -5305,7 +5305,7 @@
       "sha256": "827f1a86c92a7294e89b6167880acd228cede04c21a4a0256c4d4e5757e2d26e",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-006-hd-b-v1.png",
       "prompt": "terrain/unit-006-hd-b-v1.prompt.txt",
-      "status": "generated unit draft; original identity and footprint review pending",
+      "status": "superseded pose draft; exposed blade corrected to lower left in v2",
       "alpha_policy": "transparent",
       "alpha_range": [
         0,
@@ -5322,6 +5322,31 @@
       "bytes": 1357,
       "sha256": "d7379700d627361c05fdfede1c944d5bb672e95582785d6ed687b846545adf9d",
       "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-006-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-006-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 1232977,
+      "sha256": "901d37d63d0847131787fc4f1e880a0e29d1fb6e82b0203fc1d033cb2d282cd7",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-006-hd-b-v2.png",
+      "prompt": "terrain/unit-006-hd-b-v2.prompt.txt",
+      "status": "reviewed original pose correction; runtime integration pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-006-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1301,
+      "sha256": "52007f1faeb3c60548ca943d431858d5464e75fb13faa547269d314698539f10",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-006-hd-b-v2.prompt.txt"
     },
     {
       "path": "terrain/unit-007-hd-b-v1.png",
@@ -5409,6 +5434,13 @@
         1400,
         720
       ]
+    },
+    {
+      "path": "terrain/unit-revisions.json",
+      "kind": "generation-metadata",
+      "bytes": 987,
+      "sha256": "73e8c91e0b85e9a335d20584b1097d246480bc69221e8a2abba8af82d5d7a3cb",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-revisions.json"
     },
     {
       "path": "window/window-skin-hd-b-v1.png",
