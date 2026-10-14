@@ -281,3 +281,5 @@
 - READY 後接入桌面背景資格；未知背景、未知覆蓋及不符返回仍備援，介面原版透明處不允許 HD 擴張。四套件通過，研究入口 24.322s。三模式各自然 750M／390 事件、三次切換、完整 RAM、十五欄、原生畫面與 PCM 符合基準；四處樹叢、82 原版人物像素、772 介面像素與 1926 舊輪廓背景還原通過，缺圖零變動。總表 911938c881bada744c90831b3167eb6904f2cfd6cd606e29fd5371dc55e3f46b，舊三處收據保留。
 - 放大十種單位原圖與草稿，units-001／003 姿勢及幾何已比較；units-006 v1 刀勢有誤，內建 image_gen.imagegen 製作 v2，原始 alpha、提示詞及來源保存。人物 HD 尚未接入。
 - 保存工具及索引核對 190 PNG／101 提示詞，300172326 indexed bytes。遠端仍 private，Issue #5 OPEN。後續接人物與樹叢重疊合成及地面碎片，再補其他全遊戲美術。
+
+提交 `6c2be518016e254f67c2fc9b6bf300cffa442c66` 已推送私人 main，主機 gh 核對 SHA 一致。303 個素材檔逐項符合遠端 Git blob，original/、workplace/ 未加入遠端。Issue #5 進度留言：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6170765470 。當次與歷史收據、來源快照、素材索引、語法、文件入口、Git whitespace 及擁有權檢查通過；所有 tokugawa 容器均已自動刪除，沿用原 image。
