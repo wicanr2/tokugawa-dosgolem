@@ -381,7 +381,7 @@ func TestTerrainPreparedSourcesAndFullCellProtection(t *testing.T) {
 				return
 			}
 			approved++
-			path = "/project/workplace/hd-prototype/catalog/terrain/art/" + p.Asset
+			path = "/project/assets/hd-b/terrain/" + p.Asset
 			data, err = os.ReadFile(path)
 			if err != nil || fmt.Sprintf("%x", sha256.Sum256(data)) != p.AssetSHA {
 				t.Fatal("HD fingerprint")
@@ -413,7 +413,7 @@ func TestTerrainPreparedSourcesAndFullCellProtection(t *testing.T) {
 			}
 		})
 	}
-	if approved != 8 {
+	if approved != 104 {
 		t.Fatal("reviewed source count", approved)
 	}
 }

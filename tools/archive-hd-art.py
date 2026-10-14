@@ -17,6 +17,7 @@ README = """# 戰國手繪 HD 素材
 - [81 張頭像總覽](kao/selected/contact-sheet.png)、[九頁頭像圖集](kao/)。
 - [捲軸與紅金框架](scroll/)、[共用視窗邊框](window/)。
 - [戰場地面、物件與單位草稿](terrain/)，物件／單位 PNG 保留透明背景。
+- [地面圖集的材質與衍生圖](terrain/materials/)，保留兩版製作紀錄及完整提示詞。
 - [晴天與陰天天氣圖](art/weather-generation.json)，第二版保留原版岩峰構圖。
 - [開場騎兵與武將群像草稿](art/opening-generation.json)，保留原始生成圖，幾何與呈現待驗證。
 - [風格比較](concept/style-comparison-v1.png)。
@@ -288,6 +289,40 @@ def main():
             source = terrain/name
             if source.exists():
                 copy(source, "terrain/"+name, "generation-metadata")
+    material_root = catalog/"terrain/materials"
+    if (material_root/"generation.json").exists():
+        generation = json.loads((material_root/"generation.json").read_text())
+        prompts = ["terrain/"+"floor-000-hd-b-v1.prompt.txt"]
+        for record in generation["records"]:
+            assert sha(material_root/record["asset"]) == record["sha256"]
+            prompt_name = "terrain/materials/"+record["prompt"]
+            prompts.append(prompt_name)
+            picture(material_root/record["asset"],"terrain/materials/"+record["asset"],
+                    material_root/record["prompt"],prompt_name,"visually reviewed generated terrain material")
+        for version, folder, manifest_name in [(1,"drafts","draft-manifest.json"),(2,"drafts-v2","draft-manifest-v2.json")]:
+            manifest_path = material_root/manifest_name
+            if not manifest_path.exists():
+                continue
+            manifest = json.loads(manifest_path.read_text())
+            if version == 2:
+                assert manifest["tool_sha256"] == sha(project/"tools/hd-terrain-materials.py")
+            integrated = version == 2 and (material_root/"profiles.json").exists()
+            for record in manifest["records"]:
+                if record["inherited"] or record["asset_source_index"] != record["index"]:
+                    continue
+                source = material_root/folder/record["asset"]
+                assert sha(source) == record["asset_sha256"]
+                name = "terrain/"+record["asset"] if integrated else "terrain/materials/drafts-v1/"+record["asset"]
+                copy(source,name,"png",material_prompts=prompts,derivation=record,
+                     status="reviewed source-specific material composition; common floor consumer integrated, normal case not individually sampled" if integrated else "superseded material-boundary draft; isolated color dots corrected in v2")
+            copy(manifest_path,"terrain/materials/"+manifest_name,"preparation-metadata")
+            gallery = material_root/manifest["gallery"]
+            assert sha(gallery) == manifest["gallery_sha256"]
+            copy(gallery,"terrain/materials/"+gallery.name,"png",status="generated-only floor gallery; original references excluded")
+        for name in ["generation.json","review-v2.json","profiles.json","prepare-v1-source.txt"]:
+            source = material_root/name
+            if source.exists():
+                copy(source,"terrain/materials/"+name,"preparation-metadata")
     for page in range(9):
         name = f"page-{page:02d}-hd-b-v1.png"
         picture(catalog/"kao"/name, "kao/"+name, (catalog/"kao"/name).with_suffix(".prompt.txt"), "kao/"+Path(name).with_suffix(".prompt.txt").name, "generated portrait atlas")

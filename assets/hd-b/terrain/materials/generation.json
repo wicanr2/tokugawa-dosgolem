@@ -1,0 +1,47 @@
+{
+  "classification": "generated hand-painted materials for opaque floor HD art",
+  "records": [
+    {
+      "material": "soil",
+      "asset": "material-soil-hd-b-v1.png",
+      "sha256": "03f592009d6e513df712e66d85106ad28bb6897d69d25a342c687b15a51da006",
+      "prompt": "material-soil-hd-b-v1.prompt.txt",
+      "prompt_sha256": "ac2963509b2650685a1bf10f086ed27e4b5a3b81628a9e037dd326fa360e9d28",
+      "size": [
+        1536,
+        1024
+      ],
+      "tool": "built-in image_gen.imagegen",
+      "transparent_background": false,
+      "status": "visually reviewed hand-painted material; source-specific composition review pending"
+    },
+    {
+      "material": "water-deep",
+      "asset": "material-water-deep-hd-b-v1.png",
+      "sha256": "97ec43ee851330bb0c92fc63d1fe09d59c1fc72a44be5254f19a804eb5a0d357",
+      "prompt": "material-water-deep-hd-b-v1.prompt.txt",
+      "prompt_sha256": "c25e42eb0a152db57d3bc9432000c0092efbed3235defdc8953b181bff800f94",
+      "size": [
+        1536,
+        1024
+      ],
+      "tool": "built-in image_gen.imagegen",
+      "transparent_background": false,
+      "status": "visually reviewed hand-painted material; source-specific composition review pending"
+    },
+    {
+      "material": "water-light",
+      "asset": "material-water-light-hd-b-v1.png",
+      "sha256": "29f23dcc33eeaadc7aa6a5c4e0c933d13ca534ac4cf1106ea1bea45f5c83f58a",
+      "prompt": "material-water-light-hd-b-v1.prompt.txt",
+      "prompt_sha256": "cbd14356e3a97a3c145d31f7f704643a8f69cd9fb2c613d6de429585322c380d",
+      "size": [
+        1536,
+        1024
+      ],
+      "tool": "built-in image_gen.imagegen",
+      "transparent_background": false,
+      "status": "visually reviewed hand-painted material; source-specific composition review pending"
+    }
+  ]
+}

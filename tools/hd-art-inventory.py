@@ -105,6 +105,21 @@ def main():
 
     terrain_path = ROOT / "terrain/prepared/profiles.json"
     terrain_profiles = json.loads(terrain_path.read_text()) if terrain_path.exists() else None
+    material_profiles_path = ROOT/'terrain/materials/profiles.json'
+    if material_profiles_path.exists():
+        expanded = json.loads(material_profiles_path.read_text())
+        assert expanded['source_count'] == expanded['reviewed_HD_count'] == 104
+        assert expanded['tool_sha256'] == sha(PROJECT/'tools/hd-terrain-materials.py')
+        assert expanded['baseline_sha256'] == sha(terrain_path)
+        terrain_profiles = expanded
+        materials_proof_path = ROOT/'terrain/materials/verification-summary.json'
+        if materials_proof_path.exists():
+            materials_proof = json.loads(materials_proof_path.read_text())
+            assert materials_proof['verified'] and materials_proof['reviewed_source_count'] == 104
+            assert materials_proof['profiles_sha256'] == sha(material_profiles_path)
+            assert materials_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-terrain-materials.py')
+            proof_sources.append({'verification':str(materials_proof_path.relative_to(PROJECT)),'sha256':sha(materials_proof_path)})
+    approved_floor_count = sum(bool(r['asset']) for r in terrain_profiles['records']) if terrain_profiles else 0
     verified_floors = set()
     unit_drafts = 0
     object_drafts = 0
@@ -144,8 +159,9 @@ def main():
             assert sha(ROOT/'terrain/art'/draft['asset']) == draft['asset_sha256']
             object_drafts += 1
     if terrain_profiles:
-        assert terrain_profiles["tool_sha256"] == sha(PROJECT / "tools/hd-terrain-prepare.py")
-        assert terrain_profiles["source_count"] == 104 and terrain_profiles["reviewed_HD_count"] == 8
+        assert terrain_profiles["tool_sha256"] == sha(PROJECT / ("tools/hd-terrain-materials.py" if material_profiles_path.exists() else "tools/hd-terrain-prepare.py"))
+        expected_floor_count = 104 if material_profiles_path.exists() else 8
+        assert terrain_profiles["source_count"] == 104 and terrain_profiles["reviewed_HD_count"] == expected_floor_count
         generation = json.loads((ROOT / "terrain/art/generation.json").read_text())
         for draft in generation["records"]:
             if draft["name"].startswith("unit-"):
@@ -216,14 +232,14 @@ def main():
                 proof_sources.append({"verification": str(proof_path.relative_to(PROJECT)), "sha256": sha(proof_path)})
         if name == "MAP_CHIP.OZM" and terrain_profiles:
             record.update(art_status="partial", source_grid_counts={"floor": 104, "object": 26, "unit": 13},
-                          approved_floor_art=8, generated_unit_drafts=unit_drafts, approved_unit_art=len(approved_units),
+                          approved_floor_art=approved_floor_count, generated_unit_drafts=unit_drafts, approved_unit_art=len(approved_units),
                           normal_unit_indices_verified=approved_units, normal_unit_instances_verified=2 if scene_summary else 0,
                           generated_object_drafts=object_drafts, approved_object_art=1 if tree_summary else 0,
                           normal_object_indices_verified=[0] if tree_summary else [], normal_object_instances_verified=tree_summary['normal_HD_object_instances'] if tree_summary else 0,
                           normal_floor_indices_verified=sorted(verified_floors),
-                          runtime_status="full-floor journal, forest clumps and units-001/003 jointly composited; remaining atlas art pending" if scene_summary else "floor consumer with native index-zero foreground preservation integrated; HD sprites and whole atlas pending",
+                          runtime_status="all 104 floor source profiles integrated; normal six-floor scene, forest clumps and units-001/003 jointly composited; remaining foreground atlas art pending" if approved_floor_count == 104 else "full-floor journal, forest clumps and units-001/003 jointly composited; remaining atlas art pending" if scene_summary else "floor consumer with native index-zero foreground preservation integrated; HD sprites and whole atlas pending",
                           normal_floor_draws_verified=67 if scene_summary else 65 if foreground_summary else 0,
-                          floor_profiles_sha256=sha(terrain_path),
+                          floor_profiles_sha256=sha(material_profiles_path if approved_floor_count == 104 else terrain_path),
                           source_extraction_sha256=sha(ROOT / "terrain/terrain-extraction.json"))
         if name in ui_drafts:
             draft = ui_drafts[name]
@@ -291,7 +307,7 @@ def main():
               "generated_weather_sources":len(weather), "approved_weather_sources":len(weather_profiles),
               "normal_weather_sources_verified":1 if weather_proof else 0,
               "generated_opening_drafts":len(opening),
-              "approved_MAP_CHIP_floor_art": 8 if terrain_profiles else 0,
+              "approved_MAP_CHIP_floor_art": approved_floor_count,
               "normal_MAP_CHIP_floor_cases_verified": len(verified_floors),
               "generated_MAP_CHIP_unit_drafts": unit_drafts,
               "generated_MAP_CHIP_unit_art": generated_units,
