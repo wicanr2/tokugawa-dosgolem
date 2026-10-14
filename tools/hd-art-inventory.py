@@ -37,7 +37,7 @@ def main():
     inventory = json.loads((PROJECT / "workplace/hd-prototype/asset-inventory.json").read_text())
     assert len(decoded["records"]) == 112 and len(extraction["records"]) == len(selected["records"]) == 81
     originals = {r["name"]: r for r in inventory["records"]}
-    profile_path = ROOT / "story/profiles.json"
+    profile_path = ROOT / "story-expanded/profiles.json"
     profiles = {}
     if profile_path.exists():
         prepared = json.loads(profile_path.read_text())
@@ -63,7 +63,7 @@ def main():
     verified_story = {}
     verified_kao = {}
     proof_sources = []
-    for directory in ("desktop", "kao-desktop"):
+    for directory in ("desktop", "kao-desktop", "story/desktop", "story-expanded/desktop"):
         verify_path = ROOT / directory / "verification-portraits.json"
         receipt_path = ROOT / directory / "desktop-portraits.json"
         if not verify_path.exists():

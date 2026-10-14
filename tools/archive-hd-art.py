@@ -88,12 +88,29 @@ def main():
 
     picture(base/"style-comparison-v1.png", "concept/style-comparison-v1.png", base/"style-comparison-v1.prompt.txt", "concept/style-comparison-v1.prompt.txt", "style comparison; B selected")
     picture(base/"A-0-hd-b-v1.png", "A-0-hd-b-v1.png", base/"A-0-hd-b-v1.prompt.txt", "A-0-hd-b-v1.prompt.txt", "normal player path verified")
-    story_profiles = catalog/"story/profiles.json"
+    story_profiles = catalog/"story-expanded/profiles.json"
     selected_art = {}
+    normal_art = set()
     if story_profiles.exists():
         profiles = json.loads(story_profiles.read_text())
         assert profiles["tool_sha256"] == sha(project/"tools/hd-story-prepare.py")
         selected_art = {r["asset"]: r["asset_sha256"] for r in profiles["records"]}
+        verified_path = catalog/"story-expanded/desktop/verification-portraits.json"
+        if verified_path.exists():
+            receipt_path = verified_path.with_name("desktop-portraits.json")
+            verified = json.loads(verified_path.read_text())
+            assert verified["verified"] and verified["receipt_sha256"] == sha(receipt_path)
+            receipt = json.loads(receipt_path.read_text())
+            by_resource = {r["resource"]: r for r in profiles["records"]}
+            for check in verified["portrait_checks"]:
+                if check["mode"] != "hd":
+                    continue
+                profile = by_resource[check["resource"]]
+                loaded = receipt["desktop"]["assets"]
+                if check["resource"] != "A-0.OZM":
+                    loaded = loaded["story_portraits"][check["resource"]]
+                assert loaded["hd_sha256"] == profile["asset_sha256"]
+                normal_art.add(profile["asset"])
     remaining_path = catalog/"art/remaining-generation.json"
     reviewed_art = {}
     if remaining_path.exists():
@@ -105,11 +122,10 @@ def main():
         reviewed_art.pop(council["superseded_asset"], None)
     for source in sorted((catalog/"art").glob("*-hd-b-v*.png")):
         name = source.name
-        status = "normal player path verified" if name in {f"A-{i}-hd-b-v1.png" for i in range(1, 8)} else "draft; integration and review pending"
+        status = "draft; integration and review pending"
         if name in selected_art:
             assert sha(source) == selected_art[name]
-            if not name.startswith(tuple(f"A-{i}-" for i in range(1, 8))):
-                status = "reviewed source and common draw consumer integrated; normal path not yet sampled"
+            status = "normal player path verified" if name in normal_art else "reviewed source and common draw consumer integrated; normal path not yet sampled"
         elif name in reviewed_art:
             assert sha(source) == reviewed_art[name]
             status = "illustration visually reviewed; source profile and runtime integration pending"

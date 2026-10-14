@@ -19,9 +19,15 @@ source = pathlib.Path(ida_nalt.get_input_file_path())
 data = source.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 assert digest == "2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a"
+needles = (b"DX5.DAT", b"Ken Lin", b"KAO.GRP")
+suffix = ""
+if len(idc.ARGV) > 1:
+    needles = tuple(value.encode("ascii") for value in idc.ARGV[1].split(","))
+    assert 1 <= len(needles) <= 16 and all(1 <= len(value) <= 32 for value in needles)
+    suffix = "-resources"
 anchors = []
 functions = set()
-for needle in (b"DX5.DAT", b"Ken Lin", b"KAO.GRP"):
+for needle in needles:
     start = 0
     while True:
         offset = data.find(needle, start)
@@ -63,5 +69,6 @@ result = {"input_file": source.name, "input_sha256": digest, "tool": "IDA Pro",
           "semantic_level": "raw tool evidence; names are navigation only", "custom_renames": [],
           "probe_sha256": hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
           "anchors": anchors, "function_ranges": limits, "rows": rows}
-pathlib.Path("/output/asset-xrefs.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+assert all(any(anchor["bytes_hex"] == value.hex() for anchor in anchors) for value in needles)
+pathlib.Path("/output/asset-xrefs" + suffix + ".json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
 idc.qexit(0)

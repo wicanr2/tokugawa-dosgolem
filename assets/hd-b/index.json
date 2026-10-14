@@ -9,7 +9,7 @@
     "prompts": 75,
     "bytes": 240362250
   },
-  "archive_tool_sha256": "4dd2f04e800ccb2c20710138a803c78546a7d42a5e45d5330a4ec0f9e7adb6ec",
+  "archive_tool_sha256": "f8a4c047003aafb3a8ec6b412ff4b19189c756b4f735395e2f9e3377f06a7ab5",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -678,7 +678,7 @@
       "sha256": "0626d23f596d5df04c3095fd9b4eb0fb2ef453ea42ca4ed95e81e73a0ab37fe2",
       "local_source": "workplace/hd-prototype/catalog/art/D-6-hd-b-v1.png",
       "prompt": "art/D-6-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -798,7 +798,7 @@
       "sha256": "ddd6724c896f2a92d6438e62e4809faef13784ebe4d07b55bcff544048a5e35b",
       "local_source": "workplace/hd-prototype/catalog/art/E-5-hd-b-v1.png",
       "prompt": "art/E-5-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -838,7 +838,7 @@
       "sha256": "c3a8162e408e19f98ac6656ec5027debb2b6b76ea31b3e7be1dcd15fdfaab4a9",
       "local_source": "workplace/hd-prototype/catalog/art/END-10-hd-b-v1.png",
       "prompt": "art/END-10-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1829,
         860
@@ -858,7 +858,7 @@
       "sha256": "f7ccd514e6c5b1f794ba3ee2bcf9a9769e8ec3abc191474bde506b52850fdd82",
       "local_source": "workplace/hd-prototype/catalog/art/END-8-hd-b-v1.png",
       "prompt": "art/END-8-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -878,7 +878,7 @@
       "sha256": "b9cf3b5a040b3ebe164b52e90b463273e6336fd3c3b356d925e5d8bd86efa5a1",
       "local_source": "workplace/hd-prototype/catalog/art/END-9-hd-b-v1.png",
       "prompt": "art/END-9-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -938,7 +938,7 @@
       "sha256": "606df3227afc57eb357d37de1ba22cc91741e02a04d900da01b4f8301c91ddef",
       "local_source": "workplace/hd-prototype/catalog/art/F-3-hd-b-v1.png",
       "prompt": "art/F-3-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -978,7 +978,7 @@
       "sha256": "dfd7e6a5ce7a0b2128002bff5df40693195932a25805a90fd2f6e6f633a4f1b8",
       "local_source": "workplace/hd-prototype/catalog/art/F-6-hd-b-v1.png",
       "prompt": "art/F-6-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -998,7 +998,7 @@
       "sha256": "afb312b1cb59899900b19ae8fe0c0a94c0f8aa952fc58e344be337059f2b2ae4",
       "local_source": "workplace/hd-prototype/catalog/art/F-7-hd-b-v1.png",
       "prompt": "art/F-7-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -1018,7 +1018,7 @@
       "sha256": "9f085f3fa481b1f38335190ba53f902692f36e85496a784b3d51b6365e576435",
       "local_source": "workplace/hd-prototype/catalog/art/F-8-hd-b-v1.png",
       "prompt": "art/F-8-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -1078,7 +1078,7 @@
       "sha256": "4b9dee1ed7be663c65d501abb13a73fa441b7aa19e99cf21a5e84bb7b24444bd",
       "local_source": "workplace/hd-prototype/catalog/art/G-4-hd-b-v1.png",
       "prompt": "art/G-4-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -1098,7 +1098,7 @@
       "sha256": "ced41a776dfad7b17a6164ade1e7f2e61476589fd5c36ce174794d70c8495f34",
       "local_source": "workplace/hd-prototype/catalog/art/G-5-hd-b-v1.png",
       "prompt": "art/G-5-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -1118,7 +1118,7 @@
       "sha256": "39ef8cd014862296569eb9530661cc15546a87ad7da9b14d4f9b18064c9325c7",
       "local_source": "workplace/hd-prototype/catalog/art/G-7-hd-b-v1.png",
       "prompt": "art/G-7-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -1158,7 +1158,7 @@
       "sha256": "4cb593fdb698d967cdbdc7694427fb3104adb34c73a6e665620886620397dfea",
       "local_source": "workplace/hd-prototype/catalog/art/GUNGI-hd-b-v2.png",
       "prompt": "art/GUNGI-hd-b-v2.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "normal player path verified",
       "size": [
         1832,
         859
@@ -1178,7 +1178,7 @@
       "sha256": "8274e9310e86729485368a72555719afded71069bada72d2d3cc12d3b30876a6",
       "local_source": "workplace/hd-prototype/catalog/art/H-1-hd-b-v1.png",
       "prompt": "art/H-1-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         858
@@ -1198,7 +1198,7 @@
       "sha256": "248cc086e24527fceddc4e6e02e1be64b2f4d28ad3ca539f04d725b41fe76921",
       "local_source": "workplace/hd-prototype/catalog/art/H-2-hd-b-v1.png",
       "prompt": "art/H-2-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -1218,7 +1218,7 @@
       "sha256": "547ac2884670b54e8bce9d54fa22e3016b93434ebefcf387d1813124b4e570b1",
       "local_source": "workplace/hd-prototype/catalog/art/H-3-hd-b-v1.png",
       "prompt": "art/H-3-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -1238,7 +1238,7 @@
       "sha256": "effe0a016142e099dd5ba9ff9d653cc8ffb6a23dd04b0c93e299a8528ee1f967",
       "local_source": "workplace/hd-prototype/catalog/art/KOYO-hd-b-v1.png",
       "prompt": "art/KOYO-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859
@@ -1258,7 +1258,7 @@
       "sha256": "7af3ffec77d74e88778f4a04e065d48ed36128e91bf18fb212cee023eda48b87",
       "local_source": "workplace/hd-prototype/catalog/art/YOULOSE-hd-b-v1.png",
       "prompt": "art/YOULOSE-hd-b-v1.prompt.txt",
-      "status": "illustration visually reviewed; source profile and runtime integration pending",
+      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
       "size": [
         1832,
         859

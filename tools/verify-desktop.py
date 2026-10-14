@@ -11,6 +11,7 @@ import time
 assert Path("/.dockerenv").exists() and os.getuid() == 1000
 parser = argparse.ArgumentParser()
 parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only", "window", "window-missing", "window-only", "window-modal"], default="hd")
+parser.add_argument("--include-council", action="store_true", help="於既有普通輸入路徑另抽測 GUNGI.OZM")
 args = parser.parse_args()
 root = Path("/output")
 assert root.stat().st_uid == os.getuid()
@@ -21,6 +22,8 @@ children = []
 scroll_checks = []
 is_scroll = args.mode.startswith("scroll")
 is_portraits = args.mode.startswith("portraits")
+assert not args.include_council or is_portraits
+story_cases = 9 if args.include_council else 8
 portrait_checks = []
 kao_checks = []
 is_frame = args.mode.startswith("frame")
@@ -307,6 +310,8 @@ try:
         targets = [("A-0", 140_000_000), ("A-1", 170_000_000), ("A-2", 275_000_000),
                    ("A-3", 310_000_000), ("A-4", 365_000_000), ("A-5", 390_000_000),
                    ("A-6", 435_000_000), ("A-7", 492_000_000)]
+        if args.include_council:
+            targets.append(("GUNGI", 574_000_000))
         labels = {"A-6": [(249, 112, 305, 136)],
                   "A-7": [(102, 54, 146, 82), (160, 35, 202, 61), (110, 112, 171, 140)]}
         for name, step in targets:
@@ -443,10 +448,10 @@ try:
         expected_ram = "4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9" if is_portraits else "0d9123e52923ba852b125ea04918e1007138a33e0a8e4d856b078865cb33562f"
         assert hashlib.sha256((root / "startup-memory.bin").read_bytes()).hexdigest() == expected_ram
         toggles = [e for e in receipt["desktop"]["events"] if e["kind"] == "toggle"]
-        assert len(toggles) == (19 if is_portraits else 7 if args.mode == "window-modal" else 5 if is_scroll else 3) and all(e["guest_unchanged"] for e in toggles)
+        assert len(toggles) == (3+2*story_cases if is_portraits else 7 if args.mode == "window-modal" else 5 if is_scroll else 3) and all(e["guest_unchanged"] for e in toggles)
         assert any(not e["paused"] for e in toggles)
         if is_portraits:
-            assert len(portrait_checks) == 8
+            assert len(portrait_checks) == story_cases
             assert len(kao_checks) == 4
             loaded = receipt["desktop"]["assets"]["kao"]
             assert len(loaded) == 81 and all(info.get("source_sha256") for info in loaded.values())

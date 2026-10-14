@@ -21,7 +21,7 @@ type storySourceRecord struct {
 
 func storySources(t *testing.T) []storySourceRecord {
 	t.Helper()
-	data, err := os.ReadFile("/project/workplace/hd-prototype/catalog/story/profiles.json")
+	data, err := os.ReadFile("/project/workplace/hd-prototype/catalog/story-expanded/profiles.json")
 	if err != nil {
 		t.Skip("local original story sources unavailable")
 	}
@@ -36,7 +36,7 @@ func storySources(t *testing.T) []storySourceRecord {
 	if err != nil || fmt.Sprintf("%x", sha256.Sum256(tool)) != manifest.ToolSHA {
 		t.Fatal("stale source preparation")
 	}
-	if len(manifest.Records) != 53 || len(hdPortraitProfiles) != 53 {
+	if len(manifest.Records) != 75 || len(hdPortraitProfiles) != 75 {
 		t.Fatal("reviewed source count")
 	}
 	return manifest.Records

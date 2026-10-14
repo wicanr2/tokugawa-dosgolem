@@ -47,10 +47,13 @@
 | `workplace/hd-prototype/catalog/` | 本機 HD 覆蓋盤點、原版擷取、格式診斷與驗證；已生成圖像另存 assets/hd-b |
 | [tools/hd-preview.go](tools/hd-preview.go)、[tools/hd-preview_test.go](tools/hd-preview_test.go) | 單張 A-0 的離線原圖／HD／缺圖預覽與範圍保護測試；不接管遊戲或代表桌面執行中切換 |
 | [tools/hd-layer.go](tools/hd-layer.go) | 離線預覽與桌面試作共用的單張素材呈現與來源像素保護 |
-| [tools/hd-portraits.go](tools/hd-portraits.go) | 由 hd-story-prepare.py 生成的 53 個劇情來源、40／41 欄指紋、原圖、HD 檔名與圖片文字矩形；正常路徑只抽測 A-0 至 A-7 |
-| [tools/hd-story-prepare.py](tools/hd-story-prepare.py) | 核對已審查劇情圖的 DAT、四平面、精確共用、可見裁切及圖片文字矩形，產生 `catalog/story/` 原圖與 profiles.json；固定 GUI Docker，專案掛 `/project`、原版唯讀掛 `/original`、catalog 可寫掛 `/output`，`--go-output` 指定對照表輸出 |
+| [tools/hd-portraits.go](tools/hd-portraits.go) | 由 hd-story-prepare.py 生成的 75 個劇情來源、40／41 欄指紋、原圖、HD 檔名與圖片文字矩形；正常路徑抽測 A-0 至 A-7 及 GUNGI |
+| [tools/hd-story-prepare.py](tools/hd-story-prepare.py) | 核對已審查劇情圖的 DAT、四平面、精確共用、可見裁切及圖片文字矩形，產生 `catalog/story-expanded/` 原圖與 profiles.json；固定 GUI Docker，專案掛 `/project`、原版唯讀掛 `/original`、catalog 可寫掛 `/output`，`--go-output` 指定對照表輸出 |
+| `workplace/hd-prototype/catalog/story-expanded/` | 75 個劇情來源的準備、隔離建置及驗證；53 來源歷史收據保留於 catalog/story |
+| [tools/hd-terrain-extract.py](tools/hd-terrain-extract.py) | 核對 MAP_CHIP 的正常 RAM 四平面、IDA 圖塊讀取端及來源索引，細分 104 地面、26 物件、13 單位來源格；不是 HD 素材或正式遊戲索引集合。固定 GUI Docker，專案唯讀掛 `/project`、原版唯讀掛 `/original`、catalog 可寫掛 `/output`，執行 `python3 /project/tools/hd-terrain-extract.py` |
+| `workplace/hd-prototype/catalog/terrain/` | 原版地形、物件與單位來源格、總覽及擷取收據；原版研究輸出只留本機 |
 | [tools/hd-story_test.go](tools/hd-story_test.go) | 批次劇情來源、原版載入／繪製返回、診斷上限、裁切、地名、缺圖與遮擋測試；來源測試不作正常劇情實玩證據 |
-| [tools/verify-hd-story.py](tools/verify-hd-story.py) | 核對兩次 750M 收據、53 個來源、實際素材、二進位與建置輸入；固定 Python Docker 中專案唯讀掛 `/project`、`catalog/story/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-story.py` |
+| [tools/verify-hd-story.py](tools/verify-hd-story.py) | 核對兩次 750M 收據、75 個來源、實際素材、二進位與建置輸入；固定 Python Docker 中專案唯讀掛 `/project`、`catalog/story-expanded/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-story.py` |
 | [tools/hd-live.go](tools/hd-live.go)、[tools/hd-live_test.go](tools/hd-live_test.go) | 只讀原版素材、A-0 矩形與 VISUAL 全畫面繪製入口／返回，限制桌面替換資格 |
 | `workplace/hd-prototype/scroll/dosgolem-base/` | 固定 a9714eb 的獨立來源副本，執行時唯讀；外部 dosgolem 前進時保留既有驗證基準 |
 | [tools/presentation.go](tools/presentation.go)、[tools/presentation_test.go](tools/presentation_test.go) | 桌面試作的步進、畫面、普通滑鼠及原版狀態核對介面與游標層測試；預設無頭 |
@@ -120,7 +123,7 @@
 
 沿用固定 GUI image，內含 Pillow 9.4.0。掛載專案至 `/project` 唯讀、`original/game/` 至 `/original` 唯讀、`workplace/hd-prototype/catalog/` 至 `/output` 可寫，再依序執行上述擷取、裁切及覆蓋工具。Docker 的 UID、資源、網路與路徑檢查依本檔「Docker 邊界」。頭像桌面旗標為 `-hd-kao-source-dir` 與 `-hd-kao-dir`，預設分別讀 `catalog/kao/` 及 `catalog/kao/selected/`。原版逐張指紋保存在 `tools/hd-kao-profiles.go`。
 
-完整 GUI 驗證使用 `tools/verify-desktop.py --mode portraits` 或 `--mode portraits-missing`，必須先用 `tools/run-desktop.sh` 建置，保留輸出中的 engine、startup-probe 與執行檔。長流程依本檔既有 detached Docker 方法執行，容器內維持期限。已驗證範圍及最近收據見 CONTEXT。
+完整 GUI 驗證使用 `tools/verify-desktop.py --mode portraits` 或 `--mode portraits-missing`；加 `--include-council` 抽測軍議圖，必須先用 `tools/run-desktop.sh` 建置，保留輸出中的 engine、startup-probe 與執行檔。長流程依本檔既有 detached Docker 方法執行，容器內維持期限。已驗證範圍及最近收據見 CONTEXT。
 
 ## 生成 HD 素材的私人儲存庫保存
 
@@ -277,7 +280,7 @@ go run /project/tools/hd-preview.go /project/tools/hd-layer.go /project/tools/hd
   -hd /output/A-0-hd-b-v1.png -out /output/A-0-hd-preview-v1.png
 ```
 
-Go 預覽工作設定 `GOMAXPROCS=2` 與 `GOFLAGS=-p=2`，配合 2 CPU／64 程序限制。`-hd` 留空顯示原圖，指向不存在的 PNG 驗證缺圖備援；輸出檔名必須尚未存在。生成美術不隨 Git 提供，須先核對本機 `prototype.json` 的圖像與提示詞雜湊。以上只驗證離線呈現，未實作桌面執行中切換。
+Go 預覽工作設定 `GOMAXPROCS=2` 與 `GOFLAGS=-p=2`，配合 2 CPU／64 程序限制。`-hd` 留空顯示原圖，指向不存在的 PNG 驗證缺圖備援；輸出檔名必須尚未存在。生成美術與提示詞已依授權保存於 `assets/hd-b/`，以 `tools/archive-hd-art.py --verify-only` 核對索引。以上命令驗證離線呈現；桌面切換驗證見下節及 CONTEXT。
 
 桌面首張試作的契約與實際驗證見 RESEARCH-LOG 的「首張 HD 桌面試作契約」。沿用已存在的 GUI image ID，實際版本為 Go 1.24.13／Ebitengine 2.9.9；不重建 image，不改外部 dosgolem。下列輸出目錄與快取須已存在且為 UID/GID 1000:1000。
 
