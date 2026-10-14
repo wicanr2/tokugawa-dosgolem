@@ -10,7 +10,8 @@ import (
 const hdWindowRawSHA = "26d936f2a599e4c6a552de7a07a890e8ccbec3d51750e22383c7f2fde8ce9e50"
 
 type hdWindowDraw struct {
-	Rect image.Rectangle `json:"logical_rect"`
+	Rect    image.Rectangle `json:"logical_rect"`
+	EndStep int             `json:"completed_step"`
 }
 
 type hdWindowPending struct {
@@ -50,6 +51,7 @@ func (h *hdWindowState) observe(step int, eip, esp uint32, mem []byte) {
 	}
 	if p := h.PendingDraw; returned(p) {
 		if hdWindowSourceValid(mem) && len(h.Draws) < 64 {
+			p.Draw.EndStep = step
 			h.Draws = append(h.Draws, p.Draw)
 			h.event("window_draw_return", step, eip, p)
 		} else {

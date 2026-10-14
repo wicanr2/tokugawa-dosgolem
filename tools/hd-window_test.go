@@ -153,7 +153,7 @@ func TestWindowOriginalReturnAndSaveRestore(t *testing.T) {
 		t.Fatal("activated before original return")
 	}
 	h.observe(3, 0x19000, esp+4, mem)
-	if len(h.Draws) != 1 || h.Draws[0].Rect != image.Rect(80, 20, 208, 68) || !bytes.Equal(before, mem) {
+	if len(h.Draws) != 1 || h.Draws[0].Rect != image.Rect(80, 20, 208, 68) || h.Draws[0].EndStep != 3 || !bytes.Equal(before, mem) {
 		t.Fatal("original draw or read-only observation")
 	}
 	initial := append([]hdWindowDraw(nil), h.Draws...)

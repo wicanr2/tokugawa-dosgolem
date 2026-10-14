@@ -1546,3 +1546,78 @@ OP1 正常無輸入開場 200M、四張 X11 擷取及五次切換通過。HD 533
 美術準備 CONFORMED 範圍：20 張選定圖、48 動畫格、16 精確鏡像、一個空格、八個天空格、三個交鋒格及 buffer／留白核對通過；三頁總覽與原始生成圖逐項檢視。核對總表 SHA-256：81b62258274df16fbc1881e642ca64e46ec2527bb991c5a6f16009fb5a7a04e7；選定來源 SHA-256：958c4a55724f7b505a2e2f0e164554f24edf819d2ca747bb0ecfa8df617fa839。第一版 OP9 的緩衝區最後一個實體像素修正於第二版，BATTLE 的最後兩列範圍修正於第三版；舊版與工具快照保留。
 
 繪圖端整合仍為 DRAFT。profiles.json 的 paint_rects、preserve_regions 只是靜態來源中可見區與字區候選，沒有證明動態文字或 actor 的所有寫入端。它們沒有進入 production path。新來源註冊、調色盤、選單遮擋、執行中切換與正常動畫／戰鬥需另經 READY 審查及驗證；本節不把美術準備收據冒充遊戲正常路徑。五個 unsupported OZM、PCX 與全遊戲 HD 完成仍未通過。
+
+## 2026-10-15：20 項不透明來源、固定前景及已觀測遮擋 READY
+
+- 輸入沿前節固定 EXE／DAT、remaining/profiles.json SHA-256 958c4a55724f7b505a2e2f0e164554f24edf819d2ca747bb0ecfa8df617fa839，以及 v3 美術核對。原版畫面與原始索引逐項檢視，20 項的尺寸、四平面及有效區由同一來源資料核對。工具為固定 GUI Docker 的 Go 1.24.13、Python 3.11.2 及 Pillow 9.4.0。
+- 已證實：共用不透明入口維持 IDA 9.4 遊戲程式位址 sub_1C1BC／sub_1C084 的原始參數及自然返回契約。既有正常 750M 診斷中，本批新來源僅 OP5 出現；不把其他來源的註冊宣稱為正常玩家路徑驗收。
+- 已證實：正常無輸入開場的 OP5 複製返回於 32182644 步；來源已核對的主選單 WINDOW 於 46797968 步自然返回，矩形為 [232,150,408,246]。原始收據為 graphics/static/normal-intro/ready/receipt.json，視窗事件見 graphics/static/desktop-logo/palette/ready/desktop-logo.json。WINDOW 的原始 1152 bytes SHA 及 KAO 逐張來源資格沿既有已驗證觀測，不新增 guest 攔截。
+- READY：註冊 20 項 source-specific profile。單一 PaintRect 與多個 PaintRects 互斥；多區域均須非空、在來源內且不重疊。OP9 的有效三區避開藍色緩衝區。來源、幾何、自然返回與完整調色盤資格不放寬，來源尚未在正常流程抽測時明示限制。
+- READY：固定前景以來源矩形及十六位索引集合定義。只有已核對原圖內的固定字／緩衝區符合條件時，host 呈現複製當下原生像素，其他像素取 HD。原版來源及目前目的索引仍須完整相符；動態寫字、actor 或其他未知 VRAM 變化仍整區備援，不因落在字區而忽略差異。本契約不實作任何新的動態文字辨識。
+- READY：已驗證 WINDOW／KAO 的自然返回記錄 completed_step。較晚返回的視窗或頭像矩形從較早不透明圖的本次可見區扣除；較早者不阻止後畫圖像。保留原始繪圖資料及歷史可見區，僅在 host 呈現副本切割，最多 256 片段。原版視窗保存／還原沿原有來源資格及快照，遮擋備援不依賴 HD 前景檔是否存在。
+- 驗收：28 項實際來源的指紋、裁切、缺圖、有效區與固定前景；48 個動畫格、八個天空格、三個交鋒格、四條眼部來源及空格逐項走共同呈現；新舊及同索引遮擋、返回前後、保存／還原與超限保護。正常標題及缺圖各自然 200M，完整 RAM、十五欄及切換符合既有原版基準；正常 750M／390 事件首戰回歸維持。動態戰鬥、未出現來源及五項未知解碼、PCX、正式素材包不外推。
+# 2026-10-15：普通選單的 CPU 與 BIOS 缺口，READY
+
+輸入沿用網站 EXE，SHA-256 `2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a`。
+執行器基準為 dosgolem `a9714ebdab2ad6b529f81225472680f2b11f2842` 加本專案平台修正。
+以下位址均為 dosgolem CPU 的線性指令位址，不是檔案偏移。
+
+- 已證實：「歷史簡介」普通滑鼠按下／放開後，第 116451960 步在 `0x11B24` 的 `FD` 停止。收據為 `remaining/source-boundary/menu-history/receipt.json`。
+- 已證實：「離開遊戲」第 80014500 步在 `0x26E9A` 的 `CD 10` 停止，EAX 為 3。收據為同目錄的 `menu-exit/receipt.json`。
+- 平台前提：STD 只將 DF 設為 1，後續字串操作遞減索引。來源為 [Oracle x86 指令手冊](https://docs.oracle.com/cd/E19620-01/805-4693/instructionset-18/index.html) 及 [Intel 指令手冊](https://cdrdv2-public.intel.com/774492/325383-sdm-vol-2abcd.pdf)。
+- 平台前提：BIOS 模式 3 是 80×25 文字模式，頁面位於 `0xB8000`。來源為 [DOSBox Staging v0.82.2 模式表](https://github.com/dosbox-staging/dosbox-staging/blob/v0.82.2/src/ints/int10_modes.cpp)。
+
+審查後的 READY 範圍：支援無 prefix 的 STD，僅更新 DF，保留其他旗標、暫存器與記憶體；不接受尚未驗證的 prefix。使用真正的倒序重疊 MOVSB 驗證效果。BIOS 僅新增 AX=0003 的清畫面文字模式恢復，更新 BDA 的模式、80 欄、25 列、頁面及游標，清除八個文字頁為空白與屬性 07。重置本專案 VBE／埠索引狀態，保留鍵盤 BDA、其他 RAM 與 CPU 狀態。不擴充其他文字 BIOS 服務，不將文字畫面稱為 HD。
+
+修正在 `tools/dosgolem.patch` 與 `tools/video.go`，不修改外部 dosgolem。新收據放既有驗證目錄的 `platform/`，保留原停止版本。驗證包括平台回歸、原普通選單重跑，以及 HD 標題與首戰的原狀態比較。遇到下一項未支援服務時繼續明確停止，不補成功回傳。
+
+
+## 2026-10-15：20 項來源接入與 OP5 正常路徑，CONFORMED 限定範圍
+
+READY 的來源、美術及多區域／固定前景契約見本檔本批前節。新增 20 項來源均使用各自原始索引雜湊，完整／裁切、48 格動畫、八格天空、三格交鋒及四個眼部區域走實際呈現端測試。原版固定字形以來源索引保留；未知動態寫入不放寬指紋。後畫視窗與頭像以真正返回步數扣除可見片段，保留原始呼叫及矩形。
+
+- 首版四套件通過，研究入口 32.120 秒。無輸入正常 OP5 與缺圖各自然 200M；F6 三次切換，完整 RAM、十五欄與原無輸入基準一致，四張真實 X11 擷取各自符合呈現 PNG。
+- OP5 實際替換 142890 原生像素，對應 571560 呈現像素；348797 呈現像素改變。原版主選單矩形 [232,150,408,246] 的 67584 呈現像素排除於標題覆蓋，視窗保持 HD，文字保留。缺標題圖只使標題退回原圖，視窗不變。
+- 完整首戰 750M／390 事件、完整 RAM、十五欄、三次切換與三張真實 X11 通過，既有天氣及其他圖層不變。
+- 首版總表 remaining/runtime-verification-summary.json SHA-256 2c7c4dcf7cc3ff4188701df1b2900f35ac20522a69dd9fb8e354a02ab8eb7e60。收據及來源快照保留，之後平台版本另放 platform，不覆寫此版。
+- 本批新增正常來源只列 OP5。其餘 19 項通過來源與共同呈現測試，未逐項正常抽測。未知文字寫入及其他 palette 仍備援，不宣稱全遊戲 HD 完成。
+
+## 2026-10-15：五個 OZM 尾端及 PCX 的來源邊界
+
+只讀原始 DAT，SHA-256 de092d5ef59a3e790fd89c323dde1b447c8fe93f430043d1384a1565f27cef37。診斷工具 tools/hd-boundary-probe.py，Python 3.11.2／Pillow 9.4.0。輸出 remaining/source-boundary/facts.json。以下均為 DAT 檔案偏移與 payload 相對位置，非 IDA 或 guest 線性位址。
+
+| 來源 | DAT 檔案偏移 | payload bytes | 停止位置 |
+|---|---:|---:|---|
+| B-6／B-7／C-10.OZM，相同 payload | 1062387 為 B-6 | 17689 | 第四平面已有 5999／6000 bytes，下一個 literal 讀取已達 EOF |
+| E-4.OZM | 1568487 | 13953 | 第四平面已有 5999／6000 bytes，下一個 literal 讀取已達 EOF |
+| OP-FULL.OZM | 2362614 | 63949 | 第四平面已有 31999／32000 bytes，下一個 literal 讀取已達 EOF |
+| RAINEND.PCX | 2830614 | 97864 | Pillow 正常解碼為 640×480、256 色索引圖；原版使用端未確認 |
+
+前三平面及第四平面已知前綴的雜湊保存於 facts.json。五個 OZM 只缺右下角八個像素的最高位元，該位元仍未知；不從鄰近像素、其他版本或黑色假設補入。三組 payload SHA 依序為 5adbdc7565e03b848456328c140bb99ae14f6d1d14c8d62dc811b92efaa29aa9、4b542aa5856d39e6d9d3f454cfb7829229804819471f7ded137106e7c5d7e0ea、2e1766de32820be66ded41f855297fe622edcd5fcef6f68eefd6c35656f78bae。
+
+PCX payload SHA-256 78d0179bac1793eabb170925fd9b24378249c83c49320eaac27c8f70f65c1763。原圖為 Rainbow Multimedia 標誌，僅存本機參考；未由尺寸推定正式畫面模式，也未新增 256 色 HD 路徑。正常選單來源查證先遇到 CPU／BIOS 缺口，證據及 READY 範圍見本檔本批平台節。
+
+## 2026-10-15：歷史簡介的 word RCR，READY
+
+STD 版本的普通歷史簡介在第 116451971 步停止，dosgolem 線性位址 `0x11B47`，原始 bytes `66 D1 DB`，為 `RCR BX,1`。EXE 與執行器基準沿用本批前節。收據為 `remaining/source-boundary/menu-history/platform/ready/receipt.json`。這次已自然載入 OP2.OZM，但尚未完成該畫面繪製，不列為 HD 正常驗收。
+
+再次比對平台路由，沿用「復古平台規格優先」。[Oracle RCR 手冊](https://docs.oracle.com/cd/E19620-01/805-4693/instructionset-117/index.html) 與本批已引用 Intel 指令手冊定義：16 位元原值右移一位，原 CF 進入 bit15，原 bit0 進入 CF；單位旋轉的 OF 為結果 bit15 XOR bit14。其他旗標不變。
+
+READY 僅新增 operand16、D1 /3、暫存器目的、固定一位的形式。保留高 16 位、其餘暫存器及記憶體；未驗證的記憶體、立即數次數與其他 prefix 保持拒絕。以全部八個目的暫存器、CF 兩種輸入、正負／零／單位元與原 OF 兩值驗證結果及不受影響狀態。實作仍只改專案平台補丁，不修改外部 dosgolem。
+
+## 2026-10-15：RCR 平台切片與歷史簡介查證結果
+
+RCR 的 READY 範圍實作於專案補丁，八個目的暫存器與全部列出的 carry／overflow 案例通過。最終四套件通過，研究入口 38.639 秒。正常 OP5 再次自然 200M、完整首戰 750M／390 事件的完整 RAM、十五欄、原圖／HD／還原及 X11 通過。缺圖證據沿用 STD 平台版本；來源核對證實兩版只差 CPU 補丁及 CPU 回歸測試，呈現程式及全部圖片完全相同。
+
+最終平台總表 remaining/runtime/rcr/verification-summary.json SHA-256 bd9a8808a12469a7dffb63f22436ac4bf50c44ab3d32c2318b100f7ae641b216。普通歷史簡介收據 SHA-256 d30733b5b420cee4f1e9ac02cee5a326d4ab57b120232135d0750b47587dbaaa；普通離開的版本及限制保持平台節記錄。
+
+歷史簡介普通滑鼠按下／放開各在 80M／81M，自然執行到 600M 預算，未遇未支援服務。正常載入 OP2、OP2_P、OP4、OP5、VISUAL、6、11、19、28、43、OP8、OP9、OP-FULL，550829475 步再載入 OP5，最後原生畫面目視為主選單。這證明這一段原版普通操作；特殊繪圖尚未被現有共同不透明觀測涵蓋，不列成開場 HD 正常驗收。
+
+## 2026-10-15：OP-FULL 單次正常 RAM 的尾端恢復
+
+以下是原版正常載入 RAM 的證據，不是補入原 DAT 的 byte。輸入 DAT／EXE 與本批前節一致；工具 tools/hd-tail-recover.py，Python 3.11.2。位址基準為 DAT 檔案偏移、平面內 row-major 偏移及載入事件保留的 guest 線性基址，三者分開記錄。
+
+- 原版 OP-FULL 載入返回為第 529234797 步。前三個完整平面的 SHA 與靜態解碼逐一一致。
+- 第四平面只有最後一 byte 未知。已知 column-major 前綴轉成 row-major 後，固定其他 31999 bytes，完整枚舉 0..255；只有 170／0xAA 的完整平面 SHA 符合原版收據。
+- 四平面全部核對一致，完整 640×400 索引 SHA-256 c9b332bfc54a189abfc4b7caf3c1821738624dedd41f19332ee5e4b44a1716a3。來源證據 remaining/source-boundary/OP-FULL-runtime/receipt.json SHA-256 d5b43b21ed717cef2a426c2fff9cb46903f916d88651345030b9e05403ee62cf。
+- 已證實範圍只限該次正常 RAM 值。未證實其他播放歷史的尾端穩定性、原始檔缺失 literal 或 HD 繪圖端。DAT 及靜態解碼器保持不變；覆蓋表仍列五項靜態解碼未知，另列一項 runtime tail observation。

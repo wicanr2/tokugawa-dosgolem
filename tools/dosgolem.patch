@@ -634,7 +634,19 @@
  	case op == 0xac:
  		if operand16 || segmentOverride >= 0 || repe {
  			return fail("LODSB 不接受目前的 prefix")
-@@ -1805,8 +2168,8 @@
+@@ -1668,6 +2031,11 @@
+ 		} else {
+ 			c.R[ESI]++
+ 		}
++	case op == 0xfd:
++		if operand16 || segmentOverride >= 0 || repe || repne {
++			return fail("STD 不接受目前的 prefix")
++		}
++		c.EFlags |= DF
+ 	case op == 0xfc:
+ 		if operand16 || segmentOverride >= 0 || repe {
+ 			return fail("CLD 不接受目前的 prefix")
+@@ -1805,8 +2173,8 @@
  			return fail(e.Error())
  		}
  		group := (modrm >> 3) & 7
@@ -645,7 +657,7 @@
  		}
  		if group == 4 {
  			target := c.R[modrm&7]
-@@ -1853,10 +2216,13 @@
+@@ -1853,10 +2221,13 @@
  			c.EFlags = c.EFlags&^CF | carry
  			break
  		}
@@ -660,7 +672,7 @@
  			}
  			target, ok := c.readSegment32(c.Seg[seg], addr)
  			if !ok {
-@@ -1996,6 +2362,14 @@
+@@ -1996,6 +2367,14 @@
  			return fail(e.Error())
  		}
  		c.EIP = uint32(int64(c.EIP) + int64(int32(delta)))
@@ -675,7 +687,7 @@
  	case op == 0xee:
  		if operand16 || segmentOverride >= 0 || repe || repne {
  			return fail("EE prefix未支援")
-@@ -2131,7 +2505,7 @@
+@@ -2131,7 +2510,7 @@
  		}
  		group := (modrm >> 3) & 7
  		if operand16 {
@@ -684,7 +696,7 @@
  				return fail("81 word形狀尚未支援")
  			}
  			imm, e := c.fetch16()
-@@ -2139,14 +2513,22 @@
+@@ -2139,14 +2518,22 @@
  				return fail(e.Error())
  			}
  			reg := modrm & 7
@@ -709,7 +721,7 @@
  			}
  			c.R[reg] = c.R[reg]&0xffff0000 | uint32(v)
  			c.setLogicFlags16(v)
-@@ -2276,6 +2658,38 @@
+@@ -2276,6 +2663,38 @@
  			return fail(e.Error())
  		}
  		group := (modrm >> 3) & 7
@@ -748,7 +760,7 @@
  
  		if modrm>>6 != 3 && group == 5 && !operand16 && segmentOverride < 0 && !repe && !repne {
  			seg, addr, e := c.decodeAddress32(modrm)
-@@ -2320,13 +2734,19 @@
+@@ -2320,13 +2739,19 @@
  			break
  		}
  
@@ -770,7 +782,7 @@
  			c.R[reg] = c.R[reg]&0xffff0000 | uint32(v)
  			break
  		}
-@@ -2340,10 +2760,13 @@
+@@ -2340,10 +2765,13 @@
  			break
  		}
  
@@ -785,7 +797,7 @@
  			}
  			imm, e := c.fetch8()
  			if e != nil {
-@@ -2364,6 +2787,23 @@
+@@ -2364,6 +2792,23 @@
  			}
  			break
  		}
@@ -809,7 +821,7 @@
  		if operand16 && modrm>>6 == 3 && group == 1 && segmentOverride < 0 && !repe && !repne {
  			imm, e := c.fetch8()
  			if e != nil {
-@@ -2490,6 +2930,28 @@
+@@ -2490,6 +2935,28 @@
  		switch group {
  		case 0:
  			c.R[rm] = c.add32(c.R[rm], uint32(int32(int8(imm))))
@@ -838,7 +850,7 @@
  		case 4:
  			c.R[rm] &= uint32(int32(int8(imm)))
  			c.setLogicFlags(c.R[rm])
-@@ -2509,10 +2971,27 @@
+@@ -2509,10 +2976,27 @@
  			return fail(e.Error())
  		}
  		group := (modrm >> 3) & 7
@@ -867,7 +879,7 @@
  			}
  			imm, e := c.fetch8()
  			if e != nil {
-@@ -2708,7 +3187,7 @@
+@@ -2708,7 +3192,7 @@
  		} else {
  			return fail(fmt.Sprintf("ModRM %02X 尚未支援", modrm))
  		}
@@ -876,7 +888,7 @@
  		if operand16 || segmentOverride >= 0 || repe || repne {
  			return fail("byte shift prefix未支援")
  		}
-@@ -2717,10 +3196,32 @@
+@@ -2717,10 +3201,32 @@
  			return fail(e.Error())
  		}
  		group := (modrm >> 3) & 7
@@ -909,7 +921,7 @@
  		if op == 0xc0 {
  			count, e = c.fetch8()
  			if e != nil {
-@@ -2760,7 +3261,7 @@
+@@ -2760,7 +3266,7 @@
  		}
  		c.setReg8(rm, result)
  	case op == 0xd3:
@@ -918,7 +930,7 @@
  			return fail("D3 prefix尚未支援")
  		}
  		modrm, e := c.fetch8()
-@@ -2768,7 +3269,32 @@
+@@ -2768,7 +3274,32 @@
  			return fail(e.Error())
  		}
  		group := (modrm >> 3) & 7
@@ -952,7 +964,7 @@
  			return fail("D3形狀尚未支援")
  		}
  		count := uint(c.R[ECX] & 31)
-@@ -2777,6 +3303,19 @@
+@@ -2777,6 +3308,19 @@
  		}
  		rm := modrm & 7
  		value := c.R[rm]
@@ -972,7 +984,7 @@
  		result := value >> count
  		carry := value >> (count - 1) & 1
  		if group == 4 {
-@@ -2806,6 +3345,23 @@
+@@ -2806,6 +3350,23 @@
  			return fail(e.Error())
  		}
  		group := (modrm >> 3) & 7
@@ -996,7 +1008,7 @@
  		if modrm>>6 == 3 && group == 5 {
  			rm := modrm & 7
  			value := c.R[rm]
-@@ -2828,7 +3384,7 @@
+@@ -2828,7 +3389,7 @@
  			break
  		}
  
@@ -1005,7 +1017,7 @@
  			return fail(fmt.Sprintf("D1 ModRM %02X 尚未支援", modrm))
  		}
  		rm := int(modrm & 7)
-@@ -2842,6 +3398,10 @@
+@@ -2842,6 +3403,10 @@
  			result = value<<1 | carryIn
  			carry = value >> 31
  			overflow = result>>31 ^ carry
@@ -1016,7 +1028,35 @@
  		} else {
  			result = value>>1 | value<<31
  			carry = value & 1
-@@ -2942,6 +3502,39 @@
+@@ -2865,7 +3430,7 @@
+ 				return fail(e.Error())
+ 			}
+ 			group := (modrm >> 3) & 7
+-			if modrm>>6 != 3 || (group != 0 && group != 4 && group != 5 && group != 7) {
++			if modrm>>6 != 3 || (group != 0 && group != 4 && group != 5 && group != 7 && !(group == 3 && op == 0xd1)) {
+ 				return fail("word shift形狀未支援")
+ 			}
+ 			count := byte(1)
+@@ -2876,6 +3441,18 @@
+ 				}
+ 			}
+ 			count &= 31
++			if group == 3 {
++				rm := modrm & 7
++				value := uint16(c.R[rm])
++				result := value>>1 | uint16(c.EFlags&CF)<<15
++				c.EFlags &^= CF | OF
++				c.EFlags |= uint32(value & 1)
++				if result>>15^(result>>14&1) != 0 {
++					c.EFlags |= OF
++				}
++				c.R[rm] = c.R[rm]&0xffff0000 | uint32(result)
++				break
++			}
+ 			if group == 0 {
+ 				if count >= 16 {
+ 					return fail("word ROL count子集未支援")
+@@ -2942,6 +3519,39 @@
  		}
  		group := (modrm >> 3) & 7
  		if modrm>>6 != 3 || (group != 4 && group != 5 && group != 7) {
@@ -1056,7 +1096,7 @@
  			return fail(fmt.Sprintf("ModRM %02X 尚未支援", modrm))
  		}
  		countByte, e := c.fetch8()
-@@ -2975,6 +3568,17 @@
+@@ -2975,6 +3585,17 @@
  		if e != nil {
  			return fail(e.Error())
  		}
@@ -1074,7 +1114,7 @@
  		if modrm>>6 == 3 && (modrm>>3)&7 == 4 {
  			result := uint16(c.reg8(0)) * uint16(c.reg8(int(modrm&7)))
  			c.R[EAX] = c.R[EAX]&0xffff0000 | uint32(result)
-@@ -3088,8 +3692,8 @@
+@@ -3088,8 +3709,8 @@
  			}
  			dst := (modrm >> 3) & 7
  			c.R[dst] = c.R[dst]&0xffff0000 | uint32(value)
@@ -1085,7 +1125,7 @@
  			if e != nil {
  				return fail(e.Error())
  			}
-@@ -3247,6 +3851,16 @@
+@@ -3247,6 +3868,16 @@
  			return fail(e.Error())
  		}
  		source := c.R[(modrm>>3)&7]
@@ -1102,7 +1142,7 @@
  		if operand16 && segmentOverride == SegSS {
  			// Spec 185: SS word store，僅無 SIB 的基底／disp8 形式。
  			mode, base := modrm>>6, modrm&7
-@@ -3404,7 +4018,7 @@
+@@ -3404,7 +4035,7 @@
  			return fail(fmt.Sprintf("segment 編碼 %d 無效", encoding))
  		}
  		value := c.Seg[segmentByEncoding[encoding]]
@@ -1111,7 +1151,7 @@
  			seg, addr, e := c.decodeAddress32(modrm)
  			if e != nil {
  				return fail(e.Error())
-@@ -3414,13 +4028,17 @@
+@@ -3414,13 +4045,17 @@
  			}
  			break
  		}
@@ -1132,7 +1172,7 @@
  			}
  		} else if operand16 && segmentOverride < 0 && modrm>>6 == 3 {
  			reg := modrm & 7
-@@ -3452,13 +4070,13 @@
+@@ -3452,13 +4087,13 @@
  		if e != nil {
  			return fail(e.Error())
  		}
@@ -1149,7 +1189,7 @@
  			}
  			v, ok := c.readSegment8(c.Seg[seg], addr)
  			if !ok {
-@@ -3595,7 +4213,7 @@
+@@ -3595,7 +4230,7 @@
  		}
  		destination := segmentByEncoding[encoding]
  		var value uint16
@@ -1158,7 +1198,7 @@
  			seg, addr, e := c.decodeAddress32(modrm)
  			if e != nil {
  				return fail(e.Error())
-@@ -3611,7 +4229,7 @@
+@@ -3611,7 +4246,7 @@
  			break
  		}
  
@@ -1167,7 +1207,7 @@
  			return fail(fmt.Sprintf("16-bit segment ModRM %02X 尚未支援", modrm))
  		} else if modrm>>6 == 3 {
  			value = uint16(c.R[modrm&7])
-@@ -3646,7 +4264,7 @@
+@@ -3646,7 +4281,7 @@
  		}
  		c.Seg[destination] = value
  	case op == 0x88:
@@ -1176,7 +1216,7 @@
  			return fail("88 不接受 operand-size override")
  		}
  		modrm, e := c.fetch8()
-@@ -3654,12 +4272,18 @@
+@@ -3654,12 +4289,18 @@
  			return fail(e.Error())
  		}
  		value := c.reg8(int((modrm >> 3) & 7))
@@ -1196,7 +1236,7 @@
  			}
  			if !c.writeSegment8(c.Seg[seg], addr, value) {
  				return fail("MOV byte寫入失敗")
-@@ -3719,6 +4343,18 @@
+@@ -3719,6 +4360,18 @@
  		if operand16 || segmentOverride >= 0 || repe || repne {
  			return fail("NOP prefix尚未支援")
  		}
@@ -1215,7 +1255,7 @@
  	case op == 0x87:
  		if segmentOverride >= 0 || repe || repne {
  			return fail("XCHG prefix尚未支援")
-@@ -3726,6 +4362,17 @@
+@@ -3726,6 +4379,17 @@
  		modrm, e := c.fetch8()
  		if e != nil {
  			return fail(e.Error())
@@ -1233,7 +1273,7 @@
  		}
  		seg, addr, e := c.decodeAddress32(modrm)
  		if e != nil {
-@@ -3927,10 +4574,19 @@
+@@ -3927,10 +4591,19 @@
  			if e != nil {
  				return fail(e.Error())
  			}
@@ -1256,7 +1296,7 @@
  			break
  		}
  		if operand16 || segmentOverride >= 0 || repe || repne {
-@@ -3964,6 +4620,15 @@
+@@ -3964,6 +4637,15 @@
  		}
  		if modrm>>6 == 3 {
  			c.sub8(c.reg8(int(modrm&7)), c.reg8(int((modrm>>3)&7)))
@@ -1272,7 +1312,7 @@
  			break
  		}
  		if modrm>>6 != 1 || modrm&7 == 4 {
-@@ -4010,6 +4675,26 @@
+@@ -4010,6 +4692,26 @@
  		}
  		c.R[EAX] &= value
  		c.setLogicFlags(c.R[EAX])
@@ -1299,7 +1339,7 @@
  	case op == 0x0b:
  		if operand16 {
  			if segmentOverride >= 0 || repe || repne {
-@@ -4086,7 +4771,7 @@
+@@ -4086,7 +4788,7 @@
  		c.setReg8(0, result)
  		c.setLogicFlags8(result)
  	case op == 0x3a:
@@ -1308,7 +1348,7 @@
  			return fail("CMP byte prefix未支援")
  		}
  		modrm, e := c.fetch8()
-@@ -4102,6 +4787,9 @@
+@@ -4102,6 +4804,9 @@
  				return fail(e.Error())
  			}
  			var ok bool
@@ -1318,7 +1358,7 @@
  			value, ok = c.readSegment8(c.Seg[seg], addr)
  			if !ok {
  				return fail("CMP byte來源越界")
-@@ -4117,6 +4805,44 @@
+@@ -4117,6 +4822,44 @@
  			return fail(e.Error())
  		}
  		c.sub8(uint8(c.R[EAX]), value)
@@ -1363,7 +1403,7 @@
  	case op == 0x74:
  		if operand16 {
  			return fail("74 不接受 operand-size override")
-@@ -4134,7 +4860,26 @@
+@@ -4134,7 +4877,26 @@
  			return fail(e.Error())
  		}
  		if segmentOverride == SegES {
@@ -1391,7 +1431,7 @@
  				return fail("ES extended僅支援MOVZX byte")
  			}
  			modrm, e := c.fetch8()
-@@ -4152,7 +4897,12 @@
+@@ -4152,7 +4914,12 @@
  			if !ok {
  				return fail("ES MOVZX來源越界")
  			}
@@ -1405,7 +1445,7 @@
  			break
  		}
  
-@@ -4204,6 +4954,52 @@
+@@ -4204,6 +4971,52 @@
  			break
  		}
  
@@ -1458,7 +1498,7 @@
  		if extended == 0xaf && !operand16 && segmentOverride < 0 && !repe && !repne {
  			modrm, e := c.fetch8()
  			if e != nil {
-@@ -4240,47 +5036,51 @@
+@@ -4240,47 +5053,51 @@
  			c.R[dst] = result
  			break
  		}
@@ -1525,6 +1565,7 @@
  			if !okOffset || !okSelector {
  				return fail(fmt.Sprintf("LFS pointer read %04X:%08X 未處理", c.Seg[SegDS], addr))
  			}
+
 --- a/internal/cpu386/cpu_test.go
 +++ b/internal/cpu386/cpu_test.go
 @@ -224,7 +224,7 @@

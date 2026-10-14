@@ -7,9 +7,9 @@
   "counts": {
     "png": 797,
     "prompts": 158,
-    "bytes": 578495190
+    "bytes": 578511578
   },
-  "archive_tool_sha256": "96664bbab283455c89be1a6c8795961a9c8da5fc68e48b4787a3589efc87573c",
+  "archive_tool_sha256": "7b4d0a14a8c6c6be313aa0cad4e25fb8f2589e12549a27c66ace75cb3fd5cc0a",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -15406,7 +15406,7 @@
       "prompts": [
         "art/ANIME01-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1248,
         600
@@ -15572,7 +15572,7 @@
       "prompts": [
         "art/ANIME01-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1248,
         600
@@ -15786,7 +15786,7 @@
       "prompts": [
         "art/ANIME03-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1248,
         600
@@ -15993,7 +15993,7 @@
       "prompts": [
         "art/ANIME04-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1248,
         600
@@ -16207,7 +16207,7 @@
       "prompts": [
         "art/ANIME05-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1248,
         600
@@ -16414,7 +16414,7 @@
         "art/ANIME06-hd-b-v1.prompt.txt",
         "art/ANIME05-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1248,
         600
@@ -16628,7 +16628,7 @@
       "prompts": [
         "art/ANIME07-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1248,
         600
@@ -16794,7 +16794,7 @@
       "prompts": [
         "art/ANIME07-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1248,
         600
@@ -16875,7 +16875,7 @@
       "prompts": [
         "art/BATTLE-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1280,
         800
@@ -16954,7 +16954,7 @@
       "prompts": [
         "art/END-11-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1280,
         798
@@ -17066,7 +17066,7 @@
         "art/END-11B-hd-b-v1.prompt.txt",
         "art/END-11-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1280,
         798
@@ -17145,7 +17145,7 @@
       "prompts": [
         "art/END-2-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1280,
         800
@@ -17366,7 +17366,7 @@
       "prompts": [
         "art/END-2B-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1280,
         800
@@ -17446,7 +17446,7 @@
       "prompts": [
         "art/JIMEN_0-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         704,
         272
@@ -17526,7 +17526,7 @@
       "prompts": [
         "art/JIMEN_1-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         704,
         272
@@ -17635,7 +17635,7 @@
       "prompts": [
         "art/MAP_WAKU-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         768,
         240
@@ -17764,7 +17764,7 @@
       "prompts": [
         "art/OP2_P-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         768,
         238
@@ -17857,7 +17857,7 @@
       "prompts": [
         "art/OP5-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "normal title/menu and individual missing asset verified",
       "size": [
         1280,
         800
@@ -17992,7 +17992,7 @@
       "prompts": [
         "art/OP6-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1280,
         800
@@ -18137,7 +18137,7 @@
       "prompts": [
         "art/OP9-hd-b-v1.prompt.txt"
       ],
-      "status": "reviewed calibrated art; runtime source registration and normal path validation pending",
+      "status": "source and shared opaque consumer integrated; normal path not individually sampled",
       "size": [
         1280,
         800
@@ -18149,6 +18149,27 @@
       "bytes": 85450,
       "sha256": "958c4a55724f7b505a2e2f0e164554f24edf819d2ca747bb0ecfa8df617fa839",
       "local_source": "workplace/hd-prototype/catalog/remaining/profiles.json"
+    },
+    {
+      "path": "art/remaining/runtime-profile-source.txt",
+      "kind": "registration-metadata",
+      "bytes": 4189,
+      "sha256": "6272411286990fde6748f0ca37edb97c27f977434f3bd8b1344cf1326ceace27",
+      "local_source": "workplace/hd-prototype/catalog/remaining/runtime-profile-source.txt"
+    },
+    {
+      "path": "art/remaining/runtime-profiles-v1.json",
+      "kind": "registration-metadata",
+      "bytes": 10975,
+      "sha256": "679f5074be555445ef670fef60b0c8ab2af87c7179da1cabe521170c2373a476",
+      "local_source": "workplace/hd-prototype/catalog/remaining/runtime-profiles-v1.json"
+    },
+    {
+      "path": "art/remaining/runtime-ready-v1.json",
+      "kind": "registration-metadata",
+      "bytes": 1224,
+      "sha256": "b37280e1304b8c5809ecf9be02b27fd2f4eaaba311680209551bda3525d669f1",
+      "local_source": "workplace/hd-prototype/catalog/remaining/runtime-ready-v1.json"
     },
     {
       "path": "art/remaining/sources.json",

@@ -1,0 +1,43 @@
+{
+  "status": "READY",
+  "classification": "common opaque source registration, static native foreground and observed later window/KAO occlusion",
+  "source_profiles_sha256": "958c4a55724f7b505a2e2f0e164554f24edf819d2ca747bb0ecfa8df617fa839",
+  "art_verification_sha256": "81b62258274df16fbc1881e642ca64e46ec2527bb991c5a6f16009fb5a7a04e7",
+  "source_names": [
+    "ANIME01.OZM",
+    "ANIME02.OZM",
+    "ANIME03.OZM",
+    "ANIME04.OZM",
+    "ANIME05.OZM",
+    "ANIME06.OZM",
+    "ANIME07.OZM",
+    "ANIME08.OZM",
+    "BATTLE.OZM",
+    "END-11.OZM",
+    "END-11B.OZM",
+    "END-2.OZM",
+    "END-2B.OZM",
+    "MAP_WAKU.OZM",
+    "OP2_P.OZM",
+    "OP5.OZM",
+    "OP6.OZM",
+    "OP9.OZM",
+    "JIMEN_0.OZM",
+    "JIMEN_1.OZM"
+  ],
+  "static_foreground_only": true,
+  "dynamic_VRAM_changes_still_require_original_index_equality": true,
+  "window_original_receipt_sha256": "446fb185e5e735d37ac8d27b630d0c57e34bc04b594e13aedcf89d485b18b7e8",
+  "window_original_return_step": 46797968,
+  "window_original_rect": [
+    232,
+    150,
+    408,
+    246
+  ],
+  "original_title_return_step": 32182644,
+  "observed_later_occlusion_only": true,
+  "maximum_fragments": 256,
+  "new_guest_writes": false,
+  "new_gameplay_or_save_rules": false
+}

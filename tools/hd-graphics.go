@@ -42,6 +42,39 @@ func graphicsFragmentCount(draws []graphicsDrawRecord) int {
 	return n
 }
 
+// 使用已核對的較晚自然返回；切割呈現副本，不改原始繪圖紀錄。
+func graphicsOcclude(draw graphicsDrawRecord, windows []hdWindowDraw, portraits []hdKaoDraw) graphicsDrawRecord {
+	visible := append([]image.Rectangle(nil), draw.VisibleRects...)
+	if draw.VisibleRects == nil {
+		visible = []image.Rectangle{draw.DestRect}
+	}
+	cut := func(rect image.Rectangle, step int) {
+		if step <= draw.EndStep {
+			return
+		}
+		if rect.Empty() || !rect.In(image.Rect(0, 0, 640, 400)) {
+			visible = []image.Rectangle{}
+			return
+		}
+		var next []image.Rectangle
+		for _, r := range visible {
+			next = append(next, graphicsSubtract(r, rect)...)
+		}
+		if len(next) > 256 {
+			next = nil
+		}
+		visible = append([]image.Rectangle{}, next...)
+	}
+	for _, window := range windows {
+		cut(window.Rect, window.EndStep)
+	}
+	for _, portrait := range portraits {
+		cut(portrait.Rect, portrait.EndStep)
+	}
+	draw.VisibleRects = visible
+	return draw
+}
+
 func graphicsDestination(esp uint32, mem []byte) (image.Rectangle, bool) {
 	if uint64(esp)+24 > uint64(len(mem)) {
 		return image.Rectangle{}, false
@@ -119,10 +152,12 @@ type hdGraphicsPair struct {
 }
 
 type hdGraphicsReport struct {
-	Resource      string          `json:"resource"`
-	Rect          image.Rectangle `json:"rect"`
-	Mode          string          `json:"mode"`
-	PaintedNative int             `json:"painted_native_pixels"`
+	Resource        string            `json:"resource"`
+	Rect            image.Rectangle   `json:"rect"`
+	Mode            string            `json:"mode"`
+	PaintedNative   int               `json:"painted_native_pixels"`
+	PreservedNative int               `json:"preserved_native_pixels,omitempty"`
+	VisibleRects    []image.Rectangle `json:"visible_rectangles,omitempty"`
 }
 
 func newHDGraphicsPair(profile hdGraphicsProfile, source []byte, asset image.Image, scale int) hdGraphicsPair {
@@ -131,9 +166,33 @@ func newHDGraphicsPair(profile hdGraphicsProfile, source []byte, asset image.Ima
 		return p
 	}
 	p.Source = append([]byte(nil), source...)
+	p.Profile.PaintRects = append([]image.Rectangle(nil), profile.PaintRects...)
+	p.Profile.Preserve = append([]hdGraphicsPreserve(nil), profile.Preserve...)
 	if profile.PaintRect != (image.Rectangle{}) && (profile.PaintRect.Empty() || !profile.PaintRect.In(image.Rect(0, 0, profile.Source.Width, profile.Source.Height))) {
 		p.Reason = "fallback_paint_region"
 		return p
+	}
+	if len(profile.PaintRects) > 64 || len(profile.Preserve) > 64 || (len(profile.PaintRects) > 0 && profile.PaintRect != (image.Rectangle{})) {
+		p.Reason = "fallback_paint_region"
+		return p
+	}
+	for i, rect := range profile.PaintRects {
+		if rect.Empty() || !rect.In(image.Rect(0, 0, profile.Source.Width, profile.Source.Height)) {
+			p.Reason = "fallback_paint_region"
+			return p
+		}
+		for _, old := range profile.PaintRects[:i] {
+			if rect.Overlaps(old) {
+				p.Reason = "fallback_paint_region"
+				return p
+			}
+		}
+	}
+	for _, region := range profile.Preserve {
+		if region.Rect.Empty() || !region.Rect.In(image.Rect(0, 0, profile.Source.Width, profile.Source.Height)) || region.Indices == 0 {
+			p.Reason = "fallback_preserve_region"
+			return p
+		}
 	}
 	p.Reason = "fallback_missing_asset"
 	if asset == nil {
@@ -147,6 +206,16 @@ func newHDGraphicsPair(profile hdGraphicsProfile, source []byte, asset image.Ima
 	}
 	p.Reason = "ready"
 	return p
+}
+
+func (p hdGraphicsPair) preserves(x, y int) bool {
+	index := p.Source[y*p.Profile.Source.Width+x]
+	for _, region := range p.Profile.Preserve {
+		if image.Pt(x, y).In(region.Rect) && region.Indices&(uint16(1)<<index) != 0 {
+			return true
+		}
+	}
+	return false
 }
 
 func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsDrawRecord, enabled bool) hdGraphicsReport {
@@ -188,11 +257,14 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 	if len(visible) > 256 {
 		return r
 	}
-	paint := p.Profile.PaintRect
-	if paint.Empty() {
-		paint = image.Rect(0, 0, p.Profile.Source.Width, p.Profile.Source.Height)
+	paints := p.Profile.PaintRects
+	if len(paints) == 0 {
+		paint := p.Profile.PaintRect
+		if paint.Empty() {
+			paint = image.Rect(0, 0, p.Profile.Source.Width, p.Profile.Source.Height)
+		}
+		paints = []image.Rectangle{paint}
 	}
-	allowed := draw.SourceRect.Intersect(paint).Add(draw.DestRect.Min.Sub(draw.SourceRect.Min))
 	var fragments []image.Rectangle
 	for i, f := range visible {
 		if f.Empty() || !f.In(draw.DestRect) {
@@ -203,9 +275,15 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 				return r
 			}
 		}
-		if f = f.Intersect(allowed); !f.Empty() {
-			fragments = append(fragments, f)
+		for _, paint := range paints {
+			allowed := draw.SourceRect.Intersect(paint).Add(draw.DestRect.Min.Sub(draw.SourceRect.Min))
+			if rect := f.Intersect(allowed); !rect.Empty() {
+				fragments = append(fragments, rect)
+			}
 		}
+	}
+	if len(fragments) > 256 {
+		return r
 	}
 	r.Mode = "fallback_no_visible_art"
 	if len(fragments) == 0 {
@@ -221,14 +299,27 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 	}
 	for _, f := range fragments {
 		src := f.Add(draw.SourceRect.Min.Sub(draw.DestRect.Min))
-		for y := 0; y < f.Dy()*p.Scale; y++ {
-			for x := 0; x < f.Dx()*p.Scale; x++ {
-				out.SetNRGBA(f.Min.X*p.Scale+x, f.Min.Y*p.Scale+y,
-					rgbaAt(p.Asset, src.Min.X*p.Scale+x, src.Min.Y*p.Scale+y))
+		for y := 0; y < f.Dy(); y++ {
+			for x := 0; x < f.Dx(); x++ {
+				preserved := p.preserves(src.Min.X+x, src.Min.Y+y)
+				if preserved {
+					r.PreservedNative++
+				} else {
+					r.PaintedNative++
+				}
+				for dy := 0; dy < p.Scale; dy++ {
+					for dx := 0; dx < p.Scale; dx++ {
+						pixel := rgbaAt(p.Asset, (src.Min.X+x)*p.Scale+dx, (src.Min.Y+y)*p.Scale+dy)
+						if preserved {
+							pixel = rgbaAt(s.Image, f.Min.X+x, f.Min.Y+y)
+						}
+						out.SetNRGBA((f.Min.X+x)*p.Scale+dx, (f.Min.Y+y)*p.Scale+dy, pixel)
+					}
+				}
 			}
 		}
-		r.PaintedNative += f.Dx() * f.Dy()
 	}
+	r.VisibleRects = fragments
 	r.Mode = "hd"
 	return r
 }

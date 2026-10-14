@@ -447,7 +447,7 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
-	for _, name := range []string{"tools/hd-graphics-trace.go", "tools/hd-graphics-trace_test.go", "tools/hd-graphics.go", "tools/hd-graphics_test.go", "tools/hd-graphics-profiles.go", "tools/hd-graphics-static-profiles.go", "tools/hd-graphics-logo-profile.go", "tools/hd-graphics-palettes.go"} {
+	for _, name := range []string{"tools/hd-graphics-trace.go", "tools/hd-graphics-trace_test.go", "tools/hd-graphics.go", "tools/hd-graphics_test.go", "tools/hd-graphics-profiles.go", "tools/hd-graphics-static-profiles.go", "tools/hd-graphics-logo-profile.go", "tools/hd-graphics-palettes.go", "tools/hd-graphics-remaining-profiles.go", "tools/hd-graphics-remaining_test.go"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)

@@ -212,11 +212,28 @@ func paletteRealMode(r *cpu.CPU, n uint8, m *machine.Machine) bool {
 }
 
 func setVideoBIOS(c *cpu386.CPU, m *machine.LEMachine, v *bankVideo, p *videoPorts) bool {
-	if uint16(c.R[cpu386.EAX]) != 0x12 || v.Legacy == nil || len(m.Mem) < 0x500 {
+	mode := uint16(c.R[cpu386.EAX])
+	if (mode != 0x12 && mode != 3) || v.Legacy == nil || len(m.Mem) < 0x500 {
+		return false
+	}
+	if mode == 3 && (len(m.Mem) < 0xc0000 || len(v.Legacy.Mem) < 0xc0000) {
 		return false
 	}
 	copy(v.Legacy.Mem[0x400:0x500], m.Mem[0x400:0x500])
-	v.Legacy.SetVideoMode(0x12)
+	v.Legacy.SetVideoMode(byte(mode))
+	if mode == 3 {
+		bda := v.Legacy.Mem
+		binary.LittleEndian.PutUint16(bda[0x44a:], 80)
+		binary.LittleEndian.PutUint16(bda[0x44c:], 0x1000)
+		clear(bda[0x44e:0x460])
+		bda[0x460], bda[0x461] = 7, 6
+		bda[0x462], bda[0x484] = 0, 24
+		binary.LittleEndian.PutUint16(bda[0x485:], 16)
+		for a := 0xb8000; a < 0xc0000; a += 2 {
+			bda[a], bda[a+1] = ' ', 7
+		}
+		copy(m.Mem[0xb8000:0xc0000], bda[0xb8000:0xc0000])
+	}
 	copy(m.Mem[0x400:0x500], v.Legacy.Mem[0x400:0x500])
 	v.Mode = 0
 	v.Bank = 0

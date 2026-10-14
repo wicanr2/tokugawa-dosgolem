@@ -53,6 +53,17 @@
 | [tools/hd-remaining-intake.py](tools/hd-remaining-intake.py) | 從唯一覆蓋清單核對剩餘已解碼 OZM，保存來源、原圖總覽及動畫逐格參考；不猜補五項解碼未知 |
 | [tools/hd-remaining-prepare.py](tools/hd-remaining-prepare.py) | 依原始格線準備 20 項美術，逐格驗證 16 項鏡像、保留動畫空格、黑色及彩色緩衝區。固定 GUI image 內專案唯讀掛 `/project`、remaining 可寫覆掛原路徑，`--version 3` 產生 draft-v3；審查及核對通過後加 `--approve` 選定美術，不修改 Go 執行器。draft-v1／2 保留單像素緩衝區邊界及 BATTLE 美術末列修正前版本 |
 | [tools/verify-hd-remaining.py](tools/verify-hd-remaining.py) | 固定 GUI image 與相同掛載執行 `--version 3`，核對 20 張圖、48 動畫格、16 鏡像、空格、緩衝區及來源。輸出 art-verification，不作正常玩家路徑或執行器接入收據 |
+| [tools/hd-remaining-runtime.py](tools/hd-remaining-runtime.py)、[tools/hd-graphics-remaining-profiles.go](tools/hd-graphics-remaining-profiles.go)、[測試](tools/hd-graphics-remaining_test.go) | 依選定美術及 READY 契約註冊 20 項共用不透明來源，保留來源指紋、有效區與原圖固定前景；不變更原版字模或動態文字規則 |
+| [tools/verify-hd-remaining-runtime.py](tools/verify-hd-remaining-runtime.py) | 固定 GUI image 內專案及原版唯讀，desktop-title 或 desktop-title-missing 可寫掛 `/output`，分別用 `--mode title`／`--mode title-missing` 驗證正常開場；remaining 掛 `/output` 並用 `--mode summary` 核對來源、首戰及限制 |
+| [tools/verify-hd-menu-platform.py](tools/verify-hd-menu-platform.py) | 固定 GUI image 內專案唯讀、remaining 可寫掛 `/output`，以 `--revision platform` 或 `rcr` 核對匹配來源快照、正常標題／首戰及普通歷史／離開收據；不同版本的缺圖證據保留其版本範圍 |
+| [tools/hd-boundary-probe.py](tools/hd-boundary-probe.py) | 唯讀查證三組未完整解碼 OZM 的實際停止位置、已知平面及 PCX 尺寸，輸出 remaining/source-boundary；不補 bytes、不改原解碼器，原版 PNG 只留本機 |
+| [tools/hd-tail-recover.py](tools/hd-tail-recover.py)、`remaining/source-boundary/OP-FULL-runtime/` | 以正常載入的四平面 SHA 核對三個完整平面，枚舉唯一未知 byte 並要求唯一匹配；只保存該次原版 RAM 的索引與證據，不修改 DAT 或靜態解碼器，不推廣到其他未觀測狀態 |
+| `workplace/hd-prototype/catalog/remaining/source-boundary/` | 五項 OZM 的三組 payload EOF 診斷及 RAINEND.PCX 原版參考；menu-history／menu-exit 用普通選單輸入查證原版來源及停止點，保存匹配來源快照。未完成 HD GUI 驗證的原版收據不當作新美術完成證據 |
+| `workplace/hd-prototype/catalog/remaining/runtime/`、`remaining/desktop-title/`、`remaining/desktop-title-missing/`、`remaining/desktop-regression/` | 本批隔離建置、正常標題／缺圖切換與首戰回歸，保存匹配來源快照；生成素材沿用既有私人素材庫，原版收據留本機 |
+| 上列目錄內的 `platform/`、`remaining/source-boundary/menu-history/platform/`、`menu-exit/platform/` | STD 與文字模式恢復修正後的獨立版本；保留先前停止收據，不覆寫已驗證建置 |
+| `remaining/runtime/platform/ready/` | 修正倒序 MOVSB 測試缺少合法 DS／ES 描述子的驗證環境後，乾淨重建平台版本；上層保留首次失敗結果 |
+| `remaining/source-boundary/menu-history/platform/ready/`、`menu-exit/platform/ready/` | 補建探針必要的 startup-probe 輸出目錄後，重跑同一版本及普通輸入；上層保留漏建目錄的環境錯誤 |
+| `remaining/runtime/rcr/`、`remaining/source-boundary/menu-history/rcr/`、`remaining/desktop-regression/rcr/`、`remaining/desktop-title/rcr/` | 補齊普通歷史簡介實際使用的 word RCR reg,1 後，保存新建置、匹配來源快照及普通路徑回歸；不覆寫 STD 版本 |
 | `workplace/hd-prototype/catalog/remaining/` | 剩餘開場、動畫與介面的原版參考、生成圖、提示詞、逐項準備及隔離驗證；原圖與收據留本機，生成美術另保存至 assets/hd-b |
 | [tools/hd-frame-prepare.py](tools/hd-frame-prepare.py) | 既有手繪 VISUAL 上方框架依原版矩形分區縮放；輸出 `workplace/hd-prototype/scroll/frame/` 的來源、HD 圖與幾何收據，遊戲內驗證另列 |
 | [tools/hd-frame.go](tools/hd-frame.go)、[tools/hd-frame_test.go](tools/hd-frame_test.go) | VISUAL 上方紅金框架的來源核對與呈現；中央劇情圖及下方捲軸保持獨立，遮擋時完整備援 |
@@ -150,12 +161,13 @@
 | [CONTEXT.md](CONTEXT.md) | 目前狀態、有效結論、限制與下一個驗證入口 |
 | [WORKLOG.md](WORKLOG.md) | 按時間追加的工作歷程與清理結果 |
 | [.gitignore](.gitignore) | 排除本機原版資料、探針輸出與快取 |
+| [.gitattributes](.gitattributes) | dosgolem 統一差異的 context 行保留格式；只排除該補丁檔的 space-before-tab 誤報 |
 
 新增目錄或文件前讀 `/home/anr2/.codex/knowledge-base/local/project-document-responsibilities.md`，並更新本表。未有可執行待辦前不另建 WORKLIST；需要時只建立一份。README 只放穩定入口，工作歷程寫入 WORKLOG。
 
 ## 全美術 HD 研究入口
 
-尚未接入的戰鬥背景與開場徽記生成紀錄為 `workplace/hd-prototype/catalog/art/remaining-generation-v1.json`，原版參考沿用 `catalog/graphics/source-references.json`。BATTLE01／BATTLE02／OP4 的原始生成圖與提示詞保存至 `assets/hd-b/art/`；此紀錄只證明製作，裁切、文字與 runtime 整合仍需分項驗證。
+戰鬥背景與開場徽記的原始生成紀錄為 `workplace/hd-prototype/catalog/art/remaining-generation-v1.json`，原版參考沿用 `catalog/graphics/source-references.json`。BATTLE01／BATTLE02／OP4 的原始生成圖與提示詞保存至 `assets/hd-b/art/`；此紀錄只證明製作，裁切、文字與 runtime 整合仍需分項驗證。
 
 物件擴充入口為 `tools/hd-object-prepare.py`、`tools/hd-terrain-object-profiles.go` 與 `tools/verify-hd-objects.py`。`workplace/hd-prototype/catalog/terrain/objects/expanded/` 保存 26 項來源的裁切審查、原圖對照、準備後圖片及隔離 runtime／desktop 驗證；生成圖的裁切與提示詞另存 `assets/hd-b/terrain/objects/`。原版來源仍留在既有 `objects/sources/`，24、25 空白不得補圖。這批沿用共同前景 renderer 的來源、alpha、遮擋及備援契約，不推定地圖物件用途。
 

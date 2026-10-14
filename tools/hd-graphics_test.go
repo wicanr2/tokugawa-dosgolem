@@ -109,8 +109,8 @@ func TestHDGraphicsDrawLifetimeAndUnknownOverlap(t *testing.T) {
 }
 
 func TestHDGraphicsAllApprovedSourceRegionsPaletteAndCrop(t *testing.T) {
-	if len(hdGraphicsProfiles) != 8 {
-		t.Fatal("two weather, five static and one publisher logo source profiles required")
+	if len(hdGraphicsProfiles) != 28 {
+		t.Fatal("eight existing and twenty reviewed source profiles required")
 	}
 	for _, profile := range hdGraphicsProfiles {
 		idx, err := os.ReadFile("/project/workplace/hd-prototype/catalog/decoded/" + profile.Source.Name + ".idx")

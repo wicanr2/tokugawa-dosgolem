@@ -535,13 +535,24 @@ def main():
         if remaining_full_profiles_path.exists():
             selected = json.loads(remaining_full_profiles_path.read_text())
             assert selected["tool_sha256"] == sha(project/"tools/hd-remaining-prepare.py")
+            remaining_runtime_proof_path = remaining_full_root/"runtime-verification-summary.json"
+            remaining_runtime_proof = json.loads(remaining_runtime_proof_path.read_text()) if remaining_runtime_proof_path.exists() else None
+            if remaining_runtime_proof:
+                assert remaining_runtime_proof["verified"]
+                assert remaining_runtime_proof["runtime_profiles_sha256"] == sha(remaining_full_root/"runtime-profiles-v1.json")
             for record in selected["records"]:
                 source = remaining_full_root/record["prepared"]
                 assert sha(source) == record["asset_sha256"]
+                status = "reviewed calibrated art; runtime source registration and normal path validation pending"
+                if remaining_runtime_proof:
+                    status = "normal title/menu and individual missing asset verified" if record["name"] in remaining_runtime_proof["normal_new_sources"] else "source and shared opaque consumer integrated; normal path not individually sampled"
                 copy(source,"art/"+record["asset"],"png",derivation=record,
                      prompts=["art/"+r["prompt"] for r in record["inputs"]],
-                     status="reviewed calibrated art; runtime source registration and normal path validation pending")
+                     status=status)
             copy(remaining_full_profiles_path,"art/remaining/profiles.json","preparation-metadata")
+            for name in ["runtime-profiles-v1.json","runtime-ready-v1.json","runtime-profile-source.txt"]:
+                if (remaining_full_root/name).exists():
+                    copy(remaining_full_root/name,"art/remaining/"+name,"registration-metadata")
     for page in range(9):
         name = f"page-{page:02d}-hd-b-v1.png"
         picture(catalog/"kao"/name, "kao/"+name, (catalog/"kao"/name).with_suffix(".prompt.txt"), "kao/"+Path(name).with_suffix(".prompt.txt").name, "generated portrait atlas")

@@ -5,6 +5,75 @@ import (
 	"testing"
 )
 
+func TestIntegrationSTDBackwardOverlap(t *testing.T) {
+	for _, initial := range []uint32{IF | CF | OF | AF | SF | ZF | PF, IF | DF} {
+		mem := testBus(make([]byte, 128))
+		copy(mem, []byte{0xfd, 0xf3, 0xa4, 0xfc})
+		copy(mem[64:], "abcd_")
+		c := New(mem)
+		c.Seg[SegDS], c.Seg[SegES] = 8, 8
+		c.SetDescriptor(8, Descriptor{Limit: 127, Writable: true})
+		c.R[ESI], c.R[EDI], c.R[ECX], c.EFlags = 67, 68, 4, initial
+		before := c.R
+		if err := c.Step(); err != nil || c.EIP != 1 || c.EFlags != initial|DF || c.R != before {
+			t.Fatalf("STD flags or registers: %v", err)
+		}
+		if err := c.Step(); err != nil || string(mem[64:69]) != "aabcd" || c.R[ESI] != 63 || c.R[EDI] != 64 || c.R[ECX] != 0 || c.EFlags != initial|DF {
+			t.Fatalf("STD did not drive backward overlapping MOVSB: %v", err)
+		}
+		if err := c.Step(); err != nil || c.EFlags != initial&^DF {
+			t.Fatalf("CLD after STD: %v", err)
+		}
+	}
+	for _, code := range [][]byte{{0x66, 0xfd}, {0x26, 0xfd}, {0xf3, 0xfd}, {0xf2, 0xfd}, {0xf0, 0xfd}} {
+		c := New(testBus(code))
+		c.EFlags = IF | CF
+		before := c.R
+		if c.Step() == nil || c.R != before || c.EFlags != IF|CF {
+			t.Fatal("unsupported STD prefix published state")
+		}
+	}
+}
+
+func TestIntegrationWordRCRByOne(t *testing.T) {
+	for reg := byte(0); reg < 8; reg++ {
+		for _, v := range []struct {
+			value, result uint16
+			carry, flags  uint32
+		}{
+			{0, 0, 0, 0}, {0, 0x8000, CF, OF},
+			{1, 0, 0, CF}, {1, 0x8000, CF, CF | OF},
+			{0x8000, 0x4000, 0, OF}, {0x8000, 0xc000, CF, 0},
+			{0xffff, 0x7fff, 0, CF | OF}, {0xffff, 0xffff, CF, CF},
+			{0x8001, 0x4000, 0, CF | OF}, {0x8001, 0xc000, CF, CF},
+		} {
+			for _, previousOF := range []uint32{0, OF} {
+				mem := testBus{0x66, 0xd1, 0xd8 | reg}
+				c := New(mem)
+				for i := range c.R {
+					c.R[i] = 0x11223344 + uint32(i)*0x10000
+				}
+				c.R[reg] = 0xa5a50000 | uint32(v.value)
+				want := c.R
+				want[reg] = 0xa5a50000 | uint32(v.result)
+				unchanged := uint32(IF | DF | AF | SF | ZF | PF)
+				c.EFlags = unchanged | previousOF | v.carry
+				if err := c.Step(); err != nil || c.R != want || c.EFlags != unchanged|v.flags || c.EIP != 3 || string(mem) != string([]byte{0x66, 0xd1, 0xd8 | reg}) {
+					t.Fatalf("RCR word reg=%d value=%x carry=%x flags=%x err=%v", reg, v.value, v.carry, c.EFlags, err)
+				}
+			}
+		}
+	}
+	for _, code := range [][]byte{{0x66, 0xd1}, {0x66, 0xd1, 0x18}, {0x66, 0xc1, 0xdb, 1}, {0x26, 0x66, 0xd1, 0xdb}, {0xf3, 0x66, 0xd1, 0xdb}, {0xf2, 0x66, 0xd1, 0xdb}} {
+		c := New(testBus(code))
+		c.R[EBX], c.EFlags = 0xabcdef12, IF|CF|OF|AF
+		before := c.R
+		if c.Step() == nil || c.R != before || c.EFlags != IF|CF|OF|AF {
+			t.Fatal("rejected word RCR published state")
+		}
+	}
+}
+
 func TestIntegrationDwordRegisterTESTImmediate(t *testing.T) {
 	for reg := byte(0); reg < 8; reg++ {
 		for _, v := range []struct{ value, mask, flags uint32 }{

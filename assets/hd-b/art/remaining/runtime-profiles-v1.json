@@ -1,0 +1,401 @@
+{
+  "classification": "registered source-specific opaque profiles; normal cases verified separately",
+  "tool_sha256": "6272411286990fde6748f0ca37edb97c27f977434f3bd8b1344cf1326ceace27",
+  "ready_sha256": "b37280e1304b8c5809ecf9be02b27fd2f4eaaba311680209551bda3525d669f1",
+  "art_profiles_sha256": "958c4a55724f7b505a2e2f0e164554f24edf819d2ca747bb0ecfa8df617fa839",
+  "go_profiles_sha256": "01a63b9d7221ab0cabecb94763702c9c31cff1ee442061ae440340731c71fdc8",
+  "registered_source_names": [
+    "ANIME01.OZM",
+    "ANIME02.OZM",
+    "ANIME03.OZM",
+    "ANIME04.OZM",
+    "ANIME05.OZM",
+    "ANIME06.OZM",
+    "ANIME07.OZM",
+    "ANIME08.OZM",
+    "BATTLE.OZM",
+    "END-11.OZM",
+    "END-11B.OZM",
+    "END-2.OZM",
+    "END-2B.OZM",
+    "MAP_WAKU.OZM",
+    "OP2_P.OZM",
+    "OP5.OZM",
+    "OP6.OZM",
+    "OP9.OZM",
+    "JIMEN_0.OZM",
+    "JIMEN_1.OZM"
+  ],
+  "records": [
+    {
+      "name": "ANIME01.OZM",
+      "source_indices_sha256": "53e0e68deda3b36ba8690961c76194c18fd66b9747e859e934850368e83d2d7a",
+      "asset": "remaining/prepared/ANIME01.OZM-hd-v3.png",
+      "asset_sha256": "18cd1cb070fbd5fca1329844cc7b97ae45fcd0a252a209fe6b633d9eb3bafe20",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "ANIME02.OZM",
+      "source_indices_sha256": "d4e6a3a0573ddbf97375f4e2a15be22b5b2dfbd4f3143a8a773379886cca4eac",
+      "asset": "remaining/prepared/ANIME02.OZM-hd-v3.png",
+      "asset_sha256": "5a9154a9bc5dbf60617798416beff101d3208ce97c87ea1054b9b89ba3fe29d5",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "ANIME03.OZM",
+      "source_indices_sha256": "09d2d0e1d22727a13f8fb147a91c797da979c989fac17599ecf735d004e182cc",
+      "asset": "remaining/prepared/ANIME03.OZM-hd-v3.png",
+      "asset_sha256": "6f1ca5f5fbd5929bc080f203c7b240680d15557bf4aa5089906cbbb5bb74fbf1",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "ANIME04.OZM",
+      "source_indices_sha256": "3ce7e2dc9ba21615590720d2af2c8d7d09fdd3bbf09078495dd7b9bd78117fce",
+      "asset": "remaining/prepared/ANIME04.OZM-hd-v3.png",
+      "asset_sha256": "3ab28ff523c4bf6da414a0bb2c1629dcf52b7c3693ec68e8355d9ffde5ed31ef",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "ANIME05.OZM",
+      "source_indices_sha256": "ebfd5ebbc9bdcff89f5332dd1eab56a12dce5fef85535c4d0c2a6c1b3ed86585",
+      "asset": "remaining/prepared/ANIME05.OZM-hd-v3.png",
+      "asset_sha256": "304911568da319aec1f92fb174a49631be41fd220e2329b93a08e546fd8184ea",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "ANIME06.OZM",
+      "source_indices_sha256": "5e5bacbe4273a042c294bf4e9a023384079bc87da8fb73857f2bfc79940e1733",
+      "asset": "remaining/prepared/ANIME06.OZM-hd-v3.png",
+      "asset_sha256": "4ea86abc739d33bd9845ef244a4f72fb718f2b11e6dc7ad422a8fae6b83a117f",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "ANIME07.OZM",
+      "source_indices_sha256": "3bb850ee24692a585536e328ed4a8048a1e9900ee3433cf06ffa0dcbd565e075",
+      "asset": "remaining/prepared/ANIME07.OZM-hd-v3.png",
+      "asset_sha256": "c02d978f792442674b3809f43911d6b417039fe53f5e8eecf9237985a146f5c5",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "ANIME08.OZM",
+      "source_indices_sha256": "7cca319beacd144d39ab16b4b9774c46484826fe9cb0e139e8c6fa60a25112a4",
+      "asset": "remaining/prepared/ANIME08.OZM-hd-v3.png",
+      "asset_sha256": "33c44129bcf1b50581941ad001f33cd487ebd9d521f65ab21143f4ba8a2a9eee",
+      "paint_rect": [
+        0,
+        0,
+        624,
+        300
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "BATTLE.OZM",
+      "source_indices_sha256": "97283a356553217bad5d12a2f4615e408d4db81cb283df4f69d18166e9f3b1e2",
+      "asset": "remaining/prepared/BATTLE.OZM-hd-v3.png",
+      "asset_sha256": "61e40e41de6fd86e16b9a1aacf25027339e8497c289a16d7aa2b45941e90454c",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        247
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "END-11.OZM",
+      "source_indices_sha256": "2677cacee9000d6fa8c5ffdccc3d352604b1537004281236b21aacd587d95046",
+      "asset": "remaining/prepared/END-11.OZM-hd-v3.png",
+      "asset_sha256": "67c500ab755c943678313d585db10be9185bc8a0f8f238f8fa70bb1b4c80f51e",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        399
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "END-11B.OZM",
+      "source_indices_sha256": "57fc9d95c6767828bb6e96ed882650023696cb16856d42ffd23bc4b959848ed8",
+      "asset": "remaining/prepared/END-11B.OZM-hd-v3.png",
+      "asset_sha256": "e2a5aa25d0bcc0f08a0d48fb379aa69626b9d56dea8d3cb865da476d4455eeea",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        399
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "END-2.OZM",
+      "source_indices_sha256": "b2aa5040cba120939881b9c1ae7bafa1de492aece744bce745df66c3f83b7682",
+      "asset": "remaining/prepared/END-2.OZM-hd-v3.png",
+      "asset_sha256": "99570473d3b797ef56c2c9606337ec13449b4857f78fb4e9adcc0aa3aea2fd14",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        150
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "END-2B.OZM",
+      "source_indices_sha256": "46ea5bfa38ef86b4613263c9ef265b2e285cc47e35dddba4793b91c57fdec6b0",
+      "asset": "remaining/prepared/END-2B.OZM-hd-v3.png",
+      "asset_sha256": "7d48c909845eaec23e6356ff2aa3670773af063b0a7962331103799840bdf911",
+      "paint_rect": [
+        0,
+        0,
+        512,
+        336
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "MAP_WAKU.OZM",
+      "source_indices_sha256": "1d0ee5b9b52142beb6813ae52f1db215e5224fae1935a64ea83fe07b97fe9a6b",
+      "asset": "remaining/prepared/MAP_WAKU.OZM-hd-v3.png",
+      "asset_sha256": "87fbd4113e24f10aefcb02defbcaa1da3db61a9b155e3cdc221ab67121941f50",
+      "paint_rect": [
+        0,
+        0,
+        384,
+        120
+      ],
+      "paint_rects": [],
+      "preserve_regions": [
+        {
+          "rect": [
+            134,
+            92,
+            192,
+            104
+          ],
+          "indices": "all",
+          "reason": "original buffer/debug glyphs; not new HD lettering",
+          "index_bits": 65535,
+          "source_pixels": 696
+        }
+      ]
+    },
+    {
+      "name": "OP2_P.OZM",
+      "source_indices_sha256": "2e28b62e3af1d0ddf11200321c3e762a323c303efd6c270a0955c8048aea69f0",
+      "asset": "remaining/prepared/OP2_P.OZM-hd-v3.png",
+      "asset_sha256": "361a31c32fc582ea9ca809891dd5ef3522a0563b5ae96a82567b67c8737cb2f4",
+      "paint_rect": [
+        0,
+        0,
+        384,
+        119
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "OP5.OZM",
+      "source_indices_sha256": "39a6813ba03cf0517b43d9d04536ff0dbd264f556339959ebca376cb57ff61c8",
+      "asset": "remaining/prepared/OP5.OZM-hd-v3.png",
+      "asset_sha256": "308e76bfe558167ee1c7e04b2e6559607ccf78503ea0ec9a1b78db34aebcd3bc",
+      "paint_rect": [
+        56,
+        53,
+        594,
+        350
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "OP6.OZM",
+      "source_indices_sha256": "f8d66768f9b876197d82b89232382618b1b339ac5c73b090ba213dbc62b7c0da",
+      "asset": "remaining/prepared/OP6.OZM-hd-v3.png",
+      "asset_sha256": "7bd47a2128e6c670b8a025704cbee1db01238bb045e94ff1e765ff722a029b5e",
+      "paint_rect": [
+        0,
+        0,
+        640,
+        400
+      ],
+      "paint_rects": [],
+      "preserve_regions": [
+        {
+          "rect": [
+            448,
+            188,
+            624,
+            240
+          ],
+          "indices": [
+            15
+          ],
+          "reason": "original chapter caption",
+          "index_bits": 32768,
+          "source_pixels": 1210
+        },
+        {
+          "rect": [
+            464,
+            258,
+            616,
+            366
+          ],
+          "indices": [
+            0,
+            1,
+            8
+          ],
+          "reason": "original year and location",
+          "index_bits": 259,
+          "source_pixels": 1548
+        },
+        {
+          "rect": [
+            60,
+            350,
+            192,
+            374
+          ],
+          "indices": [
+            0,
+            1,
+            8
+          ],
+          "reason": "original coordinate text",
+          "index_bits": 259,
+          "source_pixels": 614
+        },
+        {
+          "rect": [
+            274,
+            350,
+            410,
+            374
+          ],
+          "indices": [
+            0,
+            1,
+            8
+          ],
+          "reason": "original bottom status",
+          "index_bits": 259,
+          "source_pixels": 646
+        }
+      ]
+    },
+    {
+      "name": "OP9.OZM",
+      "source_indices_sha256": "b015f51daeaad83157c86fab388e3d0b276e2e41a14da991f6c9411b189d2864",
+      "asset": "remaining/prepared/OP9.OZM-hd-v3.png",
+      "asset_sha256": "99d3bbc34860cd48714e2d9528d4a06e00e8d877db03ab5708d859e8b3ed2b7b",
+      "paint_rect": null,
+      "paint_rects": [
+        [
+          0,
+          0,
+          624,
+          200
+        ],
+        [
+          0,
+          200,
+          416,
+          400
+        ],
+        [
+          416,
+          200,
+          488,
+          308
+        ]
+      ],
+      "preserve_regions": []
+    },
+    {
+      "name": "JIMEN_0.OZM",
+      "source_indices_sha256": "dc7426719be118bcaa9394f7b4ec9485607691669d7987ef5e38b84a2e9710af",
+      "asset": "remaining/prepared/JIMEN_0.OZM-hd-v3.png",
+      "asset_sha256": "3feee2c43079387ff1199924661d8a894ac6cf5b3825f7dc4d064770240b3291",
+      "paint_rect": [
+        0,
+        0,
+        352,
+        136
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    },
+    {
+      "name": "JIMEN_1.OZM",
+      "source_indices_sha256": "55951d294cb08436432367e2d4aa6fc8ae8a4c341da6f3bca73a58b1c040f397",
+      "asset": "remaining/prepared/JIMEN_1.OZM-hd-v3.png",
+      "asset_sha256": "b70737c1243ebe25f9ece2d404acf07784d81ad301f11b4f9208c130864dd9dc",
+      "paint_rect": [
+        0,
+        0,
+        352,
+        136
+      ],
+      "paint_rects": [],
+      "preserve_regions": []
+    }
+  ]
+}

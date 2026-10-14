@@ -106,7 +106,7 @@ func TestKaoReadOnlySourceAndReturn(t *testing.T) {
 	if h.Pending != nil || len(h.Draws) != 0 {
 		t.Fatal("invalid new source retained old portrait at the same destination")
 	}
-	h.Draws = []hdKaoDraw{{76, image.Rect(96, 86, 176, 166)}}
+	h.Draws = []hdKaoDraw{{Index: 76, Rect: image.Rect(96, 86, 176, 166)}}
 	h.observe(5, 0x1c084, esp, mem)
 	if len(h.Draws) != 0 {
 		t.Fatal("full original background copy retained stale portraits")

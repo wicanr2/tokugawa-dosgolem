@@ -340,6 +340,42 @@ func TestVGAModeAndLEBus(t *testing.T) {
 	}
 }
 
+func TestRestoreTextMode(t *testing.T) {
+	for _, size := range []int{0x500, 1 << 20} {
+		le := &machine.LEMachine{Mem: make([]byte, size)}
+		legacy := machine.New()
+		legacy.SetVideoMode(0x12)
+		v := newBankVideo()
+		v.Legacy, v.Mode, v.Bank = legacy, 0x100, 3
+		p := videoPorts{m: legacy, seq: 6, crtc: 0x30}
+		c := cpu386.New(le)
+		c.R[cpu386.EAX], c.EFlags = 0xabcd0003, cpu386.IF|cpu386.CF|cpu386.DF
+		before := c.R
+		le.Mem[0x417], le.Mem[0x450], le.Mem[0x4ff] = 3, 12, 45
+		if size < 0xc0000 {
+			if setVideoBIOS(c, le, v, &p) || legacy.VideoMode() != 0x12 || v.Mode != 0x100 || le.Mem[0x450] != 12 {
+				t.Fatal("short text memory accepted or partial state published")
+			}
+			continue
+		}
+		le.Mem[0xb7fff], le.Mem[0xc0000] = 91, 92
+		if !setVideoBIOS(c, le, v, &p) || legacy.VideoMode() != 3 || le.Mem[0x449] != 3 || le.Mem[0x44a] != 80 || le.Mem[0x44d] != 0x10 || le.Mem[0x484] != 24 || le.Mem[0x485] != 16 || v.Mode != 0 || v.Bank != 0 || p.seq != 0 || p.crtc != 0 {
+			t.Fatal("mode 3 metadata")
+		}
+		for a := 0xb8000; a < 0xc0000; a += 2 {
+			if le.Mem[a] != ' ' || le.Mem[a+1] != 7 || legacy.Mem[a] != ' ' || legacy.Mem[a+1] != 7 {
+				t.Fatal("text page not cleared")
+			}
+		}
+		if c.R != before || c.EFlags != cpu386.IF|cpu386.CF|cpu386.DF || le.Mem[0x417] != 3 || le.Mem[0x4ff] != 45 || le.Mem[0xb7fff] != 91 || le.Mem[0xc0000] != 92 {
+			t.Fatal("unrelated text-mode state changed")
+		}
+		if w, h := legacy.PlanarSize(); w != 0 || h != 0 {
+			t.Fatal("text mode exposed old graphics frame")
+		}
+	}
+}
+
 func TestCursorBIOSState(t *testing.T) {
 	m := &machine.LEMachine{Mem: make([]byte, 0x500)}
 	c := cpu386.New(m)

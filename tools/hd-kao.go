@@ -8,8 +8,9 @@ import (
 )
 
 type hdKaoDraw struct {
-	Index int             `json:"index"`
-	Rect  image.Rectangle `json:"logical_rect"`
+	Index   int             `json:"index"`
+	Rect    image.Rectangle `json:"logical_rect"`
+	EndStep int             `json:"completed_step"`
 }
 
 type hdKaoPending struct {
@@ -26,6 +27,7 @@ type hdKaoState struct {
 func (h *hdKaoState) observe(step int, eip, esp uint32, mem []byte) {
 	if p := h.Pending; p != nil && eip == p.Return && uint64(esp) == uint64(p.Stack)+4 {
 		if len(h.Draws) < 64 {
+			p.Draw.EndStep = step
 			h.Draws = append(h.Draws, p.Draw)
 		}
 		if len(h.Events) < 128 {
@@ -70,7 +72,7 @@ func (h *hdKaoState) observe(step int, eip, esp uint32, mem []byte) {
 	if fmt.Sprintf("%x", sha256.Sum256(mem[base:base+3200])) != hdKaoProfiles[index].RawSHA {
 		return
 	}
-	h.Pending = &hdKaoPending{ret, esp, hdKaoDraw{int(index), rect}}
+	h.Pending = &hdKaoPending{ret, esp, hdKaoDraw{Index: int(index), Rect: rect}}
 	if len(h.Events) < 128 {
 		h.Events = append(h.Events, map[string]any{"kind": "kao_draw_enter", "step": step, "linear_eip": eip, "return_linear": ret, "stack_linear": esp, "raw_args": []uint32{index, xbyte, y}, "source_linear": base, "source_sha256": hdKaoProfiles[index].RawSHA, "logical_rect": rect})
 	}
