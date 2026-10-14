@@ -1,0 +1,16 @@
+{
+  "classification": "generated publisher wordmark, spelling and shape review; geometry calibration pending",
+  "source": "OP1.OZM",
+  "asset": "OP1-hd-b-v1.png",
+  "sha256": "7d97cf9ebc2cf1ab39c2db741491c8fcfee412ed4e63c7eaf880a7367b68c072",
+  "prompt": "OP1-hd-b-v1.prompt.txt",
+  "prompt_sha256": "deba31056c523354939eae2cc0c31dc63427853df9f30c70f03202e3077f21e4",
+  "reference": "graphics/OP1.OZM-reference.png",
+  "reference_sha256": "5cc89bc7b9c2af68736d662aaa2244a6f2d2a8815ca286ecf178b104b121a207",
+  "size": [
+    1587,
+    991
+  ],
+  "tool": "built-in imagegen",
+  "transparent_background": false
+}

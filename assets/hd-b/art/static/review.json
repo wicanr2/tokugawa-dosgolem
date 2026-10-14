@@ -1,0 +1,41 @@
+{
+  "verified": true,
+  "approved_sources": [
+    "BATTLE01.OZM",
+    "BATTLE02.OZM",
+    "OP2.OZM",
+    "OP4.OZM",
+    "OP8.OZM"
+  ],
+  "draft_manifest_sha256": "9cd6bbbfd592a5f99df1c72e80756fcc5158f3ab247472835b0866180737b63d",
+  "reviewed_pages": [
+    {
+      "path": "BATTLE01.OZM-review.png",
+      "sha256": "7f44b67609dcfe8600d9fc51bc1045142fb8a0a8d1d25f4f533c16258158983e"
+    },
+    {
+      "path": "BATTLE02.OZM-review.png",
+      "sha256": "c4a992ef4546160889780bb9f32b98404c04b596925f472f25a4d7ab545f5d50"
+    },
+    {
+      "path": "OP2.OZM-review.png",
+      "sha256": "01c997899b0ec04ad461fd921fa0e22abcb8d461ec60c04585d5aa7af8940e5b"
+    },
+    {
+      "path": "OP4.OZM-review.png",
+      "sha256": "c7aa34512dc63499c364db9f6bdb90c6f005c71b70e31fcf88b8d602f5debc6b"
+    },
+    {
+      "path": "OP8.OZM-review.png",
+      "sha256": "1b734e05ce6cde08a7c8975cfc5494a3afc30cd2567cdc1ba78de9f8d1026244"
+    }
+  ],
+  "observations": [
+    "BATTLE backgrounds retain all 148302 connected zero-index padding pixels",
+    "OP2 art is 480x150 inside a 640x200 buffer; index-six padding remains exact",
+    "OP4 framing uses nonzero/non-eight source bounds, with three leaves and outer ring",
+    "OP8 retains the five-figure panorama and complete 640x200 framing"
+  ],
+  "approximation": "generated hand-painted interior; native content bounds and buffer colors calibrated",
+  "normal_path_limit": "five new sources not yet sampled in a normal player path"
+}

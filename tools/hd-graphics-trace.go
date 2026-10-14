@@ -24,8 +24,9 @@ type graphicsDrawRecord struct {
 	Args                   [5]uint32 `json:"raw_args"`
 	SourceRect, DestRect   image.Rectangle
 	ExpectedSHA, ActualSHA string
-	Verified               bool   `json:"verified"`
-	Error                  string `json:"observation_error,omitempty"`
+	Verified               bool              `json:"verified"`
+	Error                  string            `json:"observation_error,omitempty"`
+	VisibleRects           []image.Rectangle `json:"visible_rectangles,omitempty"`
 }
 
 type graphicsPending struct {

@@ -382,7 +382,7 @@ func main() {
 	}
 	if *desktop {
 		ctx := &desktopContext{
-			Advance: advance, Steps: func() int { return steps }, Live: &live, Scripted: len(mouseEvents) > 0,
+			Advance: advance, Steps: func() int { return steps }, Live: &live, Scripted: len(mouseEvents) > 0 || *mouseFile != "",
 			Snapshot: func() (nativeSnapshot, error) {
 				return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
 			},
@@ -447,7 +447,7 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
-	for _, name := range []string{"tools/hd-graphics-trace.go", "tools/hd-graphics-trace_test.go", "tools/hd-graphics.go", "tools/hd-graphics_test.go", "tools/hd-graphics-profiles.go"} {
+	for _, name := range []string{"tools/hd-graphics-trace.go", "tools/hd-graphics-trace_test.go", "tools/hd-graphics.go", "tools/hd-graphics_test.go", "tools/hd-graphics-profiles.go", "tools/hd-graphics-static-profiles.go", "tools/hd-graphics-logo-profile.go", "tools/hd-graphics-palettes.go"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)

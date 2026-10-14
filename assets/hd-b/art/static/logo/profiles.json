@@ -1,0 +1,57 @@
+{
+  "classification": "reviewed original publisher wordmark geometry and common opaque consumer profile",
+  "tool_sha256": "1bbd59f9fc5ce7d5add237f5f28199e4ab011aee462cf39ac2fe486c9e6e9581",
+  "record": {
+    "name": "OP1.OZM",
+    "source": {
+      "name": "OP1.OZM",
+      "dat_file_offset": 2426563,
+      "payload_bytes": 2648,
+      "payload_sha256": "7a2945305664e0f5c7309ed76aa71397b3002da49f469d5b4bcdd79e14a27e0b",
+      "semantic_level": "static decoder; normal-path matches recorded separately",
+      "status": "decoded",
+      "width": 640,
+      "height": 400,
+      "plane_sha256": [
+        "bfe71a01061aae60aef0ceb433fe8723fb32ba43a91b1a8d0f001fb5c8062659",
+        "0a026deb951e343de6b23809d24da3c4da0773a6c607986880e08e72639f9b16",
+        "3ed764ba78addd795707d714994f0d9e0b9eabd6d12a77a9bb4b1f08f0aa3036",
+        "0c92bddb4e96f3ea9ec9f0f64a668255a6c15527ac09f6f119cafde60c7c4a39"
+      ],
+      "indices_sha256": "653b5308aa72b2ebb5f32d4a64f54a2044f0935ad9c08593bcf32b6580b779a8",
+      "consumed_bytes": 2648,
+      "trailing_bytes": 0,
+      "commands": {
+        "5": 247,
+        "literal": 1345,
+        "1": 26,
+        "3": 3,
+        "4": 2,
+        "2": 1
+      },
+      "normal_path_matches": 1
+    },
+    "raw_asset": "OP1-hd-b-v1.png",
+    "raw_asset_sha256": "7d97cf9ebc2cf1ab39c2db741491c8fcfee412ed4e63c7eaf880a7367b68c072",
+    "prompt": "OP1-hd-b-v1.prompt.txt",
+    "prompt_sha256": "deba31056c523354939eae2cc0c31dc63427853df9f30c70f03202e3077f21e4",
+    "raw_crop": [
+      360,
+      379,
+      1243,
+      598
+    ],
+    "paint_rect": [
+      202,
+      157,
+      436,
+      214
+    ],
+    "prepared": "OP1-hd-calibrated-v1.png",
+    "asset": "static/OP1-hd-calibrated-v1.png",
+    "asset_sha256": "1943d6fd4cf29b4a82d24c45e349998db09b8b8fa80a5201dfad5136a2ecbaa2"
+  },
+  "review": "OP1.OZM-review.png",
+  "review_sha256": "4cf470fa710e8f2f1dcd295f75a4a22cfa217709c4e82444c9d1c91d3118c99c",
+  "draft_manifest_sha256": "600d78e0abdbc7f895b1eca5321d243bfe9365f6a6b58a03c032a7cbf76b0acc"
+}

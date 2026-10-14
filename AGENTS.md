@@ -62,6 +62,11 @@
 | [tools/verify-hd-objects.py](tools/verify-hd-objects.py) | 固定 GUI Docker 內逐項核對物件來源索引、alpha、載入 profile、完整 RAM、切換及前版真實視窗；專案唯讀掛 /project、objects/expanded 可寫掛 /output |
 | `workplace/hd-prototype/catalog/terrain/objects/expanded/` | 物件裁切、原圖對照、審查及隔離 runtime／desktop 收據；生成圖、裁切與提示詞保存於 assets/hd-b/terrain/objects |
 | [tools/hd-wall-prepare.py](tools/hd-wall-prepare.py) | 以已生成的橫牆、直牆、城門及斷牆分區校準 16 項牆件，保留原生透明形狀；來源索引與像素角色不作玩法推論 |
+| [tools/hd-background-prepare.py](tools/hd-background-prepare.py)、[tools/hd-graphics-static-profiles.go](tools/hd-graphics-static-profiles.go) | 校準 BATTLE01／BATTLE02／OP2／OP4／OP8 的實際美術區，保留原版緩衝區；共用不透明繪圖端使用來源指紋、原始矩形及可見片段 |
+| [tools/hd-logo-prepare.py](tools/hd-logo-prepare.py)、[tools/hd-graphics-logo-profile.go](tools/hd-graphics-logo-profile.go) | 校準 OP1 的 Family Soft 字標，保留品牌字樣及原版位置；輸出與審查位於 graphics/static/logo，生成素材及提示詞保存至 assets/hd-b/art |
+| [tools/hd-graphics-palettes.go](tools/hd-graphics-palettes.go) | 依 palette-probe 七次原版擷取限定 OP1 的獨立穩定調色盤；其他來源維持既有十六色，淡入／淡出保留原圖 |
+| [tools/verify-hd-background.py](tools/verify-hd-background.py) | 固定 GUI image 內專案唯讀掛 `/project`，`graphics/static/desktop-logo/palette/ready/` 可寫掛 `/output`，以 `--mode logo` 等待原版獨立調色盤穩定再驗證無輸入開場字標；上層保留首次結果及驗證器欄位錯誤。改掛 `graphics/static/` 並省略旗標核對六圖、留白及獨立 GUI 收據。只聲明實際驗證的正常來源 |
+| `workplace/hd-prototype/catalog/graphics/static/` | 六項美術校準與原圖對照；normal-intro 保存無輸入查證，runtime 保存隔離建置，desktop 保存首戰回歸，desktop-logo 保存開場字標切換，三者的 palette 子目錄保存獨立調色盤修正後版本。palette-probe 保存原版 OP1 自然淡入／穩定／淡出擷取。生成圖衍生物與完整提示詞另存 assets/hd-b/art/static |
 | [tools/verify-hd-walls.py](tools/verify-hd-walls.py) | 核對完整 24 項非空物件、校準圖重用、原有八項不變及新版正常首戰；固定 GUI Docker，專案唯讀掛 /project、objects/walls 可寫掛 /output |
 | `workplace/hd-prototype/catalog/terrain/objects/walls/` | 城牆分區、接縫審查與隔離驗證；每版草稿分目錄保留，生成材質衍生圖與幾何紀錄另存 assets/hd-b/terrain/objects/walls |
 | [tools/hd-kao.go](tools/hd-kao.go)、[tools/hd-kao_test.go](tools/hd-kao_test.go) | 原版頭像繪製的唯讀參數／返回觀測與來源、遮擋、缺圖備援；原版全畫面複製撤銷舊頭像 |

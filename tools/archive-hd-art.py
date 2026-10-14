@@ -24,6 +24,8 @@ README = """# 戰國手繪 HD 素材
 - [晴天與陰天天氣圖](art/weather-generation.json)，第二版保留原版岩峰構圖。
 - [開場騎兵與武將群像草稿](art/opening-generation.json)，保留原始生成圖，幾何與呈現待驗證。
 - [戰鬥背景與開場徽記草稿](art/remaining-generation-v1.json)，保留原版參考定位、完整提示詞及未校準的原始生成圖。
+- [校準背景、徽記與開場圖](art/static/)，五項有效美術區及原版緩衝區的幾何紀錄。
+- [Family Soft 字標](art/static/logo/)，保留原始品牌字樣與位置，另存生成圖與完整提示詞。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。
@@ -150,6 +152,20 @@ def main():
     opening_art = {r["asset"]:r for r in json.loads(opening_path.read_text())["records"]} if opening_path.exists() else {}
     remaining_drafts_path = catalog/"art/remaining-generation-v1.json"
     remaining_drafts = {r["asset"]:r for r in json.loads(remaining_drafts_path.read_text())["records"]} if remaining_drafts_path.exists() else {}
+    background_root = catalog/"graphics/static"
+    background_profiles_path = background_root/"profiles.json"
+    calibrated_inputs = {}
+    if background_profiles_path.exists():
+        background_profiles = json.loads(background_profiles_path.read_text())
+        assert background_profiles["tool_sha256"] == sha(background_root/"prepare-source.txt") == sha(project/"tools/hd-background-prepare.py")
+        calibrated_inputs = {r["raw_asset"]:r for r in background_profiles["records"]}
+    publisher_logo_root = background_root/"logo"
+    publisher_logo_profiles_path = publisher_logo_root/"profiles.json"
+    if publisher_logo_profiles_path.exists():
+        publisher_logo_profiles = json.loads(publisher_logo_profiles_path.read_text())
+        assert publisher_logo_profiles["tool_sha256"] == sha(publisher_logo_root/"prepare-source.txt") == sha(project/"tools/hd-logo-prepare.py")
+        logo_record = publisher_logo_profiles["record"]
+        calibrated_inputs[logo_record["raw_asset"]] = logo_record
     for source in sorted((catalog/"art").glob("*-hd-b-v*.png")):
         name = source.name
         status = "draft; integration and review pending"
@@ -176,6 +192,9 @@ def main():
         elif name in opening_art:
             assert sha(source) == opening_art[name]["sha256"]
             status = opening_art[name]["status"]
+        if name in calibrated_inputs:
+            assert sha(source) == calibrated_inputs[name]["raw_asset_sha256"]
+            status = "generation input for reviewed static source geometry; runtime uses calibrated child asset"
         picture(source, "art/"+name, source.with_suffix(".prompt.txt"), "art/"+source.with_suffix(".prompt.txt").name, status)
     revisions = catalog/"art/revisions.json"
     if revisions.exists():
@@ -205,6 +224,28 @@ def main():
             assert sha(catalog/"art"/record["asset"]) == record["sha256"]
             assert sha(catalog/"art"/record["prompt"]) == record["prompt_sha256"]
         copy(remaining_drafts_path,"art/remaining-generation-v1.json","generation-metadata")
+    publisher_logo_generation_path = catalog/"art/logo-generation-v1.json"
+    if publisher_logo_generation_path.exists():
+        copy(publisher_logo_generation_path,"art/logo-generation-v1.json","generation-metadata")
+    if publisher_logo_profiles_path.exists():
+        record = publisher_logo_profiles["record"]
+        source = publisher_logo_root/record["prepared"]
+        assert sha(source) == record["asset_sha256"]
+        copy(source,"art/"+record["asset"],"png",derivation=record,prompt="art/"+record["prompt"],
+             status="reviewed original publisher wordmark, calibrated geometry and common opaque profile")
+        for name in ["draft-manifest.json","review.json","profiles.json","prepare-source.txt"]:
+            copy(publisher_logo_root/name,"art/static/logo/"+name,"preparation-metadata")
+    if background_profiles_path.exists():
+        for record in background_profiles["records"]:
+            source = background_root/record["prepared"]
+            assert sha(source) == record["asset_sha256"]
+            copy(source,"art/"+record["asset"],"png",derivation=record,prompt="art/"+record["prompt"],
+                 status="reviewed calibrated static source; common opaque draw consumer registered, normal case not yet sampled")
+        gallery = background_root/background_profiles["gallery"]
+        assert sha(gallery) == background_profiles["gallery_sha256"]
+        copy(gallery,"art/static/"+gallery.name,"png",status="generated-only calibrated static art gallery")
+        for name in ["draft-manifest.json","prepare-source.txt","review.json","profiles.json"]:
+            copy(background_root/name,"art/static/"+name,"preparation-metadata")
     battle_frame = catalog/"battle-frame"
     for revision in (1,2):
         geometry_path = battle_frame/("battle-frame-geometry.json" if revision == 1 else "battle-frame-geometry-v2.json")

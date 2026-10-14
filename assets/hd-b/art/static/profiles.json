@@ -1,0 +1,300 @@
+{
+  "classification": "reviewed static artwork geometry and common opaque source profiles",
+  "tool_sha256": "1a3275b355c6d80b6a851622485caafdaa46f7ffb455aaf4187c6c34ff0ca7ac",
+  "decoded_inventory_sha256": "b721070f0ff928aa8bd0652246bf63c6393b87b50cd87f18bcf4fa4d0be33af9",
+  "records": [
+    {
+      "name": "BATTLE01.OZM",
+      "source": {
+        "name": "BATTLE01.OZM",
+        "dat_file_offset": 1138656,
+        "payload_bytes": 42670,
+        "payload_sha256": "0deacfcc96535b4916a40da2888bd349fe60e461c5903228f52bb1bbf53c0d3a",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "48c41c4245cec102df685d6e505d01dc67b63585b5791d2c14fba44128375dac",
+          "f92365b73006071f0794577fe9064bf0e9715e4339ca9e3189dc343ff3694e55",
+          "c7335d14d4eb5d08335ca5255a9902f86d40a6eb9060215eefd430ad02b69544",
+          "42f5e8553d03f5d2023c7d7f6ec7cebcd084072a754658e317120fa5b21f9f8e"
+        ],
+        "indices_sha256": "fff8d2df770a10b5a9634d6f0ff4ba9f73c141429bc575293327597b9a12c8b9",
+        "consumed_bytes": 42670,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 717,
+          "literal": 30937,
+          "6": 657,
+          "1": 1810,
+          "2": 267,
+          "3": 18,
+          "4": 6
+        },
+        "normal_path_matches": 0
+      },
+      "raw_asset": "BATTLE01-hd-b-v1.png",
+      "raw_asset_sha256": "d768ef822f7f1bb271657877ebb8503903c421ea7a2f4a84e40ae6c4bba90669",
+      "prompt": "BATTLE01-hd-b-v1.prompt.txt",
+      "prompt_sha256": "8fa79e8ee150cecc7a1e8feb2b963f8a0741d5920f439803b21d083c8e761233",
+      "raw_crop": [
+        0,
+        0,
+        1586,
+        992
+      ],
+      "paint_rect": [
+        0,
+        220,
+        640,
+        400
+      ],
+      "prepared": "prepared/BATTLE01-hd-calibrated-v1.png",
+      "asset": "static/BATTLE01-hd-calibrated-v1.png",
+      "asset_sha256": "6fcf1788f63c61d19cce3374040bcb5ecdcbbfa8d3da214044f48f047f27274f",
+      "original_png_sha256": "ac0f7d1cb4335cb3a6cc6595890f9ab142383b8e2f1521ff88a499b3d3653798",
+      "review": "BATTLE01.OZM-review.png",
+      "review_sha256": "7f44b67609dcfe8600d9fc51bc1045142fb8a0a8d1d25f4f533c16258158983e",
+      "padding_index": 0,
+      "padding_pixels": 148302,
+      "padding_mask_sha256": "8d82cfc5542084828bc457dcef47373dc1c0d12e0c3126399b9da7c57adb0341"
+    },
+    {
+      "name": "BATTLE02.OZM",
+      "source": {
+        "name": "BATTLE02.OZM",
+        "dat_file_offset": 1181326,
+        "payload_bytes": 48491,
+        "payload_sha256": "523b08d0c9102569c18bb5a5b80aad30433c1167577cd928d6bba378a5a9dce3",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "5e4bdf2daa8846b796e464c761c84c4d37754d4bc613117326f2c54dad107e2f",
+          "cfde5b63400da0f48c9113b10deb767176608f2936d47f99723e1be18149e050",
+          "c25c3225ced14cbf08d3889ae96a4c6e4212dd37df6e95f57bc030e86c22d07e",
+          "03fd90f64862564ad220833503ffadcdd7e4380f3828fedad707d2613878ace9"
+        ],
+        "indices_sha256": "ea1a7a0f0beb2b20ab8cce5c6035175b92c331007ce8709e04c4ac65aba6cb17",
+        "consumed_bytes": 48491,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 683,
+          "literal": 38914,
+          "6": 309,
+          "1": 1818,
+          "2": 309,
+          "4": 6,
+          "3": 19
+        },
+        "normal_path_matches": 0
+      },
+      "raw_asset": "BATTLE02-hd-b-v1.png",
+      "raw_asset_sha256": "119c1edd9d5fb3cf4351ac954c634a1341ea7b1624c4db0f0596af112f3fccb3",
+      "prompt": "BATTLE02-hd-b-v1.prompt.txt",
+      "prompt_sha256": "516c62307725cb4800e04342ff8251f1b9a9de22a2509fada8650a9466553d00",
+      "raw_crop": [
+        0,
+        0,
+        1586,
+        992
+      ],
+      "paint_rect": [
+        0,
+        220,
+        640,
+        400
+      ],
+      "prepared": "prepared/BATTLE02-hd-calibrated-v1.png",
+      "asset": "static/BATTLE02-hd-calibrated-v1.png",
+      "asset_sha256": "f0f5add85fef3d61c7830a3e0b0b5ae5d30f7967416865b390aed89554353a40",
+      "original_png_sha256": "09367f7f4cf40924ceec946594a7dafd8bde9c38ef9177f94fc91dd68c717be8",
+      "review": "BATTLE02.OZM-review.png",
+      "review_sha256": "c4a992ef4546160889780bb9f32b98404c04b596925f472f25a4d7ab545f5d50",
+      "padding_index": 0,
+      "padding_pixels": 148302,
+      "padding_mask_sha256": "8d82cfc5542084828bc457dcef47373dc1c0d12e0c3126399b9da7c57adb0341"
+    },
+    {
+      "name": "OP2.OZM",
+      "source": {
+        "name": "OP2.OZM",
+        "dat_file_offset": 2429211,
+        "payload_bytes": 25476,
+        "payload_sha256": "41ffbbcba6fa5d458b49624556b69e7797270902ac7afeb2f5c790ca302182b1",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 200,
+        "plane_sha256": [
+          "b8630616af8af9c38e1d7c20f2882b949f30e509adeed99b76cccf99f7b777de",
+          "68188f703d2789244e3978a7e632823ebfc8feffe92d5381a878e6db2b148016",
+          "21c4505b675a29782e1b8010c56f2a5fdb31d7e6e25a1ebf779849789b5db586",
+          "368bbda232f6560e2d3842d537312bfa85cdf13c0c1b9ce52b386b6d419f7c31"
+        ],
+        "indices_sha256": "85503de8a0563ade51a6a6cf65b71f9fbe0c10fbc0c10e4229605221fd6e6cb9",
+        "consumed_bytes": 25476,
+        "trailing_bytes": 0,
+        "commands": {
+          "6": 149,
+          "literal": 17312,
+          "5": 992,
+          "1": 879,
+          "3": 133,
+          "2": 102,
+          "4": 39
+        },
+        "normal_path_matches": 0
+      },
+      "raw_asset": "OP2-hd-b-v1.png",
+      "raw_asset_sha256": "ff96cecd3dbb331ab7692c67a00ed25fbd1a67cd316bfae1bb6118378f14f5ec",
+      "prompt": "OP2-hd-b-v1.prompt.txt",
+      "prompt_sha256": "71bce91521dd547bf1e233348021914e2279ab5d8bcc159562e44bcec401f5e3",
+      "raw_crop": [
+        0,
+        0,
+        1630,
+        529
+      ],
+      "paint_rect": [
+        0,
+        0,
+        480,
+        150
+      ],
+      "prepared": "prepared/OP2-hd-calibrated-v1.png",
+      "asset": "static/OP2-hd-calibrated-v1.png",
+      "asset_sha256": "bfeb6294445cea0e6902431a90e4a47f1e12b48e048793a8684bc2648c3501f4",
+      "original_png_sha256": "d113842570ac5879303481de240e1b98be6d1486dd8d57551e8af6a338333e94",
+      "review": "OP2.OZM-review.png",
+      "review_sha256": "01c997899b0ec04ad461fd921fa0e22abcb8d461ec60c04585d5aa7af8940e5b",
+      "padding_index": 6,
+      "padding_pixels": 56000
+    },
+    {
+      "name": "OP4.OZM",
+      "source": {
+        "name": "OP4.OZM",
+        "dat_file_offset": 2469487,
+        "payload_bytes": 22217,
+        "payload_sha256": "a119ed52973469389a9e7ed8911c5fd439d7ced951844ea7a002375dd3289519",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 400,
+        "plane_sha256": [
+          "8dad1ce5bf749dbee91d8bfe2702ecfd34e7e40c6e0eb53d4c28ef328f887b27",
+          "d3f520169e944f38236cffff515299031782c7372fc5fb6e317de61a73d5c1bd",
+          "2ea81cc8b110768e73ccf7d338979171f9f68f75a0c964857954ca8d8b739b8d",
+          "0cd5c16767b4d4a08432ab290a3a17ed94ee4e30762ddaddf1e5a631a3934f3c"
+        ],
+        "indices_sha256": "71236f6049ebc0e7a81255d28dbf63c9042abf76bb1d50d5f7b48d75afc46b55",
+        "consumed_bytes": 22217,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 436,
+          "6": 55,
+          "literal": 18065,
+          "2": 160,
+          "1": 513,
+          "3": 95,
+          "4": 51
+        },
+        "normal_path_matches": 0
+      },
+      "raw_asset": "OP4-hd-b-v1.png",
+      "raw_asset_sha256": "a3b91158da5eaeec1c99d707893c9671271d2beb33483cdaf9bf332bbe8dd969",
+      "prompt": "OP4-hd-b-v1.prompt.txt",
+      "prompt_sha256": "e632fe58ae76b002d63ca6e6304698edc8a38c567d7491564f6cd844eb6d96f3",
+      "raw_crop": [
+        460,
+        148,
+        1110,
+        789
+      ],
+      "paint_rect": [
+        197,
+        79,
+        438,
+        315
+      ],
+      "prepared": "prepared/OP4-hd-calibrated-v1.png",
+      "asset": "static/OP4-hd-calibrated-v1.png",
+      "asset_sha256": "b8b6b729cdba91858e84af703a1593fa7ceb3a8a7d9223593cd9715af1dae406",
+      "original_png_sha256": "f0e735e929261541c076160d1369adeed3c266c32a861eae62738615b86b1f53",
+      "review": "OP4.OZM-review.png",
+      "review_sha256": "c7aa34512dc63499c364db9f6bdb90c6f005c71b70e31fcf88b8d602f5debc6b",
+      "padding_indices": [
+        0,
+        8
+      ],
+      "source_nonblack_bounds": [
+        197,
+        79,
+        438,
+        315
+      ]
+    },
+    {
+      "name": "OP8.OZM",
+      "source": {
+        "name": "OP8.OZM",
+        "dat_file_offset": 2615656,
+        "payload_bytes": 36940,
+        "payload_sha256": "582b17c729807d2cdacaeb364d1bd14dd59cf198aa31a7d85d1104ae270b2149",
+        "semantic_level": "static decoder; normal-path matches recorded separately",
+        "status": "decoded",
+        "width": 640,
+        "height": 200,
+        "plane_sha256": [
+          "64146e045b22d0e1fcac09e950c67f0e79837ff359380354fe0ad0604ceae72f",
+          "2fab91bfe0b0450479b74ef51443ba6c06698eca5f19c62efc621f4b513890f9",
+          "eb773beb14ba2654d41bff9d8b5454f729e2dd99efd02ce27de5edd388baa607",
+          "aa65eca128ff6dbc6ea8cf1f45f8e526f193a30109aa9e7202a0ea5b1639c9f2"
+        ],
+        "indices_sha256": "1d62b8132a2861e4954e08cb628af588cc441dfeab0eea1ab0f2f4aff8cf9c69",
+        "consumed_bytes": 36940,
+        "trailing_bytes": 0,
+        "commands": {
+          "5": 1519,
+          "literal": 26753,
+          "6": 150,
+          "4": 76,
+          "1": 514,
+          "2": 148,
+          "3": 106
+        },
+        "normal_path_matches": 0
+      },
+      "raw_asset": "OP8-hd-b-v1.png",
+      "raw_asset_sha256": "57f96bcccb77bce9d047c851de383d1400f9abe3cfbdcdf0abfcadfc3db294d2",
+      "prompt": "OP8-hd-b-v1.prompt.txt",
+      "prompt_sha256": "68da76ac0756cdf5072339bf9acf7bed03cb5b351d7f6b724595faaee36d9070",
+      "raw_crop": [
+        0,
+        0,
+        2171,
+        724
+      ],
+      "paint_rect": [
+        0,
+        0,
+        640,
+        200
+      ],
+      "prepared": "prepared/OP8-hd-calibrated-v1.png",
+      "asset": "static/OP8-hd-calibrated-v1.png",
+      "asset_sha256": "c2ec1b87835205ab8f2233e825b8bae5deb04fe0a5710d60bd89d73cfa953888",
+      "original_png_sha256": "894804f397dcce78a0411de7a4cf3c8f1a1317ff1e3a507a5d7a2c909db47d08",
+      "review": "OP8.OZM-review.png",
+      "review_sha256": "1b734e05ce6cde08a7c8975cfc5494a3afc30cd2567cdc1ba78de9f8d1026244"
+    }
+  ],
+  "gallery": "static-HD-gallery-v1.png",
+  "gallery_sha256": "2316422f71bb491daf9c4f411b6e78b0c4db1c58c5e7eb28f30d493d16d8b7ef",
+  "scale": 2,
+  "draft_manifest_sha256": "9cd6bbbfd592a5f99df1c72e80756fcc5158f3ab247472835b0866180737b63d",
+  "review_sha256": "35a18e454a970d4af054dedd9f9500007d8e4d376b980bdaaaec69eba3b95567"
+}

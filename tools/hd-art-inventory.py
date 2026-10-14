@@ -55,6 +55,23 @@ def main():
     opening = {r['source']:r for r in json.loads(opening_path.read_text())['records']} if opening_path.exists() else {}
     remaining_path = ROOT/'art/remaining-generation-v1.json'
     remaining_art = {r['source']:r for r in json.loads(remaining_path.read_text())['records']} if remaining_path.exists() else {}
+    static_profiles = {}
+    for relative, tool in [('graphics/static/profiles.json', 'hd-background-prepare.py'),
+                           ('graphics/static/logo/profiles.json', 'hd-logo-prepare.py')]:
+        path = ROOT/relative
+        if path.exists():
+            data = json.loads(path.read_text())
+            assert data['tool_sha256'] == sha(PROJECT/'tools'/tool)
+            for profile in data.get('records', [data.get('record')]):
+                assert profile and profile['name'] not in static_profiles
+                static_profiles[profile['name']] = profile
+    static_proof_path = ROOT/'graphics/static/verification-summary.json'
+    static_proof = json.loads(static_proof_path.read_text()) if static_proof_path.exists() else None
+    if static_proof:
+        assert static_proof['verified'] and static_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-background.py')
+        assert static_proof['profiles_sha256'] == sha(ROOT/'graphics/static/profiles.json')
+        assert static_proof['logo_profiles_sha256'] == sha(ROOT/'graphics/static/logo/profiles.json')
+        assert set(static_proof['reviewed_sources']) == set(static_profiles)
     frame_summary_path = ROOT/'battle-frame/verification-summary.json'
     frame_summary = json.loads(frame_summary_path.read_text()) if frame_summary_path.exists() else None
     if frame_summary:
@@ -62,7 +79,7 @@ def main():
         proof_sources_frame = {'verification':str(frame_summary_path.relative_to(PROJECT)),'sha256':sha(frame_summary_path)}
     direct = {}
     for record in decoded["records"]:
-        if record['name'] in ui_drafts or record['name'] in weather or record['name'] in opening or record['name'] in remaining_art:
+        if record['name'] in ui_drafts or record['name'] in weather or record['name'] in opening or record['name'] in remaining_art or record['name'] in static_profiles:
             continue
         stem = record["name"].removesuffix(".OZM")
         path = ROOT / "art" / f"{stem}-hd-b-v1.png"
@@ -82,6 +99,8 @@ def main():
     verified_story = {}
     verified_kao = {}
     proof_sources = []
+    if static_proof:
+        proof_sources.append({'verification':str(static_proof_path.relative_to(PROJECT)), 'sha256':sha(static_proof_path)})
     if frame_summary:
         proof_sources.append(proof_sources_frame)
     for directory in ("desktop", "kao-desktop", "story/desktop", "story-expanded/desktop"):
@@ -340,6 +359,17 @@ def main():
             assert sha(path) == painting['sha256']
             record.update(art_status='draft',art=art_info(path,ROOT/'art'/painting['prompt']),
                           runtime_status='source-referenced art draft; black padding, geometry and consumer registration pending')
+        if name in static_profiles:
+            profile = static_profiles[name]
+            path = PROJECT/'assets/hd-b/art'/profile['asset']
+            assert sha(path) == profile['asset_sha256']
+            assert profile['source']['indices_sha256'] == source['indices_sha256']
+            record.update(kind='calibrated static illustration or publisher wordmark', art_status='prepared',
+                          art=art_info(path,ROOT/'art'/profile['prompt']), source_profile=profile,
+                          runtime_status='reviewed source and common opaque consumer integrated; normal path not yet sampled')
+            if static_proof and name in static_proof['normal_new_source_names']:
+                record.update(runtime_status='normal idle opening HD and original toggles verified; complete 200M original state comparison',
+                              runtime_proof_sha256=sha(static_proof_path))
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]
@@ -367,8 +397,10 @@ def main():
               "reviewed_story_source_profiles": len(profiles),
               "generated_weather_sources":len(weather), "approved_weather_sources":len(weather_profiles),
               "normal_weather_sources_verified":1 if weather_proof else 0,
-              "generated_opening_drafts":len(opening),
-              "generated_remaining_OZM_drafts":len(remaining_art),
+              "generated_opening_drafts":len(set(opening)-set(static_profiles)),
+              "generated_remaining_OZM_drafts":len(set(remaining_art)-set(static_profiles)),
+              "approved_static_sources":len(static_profiles),
+              "normal_static_sources_verified":len(static_proof['normal_new_source_names']) if static_proof else 0,
               "approved_MAP_CHIP_floor_art": approved_floor_count,
               "normal_MAP_CHIP_floor_cases_verified": len(verified_floors),
               "generated_MAP_CHIP_unit_drafts": unit_drafts,

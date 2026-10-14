@@ -366,3 +366,15 @@ GitHub 收尾：功能與素材提交 db97be7f0d17b9f898c2302fb311769b52cf95bd �
 - 本輪建置與 GUI 容器均正常結束且移除，遠端與擁有權核對結果接續記錄。
 
 GitHub 收尾：功能、校準圖與新草稿提交 d8a879e495bc1a59ef134e22a39eff4c9a14d59f 已推送 main。主機 gh 確認 PRIVATE、遠端 main 相同；immutable tree 的 721 個 assets/hd-b 檔案逐項 blob SHA 與本機相符，tree 未截斷且沒有 original/ 或 workplace/。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6177319488 。最後保存核對為 538 PNG、139 提示詞；執行收據的 Go source SHA 與目前工作樹相同，完整工作根沒有 root-owned 檔案或 .md 目錄，新增工具、輸出及圖片抽查皆為 UID/GID 1000:1000，tokugawa 容器已清空，沿用既有 image。
+
+## 2026-10-15：六張靜態圖與正常開場標誌
+
+- 命中規格驗收、文件職責及 README 現況路由。校準 BATTLE01／02、OP2／8、OP4 既有生成圖，另以內建 imagegen 製作 OP1 Family Soft 標誌；六張逐項審查，原始生成圖、裁切、完整提示詞及來源 SHA 保存。
+- 共用不透明呈現新增 PaintRect 及 VisibleRects。保留原始呼叫、來源／目的矩形及雜湊，後畫矩形只扣除可見區；上限 64 筆與 256 片段，未知直接 VRAM 變化仍備援。明示空 mouse-file 阻止主機輸入混入無輸入基準，普通滑鼠模式不改。
+- 舊二進位與匹配來源快照的原版無輸入 200M 只觀測到 OP1／OP5，沒有把其他五張當作正常開場。首次缺 DISPLAY、再次漏建 startup-probe 及 logo 準備掛載錯誤均保留，分類工具環境／準備錯誤；同 image 修正後成功。
+- OP1 首次 12M palette 拒絕，原先只判為淡入；原版七次擷取證實標誌有獨立十六色。22M／26.333333M 穩定結果一致，其他五次為淡入／淡出。依來源精確配置 palette，沒有放寬其他來源。最初兩次 GUI 結果原樣保留。
+- 首版與 palette 修正版四套件均通過，最終研究入口 27.337 秒。最終 OP1 GUI 的畫面公式與原版狀態已通過，但驗證器把收據 physical_mouse_events 誤讀成狀態檔 mouse_events；修正後在乾淨子目錄重跑同一命令，正式通過。這是驗證器欄位錯誤，非產品滑鼠缺陷。
+- 正常標誌 200M、完整 RAM、十五欄、53352 像素公式、四張 X11 與五次切換通過；首戰 750M／390 事件、三次切換、完整 RAM、十五欄及三張 X11 擷取符合舊基準與前版。六項素材全部 ready；正常新來源只列 OP1，另五項來源與共同呈現測試通過。
+- 獨立總表 SHA-256：4990b8c4766bc6b83094d16e7199e2cc2639085e193ca310394a747e9e8e6379；二進位 56b7d5441afdca078b8a1073ecf0db5e6016a724284b23f543c14bf1e639f750。生成素材保存及 verify-only 通過，546 PNG、140 提示詞、428970184 索引 bytes；原版 PNG／idx／RAM／PCM 與執行收據維持本機。
+- 覆蓋清單重生為 86 OZM prepared、一項 partial、20 項已解碼待製作及五項解碼未知；81 頭像與完整 MAP_CHIP 已準備。全遊戲 HD 未完成，三平台打包尚未開始。下一批為正常標題與其餘開場、動畫及介面。
+- 製作、建置及 GUI 容器已退出並自動刪除，未重建 image。遠端、文件入口及擁有權核對結果接續記錄。

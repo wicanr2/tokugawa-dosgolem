@@ -1,11 +1,14 @@
 package main
 
+import "image"
+
 type hdGraphicsProfile struct {
 	Source                      graphicsSourceProfile
 	IndicesSHA, Asset, AssetSHA string
+	PaintRect                   image.Rectangle
 }
 
-var hdGraphicsProfiles = []hdGraphicsProfile{
+var hdGraphicsProfiles = append(append([]hdGraphicsProfile{
 	{Source: graphicsSourceProfile{Name: "WEATHER1.OZM", Width: 144, Height: 74, Planes: []string{
 		"a8d511ceb8b4688656ec7944f210375042bdbec816a2082d9c34cefcd05ca5fb",
 		"ae66b075320d6736912f2de9a4cfb4cade333a88c10590702ae961d301eac06b",
@@ -18,7 +21,7 @@ var hdGraphicsProfiles = []hdGraphicsProfile{
 		"5c07fe2eac5734a4e0cb78d1c2e6d275312147ec243187b3f4593e49a2ec18ad",
 		"67ebc7d139ad34f1d7f330110616bc7c27c84cc4ba475ac9502b1803826ac069"}},
 		IndicesSHA: "61220f0bcfe5c2c85d09f3a451deeef33c2363109d8de992d99d19951cf84696", Asset: "WEATHER2-hd-b-v2.png", AssetSHA: "b5a024f4ae985a46f6c8e8686ae286a3583394b59e48fa08d821b2f1a146562a"},
-}
+}, hdGraphicsStaticProfiles...), hdGraphicsLogoProfile)
 
 var hdGraphicsSources = func() []graphicsSourceProfile {
 	var result []graphicsSourceProfile

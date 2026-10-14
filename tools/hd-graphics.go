@@ -14,6 +14,34 @@ type hdGraphicsState struct {
 	Completed uint64               `json:"completed_returns"`
 }
 
+// 只扣除後畫的不透明矩形，原始繪圖參數與來源／目的矩形仍保留。
+func graphicsSubtract(r, cut image.Rectangle) []image.Rectangle {
+	c := r.Intersect(cut)
+	if c.Empty() {
+		return []image.Rectangle{r}
+	}
+	var result []image.Rectangle
+	for _, q := range []image.Rectangle{
+		image.Rect(r.Min.X, r.Min.Y, r.Max.X, c.Min.Y),
+		image.Rect(r.Min.X, c.Max.Y, r.Max.X, r.Max.Y),
+		image.Rect(r.Min.X, c.Min.Y, c.Min.X, c.Max.Y),
+		image.Rect(c.Max.X, c.Min.Y, r.Max.X, c.Max.Y),
+	} {
+		if !q.Empty() {
+			result = append(result, q)
+		}
+	}
+	return result
+}
+
+func graphicsFragmentCount(draws []graphicsDrawRecord) int {
+	n := 0
+	for _, d := range draws {
+		n += len(d.VisibleRects)
+	}
+	return n
+}
+
 func graphicsDestination(esp uint32, mem []byte) (image.Rectangle, bool) {
 	if uint64(esp)+24 > uint64(len(mem)) {
 		return image.Rectangle{}, false
@@ -44,11 +72,22 @@ func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapsho
 		} else if r, ok := graphicsDestination(esp, mem); ok {
 			keep := h.Draws[:0]
 			for _, draw := range h.Draws {
-				if draw.DestRect.Intersect(r).Empty() {
+				visible := draw.VisibleRects
+				if visible == nil {
+					visible = []image.Rectangle{draw.DestRect}
+				}
+				draw.VisibleRects = nil
+				for _, old := range visible {
+					draw.VisibleRects = append(draw.VisibleRects, graphicsSubtract(old, r)...)
+				}
+				if len(draw.VisibleRects) > 0 {
 					keep = append(keep, draw)
 				}
 			}
 			h.Draws = keep
+			if graphicsFragmentCount(h.Draws) > 256 {
+				h.Draws = nil
+			}
 		} else {
 			h.Draws = nil
 		}
@@ -58,10 +97,14 @@ func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapsho
 	h.Pending = trace.Pending
 	for _, draw := range trace.Records {
 		if draw.Verified {
+			draw.VisibleRects = []image.Rectangle{draw.DestRect}
 			if len(h.Draws) == 64 {
 				h.Draws = h.Draws[1:]
 			}
 			h.Draws = append(h.Draws, draw)
+			if graphicsFragmentCount(h.Draws) > 256 {
+				h.Draws = nil
+			}
 			h.Completed++
 		}
 	}
@@ -88,6 +131,10 @@ func newHDGraphicsPair(profile hdGraphicsProfile, source []byte, asset image.Ima
 		return p
 	}
 	p.Source = append([]byte(nil), source...)
+	if profile.PaintRect != (image.Rectangle{}) && (profile.PaintRect.Empty() || !profile.PaintRect.In(image.Rect(0, 0, profile.Source.Width, profile.Source.Height))) {
+		p.Reason = "fallback_paint_region"
+		return p
+	}
 	p.Reason = "fallback_missing_asset"
 	if asset == nil {
 		return p
@@ -127,24 +174,61 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 	if s.MaxColor != 15 {
 		return r
 	}
-	for i, want := range battleFrameNativePalette {
+	for i, want := range graphicsNativePalette(p.Profile) {
 		rgb := s.Palette[s.DAC[i]]
 		if want != (color.NRGBA{rgb[0], rgb[1], rgb[2], 255}) {
 			return r
 		}
 	}
-	r.Mode = "fallback_source_mismatch"
-	actual := graphicsCrop(s.Indexed, 640, draw.DestRect)
-	if len(actual) != len(expected) || fmt.Sprintf("%x", sha256.Sum256(actual)) != draw.ExpectedSHA {
+	visible := draw.VisibleRects
+	if visible == nil {
+		visible = []image.Rectangle{draw.DestRect}
+	}
+	r.Mode = "fallback_visibility"
+	if len(visible) > 256 {
 		return r
 	}
-	for y := 0; y < draw.DestRect.Dy()*p.Scale; y++ {
-		for x := 0; x < draw.DestRect.Dx()*p.Scale; x++ {
-			out.SetNRGBA(draw.DestRect.Min.X*p.Scale+x, draw.DestRect.Min.Y*p.Scale+y,
-				rgbaAt(p.Asset, draw.SourceRect.Min.X*p.Scale+x, draw.SourceRect.Min.Y*p.Scale+y))
+	paint := p.Profile.PaintRect
+	if paint.Empty() {
+		paint = image.Rect(0, 0, p.Profile.Source.Width, p.Profile.Source.Height)
+	}
+	allowed := draw.SourceRect.Intersect(paint).Add(draw.DestRect.Min.Sub(draw.SourceRect.Min))
+	var fragments []image.Rectangle
+	for i, f := range visible {
+		if f.Empty() || !f.In(draw.DestRect) {
+			return r
+		}
+		for _, old := range visible[:i] {
+			if !old.Intersect(f).Empty() {
+				return r
+			}
+		}
+		if f = f.Intersect(allowed); !f.Empty() {
+			fragments = append(fragments, f)
 		}
 	}
+	r.Mode = "fallback_no_visible_art"
+	if len(fragments) == 0 {
+		return r
+	}
+	r.Mode = "fallback_source_mismatch"
+	for _, f := range fragments {
+		src := f.Add(draw.SourceRect.Min.Sub(draw.DestRect.Min))
+		want, actual := graphicsCrop(p.Source, p.Profile.Source.Width, src), graphicsCrop(s.Indexed, 640, f)
+		if len(actual) != len(want) || fmt.Sprintf("%x", sha256.Sum256(actual)) != fmt.Sprintf("%x", sha256.Sum256(want)) {
+			return r
+		}
+	}
+	for _, f := range fragments {
+		src := f.Add(draw.SourceRect.Min.Sub(draw.DestRect.Min))
+		for y := 0; y < f.Dy()*p.Scale; y++ {
+			for x := 0; x < f.Dx()*p.Scale; x++ {
+				out.SetNRGBA(f.Min.X*p.Scale+x, f.Min.Y*p.Scale+y,
+					rgbaAt(p.Asset, src.Min.X*p.Scale+x, src.Min.Y*p.Scale+y))
+			}
+		}
+		r.PaintedNative += f.Dx() * f.Dy()
+	}
 	r.Mode = "hd"
-	r.PaintedNative = len(expected)
 	return r
 }

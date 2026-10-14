@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"image"
+	"os"
 	"testing"
 )
 
@@ -36,6 +37,33 @@ func graphicsFixture() ([]byte, graphicsSourceProfile, []byte) {
 		binary.LittleEndian.PutUint32(mem[0x60004+i*4:], v)
 	}
 	return mem, p, idx
+}
+
+func TestGraphicsRegisteredPlanarSourcesReadOnly(t *testing.T) {
+	for _, profile := range hdGraphicsProfiles {
+		p := profile.Source
+		idx, err := os.ReadFile("/project/workplace/hd-prototype/catalog/decoded/" + p.Name + ".idx")
+		if err != nil {
+			t.Skip("local decoded sources unavailable")
+		}
+		mem := make([]byte, 0x200000)
+		binary.LittleEndian.PutUint32(mem[0x5b1b8:], uint32(p.Width/8))
+		binary.LittleEndian.PutUint32(mem[0x5b1b4:], uint32(p.Height))
+		for bit, global := range []int{0x38c00, 0x38bf8, 0x38c04, 0x38bfc} {
+			base := 0x100000 + bit*0x20000
+			binary.LittleEndian.PutUint32(mem[global:], uint32(base))
+			for y := 0; y < p.Height; y++ {
+				for x := 0; x < p.Width; x++ {
+					mem[base+y*80+x/8] |= ((idx[y*p.Width+x] >> uint(bit)) & 1) << uint(7-x%8)
+				}
+			}
+		}
+		before := sha256.Sum256(mem)
+		got, actual, ok := graphicsSource(mem, hdGraphicsSources)
+		if !ok || got.Name != p.Name || fmt.Sprintf("%x", sha256.Sum256(actual)) != profile.IndicesSHA || sha256.Sum256(mem) != before {
+			t.Fatal("registered source, decoded plane fingerprint or read-only contract", p.Name)
+		}
+	}
 }
 
 func TestGraphicsOpaqueNaturalReturnReadOnly(t *testing.T) {
