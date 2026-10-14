@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 160,
-    "prompts": 75,
-    "bytes": 240362250
+    "png": 183,
+    "prompts": 95,
+    "bytes": 289000071
   },
-  "archive_tool_sha256": "f8a4c047003aafb3a8ec6b412ff4b19189c756b4f735395e2f9e3377f06a7ab5",
+  "archive_tool_sha256": "e7766c5afed1fece7199fb522e8645de9cf365bff1bd0e7c44a52bf6c068b5fe",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -4741,6 +4741,523 @@
       "bytes": 2343,
       "sha256": "28b81238fdd2fcadc88a6aefad0b565ac1ad9b0e232b36e7136f6f19632b2a08",
       "local_source": "workplace/hd-prototype/scroll/scroll-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-000-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 4133139,
+      "sha256": "5f0c2a57e4a0b73abdfdb249fc5a3bcf6a174166e52e75b29e29519355d53c80",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-000-hd-b-v1.png",
+      "prompt": "terrain/floor-000-hd-b-v1.prompt.txt",
+      "status": "normal first-battle floor verified",
+      "alpha_policy": "opaque",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "terrain/floor-000-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1098,
+      "sha256": "a2a115232eca176b97573fbe4dba0a51dd28d37b2201097cd2b959ee2969179b",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-000-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-002-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3607067,
+      "sha256": "082919b7b0ea315084fe4e68c2f2718bd00a2c5900aa4142e33962d8a47a57cc",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-002-hd-b-v1.png",
+      "prompt": "terrain/floor-002-hd-b-v1.prompt.txt",
+      "status": "normal first-battle floor verified",
+      "alpha_policy": "opaque",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "terrain/floor-002-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1255,
+      "sha256": "6aa7ce38830b70421ea0636c00aee39ddf0fded1daf719131aa142acedde8ada",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-002-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-006-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3649437,
+      "sha256": "6ede677c1fc7e424e4a777a2856565d7cee9827e8a4995c038f4550a08e0b5f8",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-006-hd-b-v1.png",
+      "prompt": "terrain/floor-006-hd-b-v1.prompt.txt",
+      "status": "superseded or unreviewed floor draft",
+      "alpha_policy": "opaque",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "terrain/floor-006-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1255,
+      "sha256": "ab2c93754a9a3c6df1dd5a7371b7dd6a36301b6f1e82245d0321ada1c76b7f93",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-006-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-006-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 3346676,
+      "sha256": "0c0f9e4edf1f9fef352ce578ba273920e3a0871d48259045a8f7982eacbf2e39",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-006-hd-b-v2.png",
+      "prompt": "terrain/floor-006-hd-b-v2.prompt.txt",
+      "status": "normal first-battle floor verified",
+      "alpha_policy": "opaque",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "terrain/floor-006-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 935,
+      "sha256": "ab9b6a8d9818f0ef0e6a8384caf889ae68ee464ebae5133de9e2132176587e06",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-006-hd-b-v2.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-013-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3718457,
+      "sha256": "9be16583e6158cc223bc8bd04a78332555668ae440ef23a7c061e58913af7039",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-013-hd-b-v1.png",
+      "prompt": "terrain/floor-013-hd-b-v1.prompt.txt",
+      "status": "normal first-battle floor verified",
+      "alpha_policy": "opaque",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "terrain/floor-013-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1255,
+      "sha256": "e02824e97c7c19b8efc6167c8f870d148b60751c66b4e798d9ca76e2a499aa2a",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-013-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-015-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3491603,
+      "sha256": "bca0c6e792763d858417b6fcb0da4f26ec7cd7c82b601bfb80652ac4363dec31",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-015-hd-b-v1.png",
+      "prompt": "terrain/floor-015-hd-b-v1.prompt.txt",
+      "status": "normal first-battle floor verified",
+      "alpha_policy": "opaque",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "terrain/floor-015-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1255,
+      "sha256": "7008ab0d971b18033d1c08601b3d68a583f3eac26dcc9f6e32ffe88e2190023b",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-015-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-022-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3815798,
+      "sha256": "1aaba05585c7bd440c7376b50f97dd82a4da0e95ef0125525b26652d036bfc87",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-022-hd-b-v1.png",
+      "prompt": "terrain/floor-022-hd-b-v1.prompt.txt",
+      "status": "superseded or unreviewed floor draft",
+      "alpha_policy": "opaque",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "terrain/floor-022-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1255,
+      "sha256": "c0a8f2b4867690f81933edb4d49a56b60c9ebd9671a6df4cbcd1ddde4e6fff98",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-022-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-022-hd-b-v2.png",
+      "kind": "png",
+      "bytes": 3432104,
+      "sha256": "03699873aa26babf0aabfcbeddbe7109a45e5bbb8740796c423e402cdde4834f",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-022-hd-b-v2.png",
+      "prompt": "terrain/floor-022-hd-b-v2.prompt.txt",
+      "status": "normal first-battle floor verified",
+      "alpha_policy": "opaque",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "terrain/floor-022-hd-b-v2.prompt.txt",
+      "kind": "prompt",
+      "bytes": 935,
+      "sha256": "1e57bda05784e84f74144acb588f22d746d6143c6944a1688358a67245f7d13e",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-022-hd-b-v2.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-062-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3328900,
+      "sha256": "ff0ed6b30504a9ee03b8f7fa448d075d9c300153e9dd4034af084f4cb02b86c3",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-062-hd-b-v1.png",
+      "prompt": "terrain/floor-062-hd-b-v1.prompt.txt",
+      "status": "reviewed floor art and common draw consumer integrated; visible normal case not yet sampled",
+      "alpha_policy": "opaque",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "terrain/floor-062-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1254,
+      "sha256": "f55b06f043ee1bd92b7af70ba88de968995c0b2a68141980c2304d9760b38bc0",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-062-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-067-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3207702,
+      "sha256": "5fc578d5ab570d5737388ace04394327ad6bfd622e4c2b937cc6f55fdfe44140",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-067-hd-b-v1.png",
+      "prompt": "terrain/floor-067-hd-b-v1.prompt.txt",
+      "status": "reviewed floor art and common draw consumer integrated; visible normal case not yet sampled",
+      "alpha_policy": "opaque",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    {
+      "path": "terrain/floor-067-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1254,
+      "sha256": "07bfe7cd617a04f3722bdcfedb8945cb2d2d7b80741f2546c4db4d9550d82143",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-067-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/floor-generation.json",
+      "kind": "generation-metadata",
+      "bytes": 4901,
+      "sha256": "1915ec9b7156bcc39d8759d5c2071fb5dd1aad27b2e336662cfbea6ec1f2b203",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-generation.json"
+    },
+    {
+      "path": "terrain/floor-hd-gallery-v1.png",
+      "kind": "png",
+      "bytes": 1005006,
+      "sha256": "b552f6234951b61eb9045135b87916d78211e0f541f85068b3ec2975565046dd",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-hd-gallery-v1.png",
+      "status": "generated-art gallery; includes drafts",
+      "size": [
+        1200,
+        960
+      ]
+    },
+    {
+      "path": "terrain/floor-hd-gallery-v2.png",
+      "kind": "png",
+      "bytes": 1007638,
+      "sha256": "52f248ccda23c0d74bcae22a7f9bffe7b2a65fbfec6d1411d4f33c1d87dc8353",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-hd-gallery-v2.png",
+      "status": "generated-art gallery; includes drafts",
+      "size": [
+        1200,
+        960
+      ]
+    },
+    {
+      "path": "terrain/floor-revisions.json",
+      "kind": "generation-metadata",
+      "bytes": 1544,
+      "sha256": "b308fadabdf2b8cdb53b55a5338724801ed0f0d78c5e3f2babac5db9aaceabad",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/floor-revisions.json"
+    },
+    {
+      "path": "terrain/generation.json",
+      "kind": "generation-metadata",
+      "bytes": 9610,
+      "sha256": "ea02ca3518a9b014166a149825dc64b2c3114520d0e1c888ae834897d4402b9e",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/generation.json"
+    },
+    {
+      "path": "terrain/unit-000-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 821179,
+      "sha256": "66ab0037c95020dd511e7d8bb3d451642b20381c38ed7b5ba9c592e01b6ce43a",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-000-hd-b-v1.png",
+      "prompt": "terrain/unit-000-hd-b-v1.prompt.txt",
+      "status": "generated unit draft; original identity and footprint review pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-000-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1356,
+      "sha256": "8243d917bb4ad3a796f7142059ce7c3f48d6350e619c67650fd2aca10ba11015",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-000-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-001-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 966956,
+      "sha256": "a8c37f61ef22f645a58cb824758ab34620e535a2588f0fce5e71490cf3dd3a72",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-001-hd-b-v1.png",
+      "prompt": "terrain/unit-001-hd-b-v1.prompt.txt",
+      "status": "generated unit draft; original identity and footprint review pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-001-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1374,
+      "sha256": "d6682e8f0b72d64ecddaf8633e13d4fdfd4a5792b4194c440d7de6ccf3f2cf61",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-001-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-002-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1045961,
+      "sha256": "57358865cba98944fe379f5910d9fef251fc7887d19906b35d0369e79ff9a66b",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-002-hd-b-v1.png",
+      "prompt": "terrain/unit-002-hd-b-v1.prompt.txt",
+      "status": "generated unit draft; original identity and footprint review pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-002-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1376,
+      "sha256": "f08dbdb56816c15b7efa42870bc2b3297a7fb3648a2fd502e088ddf0cf7220a9",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-002-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-003-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 950614,
+      "sha256": "6c9a0ef3d9a3db01bec673fb37d7f8fca4a2f2a08cf6a14d81ecd101ec867654",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-003-hd-b-v1.png",
+      "prompt": "terrain/unit-003-hd-b-v1.prompt.txt",
+      "status": "generated unit draft; original identity and footprint review pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-003-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1400,
+      "sha256": "4d2c13ce487abcbe105fe0ce5dcdb2892c07004d7e235c76fc29f477a0b62d12",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-003-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-004-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1298888,
+      "sha256": "4f445a1953a76aa3e52dd702df7ace9d36f7c15835a28e0ac9d78c496fb28ef0",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-004-hd-b-v1.png",
+      "prompt": "terrain/unit-004-hd-b-v1.prompt.txt",
+      "status": "generated unit draft; original identity and footprint review pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-004-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1401,
+      "sha256": "cc73611214fee23015c5d987dc9f179c15d89fedf035f244c459f5114614ba63",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-004-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-005-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 934637,
+      "sha256": "ea5dc08e590e4ae74f8e956103f54f0b3c726e4581f1233cfaa4123a087baf7c",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-005-hd-b-v1.png",
+      "prompt": "terrain/unit-005-hd-b-v1.prompt.txt",
+      "status": "generated unit draft; original identity and footprint review pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-005-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1355,
+      "sha256": "481d7cf177fce6884662e3bfa74c8851f6d2b388cbab49264e418369dc2b13b3",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-005-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-006-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 906431,
+      "sha256": "827f1a86c92a7294e89b6167880acd228cede04c21a4a0256c4d4e5757e2d26e",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-006-hd-b-v1.png",
+      "prompt": "terrain/unit-006-hd-b-v1.prompt.txt",
+      "status": "generated unit draft; original identity and footprint review pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-006-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1357,
+      "sha256": "d7379700d627361c05fdfede1c944d5bb672e95582785d6ed687b846545adf9d",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-006-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-007-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1182923,
+      "sha256": "b40b0683758d2ef07e49c398c6759ffb5bb29dcfba9857449a78f7490b48f20b",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-007-hd-b-v1.png",
+      "prompt": "terrain/unit-007-hd-b-v1.prompt.txt",
+      "status": "generated unit draft; original identity and footprint review pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-007-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1376,
+      "sha256": "b55378cfe596c1282b1f5d09fe9081e4261e3676a4b5f0d5f5417536cb008409",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-007-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-008-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1013245,
+      "sha256": "731715225ad86948c9388cabc66b13a04b617b2dc245809299278d47945aa521",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-008-hd-b-v1.png",
+      "prompt": "terrain/unit-008-hd-b-v1.prompt.txt",
+      "status": "generated unit draft; original identity and footprint review pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-008-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1405,
+      "sha256": "12973d67dbb431e0ec36a39b367e03504872ef3299194b45335816ef57d6a9f9",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-008-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-009-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1299046,
+      "sha256": "7d85642230559e55d173c73f20150e5eff9676f203ec4c00caf0c039780d35b8",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-009-hd-b-v1.png",
+      "prompt": "terrain/unit-009-hd-b-v1.prompt.txt",
+      "status": "generated unit draft; original identity and footprint review pending",
+      "alpha_policy": "transparent",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "terrain/unit-009-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1400,
+      "sha256": "c51652762c106946866e847ea60488489ebbde2d70c245587e4c3810e11fce04",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-009-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "terrain/unit-hd-gallery-v1.png",
+      "kind": "png",
+      "bytes": 432808,
+      "sha256": "3f3e99d90a66099603b399728a982e6bb0c7ca286d6bf8a31ac9c772b2212a56",
+      "local_source": "workplace/hd-prototype/catalog/terrain/art/unit-hd-gallery-v1.png",
+      "status": "generated-art gallery; includes drafts",
+      "size": [
+        1400,
+        720
+      ]
     },
     {
       "path": "window/window-skin-hd-b-v1.png",

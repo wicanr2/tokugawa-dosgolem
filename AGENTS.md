@@ -51,7 +51,12 @@
 | [tools/hd-story-prepare.py](tools/hd-story-prepare.py) | 核對已審查劇情圖的 DAT、四平面、精確共用、可見裁切及圖片文字矩形，產生 `catalog/story-expanded/` 原圖與 profiles.json；固定 GUI Docker，專案掛 `/project`、原版唯讀掛 `/original`、catalog 可寫掛 `/output`，`--go-output` 指定對照表輸出 |
 | `workplace/hd-prototype/catalog/story-expanded/` | 75 個劇情來源的準備、隔離建置及驗證；53 來源歷史收據保留於 catalog/story |
 | [tools/hd-terrain-extract.py](tools/hd-terrain-extract.py) | 核對 MAP_CHIP 的正常 RAM 四平面、IDA 圖塊讀取端及來源索引，細分 104 地面、26 物件、13 單位來源格；不是 HD 素材或正式遊戲索引集合。固定 GUI Docker，專案唯讀掛 `/project`、原版唯讀掛 `/original`、catalog 可寫掛 `/output`，執行 `python3 /project/tools/hd-terrain-extract.py` |
-| `workplace/hd-prototype/catalog/terrain/` | 原版地形、物件與單位來源格、總覽及擷取收據；原版研究輸出只留本機 |
+| `workplace/hd-prototype/catalog/terrain/` | 原版地形、物件與單位來源格、總覽及擷取收據；原版研究輸出只留本機。art/ 保存生成素材與完整提示詞，再依既有授權同步至 assets/hd-b/terrain |
+| [tools/hd-terrain-trace.go](tools/hd-terrain-trace.go)、[測試](tools/hd-terrain-trace_test.go) | `-hd-terrain-trace` 的唯讀地面入口暫存器、來源平面與自然返回診斷，上限 512 事件；未參與桌面呈現。沿用 run-probes 的固定 Docker，在 `catalog/terrain/` 的獨立輸出執行正常 750M 時間表 |
+| [tools/hd-terrain-prepare.py](tools/hd-terrain-prepare.py)、[來源對照](tools/hd-terrain-profiles.go) | 以正常 DAC 準備 104 個來源及審查後素材的編譯期指紋，輸出 terrain/prepared；固定 GUI Docker，專案掛 `/project` 可寫、terrain 掛 `/output` 可寫，執行 Python 工具後 gofmt 對照表；原版擷取保持原樣 |
+| [tools/hd-terrain.go](tools/hd-terrain.go)、[測試](tools/hd-terrain_test.go) | 已核對的地面入口／返回、完整平面指紋與整格像素資格；遮擋、缺圖或調色盤不符均保留原圖，契約見 RESEARCH-LOG |
+| [tools/verify-terrain-evidence.py](tools/verify-terrain-evidence.py) | 核對地面 104 來源、八項審查素材與兩次正常 750M GUI；固定 Python Docker，專案唯讀掛 `/project`、terrain/runtime 可寫掛 `/output`，執行 `python3 /project/tools/verify-terrain-evidence.py` |
+| `workplace/hd-prototype/catalog/terrain/runtime/` | 地面切片的隔離建置及 GUI 收據；trace/ 保存呈現前的唯讀觀測與探針來源快照 |
 | [tools/hd-story_test.go](tools/hd-story_test.go) | 批次劇情來源、原版載入／繪製返回、診斷上限、裁切、地名、缺圖與遮擋測試；來源測試不作正常劇情實玩證據 |
 | [tools/verify-hd-story.py](tools/verify-hd-story.py) | 核對兩次 750M 收據、75 個來源、實際素材、二進位與建置輸入；固定 Python Docker 中專案唯讀掛 `/project`、`catalog/story-expanded/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-story.py` |
 | [tools/hd-live.go](tools/hd-live.go)、[tools/hd-live_test.go](tools/hd-live_test.go) | 只讀原版素材、A-0 矩形與 VISUAL 全畫面繪製入口／返回，限制桌面替換資格 |
@@ -140,7 +145,7 @@ timeout 120s docker run --rm --name tokugawa-art-archive --network none \
   python3 /project/tools/archive-hd-art.py
 ```
 
-核對時使用同一 image，把專案掛載加上 `readonly`，命令末尾加 `--verify-only`。工具目前涵蓋劇情圖、81 張頭像及九頁圖集、捲軸、紅金框架、視窗 skin 與風格比較；新增類別先擴充清單。它拒絕覆寫內容不同的既有圖片，變體使用新檔名。
+核對時使用同一 image，把專案掛載加上 `readonly`，命令末尾加 `--verify-only`。工具目前涵蓋劇情圖、81 張頭像及九頁圖集、捲軸、紅金框架、視窗 skin、地面、透明單位草稿與風格比較；新增類別先擴充清單。它拒絕覆寫內容不同的既有圖片，變體使用新檔名。
 
 ## 原版啟動契約
 

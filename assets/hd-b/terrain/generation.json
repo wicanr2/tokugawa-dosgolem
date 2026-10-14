@@ -1,0 +1,260 @@
+{
+  "classification": "generated original-source-referenced HD drafts; not runtime verification",
+  "python_version": "3.11.2 (main, May 12 2026, 05:17:27) [GCC 12.2.0]",
+  "pillow_version": "9.4.0",
+  "records": [
+    {
+      "name": "floor-000",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-be5738da-36d9-40f9-a81d-3a814b62bfc0.png",
+      "asset": "floor-000-hd-b-v1.png",
+      "prompt_file": "floor-000-hd-b-v1.prompt.txt",
+      "sha256": "5f0c2a57e4a0b73abdfdb249fc5a3bcf6a174166e52e75b29e29519355d53c80",
+      "prompt_sha256": "a2a115232eca176b97573fbe4dba0a51dd28d37b2201097cd2b959ee2969179b",
+      "source_png_sha256": "e0ffdbc40d8e301789076d654d4801a2852816d8f1735ee8015f69f4a1d55f43",
+      "width": 1536,
+      "height": 1024,
+      "alpha_range": [
+        255,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        0,
+        1536,
+        1024
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    },
+    {
+      "name": "unit-000",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-00d63e1a-cc9a-4cd5-841c-ac6b95b1a486.png",
+      "asset": "unit-000-hd-b-v1.png",
+      "prompt_file": "unit-000-hd-b-v1.prompt.txt",
+      "sha256": "66ab0037c95020dd511e7d8bb3d451642b20381c38ed7b5ba9c592e01b6ce43a",
+      "prompt_sha256": "8243d917bb4ad3a796f7142059ce7c3f48d6350e619c67650fd2aca10ba11015",
+      "source_png_sha256": "036e771050b99f499197a20eb2bc7a59007c72acabe47c553614ffc4333f68b9",
+      "width": 1254,
+      "height": 1254,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        20,
+        1240,
+        1254
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    },
+    {
+      "name": "unit-001",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-cfbb94b7-ccac-460b-b3a9-0fb85fe41446.png",
+      "asset": "unit-001-hd-b-v1.png",
+      "prompt_file": "unit-001-hd-b-v1.prompt.txt",
+      "sha256": "a8c37f61ef22f645a58cb824758ab34620e535a2588f0fce5e71490cf3dd3a72",
+      "prompt_sha256": "d6682e8f0b72d64ecddaf8633e13d4fdfd4a5792b4194c440d7de6ccf3f2cf61",
+      "source_png_sha256": "11e2c418a741af84c1e1014589add247dab0d4ba073601d0f231f8ec1a8207d6",
+      "width": 1254,
+      "height": 1254,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        21,
+        1226,
+        1236
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    },
+    {
+      "name": "unit-002",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-54c3d22a-0254-4ec7-9e88-1c8707a7b985.png",
+      "asset": "unit-002-hd-b-v1.png",
+      "prompt_file": "unit-002-hd-b-v1.prompt.txt",
+      "sha256": "57358865cba98944fe379f5910d9fef251fc7887d19906b35d0369e79ff9a66b",
+      "prompt_sha256": "f08dbdb56816c15b7efa42870bc2b3297a7fb3648a2fd502e088ddf0cf7220a9",
+      "source_png_sha256": "0c0584855cec53d95b659f418093d80dd44285e6b95b102248a9f827b749b4ba",
+      "width": 1254,
+      "height": 1254,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        17,
+        1234,
+        1254
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    },
+    {
+      "name": "unit-003",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-64cd5f40-43ee-43df-b6dc-61e9bb1d2aa0.png",
+      "asset": "unit-003-hd-b-v1.png",
+      "prompt_file": "unit-003-hd-b-v1.prompt.txt",
+      "sha256": "6c9a0ef3d9a3db01bec673fb37d7f8fca4a2f2a08cf6a14d81ecd101ec867654",
+      "prompt_sha256": "4d2c13ce487abcbe105fe0ce5dcdb2892c07004d7e235c76fc29f477a0b62d12",
+      "source_png_sha256": "c33c42b2a471455e64d109cdb18ae1e91f31337cdaa28ed5b4662378f61988b5",
+      "width": 1254,
+      "height": 1254,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        37,
+        28,
+        1226,
+        1244
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    },
+    {
+      "name": "unit-004",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-062cd2f7-4711-47b6-98bf-c5ca2a3e0440.png",
+      "asset": "unit-004-hd-b-v1.png",
+      "prompt_file": "unit-004-hd-b-v1.prompt.txt",
+      "sha256": "4f445a1953a76aa3e52dd702df7ace9d36f7c15835a28e0ac9d78c496fb28ef0",
+      "prompt_sha256": "cc73611214fee23015c5d987dc9f179c15d89fedf035f244c459f5114614ba63",
+      "source_png_sha256": "f287d970abfab7e954e4856fc83379a1cbb00794d534b9cd11af66b664754fc1",
+      "width": 1254,
+      "height": 1254,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        33,
+        1220,
+        1254
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    },
+    {
+      "name": "unit-005",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-7c467c84-4470-4324-87e6-d452d8b5bef7.png",
+      "asset": "unit-005-hd-b-v1.png",
+      "prompt_file": "unit-005-hd-b-v1.prompt.txt",
+      "sha256": "ea5dc08e590e4ae74f8e956103f54f0b3c726e4581f1233cfaa4123a087baf7c",
+      "prompt_sha256": "481d7cf177fce6884662e3bfa74c8851f6d2b388cbab49264e418369dc2b13b3",
+      "source_png_sha256": "cef3eb96f0177aefce5c95160a9d088bdc93b88f502b6c524483ffa76e432d2a",
+      "width": 1254,
+      "height": 1254,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        15,
+        1236,
+        1238
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    },
+    {
+      "name": "unit-006",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-d8eb31fd-f3df-43e4-bd69-633933b31677.png",
+      "asset": "unit-006-hd-b-v1.png",
+      "prompt_file": "unit-006-hd-b-v1.prompt.txt",
+      "sha256": "827f1a86c92a7294e89b6167880acd228cede04c21a4a0256c4d4e5757e2d26e",
+      "prompt_sha256": "d7379700d627361c05fdfede1c944d5bb672e95582785d6ed687b846545adf9d",
+      "source_png_sha256": "a5d95f992fcc79ff50c931d1aec9f1955a1aa811c20b0b2603431ed9d8568b77",
+      "width": 1254,
+      "height": 1254,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        23,
+        1240,
+        1254
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    },
+    {
+      "name": "unit-007",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-9df68c3d-d17c-44c7-aec5-5ad058823f22.png",
+      "asset": "unit-007-hd-b-v1.png",
+      "prompt_file": "unit-007-hd-b-v1.prompt.txt",
+      "sha256": "b40b0683758d2ef07e49c398c6759ffb5bb29dcfba9857449a78f7490b48f20b",
+      "prompt_sha256": "b55378cfe596c1282b1f5d09fe9081e4261e3676a4b5f0d5f5417536cb008409",
+      "source_png_sha256": "3e65fcd4ce8a4ba6ca1d1919189980a9dad3015a1ea804cefbf3bfe2d0851dc1",
+      "width": 1254,
+      "height": 1254,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        47,
+        12,
+        1198,
+        1214
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    },
+    {
+      "name": "unit-008",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-32bcc1e1-d701-4025-9bf3-7abc8d28f594.png",
+      "asset": "unit-008-hd-b-v1.png",
+      "prompt_file": "unit-008-hd-b-v1.prompt.txt",
+      "sha256": "731715225ad86948c9388cabc66b13a04b617b2dc245809299278d47945aa521",
+      "prompt_sha256": "12973d67dbb431e0ec36a39b367e03504872ef3299194b45335816ef57d6a9f9",
+      "source_png_sha256": "9a85c32a4b270893ace5005d6f54d609db2cb01e899c4e0e86d112508d39d166",
+      "width": 1254,
+      "height": 1254,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        0,
+        17,
+        1250,
+        1254
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    },
+    {
+      "name": "unit-009",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-fa153b51-2239-46b5-b272-692cbbf6ea00.png",
+      "asset": "unit-009-hd-b-v1.png",
+      "prompt_file": "unit-009-hd-b-v1.prompt.txt",
+      "sha256": "7d85642230559e55d173c73f20150e5eff9676f203ec4c00caf0c039780d35b8",
+      "prompt_sha256": "c51652762c106946866e847ea60488489ebbde2d70c245587e4c3810e11fce04",
+      "source_png_sha256": "c46fcd8676a641837c5bfc0033c169da6bb93ffc8ca0d21440a5348ff7330d5c",
+      "width": 1254,
+      "height": 1254,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        25,
+        28,
+        1240,
+        1254
+      ],
+      "status": "generated draft; source footprint and runtime review pending"
+    }
+  ]
+}

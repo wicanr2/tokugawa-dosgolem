@@ -16,6 +16,7 @@ README = """# 戰國手繪 HD 素材
 - [劇情圖](art/) 及 [家康肖像](A-0-hd-b-v1.png)。
 - [81 張頭像總覽](kao/selected/contact-sheet.png)、[九頁頭像圖集](kao/)。
 - [捲軸與紅金框架](scroll/)、[共用視窗邊框](window/)。
+- [戰場地面與單位草稿](terrain/)，單位 PNG 保留透明背景。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。
@@ -76,7 +77,13 @@ def main():
         if kind == "png":
             assert len(data) < 50*1024*1024
             with Image.open(destination) as im:
-                assert im.format == "PNG" and im.convert("RGBA").getextrema()[3] == (255, 255)
+                assert im.format == "PNG"
+                alpha = im.convert("RGBA").getextrema()[3]
+                policy = metadata.get("alpha_policy", "opaque")
+                assert policy in ("opaque", "transparent")
+                assert alpha == (255, 255) if policy == "opaque" else alpha == (0, 255)
+                if policy == "transparent":
+                    record["alpha_range"] = list(alpha)
                 record["size"] = list(im.size)
         if name in files:
             assert files[name] == record
@@ -137,6 +144,42 @@ def main():
         copy(remaining_path, "art/remaining-generation.json", "generation-metadata")
     if council:
         copy(council_path, "art/gungi-revision.json", "revision-metadata")
+    terrain = catalog/"terrain/art"
+    terrain_profiles = catalog/"terrain/prepared/profiles.json"
+    approved_floor = {}
+    normal_floor_art = set()
+    if terrain_profiles.exists():
+        prepared = json.loads(terrain_profiles.read_text())
+        assert prepared["tool_sha256"] == sha(project/"tools/hd-terrain-prepare.py")
+        approved_floor = {r["asset"]: r["asset_sha256"] for r in prepared["records"] if r["asset"]}
+        proof_path = catalog/"terrain/runtime/desktop/verification-terrain.json"
+        if proof_path.exists():
+            proof = json.loads(proof_path.read_text())
+            receipt_path = proof_path.with_name("desktop-terrain.json")
+            assert proof["verified"] and proof["receipt_sha256"] == sha(receipt_path)
+            receipt = json.loads(receipt_path.read_text())
+            by_index = {r["index"]: r for r in prepared["records"]}
+            for check in proof["terrain_checks"]:
+                for draw in check["active_rectangles"]:
+                    profile = by_index[draw["index"]]
+                    assert receipt["desktop"]["assets"]["terrain"][str(draw["index"])]["hd_sha256"] == profile["asset_sha256"]
+                    normal_floor_art.add(profile["asset"])
+    if terrain.exists():
+        for source in sorted(terrain.glob("*-hd-b-v*.png")):
+            unit = source.name.startswith("unit-")
+            status = "generated unit draft; original identity and footprint review pending" if unit else "superseded or unreviewed floor draft"
+            if source.name in approved_floor:
+                assert sha(source) == approved_floor[source.name]
+                status = "normal first-battle floor verified" if source.name in normal_floor_art else "reviewed floor art and common draw consumer integrated; visible normal case not yet sampled"
+            picture(source, "terrain/"+source.name, source.with_suffix(".prompt.txt"),
+                    "terrain/"+source.with_suffix(".prompt.txt").name, status,
+                    alpha_policy="transparent" if unit else "opaque")
+        for source in sorted(terrain.glob("*-hd-gallery-v*.png")):
+            copy(source, "terrain/"+source.name, "png", status="generated-art gallery; includes drafts")
+        for name in ("generation.json", "floor-generation.json", "floor-revisions.json"):
+            source = terrain/name
+            if source.exists():
+                copy(source, "terrain/"+name, "generation-metadata")
     for page in range(9):
         name = f"page-{page:02d}-hd-b-v1.png"
         picture(catalog/"kao"/name, "kao/"+name, (catalog/"kao"/name).with_suffix(".prompt.txt"), "kao/"+Path(name).with_suffix(".prompt.txt").name, "generated portrait atlas")

@@ -10,7 +10,7 @@ import time
 
 assert Path("/.dockerenv").exists() and os.getuid() == 1000
 parser = argparse.ArgumentParser()
-parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only", "window", "window-missing", "window-only", "window-modal"], default="hd")
+parser.add_argument("--mode", choices=["hd", "missing", "mouse", "scroll", "scroll-missing", "scroll-only", "portraits", "portraits-missing", "frame", "frame-missing", "frame-only", "window", "window-missing", "window-only", "window-modal", "terrain", "terrain-missing"], default="hd")
 parser.add_argument("--include-council", action="store_true", help="於既有普通輸入路徑另抽測 GUNGI.OZM")
 args = parser.parse_args()
 root = Path("/output")
@@ -22,6 +22,9 @@ children = []
 scroll_checks = []
 is_scroll = args.mode.startswith("scroll")
 is_portraits = args.mode.startswith("portraits")
+is_terrain = args.mode.startswith("terrain")
+long_path = is_portraits or is_terrain
+terrain_checks = []
 assert not args.include_council or is_portraits
 story_cases = 9 if args.include_council else 8
 portrait_checks = []
@@ -181,11 +184,11 @@ try:
         time.sleep(0.05)
     for name in ("desktop-status.json", "desktop-status.pending"):
         (root / name).unlink(missing_ok=True)
-    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-desktop-speed", "5" if is_scroll else "60" if is_portraits or is_frame or is_window else "20",
-               "-steps", "750000000" if is_portraits else "150000000", "-hd-trace"]
+    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-desktop-speed", "5" if is_scroll else "60" if long_path or is_frame or is_window else "20",
+               "-steps", "750000000" if long_path else "150000000", "-hd-trace"]
     if args.mode != "mouse":
-        source = Path("/project/tools/player-path.json") if is_portraits else Path("/project/workplace/cd-trace/first-play-input.json")
-        if is_portraits:
+        source = Path("/project/tools/player-path.json") if long_path else Path("/project/workplace/cd-trace/first-play-input.json")
+        if long_path:
             baseline = json.loads(Path("/project/workplace/desktop-prototype/headless/startup-probe/latest.json").read_text())
             assert hashlib.sha256(source.read_bytes()).hexdigest() == baseline["mouse_input_sha256"]
         else:
@@ -207,6 +210,10 @@ try:
         command += ["-hd-window-asset", "/output/no-window.png"]
     if args.mode in ("window-only", "window-modal"):
         command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png"]
+    if is_terrain:
+        command += ["-hd-asset", "/output/no-story.png", "-hd-portrait-dir", "/output/no-stories", "-hd-kao-dir", "/output/no-heads", "-hd-scroll-asset", "/output/no-scroll.png"]
+        if args.mode == "terrain-missing":
+            command += ["-hd-terrain-dir", "/output/no-terrain"]
     stdout_path = root / f"desktop-{args.mode}.json"
     stdout = stdout_path.open("wb")
     stderr = (root / f"desktop-{args.mode}.stderr.log").open("wb")
@@ -275,6 +282,41 @@ try:
             assert not any(d["logical_rect"] == {"Min": {"X": 200, "Y": 150}, "Max": {"X": 504, "Y": 198}} for d in status()["window_draws"]), status()
             pictures += check_window_modal("after-confirmation")
             key("F7")
+    elif is_terrain:
+        wait_for(lambda s: s.get("step", 0) >= 740_000_000 and len(s.get("terrain_draws") or []) > 0, 600)
+        key("F6")
+        key("F7")
+        enhanced = capture("enabled")
+        modes = list(status()["terrain_modes"])
+        draws = list(status()["terrain_draws"])
+        key("F6")
+        original = capture("original")
+        key("F6")
+        restored = capture("restored")
+        assert enhanced["presented"]["proof"] == original["presented"]["proof"] == restored["presented"]["proof"]
+        assert enhanced["presented"]["frame"]["png_sha256"] == restored["presented"]["frame"]["png_sha256"]
+        a, b = decoded(Path(enhanced["actual_png"])), decoded(Path(original["actual_png"]))
+        allowed = bytearray(1280*800)
+        active = []
+        for draw, mode in zip(draws, modes):
+            if mode != "hd":
+                continue
+            rect = draw["logical_rect"]
+            x0, y0, x1, y1 = rect["Min"]["X"]*2, rect["Min"]["Y"]*2, rect["Max"]["X"]*2, rect["Max"]["Y"]*2
+            for y in range(y0, y1):
+                allowed[y*1280+x0:y*1280+x1] = bytes([1])*(x1-x0)
+            active.append({"index": draw["index"], "rect": [x0//2, y0//2, x1//2, y1//2]})
+        changed = 0
+        for n, eligible in enumerate(allowed):
+            if a[n*4:n*4+4] != b[n*4:n*4+4]:
+                assert eligible, ("outside validated terrain", n%1280, n//1280)
+                changed += 1
+        assert (changed > 0) == (args.mode == "terrain")
+        assert (len(active) > 0) == (args.mode == "terrain")
+        terrain_checks.append({"step": enhanced["presented"]["step"], "active_rectangles": active,
+                               "changed_pixels": changed, "outside_terrain_unchanged": True, "guest_unchanged": True})
+        pictures += [enhanced, original, restored]
+        key("F7")
     elif is_portraits:
         # 105.1M 的普通點擊會開確認框，改在它之前抽樣四張頭像。
         wait_for(lambda s: "76" in (s.get("kao_modes") or {}) and s.get("step", 0) >= 100_000_000)
@@ -433,19 +475,19 @@ try:
         wait_for(lambda s: s.get("paused"), 10)
         pictures.append(capture("after-click"))
         key("shift+Escape")
-    process.wait(timeout=180 if is_portraits else 60)
+    process.wait(timeout=180 if long_path else 60)
     assert process.returncode == 0
     stdout.close()
     stderr.close()
     receipt = json.loads(stdout_path.read_text())
     if args.mode != "mouse":
-        assert receipt["successful_steps"] == (750_000_000 if is_portraits else 150_000_000) and receipt["stop"] == "instruction_budget"
-        baseline_path = "/project/workplace/desktop-prototype/headless/startup-probe/latest.json" if is_portraits else "/project/workplace/hd-prototype/asset-capture/startup-probe/latest.json"
+        assert receipt["successful_steps"] == (750_000_000 if long_path else 150_000_000) and receipt["stop"] == "instruction_budget"
+        baseline_path = "/project/workplace/desktop-prototype/headless/startup-probe/latest.json" if long_path else "/project/workplace/hd-prototype/asset-capture/startup-probe/latest.json"
         baseline = json.loads(Path(baseline_path).read_text())
         fields = ["trace_tail", "interrupt_counts", "dpmi_calls", "dpmi_unimplemented", "frame", "cd_pcm",
                   "mounted_disc", "mouse_input_events", "input_boundary_frames"]
         assert all(receipt[k] == baseline[k] for k in fields), [k for k in fields if receipt[k] != baseline[k]]
-        expected_ram = "4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9" if is_portraits else "0d9123e52923ba852b125ea04918e1007138a33e0a8e4d856b078865cb33562f"
+        expected_ram = "4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9" if long_path else "0d9123e52923ba852b125ea04918e1007138a33e0a8e4d856b078865cb33562f"
         assert hashlib.sha256((root / "startup-memory.bin").read_bytes()).hexdigest() == expected_ram
         toggles = [e for e in receipt["desktop"]["events"] if e["kind"] == "toggle"]
         assert len(toggles) == (3+2*story_cases if is_portraits else 7 if args.mode == "window-modal" else 5 if is_scroll else 3) and all(e["guest_unchanged"] for e in toggles)
@@ -457,7 +499,7 @@ try:
             assert len(loaded) == 81 and all(info.get("source_sha256") for info in loaded.values())
             if args.mode == "portraits":
                 assert all(info.get("hd_sha256") and not info.get("hd_error") for info in loaded.values())
-        else:
+        elif not is_terrain:
             assert receipt["desktop"]["hd_observation"]["draw_completed"]
         if is_window:
             observation = receipt["desktop"]["hd_observation"]["window"]
@@ -477,6 +519,7 @@ try:
               "kao_checks": kao_checks,
               "frame_checks": frame_checks,
               "window_checks": window_checks,
+              "terrain_checks": terrain_checks,
               "scope": "Linux container prototype; no physical audio or other OS verification"}
     (root / f"verification-{args.mode}.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(f"desktop {args.mode}: verified", flush=True)

@@ -6,6 +6,7 @@ type hdDrawReturn struct{ Return, Stack uint32 }
 
 // 固定 EXE 的原版入口與返回觀測；不修改 guest 或取代指令。
 type hdLive struct {
+	Terrain         hdTerrainState   `json:"terrain"`
 	Window          hdWindowState    `json:"window"`
 	Kao             hdKaoState       `json:"kao"`
 	Trace           hdTrace          `json:"loads"`

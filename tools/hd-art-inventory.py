@@ -84,6 +84,25 @@ def main():
             if check["mode"] == "hd":
                 verified_kao[check["index"]] = check
 
+    terrain_path = ROOT / "terrain/prepared/profiles.json"
+    terrain_profiles = json.loads(terrain_path.read_text()) if terrain_path.exists() else None
+    verified_floors = set()
+    unit_drafts = 0
+    terrain_proof = ROOT / "terrain/runtime/desktop/verification-terrain.json"
+    if terrain_profiles:
+        assert terrain_profiles["tool_sha256"] == sha(PROJECT / "tools/hd-terrain-prepare.py")
+        assert terrain_profiles["source_count"] == 104 and terrain_profiles["reviewed_HD_count"] == 8
+        generation = json.loads((ROOT / "terrain/art/generation.json").read_text())
+        for draft in generation["records"]:
+            if draft["name"].startswith("unit-"):
+                assert sha(ROOT / "terrain/art" / draft["asset"]) == draft["sha256"]
+                unit_drafts += 1
+        assert unit_drafts == 10
+        if terrain_proof.exists():
+            proof = json.loads(terrain_proof.read_text())
+            assert proof["verified"] and proof["receipt_sha256"] == sha(terrain_proof.with_name("desktop-terrain.json"))
+            verified_floors = {d["index"] for c in proof["terrain_checks"] for d in c["active_rectangles"]}
+            proof_sources.append({"verification": str(terrain_proof.relative_to(PROJECT)), "sha256": sha(terrain_proof)})
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -137,6 +156,13 @@ def main():
                               runtime_check=proof["window_checks"], runtime_proof_sha256=sha(proof_path),
                               source_extraction_sha256=sha(window_root / "window-extraction.json"))
                 proof_sources.append({"verification": str(proof_path.relative_to(PROJECT)), "sha256": sha(proof_path)})
+        if name == "MAP_CHIP.OZM" and terrain_profiles:
+            record.update(art_status="partial", source_grid_counts={"floor": 104, "object": 26, "unit": 13},
+                          approved_floor_art=8, generated_unit_drafts=unit_drafts, approved_unit_art=0,
+                          normal_floor_indices_verified=sorted(verified_floors),
+                          runtime_status="floor common draw consumer integrated; whole atlas pending",
+                          floor_profiles_sha256=sha(terrain_path),
+                          source_extraction_sha256=sha(ROOT / "terrain/terrain-extraction.json"))
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]
@@ -159,7 +185,10 @@ def main():
               "OZM_partial_art": sum(r["art_status"] == "partial" for r in records[:112]),
               "prepared_KAO_portraits": 81, "native_story_cases_verified": len(verified_story),
               "native_KAO_cases_verified": len(verified_kao), "unsupported_OZM_decodes": 5,
-              "reviewed_story_source_profiles": len(profiles)}
+              "reviewed_story_source_profiles": len(profiles),
+              "approved_MAP_CHIP_floor_art": 8 if terrain_profiles else 0,
+              "normal_MAP_CHIP_floor_cases_verified": len(verified_floors),
+              "generated_MAP_CHIP_unit_drafts": unit_drafts}
     result = {"classification": "local research coverage ledger; not a production asset-pack schema",
               "whole_game_HD_complete": False,
               "count_limit": "resource counts do not count atlas tiles, animation frames or UI pieces; no completion percentage",

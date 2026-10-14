@@ -37,6 +37,11 @@ func (g *desktopGame) selectedBar() [3]int {
 }
 
 func (g *desktopGame) hdAvailable() bool {
+	for _, pair := range g.terrain {
+		if pair.Reason == "ready" {
+			return true
+		}
+	}
 	for _, pair := range g.kao {
 		if pair.Asset != nil && pair.Source != nil {
 			return true

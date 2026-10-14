@@ -39,6 +39,7 @@ func main() {
 	mouseFile := flag.String("mouse-file", "", "read mouse state array from a file")
 	cdDiagnostic := flag.Bool("cd-trace", false, "record bounded read-only DPMI/CD request diagnostics")
 	hdDiagnostic := flag.Bool("hd-trace", false, "record bounded read-only original asset loader diagnostics")
+	terrainDiagnostic := flag.Bool("hd-terrain-trace", false, "record bounded read-only original floor draw registers and returns")
 	hdExport := flag.Bool("hd-export", false, "copy validated loader-return planes and DAC to local research output; implies hd-trace")
 	desktop := flag.Bool("desktop", false, "run isolated desktop presentation prototype")
 	flag.Parse()
@@ -46,6 +47,7 @@ func main() {
 		*hdDiagnostic = true
 	}
 	var assetTrace hdTrace
+	var floorTrace terrainTrace
 	var live hdLive
 	var desktopReceipt map[string]any
 	if *desktop && runDesktop == nil {
@@ -318,7 +320,11 @@ func main() {
 				}
 			}
 			if *desktop {
+				live.Terrain.observe(steps, before, m.CPU.R[cpu386.ESP], m.CPU.R[cpu386.ESI], m.CPU.R[cpu386.EDI], m.Mem)
 				live.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem)
+			}
+			if *terrainDiagnostic {
+				floorTrace.observe(steps, before, m.CPU.R[cpu386.ESP], m.CPU.R[cpu386.ESI], m.CPU.R[cpu386.EDI], m.Mem)
 			}
 			row := rawTrace{step: steps, eip: before, registers: m.CPU.R, segments: m.CPU.Seg, flags: m.CPU.EFlags}
 			for offset := uint32(0); offset < 16; offset++ {
@@ -413,7 +419,7 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
-	for _, name := range []string{"tools/startup-probe.go", "tools/cdrom.go", "tools/cdrom_test.go", "tools/cdda.go", "tools/cdda_test.go", "tools/hd-capture.go", "tools/hd-trace.go", "tools/hd-trace_test.go", "tools/hd-portraits.go", "tools/hd-kao.go", "tools/hd-kao_test.go", "tools/hd-kao-profiles.go", "tools/hd-live.go", "tools/hd-live_test.go", "tools/hd-layer.go", "tools/hd-scroll.go", "tools/hd-scroll_test.go", "tools/hd-frame.go", "tools/hd-frame_test.go", "tools/hd-preview_test.go", "tools/presentation.go", "tools/presentation_test.go", "tools/desktop.go", "tools/windowbar.go", "tools/windowbar_test.go", "tools/desktop-windowbar.go", "tools/toolbar-font.hex.gz", "tools/LICENSE-toolbar-font.txt", "tools/run-desktop.sh", "tools/desktop.mod", "tools/desktop.sum", "tools/video.go", "tools/video_test.go", "tools/vbe.go", "tools/vbe_test.go", "tools/keyboard.go", "tools/keyboard_test.go", "tools/dos_test.go", "tools/dosgolem.patch", "tools/dpmi-mcb.go", "tools/dpmi-mcb_test.go", "tools/cpu386-integration_test.go", "tools/run-probes.sh"} {
+	for _, name := range []string{"tools/startup-probe.go", "tools/cdrom.go", "tools/cdrom_test.go", "tools/cdda.go", "tools/cdda_test.go", "tools/hd-capture.go", "tools/hd-trace.go", "tools/hd-trace_test.go", "tools/hd-terrain-trace.go", "tools/hd-terrain-trace_test.go", "tools/hd-terrain.go", "tools/hd-terrain-profiles.go", "tools/hd-terrain_test.go", "tools/hd-story_test.go", "tools/hd-portraits.go", "tools/hd-kao.go", "tools/hd-kao_test.go", "tools/hd-kao-profiles.go", "tools/hd-live.go", "tools/hd-live_test.go", "tools/hd-layer.go", "tools/hd-scroll.go", "tools/hd-scroll_test.go", "tools/hd-frame.go", "tools/hd-frame_test.go", "tools/hd-preview_test.go", "tools/presentation.go", "tools/presentation_test.go", "tools/desktop.go", "tools/windowbar.go", "tools/windowbar_test.go", "tools/desktop-windowbar.go", "tools/toolbar-font.hex.gz", "tools/LICENSE-toolbar-font.txt", "tools/run-desktop.sh", "tools/desktop.mod", "tools/desktop.sum", "tools/video.go", "tools/video_test.go", "tools/vbe.go", "tools/vbe_test.go", "tools/keyboard.go", "tools/keyboard_test.go", "tools/dos_test.go", "tools/dosgolem.patch", "tools/dpmi-mcb.go", "tools/dpmi-mcb_test.go", "tools/cpu386-integration_test.go", "tools/run-probes.sh"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)
@@ -446,6 +452,7 @@ func main() {
 		"real_mode_last":        services.DPMI.RealModeLast,
 		"cd_diagnostic_enabled": *cdDiagnostic, "cd_diagnostic_events": cdTrace, "cd_diagnostic_dropped": cdTraceDropped,
 		"hd_diagnostic_enabled": *hdDiagnostic, "hd_asset_trace": assetTrace, "hd_export_enabled": *hdExport,
+		"terrain_diagnostic_enabled": *terrainDiagnostic, "terrain_draw_trace": floorTrace,
 		"desktop":            desktopReceipt,
 		"mouse_calls":        mouseServices.Mouse.Calls,
 		"mouse_cursor":       cursor,

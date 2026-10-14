@@ -1,0 +1,32 @@
+{
+  "records": [
+    {
+      "name": "floor-006",
+      "asset": "floor-006-hd-b-v2.png",
+      "prompt_file": "floor-006-hd-b-v2.prompt.txt",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-57b0fb87-66e6-4268-8474-ef1e92b0ed80.png",
+      "superseded_asset": "floor-006-hd-b-v1.png",
+      "reason": "Remove invented water from original dry-grass tile",
+      "sha256": "0c0f9e4edf1f9fef352ce578ba273920e3a0871d48259045a8f7982eacbf2e39",
+      "prompt_sha256": "ab9b6a8d9818f0ef0e6a8384caf889ae68ee464ebae5133de9e2132176587e06",
+      "superseded_sha256": "6ede677c1fc7e424e4a777a2856565d7cee9827e8a4995c038f4550a08e0b5f8",
+      "width": 1536,
+      "height": 1024,
+      "generator": "built-in image_gen.imagegen"
+    },
+    {
+      "name": "floor-022",
+      "asset": "floor-022-hd-b-v2.png",
+      "prompt_file": "floor-022-hd-b-v2.prompt.txt",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-90bdc0f9-3f6b-4d84-af7b-c6eb37462f20.png",
+      "superseded_asset": "floor-022-hd-b-v1.png",
+      "reason": "Remove invented water from original dry-grass tile",
+      "sha256": "03699873aa26babf0aabfcbeddbe7109a45e5bbb8740796c423e402cdde4834f",
+      "prompt_sha256": "1e57bda05784e84f74144acb588f22d746d6143c6944a1688358a67245f7d13e",
+      "superseded_sha256": "1aaba05585c7bd440c7376b50f97dd82a4da0e95ef0125525b26652d036bfc87",
+      "width": 1536,
+      "height": 1024,
+      "generator": "built-in image_gen.imagegen"
+    }
+  ]
+}

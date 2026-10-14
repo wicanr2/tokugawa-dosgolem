@@ -1,0 +1,95 @@
+{
+  "records": [
+    {
+      "name": "floor-002",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-cf70bca1-e098-4414-964f-77a87fdeb17d.png",
+      "asset": "floor-002-hd-b-v1.png",
+      "prompt_file": "floor-002-hd-b-v1.prompt.txt",
+      "sha256": "082919b7b0ea315084fe4e68c2f2718bd00a2c5900aa4142e33962d8a47a57cc",
+      "prompt_sha256": "6aa7ce38830b70421ea0636c00aee39ddf0fded1daf719131aa142acedde8ada",
+      "source_png_sha256": "ea0d9b9953289a3aaf0ee75b59041c93f50cc8af747c191fc589c53197e315a7",
+      "width": 1536,
+      "height": 1024,
+      "status": "generated floor draft; review pending"
+    },
+    {
+      "name": "floor-006",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-1d26fe74-cdbb-4293-84a7-8b5f34eea339.png",
+      "asset": "floor-006-hd-b-v1.png",
+      "prompt_file": "floor-006-hd-b-v1.prompt.txt",
+      "sha256": "6ede677c1fc7e424e4a777a2856565d7cee9827e8a4995c038f4550a08e0b5f8",
+      "prompt_sha256": "ab2c93754a9a3c6df1dd5a7371b7dd6a36301b6f1e82245d0321ada1c76b7f93",
+      "source_png_sha256": "47dc716a885d3de1e866a69495b6cd98184b391af78cf9933f16d7ee6de28a87",
+      "width": 1536,
+      "height": 1024,
+      "status": "generated floor draft; review pending"
+    },
+    {
+      "name": "floor-013",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-4bc28344-3632-4b46-869a-1f84b458c93a.png",
+      "asset": "floor-013-hd-b-v1.png",
+      "prompt_file": "floor-013-hd-b-v1.prompt.txt",
+      "sha256": "9be16583e6158cc223bc8bd04a78332555668ae440ef23a7c061e58913af7039",
+      "prompt_sha256": "e02824e97c7c19b8efc6167c8f870d148b60751c66b4e798d9ca76e2a499aa2a",
+      "source_png_sha256": "a9f229391fea4fa41d50ffe92d041ede116b9ef9dcfb1bc2726405684c8288b9",
+      "width": 1536,
+      "height": 1024,
+      "status": "generated floor draft; review pending"
+    },
+    {
+      "name": "floor-015",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-3fafaeaa-c301-450c-a6f2-ccd903733c2b.png",
+      "asset": "floor-015-hd-b-v1.png",
+      "prompt_file": "floor-015-hd-b-v1.prompt.txt",
+      "sha256": "bca0c6e792763d858417b6fcb0da4f26ec7cd7c82b601bfb80652ac4363dec31",
+      "prompt_sha256": "7008ab0d971b18033d1c08601b3d68a583f3eac26dcc9f6e32ffe88e2190023b",
+      "source_png_sha256": "186ec60d25b61c476aa40a1a687439a51158d11e9bea6d7740908d23124ce03a",
+      "width": 1536,
+      "height": 1024,
+      "status": "generated floor draft; review pending"
+    },
+    {
+      "name": "floor-022",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-a0c49536-da99-4973-8e7a-6debdccee3d6.png",
+      "asset": "floor-022-hd-b-v1.png",
+      "prompt_file": "floor-022-hd-b-v1.prompt.txt",
+      "sha256": "1aaba05585c7bd440c7376b50f97dd82a4da0e95ef0125525b26652d036bfc87",
+      "prompt_sha256": "c0a8f2b4867690f81933edb4d49a56b60c9ebd9671a6df4cbcd1ddde4e6fff98",
+      "source_png_sha256": "4052fa2517e8f470d85dbade2eb26e2da5056b4081968c55743d468bbd78a969",
+      "width": 1536,
+      "height": 1024,
+      "status": "generated floor draft; review pending"
+    },
+    {
+      "name": "floor-062",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-cfa8b640-9f68-478f-8d3e-6a7de0d75d00.png",
+      "asset": "floor-062-hd-b-v1.png",
+      "prompt_file": "floor-062-hd-b-v1.prompt.txt",
+      "sha256": "ff0ed6b30504a9ee03b8f7fa448d075d9c300153e9dd4034af084f4cb02b86c3",
+      "prompt_sha256": "f55b06f043ee1bd92b7af70ba88de968995c0b2a68141980c2304d9760b38bc0",
+      "source_png_sha256": "49867067a25e261016cee19a938ac832588f045f90603caa1974e53ee5e803a5",
+      "width": 1536,
+      "height": 1024,
+      "status": "generated floor draft; review pending"
+    },
+    {
+      "name": "floor-067",
+      "generator": "built-in image_gen.imagegen",
+      "generated_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-ed79ad18-53d8-4d37-8a18-a6ffdd80efc9.png",
+      "asset": "floor-067-hd-b-v1.png",
+      "prompt_file": "floor-067-hd-b-v1.prompt.txt",
+      "sha256": "5fc578d5ab570d5737388ace04394327ad6bfd622e4c2b937cc6f55fdfe44140",
+      "prompt_sha256": "07bfe7cd617a04f3722bdcfedb8945cb2d2d7b80741f2546c4db4d9550d82143",
+      "source_png_sha256": "f2a4d6a40c2b27597a12737206783824ba854421ba8e636c7870bf8b784342eb",
+      "width": 1536,
+      "height": 1024,
+      "status": "generated floor draft; review pending"
+    }
+  ]
+}
