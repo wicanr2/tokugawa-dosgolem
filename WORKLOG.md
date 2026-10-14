@@ -187,3 +187,14 @@
 - 四套件與新來源／前景／範圍／生命週期測試通過。真實視窗三種捲軸模式及功能列整合均通過，兩頁原文保留 24324／4036 個呈現前景像素。四次 150M 原版 RAM、trace、畫面與 CD PCM 符合既有基準；原有 CDDA 與完整 750M 收據未變。資料及各次雜湊見 RESEARCH-LOG 與驗收總表。
 - 收尾：整合工具與美術 provenance 雜湊、Python／shell 語法、文件連結及索引正對照、UID/GID、root-owned／異常 `.md` 目錄及 Git 差異檢查通過。所有本專案容器已結束，未建新 image。外部 dosgolem 仍保留原先的 `cmd/probe/main.go` 差異；固定 clone 為乾淨 detached HEAD。原版、HD 美術、提示詞、RAM、PCM、截圖及二進位皆被 Git 排除。
 - 自製程式、測試與文件共 19 份提交 `4691f6a` 已推送 private main。[HD #5 進度留言](https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6145463978) 已送出並讀回核對，Issue 保持開啟。儲存庫再次確認為 private，沒有上傳原版與衍生圖；目前素材路徑、完整提示詞及使用內建 imagegen 的來源記錄均已保存本機。
+
+
+## 2026-10-14 全遊戲 HD 盤點與頭像接入
+
+- 承接全遊戲美術 HD、完成後打包三平台的既有授權。未建立 remake、未開始正式封包，也未發布 Release。
+- 新增載入返回擷取、107 個 OZM 的獨立解碼、17 個正常來源對照、81 張 KAO 頭像來源與共同繪圖端。保留五個尾端缺 byte 的來源為未知。
+- 接入 A-0 至 A-7 與 81 張頭像的唯讀呈現；生成並校正九頁頭像圖集，製作 36 張劇情圖草稿。來源、提示詞、衍生圖與執行產物均只留 workplace。
+- 四套件通過。HD 與缺圖各完成 750M 普通玩家路徑，八張劇情及四張頭像的真實視窗原圖／HD／恢復、矩形範圍、地名保留與原版狀態核對通過。收據、限制與雜湊見 RESEARCH-LOG。
+- 驗證工具修正：啟動 null 狀態、輸出來源未完整複製、按鍵等待實際回應、確認框遮擋時的擷取時點，以及工作階段中斷。GUI image 的模組快取沿用 /go/pkg/mod。長流程使用 detached Docker，容器內保留期限；未把環境失敗列成產品缺陷。
+- CONTEXT、WORKLIST、README 已同步實際範圍。唯一素材覆蓋清單由 hd-art-inventory.py 重生；準備 VISUAL 上方框架 v2，尚未接入。其他介面、地形、單位、動畫、結局、桌面播放與可攜封包入口仍待完成。
+- 已結束本輪驗證容器，未建新 image。提交前核對專案擁有權、Git 排除範圍及 Docker 清理狀態。

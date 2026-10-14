@@ -11,8 +11,60 @@ import (
 
 var a0Rect = image.Rect(160, 50, 480, 200)
 
+// 圖片內的原版地名暫時保留原字形，避免生成器改寫地理名稱。
+var portraitLabelRects = map[string][]image.Rectangle{
+	"A-6.OZM": {image.Rect(249, 112, 305, 136)},
+	"A-7.OZM": {image.Rect(102, 54, 146, 82), image.Rect(160, 35, 202, 61), image.Rect(110, 112, 171, 140)},
+}
+
+func preservePortraitLabels(out *image.NRGBA, native image.Image, name string, scale int) {
+	for _, rect := range portraitLabelRects[name] {
+		for y := rect.Min.Y * scale; y < rect.Max.Y*scale; y++ {
+			for x := rect.Min.X * scale; x < rect.Max.X*scale; x++ {
+				out.SetNRGBA(160*scale+x, 50*scale+y, rgbaAt(native, 160+x/scale, 50+y/scale))
+			}
+		}
+	}
+}
+
 func rgbaAt(im image.Image, x, y int) color.NRGBA {
 	return color.NRGBAModel.Convert(im.At(x, y)).(color.NRGBA)
+}
+
+// 啟動時驗證並縮到呈現尺寸，不在每幀掃描大圖。
+func prepareHDPortrait(asset image.Image) (image.Image, string) {
+	return prepareHDImage(asset, 320, 150, 2)
+}
+
+func prepareHDImage(asset image.Image, width, height, scale int) (image.Image, string) {
+	if asset == nil {
+		return nil, "missing asset"
+	}
+	if width < 1 || height < 1 || scale < 1 || scale > 4 {
+		return nil, "invalid target dimensions"
+	}
+	b := asset.Bounds()
+	delta := b.Dx()*height - b.Dy()*width
+	if delta < 0 {
+		delta = -delta
+	}
+	if b.Min != image.Pt(0, 0) || b.Dx() < width || b.Dy() < height || b.Dx() > 8192 || b.Dy() > 8192 || delta*100 > b.Dy()*width {
+		return nil, "shape or aspect mismatch"
+	}
+	for y := 0; y < b.Dy(); y++ {
+		for x := 0; x < b.Dx(); x++ {
+			if rgbaAt(asset, x, y).A != 255 {
+				return nil, "transparent asset unsupported"
+			}
+		}
+	}
+	resized := image.NewNRGBA(image.Rect(0, 0, width*scale, height*scale))
+	for y := 0; y < height*scale; y++ {
+		for x := 0; x < width*scale; x++ {
+			resized.SetNRGBA(x, y, rgbaAt(asset, x*b.Dx()/(width*scale), y*b.Dy()/(height*scale)))
+		}
+	}
+	return resized, ""
 }
 
 // 僅讀輸入，輸出全新畫布。識別失敗只保留原圖。

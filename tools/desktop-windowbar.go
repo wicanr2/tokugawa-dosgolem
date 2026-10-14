@@ -37,6 +37,16 @@ func (g *desktopGame) selectedBar() [3]int {
 }
 
 func (g *desktopGame) hdAvailable() bool {
+	for _, pair := range g.kao {
+		if pair.Asset != nil && pair.Source != nil {
+			return true
+		}
+	}
+	for _, pair := range g.portraits {
+		if pair.Asset != nil && pair.Source != nil {
+			return true
+		}
+	}
 	return (g.asset != nil && g.source != nil) || (g.scroll != nil && g.scroll.Reason == "ready")
 }
 

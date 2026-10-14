@@ -35,6 +35,27 @@ func TestHDLiveDrawReturnAndInvalidation(t *testing.T) {
 	}
 }
 
+func TestHDLiveNextPortraitHasItsOwnLifecycle(t *testing.T) {
+	m := make([]byte, 0x60000)
+	esp := uint32(0x1000)
+	for i, v := range []uint32{0x1803d, 0, 40, 150, 80, 0xa0fb4} {
+		binary.LittleEndian.PutUint32(m[int(esp)+4*i:], v)
+	}
+	h := hdLive{LastName: "A-1.OZM", Validated: true}
+	h.observe(1, 0x1c1bc, esp, m)
+	if h.Active || h.Pending == nil {
+		t.Fatal("next portrait must wait for its original draw return")
+	}
+	h.observe(2, 0x1803d, esp+4, m)
+	if !h.Active || h.LastName != "A-1.OZM" {
+		t.Fatal("validated next portrait did not activate")
+	}
+	h.observe(3, 0x1bf44, uint32(len(m)), m)
+	if h.Active || h.Validated || h.LastName != "" {
+		t.Fatal("new load kept previous portrait eligibility")
+	}
+}
+
 func TestHDLiveRejectsOtherDraws(t *testing.T) {
 	m := make([]byte, 0x60000)
 	esp := uint32(0x1000)
@@ -52,7 +73,7 @@ func TestHDLiveRejectsOtherDraws(t *testing.T) {
 			}
 		})
 	}
-	h := hdLive{LastName: "A-1.OZM", Validated: true}
+	h := hdLive{LastName: "A-9.OZM", Validated: true}
 	h.observe(1, 0x1c1bc, esp, m)
 	if h.Pending != nil {
 		t.Fatal("different resource accepted")

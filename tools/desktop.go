@@ -11,6 +11,7 @@ import (
 	"image"
 	"image/png"
 	"os"
+	"path/filepath"
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -20,6 +21,9 @@ import (
 var desktopSpeed = flag.Int("desktop-speed", 1, "desktop virtual-time speed, 1–60; validation acceleration only")
 var desktopSource = flag.String("hd-source", "/project/workplace/hd-prototype/asset-capture/A-0-original.png", "verified local original A-0 PNG")
 var desktopAsset = flag.String("hd-asset", "/project/workplace/hd-prototype/A-0-hd-b-v1.png", "local single-asset HD PNG; missing asset falls back")
+var desktopPortraitDir = flag.String("hd-portrait-dir", "/project/workplace/hd-prototype/catalog/art", "local prototype directory for source-specific story portraits")
+var desktopKaoSourceDir = flag.String("hd-kao-source-dir", "/project/workplace/hd-prototype/catalog/kao", "verified original 80x80 portrait PNG directory")
+var desktopKaoDir = flag.String("hd-kao-dir", "/project/workplace/hd-prototype/catalog/kao/selected", "local HD 80x80 portrait replacement directory")
 var desktopScrollSource = flag.String("hd-scroll-source", "/project/workplace/hd-prototype/scroll/scroll-original.png", "verified local VISUAL scroll PNG")
 var desktopScrollAsset = flag.String("hd-scroll-asset", "/project/workplace/hd-prototype/scroll/scroll-hd-b-v1.png", "local HD scroll PNG; missing asset falls back individually")
 
@@ -43,6 +47,14 @@ type desktopGame struct {
 	scroll                      *hdScroll
 	scrollMode, portraitMode    string
 	scrollForeground            int
+	portraits                   map[string]desktopPortrait
+	kao                         [81]desktopPortrait
+	kaoModes                    map[int]string
+	kaoHD                       int
+}
+
+type desktopPortrait struct {
+	Source, Asset image.Image
 }
 
 func init() { runDesktop = runDesktopWindow }
@@ -75,39 +87,82 @@ func runDesktopWindow(c *desktopContext) error {
 			g.asset = nil
 		}
 	}
-	// 在啟動時縮到呈現矩形，避免每幀重新掃描大圖。
 	if g.asset != nil {
-		b := g.asset.Bounds()
-		delta := b.Dx()*150 - b.Dy()*320
-		if delta < 0 {
-			delta = -delta
-		}
-		if b.Dx() < 320 || b.Dy() < 150 || delta*100 > b.Dy()*320 {
-			g.assetInfo["hd_error"] = "shape or aspect mismatch"
-			g.asset = nil
-		} else {
-			opaque := true
-			for y := 0; y < b.Dy(); y++ {
-				for x := 0; x < b.Dx(); x++ {
-					if rgbaAt(g.asset, x, y).A != 255 {
-						opaque = false
-					}
-				}
-			}
-			if !opaque {
-				g.assetInfo["hd_error"] = "transparent asset unsupported"
-				g.asset = nil
-			} else {
-				resized := image.NewNRGBA(image.Rect(0, 0, 640, 300))
-				for y := 0; y < 300; y++ {
-					for x := 0; x < 640; x++ {
-						resized.SetNRGBA(x, y, rgbaAt(g.asset, x*b.Dx()/640, y*b.Dy()/300))
-					}
-				}
-				g.asset = resized
-			}
+		var reason string
+		g.asset, reason = prepareHDPortrait(g.asset)
+		if reason != "" {
+			g.assetInfo["hd_error"] = reason
 		}
 	}
+	g.portraits = map[string]desktopPortrait{}
+	portraitInfo := map[string]any{}
+	for name, profile := range hdPortraitProfiles {
+		if name == "A-0.OZM" {
+			continue
+		}
+		pair := desktopPortrait{}
+		info := map[string]any{}
+		if data, e := os.ReadFile(profile.Source); e == nil {
+			sum := fmt.Sprintf("%x", sha256.Sum256(data))
+			info["source_sha256"] = sum
+			if sum == profile.SourceSHA {
+				pair.Source, e = previewPNG(profile.Source)
+				if e != nil {
+					info["source_error"] = e.Error()
+				}
+			}
+		}
+		path := filepath.Join(*desktopPortraitDir, profile.Asset)
+		if data, e := os.ReadFile(path); e == nil {
+			info["hd_sha256"] = fmt.Sprintf("%x", sha256.Sum256(data))
+			pair.Asset, e = previewPNG(path)
+			if e != nil {
+				info["hd_error"] = e.Error()
+				pair.Asset = nil
+			} else {
+				var reason string
+				pair.Asset, reason = prepareHDPortrait(pair.Asset)
+				if reason != "" {
+					info["hd_error"] = reason
+				}
+			}
+		}
+		g.portraits[name], portraitInfo[name] = pair, info
+	}
+	g.assetInfo["story_portraits"] = portraitInfo
+	kaoInfo := map[int]any{}
+	for index, profile := range hdKaoProfiles {
+		pair := desktopPortrait{}
+		info := map[string]any{}
+		sourcePath := filepath.Join(*desktopKaoSourceDir, fmt.Sprintf("kao-%02d-original.png", index))
+		if data, e := os.ReadFile(sourcePath); e == nil {
+			sum := fmt.Sprintf("%x", sha256.Sum256(data))
+			info["source_sha256"] = sum
+			if sum == profile.SourceSHA {
+				pair.Source, e = previewPNG(sourcePath)
+				if e != nil {
+					info["source_error"] = e.Error()
+				}
+			}
+		}
+		path := filepath.Join(*desktopKaoDir, fmt.Sprintf("kao-%02d-hd-b-v1.png", index))
+		if data, e := os.ReadFile(path); e == nil {
+			info["hd_sha256"] = fmt.Sprintf("%x", sha256.Sum256(data))
+			pair.Asset, e = previewPNG(path)
+			if e != nil {
+				info["hd_error"] = e.Error()
+				pair.Asset = nil
+			} else {
+				var reason string
+				pair.Asset, reason = prepareHDImage(pair.Asset, 80, 80, 2)
+				if reason != "" {
+					info["hd_error"] = reason
+				}
+			}
+		}
+		g.kao[index], kaoInfo[index] = pair, info
+	}
+	g.assetInfo["kao"] = kaoInfo
 	var scrollSource, scrollAsset image.Image
 	scrollInfo := map[string]any{}
 	if data, err := os.ReadFile(*desktopScrollSource); err == nil {
@@ -139,7 +194,7 @@ func runDesktopWindow(c *desktopContext) error {
 	g.texture = ebiten.NewImage(1280, 800)
 	g.barTexture = ebiten.NewImage(640, barHeight+2*barRowHeight)
 	err = ebiten.RunGame(g)
-	c.Report = map[string]any{"classification": "Linux desktop prototype; source-matched A-0 portrait and story scroll only", "updates": g.updates, "draws": g.draws, "events": g.events, "windowbar_events": g.barEvents, "hd_observation": c.Live, "physical_mouse_events": g.mouseEvents, "scripted_mouse": c.Scripted, "hd_enabled": g.enabled, "last_mode": g.mode, "portrait_mode": g.portraitMode, "scroll_mode": g.scrollMode, "scroll_foreground_pixels": g.scrollForeground, "assets": g.assetInfo, "virtual_speed": *desktopSpeed, "audio_output": "PCM receipt only; desktop playback not enabled", "listening_verified": false}
+	c.Report = map[string]any{"classification": "desktop prototype; source-matched story portraits, scroll and KAO portraits", "updates": g.updates, "draws": g.draws, "events": g.events, "windowbar_events": g.barEvents, "hd_observation": c.Live, "physical_mouse_events": g.mouseEvents, "scripted_mouse": c.Scripted, "hd_enabled": g.enabled, "last_mode": g.mode, "portrait_mode": g.portraitMode, "scroll_mode": g.scrollMode, "scroll_foreground_pixels": g.scrollForeground, "kao_modes": g.kaoModes, "kao_hd_count": g.kaoHD, "assets": g.assetInfo, "virtual_speed": *desktopSpeed, "audio_output": "PCM receipt only; desktop playback not enabled", "listening_verified": false}
 	return err
 }
 
@@ -153,7 +208,12 @@ func (g *desktopGame) render() error {
 		g.mode = "waiting_for_640x400"
 		return nil
 	}
-	out, mode, err := previewA0(s.Image, g.source, g.asset, 2, g.enabled && g.c.Live.Active)
+	source, asset := g.source, g.asset
+	if g.c.Live.LastName != "A-0.OZM" {
+		pair := g.portraits[g.c.Live.LastName]
+		source, asset = pair.Source, pair.Asset
+	}
+	out, mode, err := previewA0(s.Image, source, asset, 2, g.enabled && g.c.Live.Active)
 	if err != nil {
 		return err
 	}
@@ -161,12 +221,25 @@ func (g *desktopGame) render() error {
 		mode = "fallback_no_original_draw"
 	}
 	g.portraitMode = mode
+	if mode == "hd" {
+		preservePortraitLabels(out, s.Image, g.c.Live.LastName, 2)
+	}
 	g.scrollMode, g.scrollForeground = g.scroll.apply(out, s.Image, g.enabled && g.c.Live.ScrollActive)
 	if g.enabled && !g.c.Live.ScrollActive {
 		g.scrollMode = "fallback_no_original_background"
 	}
 	if g.scrollMode == "hd" {
 		mode = "hd"
+	}
+	g.kaoModes, g.kaoHD = map[int]string{}, 0
+	for _, draw := range g.c.Live.Kao.Draws {
+		pair := g.kao[draw.Index]
+		result := previewKao(out, s.Image, pair.Source, pair.Asset, draw.Rect, 2, g.enabled)
+		g.kaoModes[draw.Index] = result
+		if result == "hd" {
+			g.kaoHD++
+			mode = "hd"
+		}
 	}
 	compositeDesktopCursor(out, s, 2)
 	g.pixels = out
@@ -299,7 +372,7 @@ func (g *desktopGame) Update() error {
 	}
 	ebiten.SetWindowTitle("德川家康｜" + title + "｜頂端設定／Esc｜F6 HD｜F7 暫停")
 	w, h := ebiten.WindowSize()
-	status := map[string]any{"step": g.c.Steps(), "mode": g.mode, "eligible": g.c.Live.Active, "scroll_eligible": g.c.Live.ScrollActive, "scroll_mode": g.scrollMode, "scroll_foreground_pixels": g.scrollForeground, "portrait_mode": g.portraitMode, "enabled": g.enabled, "paused": g.paused, "events": g.events, "mouse_events": g.mouseEvents, "bar_visible": g.bar.Visible, "bar_pinned": g.bar.Pinned, "bar_menu": g.bar.Menu, "bar_focus": g.bar.Focus, "bar_hover": g.bar.Hover, "bar_events": g.barEvents, "window_size": []int{w, h}, "mouse_blocked": g.blockMouse}
+	status := map[string]any{"step": g.c.Steps(), "mode": g.mode, "eligible": g.c.Live.Active, "portrait_resource": g.c.Live.LastName, "scroll_eligible": g.c.Live.ScrollActive, "scroll_mode": g.scrollMode, "scroll_foreground_pixels": g.scrollForeground, "portrait_mode": g.portraitMode, "kao_modes": g.kaoModes, "kao_hd_count": g.kaoHD, "kao_draws": g.c.Live.Kao.Draws, "enabled": g.enabled, "paused": g.paused, "events": g.events, "mouse_events": g.mouseEvents, "bar_visible": g.bar.Visible, "bar_pinned": g.bar.Pinned, "bar_menu": g.bar.Menu, "bar_focus": g.bar.Focus, "bar_hover": g.bar.Hover, "bar_events": g.barEvents, "window_size": []int{w, h}, "mouse_blocked": g.blockMouse}
 	b, err := json.Marshal(status)
 	if err != nil {
 		return err

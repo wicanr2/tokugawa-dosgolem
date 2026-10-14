@@ -26,10 +26,22 @@
 | [tools/ida-entry.py](tools/ida-entry.py) | 保留原名與位址的 IDA 入口證據；可傳入 `起點:終點` 匯出至多 16 KiB 的窄範圍 |
 | [tools/hd-asset-probe.py](tools/hd-asset-probe.py) | 唯讀盤點 DAT 的候選資源目錄；保存原始欄位、檔案偏移與逐項雜湊，不作正式 HD 識別器 |
 | [tools/ida-asset-probe.py](tools/ida-asset-probe.py) | IDA 9.4 的資源字串、直接交叉參照及有界函式證據；保留原名與位址 |
+| [tools/ida-art-consumers.py](tools/ida-art-consumers.py) | IDA 9.4 的圖像資料讀取端 caller 視窗，只匯出原始定位與指令；從正式資料庫的隔離副本執行 |
 | [tools/hd-trace.go](tools/hd-trace.go)、[tools/hd-trace_test.go](tools/hd-trace_test.go) | 固定 EXE 的唯讀素材載入觀測及記憶體不變、錯誤界限、事件上限測試；不替換素材 |
 | [tools/hd-extract.go](tools/hd-extract.go) | 從正常路徑 RAM 擷取 A-0.OZM，核對四平面雜湊與原生畫面矩形，輸出本機 PNG 及收據；不是正式素材包格式 |
+| [tools/hd-capture.go](tools/hd-capture.go) | `-hd-export` 在原版載入返回時輸出已核對平面的索引圖、當時 DAC 與收據；沒有 guest 寫入，不代表繪圖或遮擋已驗收 |
+| [tools/hd-ozm-probe.py](tools/hd-ozm-probe.py) | 依 IDA 9.4 原始指令做離線資源盤點，只接受獨立解碼命令；遇到 VGA 來源命令明確拒絕。以正常路徑四平面與索引雜湊交叉核對 |
+| [tools/hd-kao-extract.py](tools/hd-kao-extract.py) | 擷取 81 張 80×80 KAO.GRP 頭像、九頁來源圖集與收據；核對正常路徑載入的完整資料及第 76 張的 6400 原生像素 |
+| [tools/hd-kao-prepare.py](tools/hd-kao-prepare.py) | 依已檢視的實際格線裁切九張 HD 圖集，補黑底保持人物比例；輸出 `workplace/hd-prototype/catalog/kao/selected/` 的 81 張素材、manifest 與總覽 |
+| [tools/hd-art-inventory.py](tools/hd-art-inventory.py) | 重生 `workplace/hd-prototype/catalog/art-coverage.json`，區分已製作、逐項替換、正常路徑驗證與未知素材；資源數不當成圖集完成百分比 |
+| [tools/hd-frame-prepare.py](tools/hd-frame-prepare.py) | 既有手繪 VISUAL 上方框架依原版矩形分區縮放；輸出 `workplace/hd-prototype/scroll/frame/` 的來源、HD 圖與幾何收據，遊戲內驗證另列 |
+| [tools/hd-kao-profiles.go](tools/hd-kao-profiles.go) | KAO.GRP 原版 0..80 索引的逐張指紋，不以推測武將姓名命名 |
+| [tools/hd-kao.go](tools/hd-kao.go)、[tools/hd-kao_test.go](tools/hd-kao_test.go) | 原版頭像繪製的唯讀參數／返回觀測與來源、遮擋、缺圖備援；原版全畫面複製撤銷舊頭像 |
+| `workplace/hd-prototype/catalog/kao/` | 原版武將頭像、HD 圖集與逐格素材、來源指紋及 IDA／原生畫面對照；只留本機 |
+| `workplace/hd-prototype/catalog/` | HD 覆蓋盤點、正常路徑擷取及原版壓縮格式的隔離診斷，原始圖與衍生圖只留本機 |
 | [tools/hd-preview.go](tools/hd-preview.go)、[tools/hd-preview_test.go](tools/hd-preview_test.go) | 單張 A-0 的離線原圖／HD／缺圖預覽與範圍保護測試；不接管遊戲或代表桌面執行中切換 |
 | [tools/hd-layer.go](tools/hd-layer.go) | 離線預覽與桌面試作共用的單張素材呈現與來源像素保護 |
+| [tools/hd-portraits.go](tools/hd-portraits.go) | 正常路徑已擷取的 A-0 至 A-7 指紋、原圖來源與本機 HD 檔名；來源各自核對，不沿用上一張圖 |
 | [tools/hd-live.go](tools/hd-live.go)、[tools/hd-live_test.go](tools/hd-live_test.go) | 只讀原版素材、A-0 矩形與 VISUAL 全畫面繪製入口／返回，限制桌面替換資格 |
 | `workplace/hd-prototype/scroll/dosgolem-base/` | 固定 a9714eb 的獨立來源副本，執行時唯讀；外部 dosgolem 前進時保留既有驗證基準 |
 | [tools/presentation.go](tools/presentation.go)、[tools/presentation_test.go](tools/presentation_test.go) | 桌面試作的步進、畫面、普通滑鼠及原版狀態核對介面與游標層測試；預設無頭 |
@@ -92,6 +104,14 @@
 | [.gitignore](.gitignore) | 排除本機原版資料、探針輸出與快取 |
 
 新增目錄或文件前讀 `/home/anr2/.codex/knowledge-base/local/project-document-responsibilities.md`，並更新本表。未有可執行待辦前不另建 WORKLIST；需要時只建立一份。README 只放穩定入口，工作歷程寫入 WORKLOG。
+
+## 全美術 HD 研究入口
+
+唯一覆蓋清單為 `workplace/hd-prototype/catalog/art-coverage.json`，由 `tools/hd-art-inventory.py` 重生。圖集資源數不代表內部圖塊完成數。`tools/hd-kao-extract.py` 擷取原版來源；`tools/hd-kao-prepare.py --root /output/kao` 裁切已保存的手繪圖集。這些是本機研究產物，正式素材包格式另列。
+
+沿用固定 GUI image，內含 Pillow 9.4.0。掛載專案至 `/project` 唯讀、`original/game/` 至 `/original` 唯讀、`workplace/hd-prototype/catalog/` 至 `/output` 可寫，再依序執行上述擷取、裁切及覆蓋工具。Docker 的 UID、資源、網路與路徑檢查依本檔「Docker 邊界」。頭像桌面旗標為 `-hd-kao-source-dir` 與 `-hd-kao-dir`，預設分別讀 `catalog/kao/` 及 `catalog/kao/selected/`。原版逐張指紋保存在 `tools/hd-kao-profiles.go`。
+
+完整 GUI 驗證使用 `tools/verify-desktop.py --mode portraits` 或 `--mode portraits-missing`，必須先用 `tools/run-desktop.sh` 建置，保留輸出中的 engine、startup-probe 與執行檔。長流程依本檔既有 detached Docker 方法執行，容器內維持期限。已驗證範圍及最近收據見 CONTEXT。
 
 ## 原版啟動契約
 

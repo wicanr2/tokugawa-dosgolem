@@ -7,6 +7,40 @@ import (
 	"testing"
 )
 
+func TestStoryMapLabelsKeepOriginalPixels(t *testing.T) {
+	native := image.NewNRGBA(image.Rect(0, 0, 640, 400))
+	for y := 0; y < 400; y++ {
+		for x := 0; x < 640; x++ {
+			native.SetNRGBA(x, y, color.NRGBA{uint8(x), uint8(y), 80, 255})
+		}
+	}
+	before := append([]byte(nil), native.Pix...)
+	for name, regions := range portraitLabelRects {
+		out := image.NewNRGBA(image.Rect(0, 0, 1280, 800))
+		preservePortraitLabels(out, native, name, 2)
+		if out.NRGBAAt(320, 100).A != 0 {
+			t.Fatal("preservation touched non-label art")
+		}
+		for _, rect := range regions {
+			for y := rect.Min.Y; y < rect.Max.Y; y++ {
+				for x := rect.Min.X; x < rect.Max.X; x++ {
+					want := native.NRGBAAt(160+x, 50+y)
+					for dy := 0; dy < 2; dy++ {
+						for dx := 0; dx < 2; dx++ {
+							if out.NRGBAAt((160+x)*2+dx, (50+y)*2+dy) != want {
+								t.Fatal("original map label changed")
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if !bytes.Equal(before, native.Pix) {
+		t.Fatal("native image changed")
+	}
+}
+
 func TestPreviewA0ScopeAndFallback(t *testing.T) {
 	frame := image.NewNRGBA(image.Rect(0, 0, 640, 400))
 	source := image.NewNRGBA(image.Rect(0, 0, 320, 150))

@@ -1,6 +1,6 @@
 # 德川家康目前狀態
 
-更新日期：2026-10-13。規則入口：[AGENTS.md](AGENTS.md)。歷程：[WORKLOG.md](WORKLOG.md)。待辦：[WORKLIST.md](WORKLIST.md)。證據：[RESEARCH-LOG.md](RESEARCH-LOG.md)。
+更新日期：2026-10-14。規則入口：[AGENTS.md](AGENTS.md)。歷程：[WORKLOG.md](WORKLOG.md)。待辦：[WORKLIST.md](WORKLIST.md)。證據：[RESEARCH-LOG.md](RESEARCH-LOG.md)。
 
 ## 唯一目前狀態表
 
@@ -14,7 +14,7 @@
 | dosgolem 格式解析 | 完成；40 pages、2 objects、4,831 fixup records；relocation preview 成功 | `workplace/leprobe/stdout.log`，stderr 為空，exit 0 |
 | dosgolem 執行本作 | 桌面步進重構後通過原版入口至首場戰場；750,000,000 步、390 筆普通滑鼠事件，只因預算結束。全部 RAM、trace、原生畫面、輸入與 CD PCM 和先前完整驗收一致 | [最近完整收據](workplace/desktop-prototype/headless/startup-probe/latest.json)，SHA-256 `1eb3fe503bac5ecfb0261e0f94cf762a765895d5d4fb9b4a0e1e712ee210ac7c`；[原生戰場畫面](workplace/startup-probe/frame-b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846.png) |
 | 通用平台修正 | 在隔離副本實作 CPU 指令形式、DPMI 主機服務轉接與明確啟用的 MCB 配置池；支援標頭、重用、合併與縮放，保留外部預設配置器 | [dosgolem.patch](tools/dosgolem.patch)、[MCB](tools/dpmi-mcb.go)、[回歸](tools/dpmi-mcb_test.go) |
-| 平台回歸 | CPU386、machine、dosfile、研究入口四個套件通過，包含新繪圖返回、備援與游標層測試 | [最近 platform-test.log](workplace/hd-prototype/scroll/desktop/startup-probe/platform-test.log) |
+| 平台回歸 | CPU386、machine、dosfile、研究入口四套件通過；涵蓋八張劇情圖、頭像來源、自然返回、遮擋與備援 | [platform-test.log](workplace/hd-prototype/catalog/kao-desktop/startup-probe/platform-test.log) |
 | 原版時間等待 | DOS 時間與 VGA 回掃共用一微秒／成功指令的虛擬時間；原版自行校準等待迴圈 | 最新收據 `virtual_clock`；[回掃契約](RESEARCH-LOG.md)；未略過指令 |
 | 光碟 | AUDIO PREGAP 依 CUE 輸出靜音；有效起點的超長請求在 lead-out 停止，保存原始長度與實際終點。原版末軌表格重疊仍保留，沒有改 EXE 或表格 | [cdrom.go](tools/cdrom.go)、[cdda.go](tools/cdda.go)、[因果與契約](RESEARCH-LOG.md) |
 | CDDA 技術驗證 | 完成 PLAY／STOP／RESUME、狀態、自然結束、分塊、跨軌、PREGAP、極大長度與非法起點測試；十五條音軌全段與 BIN 一致。正常流程八次選曲無拒絕，輸出 19,818,728 個立體聲樣本框。桌面與人耳確認未完成 | [CDDA 測試](tools/cdda_test.go)、`workplace/startup-probe/cdda-boundary-test.log`、[獨立核對](workplace/startup-probe/cdda-verification.json)；79,274,912 bytes 逐段與 BIN 及時間公式相符 |
@@ -25,17 +25,18 @@
 | 正常玩家路徑、存讀檔與音訊 | 原版入口、角色建立、敘事、選項、出陣與首場戰場顯示保持通過，原版選曲／換曲與 PCM 同步通過；單位操作、戰鬥、存讀檔及桌面聽覺未驗證 | [普通輸入時間表](tools/player-path.json)；精確畫面、音訊雜湊與範圍見 RESEARCH-LOG |
 | remake | 排除 | 使用者明確指定原版與 dosgolem 整合 |
 | 後續功能範圍 | CDDA 裝置與 PCM 已實作；桌面播放、繁中／簡中／英文／日文與可切換 HD 素材包待後續切片 | 已確認範圍與驗收見 [WORKLIST.md](WORKLIST.md) |
-| 後續使用介面 | 桌面版；瀏覽器排除 | 使用者明確表示「不考慮瀏覽器」；桌面作業系統與打包驗收清單尚未定案 |
-| HD 風格試作 | B 戰國手繪風的第一張 A-0 家康肖像及劇情捲軸已接到桌面試作。F6 與頂端功能列一起切換原圖／HD，分項缺圖回原圖；上方紅框與文字保持原版 | [真實視窗 HD 畫面](workplace/hd-prototype/scroll/desktop/gui-scroll-enabled.png)、[單張素材](workplace/hd-prototype/A-0-hd-b-v1.png)、[完整提示詞](workplace/hd-prototype/A-0-hd-b-v1.prompt.txt)；原圖及衍生圖只留本機 |
-| HD 素材定位 | DAT 201 筆資源包含 112 個 OZM，目錄欄位已連到讀寫端。唯讀載入觀測的完整路徑記錄 19 次載入、17 個來源；桌面再核對 A-0 的繪圖入口、五參數與堆疊返回。正式素材包格式仍未定案 | [載入觀測](tools/hd-trace.go)、[繪圖觀測](tools/hd-live.go)、[桌面核對](workplace/desktop-prototype/verification-summary.json)；原版全部 RAM、畫面與 PCM 不變 |
-| HD 首張素材驗證 | A-0 四平面、48,000 原圖像素與繪圖矩形已核對。真實視窗的原圖／HD／缺圖驗證通過，三次 F6 切換原版狀態不變。HD 與缺圖兩次 150,000,000 步的 RAM、CPU、原生畫面、PCM 都符合原無頭基準 | [擷取收據](workplace/hd-prototype/asset-capture/A-0-extraction.json)、[GUI 驗證](workplace/desktop-prototype/verification-hd.json)、[缺圖驗證](workplace/desktop-prototype/verification-missing.json) |
+| 後續使用介面 | 桌面版；全遊戲 HD 後打包 Windows、Linux、macOS；瀏覽器排除 | 使用者已確認；目前只驗證 Linux 容器桌面 |
+| HD 風格試作 | B 戰國手繪風。八張開場劇情圖、捲軸及 81 張頭像的共同繪圖端已接入；正常路徑抽測四張頭像。F6 與頂端列切換、逐項缺圖備援通過 | [頭像實際視窗](workplace/hd-prototype/catalog/kao-desktop/gui-portraits-kao-76-enabled.png)、[HD 驗證](workplace/hd-prototype/catalog/kao-desktop/verification-portraits.json)、[缺圖驗證](workplace/hd-prototype/catalog/kao-desktop-missing/verification-portraits-missing.json) |
+| HD 素材定位 | DAT 201 筆、112 個 OZM。靜態解碼 107 筆，17 個正常路徑來源的平面與索引一致；五筆尾端少一 byte，保留未知。KAO.GRP 的 81 張頭像索引與繪圖端已確認 | [解碼器](tools/hd-ozm-probe.py)、[頭像擷取](tools/hd-kao-extract.py)、[覆蓋清單](workplace/hd-prototype/catalog/art-coverage.json) |
+| 全遊戲 HD 覆蓋 | 製作中。36 張劇情圖草稿及 81 張頭像，精確重複來源共用後對應 45 個 OZM。VISUAL 只有捲軸接入，上方框架在準備；其餘介面、動畫、地形、單位及結局美術待完成，正式打包尚未開始 | [覆蓋清單](workplace/hd-prototype/catalog/art-coverage.json)、[81 張頭像總覽](workplace/hd-prototype/catalog/kao/selected/contact-sheet.png)；資源筆數不等於圖集圖塊數 |
+| HD 劇情與頭像驗證 | A-0 至 A-7、頭像 76..79 的真實視窗切換與缺圖通過，地名保留原版。兩側各自然跑完 750M，RAM、原生畫面、輸入與 CD PCM 符合既有完整基準；其餘頭像未逐張在正常路徑抽測 | [HD 收據](workplace/hd-prototype/catalog/kao-desktop/desktop-portraits.json)、[缺圖收據](workplace/hd-prototype/catalog/kao-desktop-missing/desktop-portraits-missing.json)；每次 19 次切換的原版狀態不變 |
 | 桌面呈現與普通滑鼠 | Linux 容器內 Ebitengine 2.9.9 試作通過。正常入口與普通時間表走到首張敘事；視窗縮為 1000×700 後，普通 X11 左鍵正確對應原版 `(300,171)` 並開始新遊戲。支援 F6 切換、F7 暫停、F9 擷取；現行功能列與關窗操作見下一列；一般鍵盤、桌面音訊及其他 OS 未驗收 | [建置入口](tools/run-desktop.sh)、[普通滑鼠核對](workplace/desktop-prototype/verification-mouse.json)、[新遊戲開場](workplace/desktop-prototype/gui-mouse-after-click.png)；操作及限制見 AGENTS |
 | 劇情捲軸 HD | 完成此介面切片。VISUAL.OZM 原版平面與捲軸底圖已核對，紙張、捲邊及外框以 HD 替換；文字前景逐點保留。兩頁劇情保留 24324／4036 個呈現前景像素。HD、缺捲軸圖及只有捲軸 HD 三模式的 RAM、原生畫面與 CD PCM 均符合同一 150M 基準；頂端功能列整合亦通過。字型重繪及其他介面仍待後續 | [驗收總表](workplace/hd-prototype/scroll/verification-summary.json)、[實際畫面](workplace/hd-prototype/scroll/desktop/gui-scroll-enabled.png)、[第二頁](workplace/hd-prototype/scroll/desktop/gui-scroll-second-enabled.png)、[素材](workplace/hd-prototype/scroll/scroll-hd-b-v1.png)、[完整提示詞](workplace/hd-prototype/scroll/scroll-hd-b-v1.prompt.txt) |
 | 頂端隱藏功能列 | Linux 容器試作通過。參考 softworld_san：頂端滑鼠展開、移開收起，Esc 固定／收起，Shift+Esc 離開。提供原版／HD 圖像、繼續／暫停、截圖／離開。顯示與收起手勢期間隔離原版步進及輸入；視窗擴高而保持遊戲比例。HD、缺圖兩次 150,000,000 步的完整 RAM、原生畫面與 PCM 符合原基準；普通滑鼠未誤觸，縮放後仍可開始新遊戲 | [驗收總表](workplace/desktop-prototype/toolbar/verification-summary.json)、[功能列畫面](workplace/desktop-prototype/toolbar/windowbar-hd-hd.png)、[原圖選單](workplace/desktop-prototype/toolbar/windowbar-hd-display-menu.png)、[普通滑鼠驗證](workplace/desktop-prototype/toolbar/verification-windowbar-mouse.json)；四語及音訊開關待功能接妥 |
 | private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 已建立；#2 技術切片驗收後已關閉，HD 接續 #5，桌面與聽覺驗收留 #3 | [CDDA 完成記錄](https://github.com/wicanr2/tokugawa-dosgolem/issues/2#issuecomment-6121828738)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)、[HD #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5)；Issue 即時狀態直接查 GitHub |
 | Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試與文件；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
-| Docker 收尾 | 本輪原生重跑與驗證容器均已結束，無本專案殘留；未建新 image | `docker ps -a --filter name=tokugawa` 為空；擁有權檢查通過 |
+| Docker 收尾 | 完整 HD 與缺圖驗證容器均已結束，無本專案殘留；沿用既有 image | docker ps -a --filter name=tokugawa 為空；擁有權核對見 WORKLOG |
 
 ## 固定來源與版本差異
 
@@ -87,6 +88,6 @@
 - 第一批語言為繁中、簡中、英文與日文。原文與譯文均以 UTF-8 TSV catalog 管理，穩定 key 的規則依 `/home/anr2/.codex/knowledge-base/local/localization-display-semantic-isolation.md`；翻譯只進顯示路徑，不改原版比較、資源名稱或存檔欄位。
 - 使用者確認頂端功能列後，另指定捲軸介面也要 HD；劇情捲軸已接入既有 HD 開關，維持原版文字及位置。
 - 使用者指定頂端隱藏功能列參考 `/home/anr2/cht/softworld_san`，目前已接入顯示、執行與工具三欄；四語與音訊待功能實作後接入。
-- 桌面版為本次目標。瀏覽器與 WebAssembly 不列入規劃或後備路線。
+- 桌面版為本次目標。使用者已確認全遊戲美術 HD 完成後打包 Windows、Linux、macOS；各平台建置與啟動驗收分開記錄。瀏覽器與 WebAssembly 不列入規劃或後備路線。
 - 使用者指定完成 CD 音訊後先執行 HD 化。四語需求保留，實作順序移到 HD 首個場景之後；桌面畫面與音訊試作作為必要依賴一起推進。
 - 使用者已授權依 [WORKLIST.md](WORKLIST.md) 的功能範圍開工。MCB 與 CDDA 切片已有 READY 契約並實作；HD 美術風格已選 B。桌面工具版本、完整文字／繪圖擷取位置與顯示比例仍待可行性驗證或 prototype。

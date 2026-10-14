@@ -10,6 +10,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"image/color"
 	"io"
 	"io/fs"
 	"os"
@@ -38,8 +39,12 @@ func main() {
 	mouseFile := flag.String("mouse-file", "", "read mouse state array from a file")
 	cdDiagnostic := flag.Bool("cd-trace", false, "record bounded read-only DPMI/CD request diagnostics")
 	hdDiagnostic := flag.Bool("hd-trace", false, "record bounded read-only original asset loader diagnostics")
+	hdExport := flag.Bool("hd-export", false, "copy validated loader-return planes and DAC to local research output; implies hd-trace")
 	desktop := flag.Bool("desktop", false, "run isolated desktop presentation prototype")
 	flag.Parse()
+	if *hdExport {
+		*hdDiagnostic = true
+	}
 	var assetTrace hdTrace
 	var live hdLive
 	var desktopReceipt map[string]any
@@ -295,7 +300,22 @@ func main() {
 			}
 			before = m.CPU.EIP
 			if *hdDiagnostic {
+				previous := len(assetTrace.Events)
 				assetTrace.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem)
+				if *hdExport && len(assetTrace.Events) > previous {
+					event := assetTrace.Events[len(assetTrace.Events)-1]
+					if event["kind"] == "load_return" {
+						var palette [16]color.NRGBA
+						dac := screen.Legacy.Palette()
+						for i := range palette {
+							rgb := dac[screen.Legacy.VGA.DACIndex(byte(i))]
+							palette[i] = color.NRGBA{R: rgb[0], G: rgb[1], B: rgb[2], A: 255}
+						}
+						if err := captureLoadedAsset(event, m.Mem, palette); err != nil {
+							panic(err)
+						}
+					}
+				}
 			}
 			if *desktop {
 				live.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem)
@@ -393,7 +413,7 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
-	for _, name := range []string{"tools/startup-probe.go", "tools/cdrom.go", "tools/cdrom_test.go", "tools/cdda.go", "tools/cdda_test.go", "tools/hd-trace.go", "tools/hd-trace_test.go", "tools/hd-live.go", "tools/hd-live_test.go", "tools/hd-layer.go", "tools/hd-scroll.go", "tools/hd-scroll_test.go", "tools/hd-preview_test.go", "tools/presentation.go", "tools/presentation_test.go", "tools/desktop.go", "tools/windowbar.go", "tools/windowbar_test.go", "tools/desktop-windowbar.go", "tools/toolbar-font.hex.gz", "tools/LICENSE-toolbar-font.txt", "tools/run-desktop.sh", "tools/desktop.mod", "tools/desktop.sum", "tools/video.go", "tools/video_test.go", "tools/vbe.go", "tools/vbe_test.go", "tools/keyboard.go", "tools/keyboard_test.go", "tools/dos_test.go", "tools/dosgolem.patch", "tools/dpmi-mcb.go", "tools/dpmi-mcb_test.go", "tools/cpu386-integration_test.go", "tools/run-probes.sh"} {
+	for _, name := range []string{"tools/startup-probe.go", "tools/cdrom.go", "tools/cdrom_test.go", "tools/cdda.go", "tools/cdda_test.go", "tools/hd-capture.go", "tools/hd-trace.go", "tools/hd-trace_test.go", "tools/hd-portraits.go", "tools/hd-kao.go", "tools/hd-kao_test.go", "tools/hd-kao-profiles.go", "tools/hd-live.go", "tools/hd-live_test.go", "tools/hd-layer.go", "tools/hd-scroll.go", "tools/hd-scroll_test.go", "tools/hd-preview_test.go", "tools/presentation.go", "tools/presentation_test.go", "tools/desktop.go", "tools/windowbar.go", "tools/windowbar_test.go", "tools/desktop-windowbar.go", "tools/toolbar-font.hex.gz", "tools/LICENSE-toolbar-font.txt", "tools/run-desktop.sh", "tools/desktop.mod", "tools/desktop.sum", "tools/video.go", "tools/video_test.go", "tools/vbe.go", "tools/vbe_test.go", "tools/keyboard.go", "tools/keyboard_test.go", "tools/dos_test.go", "tools/dosgolem.patch", "tools/dpmi-mcb.go", "tools/dpmi-mcb_test.go", "tools/cpu386-integration_test.go", "tools/run-probes.sh"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)
@@ -418,7 +438,7 @@ func main() {
 		"real_mode_history":     services.DPMI.RealModeHistory,
 		"real_mode_last":        services.DPMI.RealModeLast,
 		"cd_diagnostic_enabled": *cdDiagnostic, "cd_diagnostic_events": cdTrace, "cd_diagnostic_dropped": cdTraceDropped,
-		"hd_diagnostic_enabled": *hdDiagnostic, "hd_asset_trace": assetTrace,
+		"hd_diagnostic_enabled": *hdDiagnostic, "hd_asset_trace": assetTrace, "hd_export_enabled": *hdExport,
 		"desktop":            desktopReceipt,
 		"mouse_calls":        mouseServices.Mouse.Calls,
 		"mouse_cursor":       cursor,

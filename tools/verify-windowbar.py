@@ -104,7 +104,7 @@ try:
         assert hashlib.sha256(source.read_bytes()).hexdigest() == "cc23a9dc6353d066e12a1097224c1c8472940ade33365f880d01aff5ba6fe736"
         command += ["-mouse-file", str(source)]
     if mode == "missing":
-        command += ["-hd-asset", "/output/no-hd.png", "-hd-scroll-asset", "/output/no-scroll.png"]
+        command += ["-hd-asset", "/output/no-hd.png", "-hd-scroll-asset", "/output/no-scroll.png", "-hd-portrait-dir", "/output/no-portraits", "-hd-kao-dir", "/output/no-kao"]
     stdout_path = root / f"windowbar-{mode}.json"
     stdout = stdout_path.open("wb")
     stderr = (root / f"windowbar-{mode}.stderr.log").open("wb")
