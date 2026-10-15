@@ -34,6 +34,7 @@ type rawTrace struct {
 }
 
 func main() {
+	program := flag.String("program", "game", "fixed original program profile: game or mark")
 	budget := flag.Int("steps", 3000000, "successful-instruction budget")
 	mouseScript := flag.String("mouse", "[]", "JSON array of mouse states at successful-instruction boundaries")
 	mouseFile := flag.String("mouse-file", "", "read mouse state array from a file")
@@ -46,7 +47,20 @@ func main() {
 	openingDiagnostic := flag.Bool("hd-opening-trace", false, "DRAFT bounded read-only opening buffers, parameters and natural returns; no HD replacement")
 	hdExport := flag.Bool("hd-export", false, "copy validated loader-return planes and DAC to local research output; implies hd-trace")
 	desktop := flag.Bool("desktop", false, "run isolated desktop presentation prototype")
+	dos4gExceptionABI := flag.Bool("dos4g-exceptions", false, "deliver actual segment limit faults to DOS4GW AH=25h handlers")
 	flag.Parse()
+	profile, profileErr := selectProgram(*program)
+	if profileErr != nil {
+		panic(profileErr)
+	}
+	if profile.Publisher {
+		if *hdDiagnostic || *hdExport || *terrainDiagnostic || *backdropDiagnostic || *battleFrameDiagnostic || *graphicsDiagnostic || *openingDiagnostic {
+			panic("MARK rejects DX5-specific diagnostic callbacks")
+		}
+		*dos4gExceptionABI = true
+	}
+	var dos4gExceptions dos4gExceptionTrace
+	var markTrace markProbeTrace
 	if *hdExport {
 		*hdDiagnostic = true
 	}
@@ -92,13 +106,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	data, err := os.ReadFile("/original/DX5.EXE")
+	data, err := os.ReadFile("/original/" + profile.File)
 	if err != nil {
 		panic(err)
 	}
 	digest := fmt.Sprintf("%x", sha256.Sum256(data))
-	if digest != "2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a" {
-		panic("DX5.EXE hash mismatch")
+	if digest != profile.SHA {
+		panic(profile.File + " hash mismatch")
 	}
 	m, err := machine.LoadLE(data)
 	if err != nil {
@@ -111,7 +125,7 @@ func main() {
 		}
 	}
 	m.CPU.SetDescriptor(0x28, cpu386.Descriptor{Base: 0x8000, Limit: 255, Writable: true})
-	environment := []byte("\x00\x00\x01\x00C:\\DX5.EXE\x00")
+	environment := []byte("\x00\x00\x01\x00C:\\" + profile.File + "\x00")
 	m.CPU.SetDescriptor(0x30, cpu386.Descriptor{Base: 0x8100, Limit: uint32(len(environment) - 1)})
 	copy(m.Mem[0x8100:], environment)
 	m.Mem[0x802c] = 0x30
@@ -321,6 +335,12 @@ func main() {
 				nextMouse++
 			}
 			before = m.CPU.EIP
+			if profile.Publisher {
+				markTrace.captureTarget(before, m.CPU.R[cpu386.EAX], m.Mem)
+				if err := markTrace.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem, screen, &cursor); err != nil {
+					panic(err)
+				}
+			}
 			if *openingDiagnostic {
 				if err := opening.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem, assetTrace.LastReturn, func() (nativeSnapshot, error) {
 					return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
@@ -351,12 +371,12 @@ func main() {
 					}
 				}
 			}
-			if *desktop {
+			if *desktop && !profile.Publisher {
 				live.Terrain.observe(steps, before, m.CPU.R[cpu386.ESP], m.CPU.R[cpu386.ESI], m.CPU.R[cpu386.EDI], m.Mem, func() (nativeSnapshot, error) {
 					return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
 				})
 			}
-			if *desktop || *battleFrameDiagnostic {
+			if !profile.Publisher && (*desktop || *battleFrameDiagnostic) {
 				live.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem, func() (nativeSnapshot, error) {
 					return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
 				})
@@ -381,6 +401,9 @@ func main() {
 			traceRing[traceCount%len(traceRing)] = row
 			traceCount++
 			if err := m.CPU.Step(); err != nil {
+				if *dos4gExceptionABI && dos4gExceptions.deliver(m.CPU, services, steps, before) {
+					continue
+				}
 				stop = err.Error()
 				if m.Keyboard.Waiting {
 					stop = "waiting_for_keyboard"
@@ -397,6 +420,10 @@ func main() {
 	}
 	if *desktop {
 		ctx := &desktopContext{
+			Program: *program, Mark: &markTrace,
+			MarkQualified: func(s nativeSnapshot) bool {
+				return profile.Publisher && screen.Mode == 0x101 && markTrace.qualified(s, m.Mem)
+			},
 			Advance: advance, Steps: func() int { return steps }, Live: &live, Scripted: len(mouseEvents) > 0 || *mouseFile != "",
 			Snapshot: func() (nativeSnapshot, error) {
 				return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
@@ -462,6 +489,20 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
+	for _, name := range []string{"tools/program.go", "tools/mark-trace.go", "tools/hd-publisher.go", "tools/hd-publisher_test.go"} {
+		b, e := os.ReadFile("/project/" + name)
+		if e != nil {
+			panic(e)
+		}
+		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
+	}
+	for _, name := range []string{"tools/dos4g-exception.patch", "tools/dos4g-vector.go", "tools/dos4g-exception.go", "tools/dos4g-exception_test.go", "tools/vbe-timing.go"} {
+		b, e := os.ReadFile("/project/" + name)
+		if e != nil {
+			panic(e)
+		}
+		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
+	}
 	for _, name := range []string{"tools/mark-cpu.patch", "tools/startup-choice.go", "tools/desktop-startup.go"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
@@ -545,10 +586,11 @@ func main() {
 	}
 	receipt := map[string]any{
 		"dosgolem_head": "a9714ebdab2ad6b529f81225472680f2b11f2842", "integration_input_sha256": toolHashes,
-		"input_file": "DX5.EXE", "input_sha256": digest,
+		"input_file": profile.File, "input_sha256": digest, "program": *program, "mark_observation": markTrace,
 		"file_state_directory": fileState, "original_read_only": true,
 		"dos_memory_model": "explicit 32-bit DPMI MCB arena; first fit, reusable; owner PSP 0800h",
 		"tool":             "dosgolem native LE + bounded DOS4G-compatible startup research probe", "go_version": runtime.Version(),
+		"dos4g_exception_abi_enabled": *dos4gExceptionABI, "dos4g_exceptions": dos4gExceptions,
 		"probe_sha256": fmt.Sprintf("%x", sha256.Sum256(script)), "address_space": "dosgolem relocated flat linear memory; selectors are host labels",
 		"patch_sha256": fmt.Sprintf("%x", sha256.Sum256(patch)), "cpu_source_sha256": fmt.Sprintf("%x", sha256.Sum256(cpuSource)),
 		"successful_steps": steps, "instruction_budget": *budget, "stop_instruction_linear_eip": fmt.Sprintf("0x%X", before), "stop": stop,
@@ -575,7 +617,7 @@ func main() {
 		"mounted_disc":  disc, "cd_supported_functions": []string{"1500", "150C", "150D"}, "cd_audio_verified": false,
 		"cd_supported_requests":       []string{"1510/IOCTL INPUT/10", "1510/IOCTL INPUT/11", "1510/IOCTL INPUT/15", "1510/PLAY AUDIO", "1510/STOP AUDIO", "1510/RESUME AUDIO"},
 		"cd_pcm":                      map[string]any{"path": audioPath, "sha256": audioDigest, "sample_rate": 44100, "channels": 2, "format": "s16le", "stereo_frames": disc.Audio.Frames, "nonzero_channel_samples": disc.Audio.NonzeroSamples, "absolute_sample_peak": disc.Audio.Peak, "idle_intervals": "omitted from PCM; reconstruct from virtual_us events", "timing": "hardware-spec approximation", "listening_verified": false},
-		"test_environment":            map[string]any{"dos_version": "6.22", "command_line": "", "program_name": "C:\\DX5.EXE", "dos4g_detection": "AX=FFFFh, GS=0; compatible host, not original extender emulation"},
+		"test_environment":            map[string]any{"dos_version": "6.22", "command_line": "", "program_name": "C:\\" + profile.File, "dos4g_detection": "AX=FFFFh, GS=0; compatible host, not original extender emulation"},
 		"normal_player_path_verified": false, "game_screen_verified": false,
 		"vbe_mode": screen.Mode, "vbe_width": screen.Width, "vbe_height": screen.Height, "vbe_bank": screen.Bank,
 		"frame": frame, "vga_mode": mouseMachine.VideoMode(),
@@ -586,7 +628,11 @@ func main() {
 	if err := encoder.Encode(receipt); err != nil {
 		panic(err)
 	}
-	if err := os.WriteFile("/output/startup-memory.bin", m.Mem, 0600); err != nil {
+	memoryPath := "/output/startup-memory.bin"
+	if profile.Publisher {
+		memoryPath = "/output/mark-startup-memory.bin"
+	}
+	if err := os.WriteFile(memoryPath, m.Mem, 0600); err != nil {
 		panic(err)
 	}
 }

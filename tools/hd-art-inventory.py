@@ -533,6 +533,16 @@ def main():
         pcx_record.update(art_status='draft',art=art_info(path,ROOT/'art'/draft['prompt']),
                           runtime_status='publisher logo draft; caller, display mode and original copyright composition pending',
                           native_text_preserve_rect=draft['planned_native_preserve_rect'])
+        publisher_proof_path = Path('/project/workplace/desktop-prototype/publisher/verification-summary.json')
+        if publisher_proof_path.exists():
+            proof = json.loads(publisher_proof_path.read_text())
+            assert proof['result'] == 'PASS' and {item['mode'] for item in proof['mark']} == {'hd', 'missing'}
+            assert proof['independent_source']['payload_sha256'] == pcx['payload_sha256']
+            pcx_record.update(art_status='prepared',
+                              runtime_status='standalone original MARK desktop HD verified; game startup chaining pending',
+                              runtime_check={'summary_sha256': sha(publisher_proof_path),
+                                             'scope': 'standalone MARK native entry, display, HD switching, fallback and exit',
+                                             'game_startup_integrated': False})
     records.append(pcx_record)
     runtime_tails = []
     tail_path = ROOT / 'remaining/source-boundary/OP-FULL-runtime/receipt.json'

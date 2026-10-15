@@ -41,11 +41,19 @@
 | [tools/startup-probe.go](tools/startup-probe.go) | 原版指令自然執行的 DOS/4G 啟動研究探針 |
 | [tools/mark-probe-prepare.py](tools/mark-probe-prepare.py) | 產生研究專用 MARK LE 入口探針與隔離 overlay，拒絕遊戲專用 HD 觀測；不修改正式啟動路徑 |
 | [tools/mark-cpu.patch](tools/mark-cpu.patch) | 接在 dosgolem.patch 後的標準記憶體 byte SHR 與 DPMI 新 data descriptor 可寫性修正；保留原始界限，契約及實際 MARK 阻塞證據見 RESEARCH-LOG |
+| [tools/dos4g-exception.patch](tools/dos4g-exception.patch)、[tools/dos4g-vector.go](tools/dos4g-vector.go) | 在隔離副本擴充段界限失敗回報、平坦同權限 IRET 與 DOS 向量唯讀查詢，契約及限制見 RESEARCH-LOG |
+| [tools/dos4g-exception.go](tools/dos4g-exception.go)、[tools/dos4g-exception_test.go](tools/dos4g-exception_test.go) | 依公開 DOS/4GW 契約將真實段界限例外交付原版已登記的 INT 0Dh handler；不略過原版 handler 或放寬 VRAM selector |
+| [tools/mark-trace.go](tools/mark-trace.go) | 固定 MARK 雜湊的唯讀繪圖、目標色盤與 RAM guard 觀測，供獨立研究探針及桌面 HD 資格；保存原生漸入／漸出畫面，沒有 guest 寫入 |
+| [tools/program.go](tools/program.go) | 固定 DX5／MARK 來源雜湊與程式名稱，不接受任意路徑；兩個原版 LE 執行入口的回報與觀測分開 |
+| [tools/hd-publisher.go](tools/hd-publisher.go)、[tools/hd-publisher_test.go](tools/hd-publisher_test.go) | MARK 的來源／自然繪圖及原版色盤資格、HD 標誌與下方原版版權保留；未知狀態或缺圖回原版 |
 | `workplace/hd-prototype/catalog/remaining/consumers/mark-probe/` | 包內 MARK.EXE.BAK 的自然執行、原生畫面及顯示契約研究；原版資料與執行收據只留本機 |
 | [tools/startup-choice.go](tools/startup-choice.go)、[tools/desktop-startup.go](tools/desktop-startup.go) | 桌面啟動前的原版／HD 選擇及輸入隔離；與頂端功能列共用顯示設定 |
 | [tools/verify-startup-choice.py](tools/verify-startup-choice.py) | Docker X11 驗證啟動選擇、輸入隔離與進入後的功能列切換 |
 | [tools/verify-startup-integration.py](tools/verify-startup-integration.py) | 核對同一建置的啟動選擇、首戰回歸、93 項凍結來源與全部 RAM；固定 GUI image 內專案唯讀掛 /project，startup-choice/ 可寫掛 /output 執行 |
 | `workplace/desktop-prototype/startup-choice/` | 啟動選擇切片的隔離建置、X11 收據及本機截圖 |
+| `workplace/desktop-prototype/publisher/` | MARK 原生與 HD 桌面的隔離建置、缺圖、功能列及完整原版狀態驗證 |
+| [tools/verify-publisher.py](tools/verify-publisher.py) | 在既有 GUI image 內以 X11 操作 MARK 的啟動選擇、原圖／HD、功能列與自然退出；收據及原圖保持本機 |
+| [tools/verify-publisher-integration.py](tools/verify-publisher-integration.py) | 固定 GUI image 內專案唯讀掛 /project、publisher/ 可寫掛 /output，執行後核對 MARK 與首戰、獨立 PCX 解碼、HD 採樣及來源快照；歷史核對可加 --source-root /output/source-snapshot |
 | [tools/ida-entry.py](tools/ida-entry.py) | 保留原名與位址的 IDA 入口證據；可傳入 `起點:終點` 匯出至多 16 KiB 的窄範圍 |
 | [tools/hd-asset-probe.py](tools/hd-asset-probe.py) | 唯讀盤點 DAT 的候選資源目錄；保存原始欄位、檔案偏移與逐項雜湊，不作正式 HD 識別器 |
 | [tools/ida-asset-probe.py](tools/ida-asset-probe.py) | IDA 9.4 的資源字串、直接交叉參照及有界函式證據；只接受固定 SHA 的 DX5.EXE 或包內 MARK.EXE.BAK，另核對 LE header，保留原名與位址 |
@@ -184,6 +192,7 @@
 | [tools/video.go](tools/video.go) | 標準 VGA 埠轉接、模式切換、擴充索引隔離與原生畫面擷取 |
 | [tools/video_test.go](tools/video_test.go) | VGA 暫存器隔離與 DAC 回歸測試 |
 | [tools/vbe.go](tools/vbe.go) | VBE 分頁 VRAM 與 BIOS 子集 |
+| [tools/vbe-timing.go](tools/vbe-timing.go) | VBE 0100h／0101h BIOS 模式沿用 dosgolem 已有標準 VGA 掃描時序表；只設定時序，限制及近似等級見 RESEARCH-LOG |
 | [tools/vbe_test.go](tools/vbe_test.go) | VBE 資訊、分頁與界限測試 |
 | [tools/keyboard.go](tools/keyboard.go) | 共用 BDA 按鍵緩衝的 DOS／BIOS 鍵盤子集 |
 | [tools/keyboard_test.go](tools/keyboard_test.go) | 按鍵查詢、消耗與空緩衝測試 |
@@ -209,7 +218,7 @@
 | [CONTEXT.md](CONTEXT.md) | 目前狀態、有效結論、限制與下一個驗證入口 |
 | [WORKLOG.md](WORKLOG.md) | 按時間追加的工作歷程與清理結果 |
 | [.gitignore](.gitignore) | 排除本機原版資料、探針輸出與快取 |
-| [.gitattributes](.gitattributes) | 僅對兩份平台補丁排除 unified diff context 前綴的空白警告；其餘檢查保留。套用後另由 git apply、gofmt 與平台測試驗證 |
+| [.gitattributes](.gitattributes) | 僅對已登記的平台補丁排除 unified diff context 前綴的空白警告；其餘檢查保留。套用後另由 git apply、gofmt 與平台測試驗證 |
 | [.gitattributes](.gitattributes) | dosgolem 統一差異的 context 行保留格式；只排除該補丁檔的 space-before-tab 誤報 |
 
 新增目錄或文件前讀 `/home/anr2/.codex/knowledge-base/local/project-document-responsibilities.md`，並更新本表。未有可執行待辦前不另建 WORKLIST；需要時只建立一份。README 只放穩定入口，工作歷程寫入 WORKLOG。
@@ -464,7 +473,7 @@ timeout 300s docker run --rm --name tokugawa-desktop-gui --network none \
   timeout -k 5s 280s python3 /project/tools/verify-desktop.py --mode hd
 ```
 
-桌面程式只有使用 `-desktop` 才開視窗，預設仍為無頭。桌面互動預設 `-startup-display ask`，在原版成功指令數為零時選原版／HD；自動驗證須明示 `-startup-display original` 或 `hd`。選擇畫面及確認手勢放開前不步進 DOS、不轉送按鍵或滑鼠點擊；進入後與功能列共用顯示設定。F6 切換原圖／HD，F7 暫停試作步進，F9 擷取強化畫面。滑鼠移到頂端 6 個原版邏輯像素會展開功能列，移開自動收起。Esc 固定／收起；叉號只收起，Shift+Esc 或工具選單可關窗並輸出原生收據。功能列顯示時原版停止步進，畫面下移並增加視窗高度；收起後滑鼠按鍵全部放開才恢復步進與滑鼠轉送。Tab 切換欄位，方向鍵選取，Enter 展開／套用。顯示提供原版及 HD 圖像，肖像與捲軸分項缺圖回原圖；兩項素材都無效時 HD 列停用；執行提供繼續／暫停，工具提供截圖／離開。
+桌面程式只有使用 `-desktop` 才開視窗，預設仍為無頭。固定 `-program mark -steps 75000000` 可獨立顯示包內 MARK 標誌與 HD；沿用同一 Docker 桌面命令及功能列，640×480 時畫布為 1280×960。預設 `-program game` 仍直接進 DX5，完整啟動器串接待做。桌面互動預設 `-startup-display ask`，在原版成功指令數為零時選原版／HD；自動驗證須明示 `-startup-display original` 或 `hd`。選擇畫面及確認手勢放開前不步進 DOS、不轉送按鍵或滑鼠點擊；進入後與功能列共用顯示設定。F6 切換原圖／HD，F7 暫停試作步進，F9 擷取強化畫面。滑鼠移到頂端 6 個原版邏輯像素會展開功能列，移開自動收起。Esc 固定／收起；叉號只收起，Shift+Esc 或工具選單可關窗並輸出原生收據。功能列顯示時原版停止步進，畫面下移並增加視窗高度；收起後滑鼠按鍵全部放開才恢復步進與滑鼠轉送。Tab 切換欄位，方向鍵選取，Enter 展開／套用。顯示提供原版及 HD 圖像，肖像與捲軸分項缺圖回原圖；兩項素材都無效時 HD 列停用；執行提供繼續／暫停，工具提供截圖／離開。
 
 `-hd-source`／`-hd-asset` 指定肖像原圖及 HD 圖；`-hd-scroll-source`／`-hd-scroll-asset` 指定捲軸原圖及 HD 圖。兩份原圖各自固定雜湊，缺圖分項備援。捲軸的紙張、捲邊與外框換成 HD，文字前景維持原版像素與位置。`-desktop-speed` 預設 1，驗證用 20 不改虛擬時間公式。普通滑鼠只在沒有輸入時間表時啟用；一般鍵盤轉送與桌面音訊尚未接入。四語及音訊設定待功能接妥再加入。二進位留在 `workplace/` 作中間產物，不能稱為正式平台交付。
 

@@ -488,3 +488,18 @@ https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6185165391
 PRIVATE 狀態再次確認，遠端與本機 assets/hd-b 子樹皆為 9de9713108cf662e0b2bb39e46b5ab7aec8c1561。沒有原版或 workplace 進入版控。完整工作根沒有 root-owned 檔案或 .md 目錄，正式 DX5.i64 雜湊不變，本批 Docker 容器均已自動移除。
 
 Git 的補丁檔空白檢查曾把 unified diff context 前綴視為來源格式錯誤。更新 .gitattributes 時誤覆蓋原有 dosgolem.patch 規則，已恢復原兩行，只增加 mark-cpu.patch 的格式前綴例外；其餘 whitespace 檢查保留，補丁本身、二進位及 93 項凍結來源未改。這項修正與遠端記錄隨後續文件提交保存。
+
+## 2026-10-15：MARK 自然執行及獨立桌面 HD 通過
+
+- 上一輪完成啟動選擇及首戰回歸，本輪屬實質進展。依平台規格優先、spec-gated workflow 與文件職責續做 MARK。Open Watcom 的 DOS/4GW 例外堆疊契約與既有 VGA 標準時序作平台依據，沒有深挖硬體 driver／ISR 時序。
+- 新增結構化段界限回報、DOS AH=25h 向量查詢、normalized frame 交付及平坦 32-bit IRET／CS word CMP。四個原版 VESA 分頁由 MARK 自己的 INT 0Dh handler 完成，原 REP 從剩餘進度續行。
+- 補齊原版色盤漸入／漸出的 memory byte ADD／SUB，262144 組值與既有 AL immediate 語意差分、DS／SS、唯讀及界限測試通過。r5 的 SIB 測試把 EBP index 當成 base，保留失敗與分類後訂正；沒有修改正確的位址解析。
+- r6 完整索引已符合 PCX，但在未初始化的 VBE 回掃等待停止；VBE BIOS 以 dosgolem 既有標準表建立 0100h／0101h 時序，保持色盤及 pixel geometry，頻率及雙態回掃測試通過。r8 原版入口自然 15989208 步正常退出，完整漸入、停留、漸出及向量／文字模式還原均保存。
+- 獨立 PCX 解碼、307200 色號與 runtime 目標色盤均一致。固定 program=game／mark profile 分離原版來源；MARK 拒絕 DX5 位址觀測，獨立執行不偽造 COMMAND.COM 或 EXEC 成功。
+- MARK 桌面 HD 使用既存私人生成圖，沒有新增圖片。640×480 原版保持兩倍畫布，頂端列擴高至 1024，y=449..479 版權區保留當下原版像素。來源、色盤與 RAM guard 限定資格；色彩效果屬呈現近似，未知狀態及缺圖回原版。
+- 四套件及 HD 資格／版權／備援／色盤／viewport 測試通過，cmd/leprobe 115.021 秒。同一二進位 4d66c2a7ce4493ff77b180a0fe5b411c902e9406a9a697934002ce7afe0acb16、102 項凍結來源：兩次 MARK GUI 的完整 RAM 及十三個原版欄位符合 r8，六張實際 X11 符合呈現 PNG；遊戲 750M／390 事件的完整 RAM、十五欄及三張 X11 通過。
+- 總表 desktop-prototype/publisher/verification-summary.json，SHA-256 580a71ffc2fe8e23cda8c6122871b9f9b2f1c4c05f1c07b5c0c08fceb7e63e0b。亮起原圖、上方 HD 採樣及下方版權另以獨立公式核對。原版與 HD 截圖已目視查看。來源快照保存全部 102 項；r8 已保存當時五份獨立研究工具的精確雜湊副本。
+- 唯一 art-coverage.json 已重生，RAINEND 列為已準備、獨立 MARK 桌面驗證；完整啟動串接仍 false，其他十七項動畫消費端未列完成。
+- 主機 gh 登入及 PRIVATE 狀態已核對，Issue #5 為 OPEN。提交、來源完整性、圖片保存及 Docker 清理核對於收尾追加。全遊戲 HD 與三平台打包仍未完成，下一步為先選顯示模式，再依序執行 MARK 與 DX5 的桌面啟動器。
+
+收尾核對：原始 ZIP CRC、十二個解包檔、唯讀及 UID/GID 於 2026-10-15T07:08:11Z 通過。807 張 PNG、163 份提示詞、596522181 indexed bytes 的保存核對通過，圖片子樹未改。四份 Python 工具語法及 run-probes.sh 的 shell 語法通過。完整工作根沒有 root-owned 檔案或 .md 目錄；正式 DX5.i64 的 SHA-256 仍為 8afa40d3eaeed4851b78ed2ddc80ccbc1c65e14cb2481a09316d42670efce02e。全部本批 tokugawa 容器已退出並移除，沒有重建 image。程式與文件提交及遠端 Issue 進度隨後追加。

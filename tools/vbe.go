@@ -98,6 +98,9 @@ func (v *bankVideo) handle(c *cpu386.CPU) bool {
 		v.Bank = 0
 		v.Width = w
 		v.Height = h
+		if v.Legacy != nil {
+			v.Legacy.VGA.SetVBEStandardTiming(v.Mode)
+		}
 		status = 0x004f
 	case 0x4f03:
 		lowWord(c, cpu386.EBX, v.Mode)

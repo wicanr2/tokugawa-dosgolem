@@ -25,6 +25,8 @@ git apply --check /project/tools/dosgolem.patch
 git apply /project/tools/dosgolem.patch
 git apply --check /project/tools/mark-cpu.patch
 git apply /project/tools/mark-cpu.patch
+git apply --check /project/tools/dos4g-exception.patch
+git apply /project/tools/dos4g-exception.patch
 gofmt -w /output/engine/internal/cpu386/cpu.go /output/engine/internal/cpu386/integration_test.go /output/engine/internal/machine/dpmi_real_mode.go /output/engine/internal/machine/dpmi.go
 cat > /output/startup-probe/repro-overlay.json <<'JSON'
 {"Replace":{
@@ -34,9 +36,17 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/internal/machine/dpmi_real_mode.go":"/output/engine/internal/machine/dpmi_real_mode.go",
   "/dosgolem/internal/machine/dpmi.go":"/output/engine/internal/machine/dpmi.go",
   "/dosgolem/internal/machine/dpmi_test.go":"/output/engine/internal/machine/dpmi_test.go",
+  "/dosgolem/internal/machine/dos4g_vector.go":"/project/tools/dos4g-vector.go",
+  "/dosgolem/internal/machine/vbe_timing.go":"/project/tools/vbe-timing.go",
+  "/dosgolem/cmd/leprobe/dos4g_exception.go":"/project/tools/dos4g-exception.go",
+  "/dosgolem/cmd/leprobe/dos4g_exception_test.go":"/project/tools/dos4g-exception_test.go",
   "/dosgolem/internal/machine/dpmi_mcb.go":"/project/tools/dpmi-mcb.go",
   "/dosgolem/internal/machine/dpmi_mcb_test.go":"/project/tools/dpmi-mcb_test.go",
   "/dosgolem/cmd/leprobe/main.go":"/project/tools/startup-probe.go",
+  "/dosgolem/cmd/leprobe/program.go":"/project/tools/program.go",
+  "/dosgolem/cmd/leprobe/mark_trace.go":"/project/tools/mark-trace.go",
+  "/dosgolem/cmd/leprobe/hd_publisher.go":"/project/tools/hd-publisher.go",
+  "/dosgolem/cmd/leprobe/hd_publisher_test.go":"/project/tools/hd-publisher_test.go",
   "/dosgolem/cmd/leprobe/hd-opening-probe.go":"/project/tools/hd-opening-probe.go",
   "/dosgolem/cmd/leprobe/hd-opening-probe_test.go":"/project/tools/hd-opening-probe_test.go",
   "/dosgolem/cmd/leprobe/hd-graphics-opening-profiles.go":"/project/tools/hd-graphics-opening-profiles.go",

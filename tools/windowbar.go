@@ -89,7 +89,11 @@ func (b *windowBar) hit(p image.Point) (field, row int) {
 }
 
 func barHeightDelta(width, height int, visible bool) int {
-	logicalHeight := 400
+	return barHeightDeltaFor(width, height, visible, 400)
+}
+
+func barHeightDeltaFor(width, height int, visible bool, gameHeight int) int {
+	logicalHeight := gameHeight
 	if visible {
 		logicalHeight += barHeight
 	}
@@ -99,11 +103,15 @@ func barHeightDelta(width, height int, visible bool) int {
 
 // Ebitengine 已將視窗縮放與留黑邊轉成邏輯座標。
 func barGamePoint(x, y int, visible bool) (image.Point, bool) {
+	return barGamePointFor(x, y, visible, 400)
+}
+
+func barGamePointFor(x, y int, visible bool, gameHeight int) (image.Point, bool) {
 	if visible {
 		y -= barHeight * 2
 	}
 	p := image.Pt(x, y)
-	return image.Pt(x/2, y/2), p.In(image.Rect(0, 0, 1280, 800))
+	return image.Pt(x/2, y/2), p.In(image.Rect(0, 0, 1280, gameHeight*2))
 }
 
 type barGlyph struct {

@@ -6,6 +6,58 @@ import (
 	"testing"
 )
 
+func TestIntegrationMARKPaletteByteArithmetic(t *testing.T) {
+	for _, op := range []byte{0x00, 0x28} {
+		for _, ss := range []bool{false, true} {
+			for left := 0; left < 256; left++ {
+				for right := 0; right < 256; right++ {
+					mem := testBus(make([]byte, 512))
+					copy(mem, []byte{op, 0x84, 0x2a, 0xf0, 0xfc, 0xff, 0xff})
+					address, other := 307, 371
+					if ss {
+						mem[2] = 0x15
+						address, other = 371, 307
+					}
+					mem[address-1], mem[address], mem[address+1], mem[other] = 0xaa, byte(left), 0xbb, 0xcc
+					c := New(mem)
+					c.Seg[SegDS], c.Seg[SegSS] = 8, 16
+					c.SetDescriptor(8, Descriptor{Base: 64, Limit: 383, Writable: true})
+					c.SetDescriptor(16, Descriptor{Base: 128, Limit: 383, Writable: true})
+					c.R[EAX], c.R[EDX], c.R[EBP] = 0xabcd0000|uint32(right), 3, 1024
+					c.EFlags = IF | DF | CF | OF | AF | SF | ZF | PF
+					regs := c.R
+					refOp := byte(0x04)
+					if op == 0x28 {
+						refOp = 0x2c
+					}
+					ref := New(testBus{refOp, byte(right)})
+					ref.R[EAX], ref.EFlags = uint32(left), c.EFlags
+					if err := ref.Step(); err != nil {
+						t.Fatal(err)
+					}
+					if err := c.Step(); err != nil || c.EFlags != ref.EFlags || c.R != regs || mem[address] != byte(ref.R[EAX]) || mem[address-1] != 0xaa || mem[address+1] != 0xbb || mem[other] != 0xcc || c.EIP != 7 {
+						t.Fatalf("memory ADD left=%x right=%x flags=%x reference=%x: %v", left, right, c.EFlags, ref.EFlags, err)
+					}
+				}
+			}
+		}
+		for _, limit := range []uint32{127, 511} {
+			mem := testBus(make([]byte, 512))
+			copy(mem, []byte{op, 0x05, 0x80, 0, 0, 0})
+			mem[128] = 255
+			c := New(mem)
+			c.Seg[SegDS] = 8
+			c.SetDescriptor(8, Descriptor{Limit: limit, Writable: false})
+			c.R[EAX] = 1
+			c.EFlags = IF | CF | OF | AF
+			regs := c.R
+			if c.Step() == nil || c.R != regs || c.EFlags != IF|CF|OF|AF || mem[128] != 255 {
+				t.Fatal("rejected ADD published state")
+			}
+		}
+	}
+}
+
 func TestIntegrationMARKMemoryByteSHR(t *testing.T) {
 	for value := 0; value < 256; value++ {
 		for immediate := 0; immediate < 256; immediate++ {

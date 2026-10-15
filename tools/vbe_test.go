@@ -4,8 +4,55 @@ import (
 	"encoding/binary"
 	"github.com/wicanr2/dosgolem/internal/cpu386"
 	"github.com/wicanr2/dosgolem/internal/machine"
+	"math"
 	"testing"
 )
+
+func TestVBEBIOSInitializesStandardRetraceWithoutChangingPalette(t *testing.T) {
+	for _, tc := range []struct {
+		mode uint16
+		hz   float64
+	}{{0x101, 25175000.0 / (800 * 525)}, {0x100, 25175000.0 / (800 * 449)}} {
+		v := newBankVideo()
+		v.Legacy = machine.New()
+		v.Legacy.DAC[3] = 17
+		palette := v.Legacy.Palette()
+		v.Pixels[0] = 0x77
+		c := cpu386.New(nil)
+		c.R[cpu386.EAX], c.R[cpu386.EBX] = 0x4f02, uint32(tc.mode|0x8000)
+		if !v.handle(c) || uint16(c.R[cpu386.EAX]) != 0x004f || v.Legacy.Palette() != palette || v.Pixels[0] != 0x77 {
+			t.Fatal("VBE timing setup changed palette or preserved pixels")
+		}
+		timing := v.Legacy.VGA.Timing()
+		if math.Abs(timing.FrameHz-tc.hz) > 0.000001 || timing.CharWidth != 8 || timing.HDisplayEnd != 80 {
+			t.Fatalf("unexpected VBE timing: %+v", timing)
+		}
+		ports := videoPorts{m: v.Legacy}
+		seen := map[byte]bool{}
+		edges := 0
+		old := byte(0)
+		for micros := uint64(0); micros < 40000; micros++ {
+			ports.advance(micros)
+			value, ok := ports.input(0x3da)
+			if !ok {
+				t.Fatal("VBE retrace port unavailable")
+			}
+			bit := value & 8
+			seen[bit] = true
+			if bit != old {
+				edges++
+				old = bit
+			}
+		}
+		if !seen[0] || !seen[8] || edges < 2 {
+			t.Fatal("VBE retrace remained constant")
+		}
+		before := v.Legacy.VGA.Timing()
+		if v.Legacy.VGA.SetVBEStandardTiming(0x102) || v.Legacy.VGA.Timing() != before {
+			t.Fatal("unknown mode changed timing")
+		}
+	}
+}
 
 func TestVBEInfoAndBanking(t *testing.T) {
 	le := &machine.LEMachine{Mem: make([]byte, 1<<20)}

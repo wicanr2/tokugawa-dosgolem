@@ -16,7 +16,7 @@ func (g *desktopGame) resizeBar(old bool) {
 		return
 	}
 	w, h := ebiten.WindowSize()
-	d := barHeightDelta(w, h, old)
+	d := barHeightDeltaFor(w, h, old, g.canvasHeight/2)
 	if g.bar.Visible {
 		h += d
 	} else {
@@ -37,6 +37,9 @@ func (g *desktopGame) selectedBar() [3]int {
 }
 
 func (g *desktopGame) hdAvailable() bool {
+	if g.c.Program == "mark" {
+		return g.publisher != nil && g.publisher.Reason == "ready"
+	}
 	for _, pair := range g.graphics {
 		if pair.Reason == "ready" {
 			return true

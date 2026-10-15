@@ -1,0 +1,128 @@
+--- a/internal/cpu386/cpu.go
++++ b/internal/cpu386/cpu.go
+@@ -45,6 +45,7 @@
+ )
+ 
+ type CPU struct {
++	LimitFault *LimitFault
+ 	R       [8]uint32
+ 	Seg     [6]uint16
+ 	EIP     uint32
+@@ -76,6 +77,12 @@
+ 	FPUDepth   uint8
+ }
+ 
++type LimitFault struct {
++	Selector uint16
++	Offset, Size uint32
++	Write bool
++}
++
+ type Descriptor struct {
+ 	Base     uint32
+ 	Limit    uint32
+@@ -152,7 +159,11 @@
+ 		}
+ 	}
+ 	d := entry.d
+-	if size == 0 || (write && !d.Writable) || offset > d.Limit || size-1 > d.Limit-offset {
++	if size == 0 || (write && !d.Writable) {
++		return 0, false
++	}
++	if offset > d.Limit || size-1 > d.Limit-offset {
++		c.LimitFault = &LimitFault{Selector: selector, Offset: offset, Size: size, Write: write}
+ 		return 0, false
+ 	}
+ 	linear := uint64(d.Base) + uint64(offset)
+@@ -526,6 +537,7 @@
+ }
+ 
+ func (c *CPU) Step() error {
++	c.LimitFault = nil
+ 	if c.StepHook != nil {
+ 		handled, err := c.StepHook(c)
+ 		if err != nil {
+@@ -585,6 +597,17 @@
+ 		}
+ 	}
+ 	fail := func(reason string) error { return &Error{start, op, reason} }
++	if segmentOverride == SegCS && op == 0x3b && operand16 && !repe && !repne {
++		modrm, e := c.fetch8()
++		if e != nil { return fail(e.Error()) }
++		if modrm >> 6 == 3 { return fail("CS CMP requires memory") }
++		_, addr, e := c.decodeAddress32(modrm)
++		if e != nil { return fail(e.Error()) }
++		value, ok := c.readSegment16(c.Seg[SegCS], addr)
++		if !ok { return fail("CS CMP word source unavailable") }
++		c.sub16(uint16(c.R[(modrm >> 3) & 7]), value)
++		return nil
++	}
+ 	if segmentOverride == SegCS && op == 0x8d && !operand16 {
+ 		// LEA 沒有記憶體存取，segment base 不參與有效位址。
+ 		segmentOverride = -1
+@@ -5230,6 +5253,20 @@
+ 		if c.IntHook == nil || !c.IntHook(c, number) {
+ 			return fail(fmt.Sprintf("INT %02X 未處理", number))
+ 		}
++	case op == 0xcf:
++		if operand16 || segmentOverride >= 0 || repe || repne {
++			return fail("IRET supports only a flat 32-bit frame")
++		}
++		sp := c.R[ESP]
++		if sp > ^uint32(0)-12 { return fail("IRET stack overflow") }
++		ip, okIP := c.readSegment32(c.Seg[SegSS], sp)
++		cs, okCS := c.readSegment32(c.Seg[SegSS], sp+4)
++		flags, okFlags := c.readSegment32(c.Seg[SegSS], sp+8)
++		d, ok := c.Descriptors[uint16(cs)]
++		if !okIP || !okCS || !okFlags || !ok || d.Base != 0 || ip > d.Limit || flags & ((1<<14)|(1<<17)) != 0 {
++			return fail("IRET invalid flat same-privilege frame")
++		}
++		c.R[ESP], c.EIP, c.Seg[SegCS], c.EFlags = sp+12, ip, uint16(cs), flags|2
+ 	case op == 0xc3:
+ 		if operand16 {
+ 			return fail("16-bit near RET 尚未支援")
+--- a/internal/cpu386/cpu.go
++++ b/internal/cpu386/cpu.go
+@@ -1427,6 +1427,21 @@
+ 			c.setReg8(dst, v)
+ 			c.setLogicFlags8(v)
+ 		}
++	case op == 0x00:
++		if operand16 || segmentOverride >= 0 || repe || repne { return fail("ADD byte memory prefixes unsupported") }
++		modrm, e := c.fetch8()
++		if e != nil { return fail(e.Error()) }
++		if modrm >> 6 == 3 { return fail("ADD byte register form unsupported") }
++		seg, addr, e := c.decodeAddress32(modrm)
++		if e != nil { return fail(e.Error()) }
++		value, ok := c.readSegment8(c.Seg[seg], addr)
++		if !ok { return fail("ADD byte source unavailable") }
++		previousFlags := c.EFlags
++		result := c.add8(value,c.reg8(int((modrm >> 3)&7)))
++		if !c.writeSegment8(c.Seg[seg],addr,result) {
++			c.EFlags = previousFlags
++			return fail("ADD byte destination unavailable")
++		}
+ 	case op == 0x04 || op == 0x2c:
+ 		if operand16 || segmentOverride >= 0 || repe || repne {
+ 			return fail("AL arithmetic prefix 尚未支援")
+--- a/internal/cpu386/cpu.go
++++ b/internal/cpu386/cpu.go
+@@ -756,7 +756,17 @@
+ 			return fail(e.Error())
+ 		}
+ 		if modrm>>6 != 3 {
+-			return fail("SUB byte 記憶體形式尚未支援")
++			seg, addr, e := c.decodeAddress32(modrm)
++			if e != nil { return fail(e.Error()) }
++			value, ok := c.readSegment8(c.Seg[seg], addr)
++			if !ok { return fail("SUB byte source unavailable") }
++			previousFlags := c.EFlags
++			result := c.sub8(value,c.reg8(int((modrm >> 3)&7)))
++			if !c.writeSegment8(c.Seg[seg],addr,result) {
++				c.EFlags = previousFlags
++				return fail("SUB byte destination unavailable")
++			}
++			break
+ 		}
+ 		dst, src := int(modrm&7), int((modrm>>3)&7)
+ 		c.setReg8(dst, c.sub8(c.reg8(dst), c.reg8(src)))

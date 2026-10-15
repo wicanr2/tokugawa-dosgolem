@@ -1889,3 +1889,70 @@ GitHub API 的 master 查詢先回 422；查 repository 的 default_branch 後�
 - 匯總入口 `tools/verify-startup-integration.py`，驗收總表 SHA-256 173ca02527bafa43cffcb3698b5db435bfe111f8c8bec7246ebf61897297f9de。它核對各收據、實際二進位、93 項建置雜湊、來源快照與原版基準。
 
 原版資料完整性於 2026-10-15T05:20:40Z 通過。807 張生成 PNG、163 份提示詞保持通過保存核對，未新增原版圖或執行收據至 Git。MARK、其他動畫消費端及三平台封包尚未完成。
+
+## 2026-10-15：MARK VESA 段界限例外轉接 READY
+
+範圍為既有平坦 32-bit LE 執行器的段界限例外，以及 DOS/4GW 經 DOS AH=25h 登記的 protected-mode handler。輸入 MARK.EXE.BAK SHA-256 1ea6dc335b42b39542ba8dec35c8ffd103e4b495d30700c4100e60dbcbecaa60；來源證據為前節 IDA Pro 9.4 的 LE EA 1801E／18086／183F3 與 r3 自然入口收據。平台契約引用 [Open Watcom DOS/4GW Interrupt and Exception Handling](https://open-watcom.github.io/open-watcom-v2-wikidocs/cpguide.html)，本機固定原文／雜湊見 mark-probe/platform-references.json。IRET 的同權限 EIP、CS、EFLAGS 堆疊與 CMP 語意依 [Intel SDM Volume 2](https://cdrdv2-public.intel.com/789581/325383-sdm-vol-2abcd.pdf)。例外交付／堆疊屬平台 ABI，相對硬體時間仍為 hardware-spec approximation。
+
+已證實的 MARK 路徑：VESA 窗口 selector base A0000h、limit 10000h。REP MOVSD 先完成窗內複製，在下一個 dword 因界限失敗；當次 ESI／EDI／ECX 保留已完成部分。原版 INT 0Dh handler 自行更換 VESA bank、遮掉高位並 IRET，原 REP 應從剩餘部分續行。此處不可重做整筆 REP、跳過 handler、依 MARK 位址硬接跳躍或把 selector 放大。
+
+契約：
+1. CPU 每次 Step 清空上一筆 LimitFault。僅已登記 descriptor 的正長度界限違反回報 selector、offset、size、write。唯讀拒絕、未知 descriptor、未知 opcode 或 bus 錯誤維持失敗，不假造界限例外。
+2. 只有已啟用的 DOS/4GW 相容轉接與有效 AH=25h 向量 0Dh 才交付。code descriptor 必須 base=0、入口及返回 EIP 均在範圍，stack 須可寫且能完整放入 12 bytes。無 handler 或驗證失敗保持原停止。
+3. 在原 SS:ESP 壓入 normalized IRET frame，ESP 起依序 EIP、CS、EFLAGS，沒有原始 CPU error code。EIP 是失敗指令含 prefix 的起點；其他暫存器保留 REP 已完成進度。交付時清 IF／TF，原版 handler 自行執行；交付本身不算成功指令。DOS/4GW 的 stack normalization 由主機提供，不宣稱原 extender 的完整內部 stack 相同。
+4. IRET 僅支援平坦、同權限、32-bit 的三 dword frame。先完整讀取與驗證，再更新 EIP／CS／ESP／EFLAGS。VM／NT 與跨特權返回不支援；未知形狀停止。CS 覆寫的 16-bit CMP 依原版 bytes 擴充，來源與旗標按標準語意，不修改來源。
+5. 單元驗證包含部分 REP 界限失敗、frame 內容、handler 真正執行並返回、缺向量／錯誤 selector／短 stack／唯讀拒絕／截短 IRET／未知形狀。原版驗證由 MARK 自然 LE 入口重跑，保存每次 fault 與真正原版 bank 呼叫，不用 direct-entry 當正常可玩收據。
+6. 原版資料、規則與存檔不改。MARK 的原生繪圖、完整退出及桌面 HD 仍須另驗證，平台切片成功不稱整段恢復完成。
+
+### MARK 色盤漸入的記憶體 ADD byte：READY
+
+r4 自然入口已經過四次真實段界限例外，原版 INT 0Dh handler 自行選取 VESA bank，REP 續傳完成，回到原版色盤漸入。自然 5,384,299 步停在 dosgolem 線性 0x11AC3，bytes 00 84 2A F0 FC FF FF，ADD byte ptr [EDX+EBP-310h],AL。IDA LE EA 相同定位的原始指令已保存在 range-1018b-11b90.json。這只證實色盤程式消費此指令，不要求硬體逐週期調色盤考古。
+
+依 Intel ADD 規格擴充 opcode 00 的 memory destination，以現有 decodeAddress32 選擇 DS／SS、現有 reg8 提供來源、既有 add8 計算旗標。沒有 prefix 的 memory 形式可用；未核准 register／prefix 形式仍拒絕。來源與目標有效才提交 byte 與旗標，寫入拒絕須恢復原旗標。差分測試用 256×256 組值，比較既有已核准 ADD AL,imm8 的旗標，並核對真實 SIB、SS 基址、來源暫存器、鄰近 byte、唯讀及越界拒絕。
+
+勘誤：色盤 ADD 的 SIB 2Ah 使用 EDX 作 base、EBP 作 index，因此預設 DS。首輪測試誤把 EBP index 當成 base 並預期 SS，CPU 實際正確讀取 DS。保留 r5 的失敗測試及分類，測試改以原版 2Ah 核對 DS，另以明示 synthetic SIB 15h 核對 SS；沒有改 CPU 位址解析來迎合錯誤預期。
+
+### VBE BIOS 必須建立標準掃描時序：READY
+
+r6 的四次原版分頁、完整繪圖及來源／目的索引一致已通過。獨立 Pillow 9.4.0 從固定 DAT 的 RAINEND.PCX payload 解碼，97864 bytes、檔案偏移 2830614，307200 個色號 SHA-256 fb43b08b3202d43f0e502528683ea9ecc91a8b43778b680bd5c5c5a69228c5d4，與原版 MARK 的 RAM 及 VBE VRAM 完全相同。
+
+但 r6 自然 25M 仍停在原版 EA 11634–11645 的 3DAh bit3 回掃等待。現有 VBE 4F02 只配置 bank／pixel geometry，沒有初始化 Legacy.VGA 的時序；時序模型使用尚未設定的暫存器，bit3 持續零。不是 PCX 解碼或分頁失敗。
+
+沿用 pinned dosgolem internal/machine/crtc_timing.go 的標準 BIOS 時序表，新增僅設定 VBE 標準掃描時序的方法：0101h 使用既有 640×480 表，0100h 使用既有 640×400 掃描線表，八像素字元與 25.175 MHz。來源為已有 VGA BIOS 模式表及 [Linux v6.12 DRM 的 DMT 標準模式表](https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/gpu/drm/drm_edid.c)。保持既有 CRTC status approximation，不另反組譯 MARK driver、修改等待條件或按讀取次數硬翻 bit3。VBE bank pixel geometry、色盤與原版指令不由這個時序設定修改。未知模式不設時序。單元測試核對 59.94 Hz／70.09 Hz、bit3 有兩種狀態、保持色盤，再重跑原版自然路徑。單次讀取相位及 retrace width 沿用既有 hardware-spec approximation，不稱逐掃描線或實機一致。
+
+### MARK 色盤漸出的記憶體 SUB byte：READY
+
+r7 的 VBE 時序修正通過，原版 9,647,793 步自然完成色盤漸入，11,721,794 步離開停留迴圈；原生 640×480、256 色標誌已擷取並目視確認。停留虛擬時間為 2,074,001 微秒，沒有注入鍵盤或跳過等待。307200 色號仍和獨立 PCX 解碼一致。原生 PNG SHA-256 b2bc81720d7cbe057333d76a246051e8b6144ffb8ccfeb4ec7e4c923bb57fb4d。
+
+下一條停止為 dosgolem 線性 0x11A15，bytes 28 84 2A F0 FC FF FF，SUB byte ptr [EDX+EBP-310h],AL。依 Intel SUB 的已知契約擴充既有 opcode 28 的 memory 形式；保留原 register 形式。沿用 decodeAddress32／sub8，拒絕寫入時恢復旗標，其他 prefix 仍拒絕。差分測試擴為 ADD／SUB 兩個 opcode、DS／SS 兩種 SIB、256×256 組 byte，參考既有 AL immediate 指令。接續只驗證原版漸出及正常退出，不深入 IRQ0／PIT driver；目前已取得的正常停留證據足以界定玩家流程。
+
+### MARK 原生執行完成及 HD 桌面切片：READY
+
+r8 自然入口於 15,989,208 步以 dos_exit／exit_code 0 結束，fd2_startup_calls=0。四次真實段界限、七次原版 VESA bank 呼叫、兩次 INT 0Dh 向量與 INT 08h 向量登記／還原、黑色漸出與模式 3 還原均已取得收據。CPU、machine 與新增平台／VBE 測試通過。這是獨立 MARK 原生執行完成，遊戲啟動器串接及 HD 尚待下列切片，不稱已恢復桌面完整啟動。
+
+HD 規格：
+- 明示 program=game／mark 的固定來源 profile。輸入檔名及 SHA 沿用前節，拒絕任意路徑及未知 profile。MARK 使用包內原始 .BAK，不更名或改原始資料，不宣稱其出廠版本來源。MARK 不安裝 DX5 位址觀測，game 預設及完整基準不變。
+- MARK 繪圖資格為已證實的自然入口與返回、五參數、完整來源 hash、當次 RAM guard 及 640×480／256 色 VBE 目的索引共同符合。Source SHA fb43b08b3202d43f0e502528683ea9ecc91a8b43778b680bd5c5c5a69228c5d4。不是只認全畫面雜湊。
+- 在原版 sub_11A50 入口只讀 EAX 所指 768-byte 的 6-bit 目標色盤。獨立 PCX 色盤右移二位後 SHA 778051183911d4dd5aebe339a3e2187ecde8c63e425a1314f83504f3b4a63f8a；實際 runtime 值需匹配才可 HD。保留當次目標色盤 RAM guard。
+- 生成圖 assets/hd-b/art/RAINEND-hd-b-v1.png，SHA d81bfa59067217ef2150cdf325a3bbde93385f6486230da9dda1233f79686d93，1448×1086，依現有素材風格用 nearest 採樣為 1280×960。下方原生 y=449..479 的完整版權區採當下原版像素兩倍呈現，圖像產物及版權字模不入 Git。
+- 原圖／HD 與頂端列共用 enabled。來源、guard、目的或色盤不符合，或缺圖時完整備援。HD 漸入使用與原版目標色盤相符的 min(target,level) clamp，漸出使用 max(target-level,0)；未知色盤完整備援。這是呈現近似，原版 DAC／虛擬時間／RAM 不改。
+- 桌面 layout 依 640×400 遊戲及 640×480 MARK 保持兩倍畫布，功能列增加同樣高度。啟動選擇先顯示，再步進 MARK。選擇及切換前後原版完整 proof 相同，缺圖、文字區及真實 X11 像素驗證後才稱接入完成。
+- 本切片先驗證 program=mark 的實際桌面，後續啟動器在選擇後依序執行 MARK 與 DX5。兩程式必須保留各自原生收據，不假報缺少 COMMAND.COM 的 EXEC 成功。正式完整啟動、其他動畫及三平台打包仍未完成。
+
+### MARK 原版與獨立 HD 桌面：CONFORMED
+
+範圍是獨立 MARK 原生入口及桌面 HD；完整啟動器尚未串接。固定 GUI image sha256:baa20f69bccc7dc8ac7a4bbcf93fbcb32019505bf1c31c1312f85aa873bbb9d4，Go 1.24.13／Ebitengine 2.9.9。輸入 MARK.EXE.BAK SHA-256 1ea6dc335b42b39542ba8dec35c8ffd103e4b495d30700c4100e60dbcbecaa60，版本來源未知。原版 DAT 與來源 PCX 的雜湊及位址基準沿用前節。
+
+- 原版自然完成 15,989,208 步，退出碼 0，fd2_startup_calls=0。四次真實段界限交付原版 INT 0Dh handler，完成四個 bank 邊界與剩餘 REP 複製，沒有跳過 handler 或放寬 VRAM selector。原版漸入、2,074,001 微秒停留、漸出、向量還原及模式 3 退出通過。虛擬時間及 CRTC 仍屬 hardware-spec approximation。
+- opcode 00／28 的 memory ADD／SUB 以 262144 組 byte、DS／SS 差分及拒絕測試通過。SIB 初輪測試預期錯誤保留，已按原始 bytes 訂正，不改位址解析迎合測試。
+- 獨立 Pillow 9.4.0 對固定 DAT／PCX 解碼，307200 個色號與正常 MARK RAM、VBE VRAM 相同；PCX 6-bit 目標色盤 SHA 778051183911d4dd5aebe339a3e2187ecde8c63e425a1314f83504f3b4a63f8a 亦與原版 sub_11A50 的 EAX 來源相同。桌面同時核對來源與目標色盤 RAM guard、繪圖自然返回與原生目的。
+- HD／缺圖兩次 X11 自然 MARK，各在亮起後用功能列及 F6 切換並恢復。六張實際視窗與呈現 PNG 完全相同，切換的完整原版 proof 相同。兩次完整 RAM 均為 62da54cc0cef42e9a55c64cb1ac958b05b851f19c12247023f6feddd023fa085，與原生 r8 一致；十三個非桌面輸入欄位亦一致。普通游標移動未作相同輸入序列聲明，全部沒有按下外洩。
+- 獨立公式核對整張亮起原圖、HD 上方 1280×898 的生成圖 nearest floor 採樣，以及下方 1280×62 的原版版權。原圖／還原相同，缺圖三張完全回原圖。已目視查看原版標誌與真實 HD／頂端列畫面。
+- HD 漸入／漸出色彩是呈現近似；未符合已知 palette shape 的狀態保留原圖。沒有修改原版 palette、RAM、時間或存檔。
+- 同一二進位 SHA-256 4d66c2a7ce4493ff77b180a0fe5b411c902e9406a9a697934002ce7afe0acb16、102 項凍結來源，四套件通過，cmd/leprobe 115.021 秒。遊戲自然首戰 750M／390 事件、全部 RAM 4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9、十五個原版欄位符合既有基準，三張 X11 與呈現 PNG 相同。
+
+匯總入口 tools/verify-publisher-integration.py，總表 workplace/desktop-prototype/publisher/verification-summary.json，
+SHA-256 580a71ffc2fe8e23cda8c6122871b9f9b2f1c4c05f1c07b5c0c08fceb7e63e0b。
+source-snapshot/ 保存當次全部 102 項來源；歷史核對明示 --source-root /output/source-snapshot，不以未來工作樹誤判舊收據。
+
+目前獨立操作入口為 tools/run-desktop.sh -program mark -steps 75000000；仍在固定 Docker 執行。game 預設不自動執行 MARK，啟動器後續須先選模式、原生執行 MARK 再進 DX5，沿用最後顯示設定並保存各自收據。既有缺少 COMMAND.COM 的原版 EXEC 錯誤保持原樣。其他動畫消費端、完整啟動串接、全遊戲 HD 及三平台打包仍未完成。

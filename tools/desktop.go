@@ -41,6 +41,7 @@ var desktopBattleFrameIndices = flag.String("hd-battle-frame-indices", "/project
 var desktopBattleFrameAsset = flag.String("hd-battle-frame-asset", "/project/assets/hd-b/battle-frame/"+battleFrameAsset, "registered battle-frame skin; missing asset falls back")
 var desktopBattleFrameProof = flag.Bool("hd-battle-frame-proof", false, "export native snapshot and pre-sprite indices with desktop captures for isolated validation")
 var desktopGraphicsDir = flag.String("hd-graphics-dir", "/project/assets/hd-b/art", "approved opaque OZM HD paintings; each missing item falls back")
+var desktopPublisherAsset = flag.String("hd-publisher-asset", "/project/assets/hd-b/art/RAINEND-hd-b-v1.png", "registered publisher HD logo; missing asset falls back")
 
 type desktopGame struct {
 	c                           *desktopContext
@@ -91,6 +92,8 @@ type desktopGame struct {
 	choice                      startupChoice
 	choiceEvents                []map[string]any
 	startupFence                bool
+	publisher                   *hdPublisher
+	canvasHeight                int
 }
 
 type desktopPortrait struct {
@@ -103,7 +106,7 @@ func runDesktopWindow(c *desktopContext) error {
 	if *desktopSpeed < 1 || *desktopSpeed > 60 {
 		return fmt.Errorf("invalid desktop speed")
 	}
-	g := &desktopGame{c: c, lastMouse: [3]int{-1, -1, 0}, assetInfo: map[string]any{}, bar: newWindowBar()}
+	g := &desktopGame{c: c, lastMouse: [3]int{-1, -1, 0}, assetInfo: map[string]any{}, bar: newWindowBar(), canvasHeight: 800}
 	choice, err := newStartupChoice(*desktopStartupDisplay)
 	if err != nil {
 		return err
@@ -114,6 +117,16 @@ func runDesktopWindow(c *desktopContext) error {
 		return err
 	}
 	g.barFont = font
+	var publisherAsset image.Image
+	if data, e := os.ReadFile(*desktopPublisherAsset); e == nil {
+		sum := fmt.Sprintf("%x", sha256.Sum256(data))
+		g.assetInfo["publisher_sha256"] = sum
+		if sum == publisherAssetSHA {
+			publisherAsset, _ = previewPNG(*desktopPublisherAsset)
+		}
+	}
+	g.publisher = newHDPublisher(publisherAsset)
+	g.assetInfo["publisher_validation"] = g.publisher.Reason
 	if data, err := os.ReadFile(*desktopSource); err == nil {
 		sum := fmt.Sprintf("%x", sha256.Sum256(data))
 		g.assetInfo["source_sha256"] = sum
@@ -482,6 +495,10 @@ func runDesktopWindow(c *desktopContext) error {
 	c.Report["battle_frame"] = g.battleFrameReport
 	c.Report["graphics"] = g.graphicsReports
 	c.Report["startup_selection"], c.Report["startup_selection_events"] = g.choice.Selection, g.choiceEvents
+	c.Report["program"] = c.Program
+	if c.Program == "mark" {
+		c.Report["classification"] = "desktop publisher prototype; source-qualified logo and original copyright"
+	}
 	return err
 }
 
@@ -489,6 +506,11 @@ func (g *desktopGame) render() error {
 	s, err := g.c.Snapshot()
 	if err != nil {
 		return err
+	}
+	if g.c.Program == "mark" {
+		qualified := g.c.MarkQualified != nil && g.c.MarkQualified(s)
+		g.pixels, g.mode = g.publisher.render(s, g.c.Mark, qualified, g.enabled)
+		return nil
 	}
 	if s.Image == nil || s.Image.Bounds() != image.Rect(0, 0, 640, 400) {
 		g.pixels = image.NewNRGBA(image.Rect(0, 0, 1280, 800))
@@ -619,7 +641,11 @@ func (g *desktopGame) saveFrame(label string) (map[string]any, error) {
 	if err := g.render(); err != nil {
 		return nil, err
 	}
-	path := fmt.Sprintf("/output/startup-probe/desktop-%d-%s.png", g.c.Steps(), label)
+	prefix := "desktop"
+	if g.c.Program == "mark" {
+		prefix = "desktop-mark"
+	}
+	path := fmt.Sprintf("/output/startup-probe/%s-%d-%s.png", prefix, g.c.Steps(), label)
 	f, err := os.Create(path)
 	if err != nil {
 		return nil, err
@@ -727,7 +753,7 @@ func (g *desktopGame) Update() error {
 	}
 	if !g.c.Scripted && !consumed && !mouseBlocked {
 		x, y := ebiten.CursorPosition()
-		p, inside := barGamePoint(x, y, g.bar.Visible)
+		p, inside := barGamePointFor(x, y, g.bar.Visible, g.canvasHeight/2)
 		buttons := 0
 		if ebiten.IsFocused() && inside {
 			if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
@@ -763,6 +789,18 @@ func (g *desktopGame) Update() error {
 			return err
 		}
 	}
+	if height := g.pixels.Bounds().Dy(); height != g.canvasHeight {
+		w, h := ebiten.WindowSize()
+		oldHeight, newHeight := g.canvasHeight, height
+		if g.bar.Visible {
+			oldHeight += barHeight * 2
+			newHeight += barHeight * 2
+		}
+		ebiten.SetWindowSize(w, max(100, h*newHeight/oldHeight))
+		g.canvasHeight = height
+		g.texture.Dispose()
+		g.texture = ebiten.NewImage(1280, height)
+	}
 	g.texture.WritePixels(g.pixels.Pix)
 	if g.bar.Visible {
 		g.barTexture.WritePixels(g.bar.paint(g.barFont, g.selectedBar(), g.hdAvailable()).Pix)
@@ -785,6 +823,7 @@ func (g *desktopGame) Update() error {
 	status["battle_frame"], status["battle_frame_observation"] = g.battleFrameReport, g.c.Live.BattleFrame
 	status["graphics"], status["graphics_observation"] = g.graphicsReports, g.c.Live.Graphics
 	status["startup_pending"], status["startup_selection"], status["startup_fence"], status["startup_events"] = g.choice.Pending, g.choice.Selection, g.startupFence, g.choiceEvents
+	status["program"], status["canvas_height"], status["publisher_observation"] = g.c.Program, g.canvasHeight, g.c.Mark
 	if *desktopTerrainScene {
 		status["terrain_draws"] = g.c.Live.Terrain.History
 	}
@@ -820,9 +859,9 @@ func (g *desktopGame) Draw(screen *ebiten.Image) {
 
 func (g *desktopGame) Layout(_, _ int) (int, int) {
 	if g.bar.Visible {
-		return 1280, 800 + barHeight*2
+		return 1280, g.canvasHeight + barHeight*2
 	}
-	return 1280, 800
+	return 1280, g.canvasHeight
 }
 
 func (g *desktopGame) DrawFinalScreen(dst ebiten.FinalScreen, src *ebiten.Image, geo ebiten.GeoM) {

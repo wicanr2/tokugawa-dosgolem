@@ -17,14 +17,17 @@ type nativeSnapshot struct {
 }
 
 type desktopContext struct {
-	Advance  func(int) bool
-	Steps    func() int
-	Snapshot func() (nativeSnapshot, error)
-	Mouse    func(int, int, int)
-	Proof    func() map[string]any
-	Live     *hdLive
-	Scripted bool
-	Report   map[string]any
+	Program       string
+	Mark          *markProbeTrace
+	MarkQualified func(nativeSnapshot) bool
+	Advance       func(int) bool
+	Steps         func() int
+	Snapshot      func() (nativeSnapshot, error)
+	Mouse         func(int, int, int)
+	Proof         func() map[string]any
+	Live          *hdLive
+	Scripted      bool
+	Report        map[string]any
 }
 
 var runDesktop func(*desktopContext) error
