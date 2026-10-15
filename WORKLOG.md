@@ -503,3 +503,6 @@ Git 的補丁檔空白檢查曾把 unified diff context 前綴視為來源格式
 - 主機 gh 登入及 PRIVATE 狀態已核對，Issue #5 為 OPEN。提交、來源完整性、圖片保存及 Docker 清理核對於收尾追加。全遊戲 HD 與三平台打包仍未完成，下一步為先選顯示模式，再依序執行 MARK 與 DX5 的桌面啟動器。
 
 收尾核對：原始 ZIP CRC、十二個解包檔、唯讀及 UID/GID 於 2026-10-15T07:08:11Z 通過。807 張 PNG、163 份提示詞、596522181 indexed bytes 的保存核對通過，圖片子樹未改。四份 Python 工具語法及 run-probes.sh 的 shell 語法通過。完整工作根沒有 root-owned 檔案或 .md 目錄；正式 DX5.i64 的 SHA-256 仍為 8afa40d3eaeed4851b78ed2ddc80ccbc1c65e14cb2481a09316d42670efce02e。全部本批 tokugawa 容器已退出並移除，沒有重建 image。程式與文件提交及遠端 Issue 進度隨後追加。
+
+程式提交 e42ed9356d44059a9b3ef49c881eddb4ff2932e3 已推送 main，git ls-remote 與 GitHub tree API 核對一致。102 項目前來源與建置快照的 SHA-256 完全相同，十一份新增工具均已登記 AGENTS 入口且為 UID/GID 1000:1000。儲存庫仍為 PRIVATE，遠端 1050 份 assets/hd-b 檔案的子樹為 9de9713108cf662e0b2bb39e46b5ab7aec8c1561，tree 未截斷；沒有 original/ 或 workplace/ 進入版控。Issue #5 的進度已送出，標示獨立 MARK 驗證完成、完整啟動鏈仍待串接：
+https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6186670059
