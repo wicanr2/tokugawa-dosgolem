@@ -1,0 +1,32 @@
+{
+  "classification": "generated palette-reference correction; first version and original source retained",
+  "generator": "built-in image_gen",
+  "records": [
+    {
+      "sources": [
+        "OP-FULL.OZM"
+      ],
+      "asset": "OP-FULL-hd-b-v2.png",
+      "sha256": "891cddb971b142ffea88841af6b4f771661a203344884ce33af4364af4abb2b2",
+      "prompt": "OP-FULL-hd-b-v2.prompt.txt",
+      "prompt_sha256": "8fe98084ddccad67d5151a2667aecc7812d0d7eb3c84b80fdb6829715cd8b2d1",
+      "size": [
+        1586,
+        992
+      ],
+      "inputs": [
+        {
+          "role": "edit target; preserve character, lettering and all geometry",
+          "path": "assets/hd-b/art/OP-FULL-hd-b-v1.png",
+          "sha256": "d7cef9b5ac9f237baac15550da0c6c33223116cd8f90032bdb2c80f36b218af7"
+        },
+        {
+          "role": "verified native blue-white sky colors and identity only",
+          "path": "workplace/hd-prototype/catalog/remaining/history/palette/gui-opening-palette-OP-FULL-542000000-original.png",
+          "sha256": "5f1dbca74ac890754f922442029fc3ad9d8e0dc66158839c1eaf72b445af3248"
+        }
+      ],
+      "source_scope": "actual native frame has source-specific palette; blue-white clouds replace the earlier canonical-palette green interpretation"
+    }
+  ]
+}

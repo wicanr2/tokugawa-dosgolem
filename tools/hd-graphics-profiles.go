@@ -32,7 +32,8 @@ var hdGraphicsProfiles = func() []hdGraphicsProfile {
 	}
 	profiles = append(profiles, hdGraphicsStaticProfiles...)
 	profiles = append(profiles, hdGraphicsLogoProfile)
-	return append(profiles, hdGraphicsRemainingProfiles...)
+	profiles = append(profiles, hdGraphicsRemainingProfiles...)
+	return append(profiles, hdGraphicsOpeningProfiles...)
 }()
 
 var hdGraphicsSources = func() []graphicsSourceProfile {

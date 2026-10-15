@@ -97,7 +97,7 @@ func hdTerrainSpriteSourceValid(mem []byte) bool {
 
 // 暫存器參數只讀。新繪製先撤銷重疊項，自然返回後才啟用。
 func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte, snapshots ...func() (nativeSnapshot, error)) {
-	if eip == 0x1c084 || eip == 0x1e93f {
+	if eip == 0x1c084 || eip == 0x11f14 || eip == 0x1e93f {
 		h.invalidate()
 		return
 	}

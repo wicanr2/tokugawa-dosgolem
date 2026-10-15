@@ -109,7 +109,7 @@ func TestHDGraphicsDrawLifetimeAndUnknownOverlap(t *testing.T) {
 }
 
 func TestHDGraphicsAllApprovedSourceRegionsPaletteAndCrop(t *testing.T) {
-	if len(hdGraphicsProfiles) != 28 {
+	if len(hdGraphicsProfiles) != 29 {
 		t.Fatal("eight existing and twenty reviewed source profiles required")
 	}
 	for _, profile := range hdGraphicsProfiles {

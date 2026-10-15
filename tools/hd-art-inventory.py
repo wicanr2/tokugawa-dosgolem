@@ -99,6 +99,14 @@ def main():
         assert static_proof['profiles_sha256'] == sha(ROOT/'graphics/static/profiles.json')
         assert static_proof['logo_profiles_sha256'] == sha(ROOT/'graphics/static/logo/profiles.json')
         assert set(static_proof['reviewed_sources']) == set(static_profiles)
+    history = ROOT/'remaining/history'
+    full_profile_path = history/'art-v2/profiles.json'
+    full_profile = json.loads(full_profile_path.read_text())['record'] if full_profile_path.exists() else None
+    opening_proof_path = history/'verification-summary.json'
+    opening_proof = json.loads(opening_proof_path.read_text()) if opening_proof_path.exists() else None
+    if opening_proof:
+        assert opening_proof['verified'] and opening_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-opening-summary.py')
+        assert opening_proof['art_profiles_sha256'] == sha(full_profile_path)
     frame_summary_path = ROOT/'battle-frame/verification-summary.json'
     frame_summary = json.loads(frame_summary_path.read_text()) if frame_summary_path.exists() else None
     if frame_summary:
@@ -106,6 +114,8 @@ def main():
         proof_sources_frame = {'verification':str(frame_summary_path.relative_to(PROJECT)),'sha256':sha(frame_summary_path)}
     direct = {}
     for record in decoded["records"]:
+        if record['name'] == 'OP-FULL.OZM':
+            continue
         if record['name'] in ui_drafts or record['name'] in weather or record['name'] in opening or record['name'] in remaining_art or record['name'] in static_profiles or record['name'] in pending_generation or record['name'] in pending_profiles:
             continue
         stem = record["name"].removesuffix(".OZM")
@@ -126,6 +136,8 @@ def main():
     verified_story = {}
     verified_kao = {}
     proof_sources = []
+    if opening_proof:
+        proof_sources.append({'verification':str(opening_proof_path.relative_to(PROJECT)), 'sha256':sha(opening_proof_path)})
     if pending_runtime_proof:
         proof_sources.append({'verification':str(pending_runtime_proof_path.relative_to(PROJECT)),'sha256':sha(pending_runtime_proof_path)})
     if static_proof:
@@ -419,6 +431,15 @@ def main():
             if pending_runtime_proof and name in pending_runtime_proof['normal_new_sources']:
                 record.update(runtime_status='normal title/menu HD, individual missing asset and 200M original state comparison verified',
                               runtime_proof_sha256=sha(pending_runtime_proof_path))
+        if name == 'OP-FULL.OZM' and full_profile:
+            path = PROJECT/'assets/hd-b/art'/full_profile['asset']
+            assert sha(path) == full_profile['asset_sha256']
+            record.update(art_status='prepared', kind='runtime-observed complete opening illustration',
+                          art=art_info(path, ROOT/'art'/full_profile['prompt']), source_profile=full_profile,
+                          runtime_status='exact runtime source and full-copy consumer registered; normal HD verification pending')
+        if opening_proof and name in opening_proof['normal_new_sources']:
+            record.update(runtime_status='ordinary history HD/original/restored, six fade-in and two palette-cycle samples verified; full 600M state comparison',
+                          runtime_proof_sha256=sha(opening_proof_path))
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]
@@ -446,7 +467,7 @@ def main():
             'classification': 'one natural history-menu RAM tail uniquely matched; static decode still unsupported',
             'receipt_sha256': sha(tail_path), 'indexed_sha256': tail['indexed_sha256'],
             'normal_load_step': tail['normal_load_event']['step'],
-            'art_and_HD_consumer_verified': False,
+            'art_and_HD_consumer_verified': bool(opening_proof and tail['source'] in opening_proof['normal_new_sources']),
         }
         runtime_tails.append(tail['source'])
     counts = {"OZM_resources": 112, "KAO_portraits": 81, "PCX_resources": 1,
@@ -469,7 +490,9 @@ def main():
               "remaining_sources_runtime_registered":len(pending_runtime.get('registered_source_names',[])),
               "remaining_sources_normal_verified":len(pending_runtime_proof['normal_new_sources']) if pending_runtime_proof else 0,
               "approved_static_sources":len(static_profiles),
-              "normal_static_sources_verified":len(static_proof['normal_new_source_names']) if static_proof else 0,
+              "normal_static_sources_verified":len(set(static_proof['normal_new_source_names'] if static_proof else []) | (set(opening_proof['normal_new_sources']) & set(static_profiles) if opening_proof else set())),
+              "runtime_observed_opening_art_prepared":1 if full_profile else 0,
+              "runtime_observed_opening_sources_normal_verified":1 if opening_proof else 0,
               "approved_MAP_CHIP_floor_art": approved_floor_count,
               "normal_MAP_CHIP_floor_cases_verified": len(verified_floors),
               "generated_MAP_CHIP_unit_drafts": unit_drafts,

@@ -60,7 +60,22 @@ func newGraphicsTrace(path string) (graphicsTrace, error) {
 	if len(t.Profiles) != 107 {
 		return t, fmt.Errorf("expected 107 decoded sources, got %d", len(t.Profiles))
 	}
+	for _, profile := range hdGraphicsOpeningProfiles {
+		t.Profiles = append(t.Profiles, profile.Source)
+	}
 	return t, nil
+}
+
+func openingPlaneAlias(mem []byte) bool {
+	if len(mem) < 0x38c08 {
+		return false
+	}
+	for i, global := range []int{0x38c00, 0x38bf8, 0x38c04, 0x38bfc} {
+		if binary.LittleEndian.Uint32(mem[0x386d4+i*4:]) != binary.LittleEndian.Uint32(mem[global:]) {
+			return false
+		}
+	}
+	return true
 }
 
 func graphicsSource(mem []byte, profiles []graphicsSourceProfile) (graphicsSourceProfile, []byte, bool) {
@@ -127,7 +142,9 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 		r := p.Record
 		r.EndStep = step
 		profile, _, ok := graphicsSource(mem, t.Profiles)
-		if !ok || profile.Name != r.Name {
+		if r.Kind == "opening_full" && !openingPlaneAlias(mem) {
+			r.Error = "opening source alias changed before natural return"
+		} else if !ok || profile.Name != r.Name {
 			r.Error = "source changed before natural return"
 		} else {
 			var s nativeSnapshot
@@ -151,7 +168,7 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 		t.Records = append(t.Records, r)
 		t.Pending = nil
 	}
-	if eip != 0x1c1bc && eip != 0x1c084 {
+	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 {
 		return
 	}
 	if len(t.Records) >= 512 {
@@ -169,8 +186,16 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 	if uint64(r.Return) >= uint64(len(mem)) {
 		return
 	}
-	if eip == 0x1c084 {
+	if eip == 0x1c084 || eip == 0x11f14 {
 		r.Kind = "opaque_full"
+		if eip == 0x11f14 {
+			r.Kind = "opening_full"
+			if !openingPlaneAlias(mem) {
+				r.Error = "opening source pointers are not verified loader aliases"
+				t.Records = append(t.Records, r)
+				return
+			}
+		}
 		r.Args = [5]uint32{0, 80, 400, 80, 0xa0000}
 	} else {
 		for i := range r.Args {

@@ -65,6 +65,23 @@
 | `remaining/source-boundary/menu-history/platform/ready/`、`menu-exit/platform/ready/` | 補建探針必要的 startup-probe 輸出目錄後，重跑同一版本及普通輸入；上層保留漏建目錄的環境錯誤 |
 | `remaining/runtime/rcr/`、`remaining/source-boundary/menu-history/rcr/`、`remaining/desktop-regression/rcr/`、`remaining/desktop-title/rcr/` | 補齊普通歷史簡介實際使用的 word RCR reg,1 後，保存新建置、匹配來源快照及普通路徑回歸；不覆寫 STD 版本 |
 | `workplace/hd-prototype/catalog/remaining/` | 剩餘開場、動畫與介面的原版參考、生成圖、提示詞、逐項準備及隔離驗證；原圖與收據留本機，生成美術另保存至 assets/hd-b |
+| `workplace/hd-prototype/catalog/remaining/history/` | 普通歷史簡介的特殊繪圖證據、只讀診斷及後續 HD 驗證；`ida/` 只操作正式資料庫的隔離副本，原版收據不加入 Git |
+| [tools/hd-opening-probe.go](tools/hd-opening-probe.go)、[測試](tools/hd-opening-probe_test.go)、`remaining/history/probe/` | DRAFT 專用 `-hd-opening-trace`，在 IDA 已定位入口／自然返回保存有界原始參數、候選平面及原生畫面；不替換圖、不改 guest，不把最後載入名稱當來源證明 |
+| [tools/verify-hd-opening-source.py](tools/verify-hd-opening-source.py)、`remaining/history/source-verification.json` | 在固定 GUI image 中以專案唯讀、history 可寫覆掛原路徑，核對 600M 完整 RAM、十五欄、78 項來源快照、四次完整複製及位移前後 bytes；沒有 HD 呈現完成聲明 |
+| [tools/hd-opening-prepare.py](tools/hd-opening-prepare.py)、[註冊表](tools/hd-graphics-opening-profiles.go)、`remaining/history/art/` | 核對兩次正常 RAM 來源及已生成 OP-FULL，全幅校準至 1280×800；來源與工具全文分開保存，`--register` 只在本批 READY 後註冊 runtime_observed 精確來源 |
+| `remaining/history/art-v2/` | 同一準備工具以 `--version 2 --register` 校準藍白雲帶修正版；第一版、當時工具全文與來源 sidecar 保持原樣，選定素材的 Go 註冊表更新至第二版 |
+| [tools/hd-opening-live_test.go](tools/hd-opening-live_test.go) | 真實 OP-FULL／VISUAL 索引的全畫面入口、指標別名、來源變動、目的變動、自然返回、舊圖層撤銷及捲軸資格測試；不取代普通 GUI 驗證 |
+| `catalog/decoded/OP-FULL.OZM.idx`、`catalog/decoded/OP-FULL.OZM-runtime-source.json` | 正常 RAM 來源的獨立索引及證據 sidecar，供既有來源目錄讀取；不來自靜態解碼器，不改 inventory 的五項靜態未知 |
+| `remaining/history/runtime/`、`remaining/history/desktop/`、`remaining/history/desktop-missing/`、`remaining/history/regression/`、`remaining/history/title/` | 完整複製接入的隔離建置與匹配來源快照；普通歷史簡介、OP-FULL 缺圖、標題及首戰的真實視窗收據留本機 |
+| [tools/verify-hd-opening.py](tools/verify-hd-opening.py) | 固定 GUI image 內專案及原版唯讀、history/desktop/palette、desktop-missing/palette 或 effects 可寫掛 `/output`，以 `--mode opening`／`opening-missing`／`opening-effects` 驗證 OP4 與 OP-FULL；缺圖沿已驗證正常步數，效果模式抽測六個亮度及兩個循環時點。三模式都走普通歷史簡介，啟動時保存驗證器全文 |
+| `remaining/history/palette/` | `verify-hd-opening.py --mode opening-palette` 以同一普通輸入觀測 OP4／OP-FULL 各三次原生 DAC 與實際視窗；保留初次一般 palette 不能涵蓋整段開場的收據，不把短暫匹配當穩定驗收 |
+| `remaining/history/palette-late/` | 同一工具的 `--mode opening-palette-late` 核對 OP-FULL 晚期兩次原生色盤與完整 RAM，辨別亮度上限變化及來源專用目標色盤 |
+| [tools/verify-hd-opening-palette.py](tools/verify-hd-opening-palette.py)、`remaining/history/palette-effects.json` | 核對六次亮度取樣、兩次循環取樣與 IDA 的遊戲色盤常式；原生 48 通道契約及 HD 色彩轉換近似分開記錄 |
+| [tools/hd-graphics-effects.go](tools/hd-graphics-effects.go)、[測試](tools/hd-graphics-effects_test.go) | 只接受 OP4／OP-FULL 已核對的完整色盤族，在 host 畫布重現亮度上限及循環；新 24-bit 圖的色彩轉換為明示近似，未知色盤退回原版 |
+| `remaining/history/runtime/palette/`、`remaining/history/desktop/palette/`、`remaining/history/desktop-missing/palette/`、`remaining/history/regression/palette/`、`remaining/history/title/palette/`、`remaining/history/effects/` | 專用色盤、第二版雲帶及色彩效果接入後的獨立版本與匹配來源；原始失敗、色盤診斷及先前建置保持原樣 |
+| [tools/hd-graphics-effects.go](tools/hd-graphics-effects.go)、[測試](tools/hd-graphics-effects_test.go) | OP4／OP-FULL 的精確原生色盤族識別與 HD 顯示轉換近似；其他來源及未知色盤維持原版備援，全部亮度級與 22 循環級另做測試 |
+| [tools/verify-hd-opening-summary.py](tools/verify-hd-opening-summary.py)、`remaining/history/verification-summary.json` | 固定 GUI image 內專案唯讀、history 可寫覆掛相同路徑，彙整完整複製、八時點色彩效果、缺圖、正常標題及首戰的匹配來源與收據；不宣稱局部／捲動路徑完成 |
+| `remaining/history/effects/ready/` | 最後一次 GUI 暫停由 549M 跨至色盤更新邊界，保留上層失敗的七組擷取與驗證器；此目錄在已確認的 548M 起等待，仍要求全部 48 通道匹配，不放寬產品條件 |
 | [tools/hd-frame-prepare.py](tools/hd-frame-prepare.py) | 既有手繪 VISUAL 上方框架依原版矩形分區縮放；輸出 `workplace/hd-prototype/scroll/frame/` 的來源、HD 圖與幾何收據，遊戲內驗證另列 |
 | [tools/hd-frame.go](tools/hd-frame.go)、[tools/hd-frame_test.go](tools/hd-frame_test.go) | VISUAL 上方紅金框架的來源核對與呈現；中央劇情圖及下方捲軸保持獨立，遮擋時完整備援 |
 | [tools/hd-window-extract.py](tools/hd-window-extract.py) | 核對 WINDOW.OZM 九個 16×16 圖塊、原版 buffer 與正常視窗；輸出 `workplace/hd-prototype/catalog/window/` 的來源、原始圖塊、手繪參考與來源收據 |

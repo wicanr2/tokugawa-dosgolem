@@ -35,7 +35,7 @@ func (h *hdKaoState) observe(step int, eip, esp uint32, mem []byte) {
 		}
 		h.Pending = nil
 	}
-	if eip == 0x1c084 {
+	if eip == 0x1c084 || eip == 0x11f14 {
 		h.Draws, h.Pending = nil, nil
 	}
 	if eip != 0x1c6e8 {

@@ -82,7 +82,7 @@ func (h *hdWindowState) observe(step int, eip, esp uint32, mem []byte) {
 	case 0x1afb0:
 		h.Draws, h.Saved = nil, nil
 		h.PendingDraw, h.PendingSave, h.PendingRestore = nil, nil, nil
-	case 0x1c084:
+	case 0x1c084, 0x11f14:
 		h.Draws, h.PendingDraw = nil, nil
 	case 0x1b00c, 0x1b165, 0x1b245:
 		if !hdWindowSourceValid(mem) || uint64(esp)+4 > uint64(len(mem)) {

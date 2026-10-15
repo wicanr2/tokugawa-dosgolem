@@ -1621,3 +1621,60 @@ RCR 的 READY 範圍實作於專案補丁，八個目的暫存器與全部列出
 - 第四平面只有最後一 byte 未知。已知 column-major 前綴轉成 row-major 後，固定其他 31999 bytes，完整枚舉 0..255；只有 170／0xAA 的完整平面 SHA 符合原版收據。
 - 四平面全部核對一致，完整 640×400 索引 SHA-256 c9b332bfc54a189abfc4b7caf3c1821738624dedd41f19332ee5e4b44a1716a3。來源證據 remaining/source-boundary/OP-FULL-runtime/receipt.json SHA-256 d5b43b21ed717cef2a426c2fff9cb46903f916d88651345030b9e05403ee62cf。
 - 已證實範圍只限該次正常 RAM 值。未證實其他播放歷史的尾端穩定性、原始檔缺失 literal 或 HD 繪圖端。DAT 及靜態解碼器保持不變；覆蓋表仍列五項靜態解碼未知，另列一項 runtime tail observation。
+# 2026-10-15：歷史簡介特殊繪圖，只讀診斷 DRAFT
+
+問題：原版普通歷史簡介已回到選單，但現有共同不透明觀測只記到 OP1／OP5，不能驗收其他開場 HD。輸入沿用網站 DX5.EXE SHA-256 `2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a`、DAT SHA-256 `de092d5ef59a3e790fd89c323dde1b447c8fe93f430043d1384a1565f27cef37`。
+
+- 已證實：IDA 9.4 正式資料庫隔離副本的 `sub_11AEB` 使用原始 `dword_386D4[eax]`，在 `0x11B24..0x11B56` 以 STD、LODSW、SHR、RCR、STOSW 修改四個候選平面的前 16002 bytes。來源與位移語意仍需正常動態對帳。
+- 已證實：`sub_11BA6`、`sub_11C16` 等外層選擇四平面，再呼叫 `sub_11B60`。後者將六個原始參數轉成逐列 `sub_1C9CE` 複製；`sub_1C9CE` 由 `0x1C9DB..0x1C9EF` 讀目的、來源及 bytes，經 REP MOVSD／MOVSB 複製。
+- 已證實：IDA 的 `0x129DF` 是 `0x386D4` 的直接寫入端。直接引用不充分，初始來源所有權與 alias 仍需追其上下文及正常 RAM。
+- 原始定位保存在 `remaining/history/ida/range-11a00-11d00.json`、`range-11aeb-12900.json`、`range-1c9ce-1caa0.json`、`range-12900-12b20.json` 及 `art-consumers-386d4-11aeb.json`。所有位址為 IDA LE loader 線性 EA，檔案偏移逐列獨立保存；工具名不代表語意已證實。
+
+DRAFT 診斷只在明確啟用 `-hd-opening-trace` 時讀取 backing RAM。記錄上述外層與位移入口、原始堆疊返回、參數、`0x386D4` 候選四平面、載入名稱提示及自然返回原生畫面；名稱提示不當來源識別器。每來源提示／入口只抽樣第 1、2、3、8、32、128、256、512、1024 次，上限 128 筆及 32 層 pending。輸出原始平面、索引、原生 PNG、palette 與 SHA，只有本機研究用途。
+
+驗證包括完整記憶體不變、錯誤指標／堆疊界限、抽樣上限與普通歷史簡介的 600M 同輸入對照。只有原版自然返回才記錄完成；不新增繪圖替換、不略過 CPU、不修改素材或將猜測寫入正式來源表。動態證據足以給出來源、幾何、遮擋與失敗契約後，再審查 READY。
+
+# 2026-10-15：歷史簡介完整複製路徑，READY
+
+沿用本批 DRAFT 的固定 EXE／DAT、IDA 9.4 位址空間及 dosgolem 基準。四套件通過，研究入口 31.201 秒。普通歷史簡介的唯讀觀測自然 600M，完整 RAM SHA-256 `c854c975a6cc487629b7bbbc281d565e8a0ffa69e7fe510c7861f7603299d2d2`、十五欄與原基準完全一致。65 個抽樣自然返回、零丟棄，78 項建置來源與快照一致。來源總表 `remaining/history/source-verification.json` SHA-256 `9c42fb441cacd903eb4c82c902a9faadbb774e2bc76407eef9009940b22bac5b`。
+
+- 已證實：`sub_129C4` 的 IDA 線性 `0x129DA..0x129FD` 將原始 globals `0x38C00/0x38BF8/0x38C04/0x38BFC` 複製至 `0x386D4..0x386E0`。兩組是指標別名，沒有第二份獨立像素緩衝區。動態四次完整複製的兩組指標逐一相同。
+- 已證實：`sub_11F14` 在 `0x11F2A` 固定目的 `0xA0000`；`0x11F48..0x11F6E` 選四平面，每平面由 `dword_386D4[eax]` 複製 `0x7D00` bytes。四個來源 OP4／OP5／VISUAL／OP-FULL 在自然返回時，全部 256000 個目的索引像素與來源相等，來源 bytes 前後不變。
+- 已證實：13 個 sub_11AEB 抽樣與逐指令導出的位元位移相符，且該函式不改原生畫面。每平面第一個 word 保留，byte 偏移 2..16001 右移並接前 word 最低位元，其餘 bytes 保留。這不把局部／捲動路徑宣稱為 HD 完成。
+- 已證實：OP-FULL 的第四平面尾端 0xAA 在兩次普通執行都相同；完整索引 SHA-256 `c9b332bfc54a189abfc4b7caf3c1821738624dedd41f19332ee5e4b44a1716a3`。只加入明示的 runtime_observed 來源，不把靜態解碼器的五項未知改成已解碼。
+
+READY 範圍：在既有共同不透明觀測增加 `sub_11F14` 完整複製入口。每次入口及返回都確認兩組平面指標仍 alias，來源尺寸固定 640×400、四平面各自精確 SHA、返回 EIP／ESP+4 及完整目的索引一致。其他來源與既有局部矩形契約不放寬。完整複製入口撤銷舊呈現資格；未知來源、alias 改變、來源改變、未返回或目的不符時保持原版。新來源仍接受既有精確 palette 檢查，淡入／淡出退回原圖。
+
+OP-FULL 已依使用者選定 B 戰國手繪風生成。原始圖 SHA-256 `d7cef9b5ac9f237baac15550da0c6c33223116cd8f90032bdb2c80f36b218af7`，完整提示詞及兩張有序參考圖的用途／SHA 保存於 `catalog/art/opening-full-generation-v1.json`。校準只整幅縮為 1280×800，不重畫文字或補原版 bytes。準備工具保留原始圖、校準圖、來源證據與工具全文；原版索引另以 runtime 來源收據保存，不混入靜態解碼完成數。
+
+驗收：新來源與來源不符、alias 改變、缺圖、palette、自然返回、全畫面撤銷及原版記憶體不變測試。普通歷史簡介用同一兩筆滑鼠輸入驗證 OP4／OP-FULL 的真實視窗 HD、原圖及還原，並與同一 600M 原版 RAM／十五欄比較。既有標題與完整首戰回歸；本次不更動原版規則、存檔、字模或公開權利。其他局部／捲動開場與動畫另列未完成。
+
+## 2026-10-15：OP-FULL 專用色盤與開場色彩效果，READY
+
+勘誤：完整複製接入的第一次 GUI 只在 252M 短暫匹配 OP4 共用色盤，之後無法啟用 OP-FULL。這不是完整開場 HD 驗收。原收據與三張 OP4 擷取保留於 history/desktop；該版本標題及首戰回歸通過，不能據此外推新開場。
+
+原版六次亮度取樣及兩次晚期循環取樣皆走同一普通歷史簡介，600M、完整 RAM 與十五欄符合基準。兩份驗證器的確切版本依記錄 SHA 恢復／保存於 palette/verifier-source.txt 及 palette-late/verifier-source.txt，舊收據不改。色彩契約總表 history/palette-effects.json SHA-256 `b3fd4cfa4838b8d4b2e19028626c1df02898ec3c97ef8a3e472ce3d377423431`。
+
+- 已證實：IDA 9.4 的 sub_1BC0E 於 `0x1BC58..0x1BC99` 循環 63 次，在 `0x1BC65..0x1BC74` 對 48 通道遞增，只有新值嚴格小於目標才寫入。零通道保留零，非零目標最後顯示目標減一。六次原生色盤逐通道符合此亮度上限模型。
+- 已證實：sub_1BDCB 在 `0x1BDED..0x1BDF9` 先複製目標色盤，再於 `0x1BE15..0x1BE52` 做 21 次循環；通道不等於 21 才遞增。晚期兩次全部 48 通道分別符合第 14、20 次循環，包含超過 DAC 六位元範圍後的遮罩結果。不是普通的等比淡出，不用 Alpha 代替。
+- 平台契約：VGA DAC 的六位元輸入依 [DOSBox Staging v0.82.2](https://github.com/dosbox-staging/dosbox-staging/blob/v0.82.2/src/hardware/vga_dac.cpp) 的公開介面處理；dosgolem 固定基準的 internal/machine/machine.go Palette() 使用 `(v<<2)|(v>>4)` 展開為八位元。這是平台前提，不再逆向硬體 driver 或時序。
+- 已證實：OP-FULL 的 16 色目標與共用色盤不同。原版雲帶為藍白色；第一版製作參考的共用色盤把它顯示為綠色。內建 imagegen 僅校正第二版雲帶，人物、題字及構圖保持既定 B 風格。原始第二版 SHA-256 `891cddb971b142ffea88841af6b4f771661a203344884ce33af4364af4abb2b2`；第一版與提示詞保留。
+
+READY 僅允許 OP4 及 OP-FULL 的已證實色盤族。每次呈現確認完整 48 通道匹配目標、亮度上限族，或 OP-FULL 的 0..21 循環族；其他色盤保持原版備援。來源平面、自然返回、目的索引與遮擋資格全部維持既有檢查。
+
+HD 色彩轉換明示為 presentation approximation。亮度族將原生上限正規化至新圖 0..255，逐通道取較小值；循環族將新圖 RGB 量化至六位元目標，套用已證實循環及 DAC 遮罩再展開。原版前景直接沿用原生 RGB。只改 host 呈現，不改 guest palette、CPU、等待或存檔。單元測試涵蓋全部亮度級、全部 22 循環級及未知色盤拒絕；GUI 要驗證多個淡入與循環時點，不用短暫匹配代替整段驗收。
+
+## 2026-10-15：完整開場複製與色彩效果，CONFORMED
+
+適用範圍限上述 READY 的固定網站 EXE、DAT、dosgolem 基準及普通歷史簡介兩筆滑鼠輸入。新的工具與收據入口為 tools/verify-hd-opening-summary.py、remaining/history/verification-summary.json，總表 SHA-256 `2ab4e2768c2fc6f59671f4102e47c2ec7cf0dfe3f9f9b5bbb44206fbfd190554`。工具、二進位、來源快照、圖像及各次完整狀態雜湊由總表串接。
+
+- 已證實：sub_11F14 的完整複製可讓 OP4 與 OP-FULL 走既有 host HD 呈現。入口及自然返回核對來源別名、四平面 SHA、完整目的索引；新完整畫面撤銷舊劇情、視窗、頭像、地形與戰場框架資格。VISUAL 亦須重新核對四平面及完整目的，才能啟用既有捲軸；其他局部／捲動端不因此獲准。
+- 最終固定 GUI image 四套件通過，研究入口 31.477 秒；實際 OP-FULL／VISUAL fixture、錯誤 alias、來源／目的變更、自然返回、舊圖層、全部亮度級、22 循環級及未知色盤拒絕皆通過。二進位 SHA-256 `34fe9c4d32b94f928269c674bb4659c1ee693f1be1bb2a3a703bf233a351cbd1`，五次 GUI 使用相同 82 項來源快照。
+- 普通歷史簡介的正常、缺圖、八時點色彩模式各自然 600M；完整 RAM 皆為 `c854c975a6cc487629b7bbbc281d565e8a0ffa69e7fe510c7861f7603299d2d2`，十五欄與原基準逐項相同。正常及缺圖各五次、效果模式十七次 HD 切換的前後原版 proof 完全相同。
+- 六個淡入時點實際為 OP4 241M／246M／249M、OP-FULL 534M／540M／544M；全部 48 原生色盤通道與契約一致。兩個循環時點為 547M／549M，分別匹配第 14、20 級。八組 X11 原圖／HD／還原共 24 張實際視窗與呈現 PNG 完全相同，HD 區域公式及矩形外保護通過。這些是八個抽樣時點，不宣稱每個過渡中的未完整色盤都啟用 HD。
+- 個別移除第二版 OP-FULL 時，該圖退回原圖且零像素變動，OP4 仍為 HD。正常標題 200M、首戰 750M／390 事件的完整 RAM／十五欄通過；首戰三張完整畫面亦與前個 RCR 版本相同。
+- 效果模式第一次最後擷取從 549M 跨至 550M 的未完整色盤，按既定條件退回原版。上層 effects 保留七組成功擷取及失敗驗證器；只調整觀測起點為先前原生證據的 546M／548M，在 effects/ready 乾淨重跑通過。沒有放寬 48 通道資格或更改原版執行。
+
+第二版手繪原圖、校準圖、完整提示詞與第一版都保存於私人素材庫。校準圖 SHA-256 `b460fc80cbcafa150cbeb4be991d5217c1a8bf29c5339f6d768981be4a7dc717`，1280×800；正式來源仍為兩次正常 RAM 一致的 runtime_observed 索引。靜態解碼的五項未知保持原樣。HD 色彩轉換保持呈現近似分類，不宣稱原版像素或硬體時序一致。
+
+本批沒有新增玩法、輸入或存檔分支。CONFORMED 不涵蓋局部／捲動開場、其他動畫、四項缺美術 OZM、PCX、全遊戲 HD 或三平台打包。

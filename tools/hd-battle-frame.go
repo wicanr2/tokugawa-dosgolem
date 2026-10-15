@@ -85,6 +85,10 @@ func (b *battleFrameState) observe(step int, eip, esp uint32, mem []byte, snapsh
 	if eip == 0x1bf44 {
 		b.SourceReady = false
 	}
+	if eip == 0x11f14 {
+		b.Active, b.Pending = false, nil
+		return
+	}
 	if eip != 0x1c084 {
 		return
 	}

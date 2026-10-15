@@ -17,7 +17,7 @@
 - [校準背景、徽記與開場圖](art/static/)，五項有效美術區及原版緩衝區的幾何紀錄。
 - [Family Soft 字標](art/static/logo/)，保留原始品牌字樣與位置，另存生成圖與完整提示詞。
 - [動畫、標題與剩餘介面素材](art/remaining/)，20 項來源的逐格裁切、鏡像與留白核對；美術準備與執行器接入分開記錄。
-- [OP-FULL 開場肖像](art/opening-full-generation-v1.json)，依正常 RAM 來源及既定 B 風格生成；來源、校準與遊戲內驗證分開記錄。
+- [OP-FULL 開場肖像](art/opening-full-generation-v2.json)與[完整提示詞](art/OP-FULL-hd-b-v2.prompt.txt)，第二版校正原生色盤下的藍白雲帶；[選定素材](art/opening-full/OP-FULL.OZM-hd-v2.png)與第一版均保存，來源、校準與遊戲內驗證分開記錄。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。

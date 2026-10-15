@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"image"
-	"image/color"
 )
 
 type hdGraphicsState struct {
@@ -93,14 +92,14 @@ func graphicsDestination(esp uint32, mem []byte) (image.Rectangle, bool) {
 
 // 只觀測原版來源及自然返回，所有圖像替換留在 host 畫布。
 func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapshot func() (nativeSnapshot, error)) {
-	entry := eip == 0x1c1bc || eip == 0x1c084
+	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14
 	returned := h.Pending != nil && eip == h.Pending.Record.Return && uint64(esp) == uint64(h.Pending.Record.Stack)+4
 	if !entry && !returned {
 		return
 	}
 	if entry {
 		h.Pending = nil
-		if eip == 0x1c084 {
+		if eip == 0x1c084 || eip == 0x11f14 {
 			h.Draws = nil
 		} else if r, ok := graphicsDestination(esp, mem); ok {
 			keep := h.Draws[:0]
@@ -158,6 +157,7 @@ type hdGraphicsReport struct {
 	PaintedNative   int               `json:"painted_native_pixels"`
 	PreservedNative int               `json:"preserved_native_pixels,omitempty"`
 	VisibleRects    []image.Rectangle `json:"visible_rectangles,omitempty"`
+	Effect          *graphicsEffect   `json:"palette_effect,omitempty"`
 }
 
 func newHDGraphicsPair(profile hdGraphicsProfile, source []byte, asset image.Image, scale int) hdGraphicsPair {
@@ -243,11 +243,12 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 	if s.MaxColor != 15 {
 		return r
 	}
-	for i, want := range graphicsNativePalette(p.Profile) {
-		rgb := s.Palette[s.DAC[i]]
-		if want != (color.NRGBA{rgb[0], rgb[1], rgb[2], 255}) {
-			return r
-		}
+	effect := graphicsPaletteEffect(p.Profile, s)
+	if !effect.Valid {
+		return r
+	}
+	if graphicsEffectSource(p.Profile.Source.Name) {
+		r.Effect = &effect
 	}
 	visible := draw.VisibleRects
 	if visible == nil {
@@ -312,6 +313,8 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 						pixel := rgbaAt(p.Asset, (src.Min.X+x)*p.Scale+dx, (src.Min.Y+y)*p.Scale+dy)
 						if preserved {
 							pixel = rgbaAt(s.Image, f.Min.X+x, f.Min.Y+y)
+						} else {
+							pixel = effect.colour(pixel)
 						}
 						out.SetNRGBA((f.Min.X+x)*p.Scale+dx, (f.Min.Y+y)*p.Scale+dy, pixel)
 					}

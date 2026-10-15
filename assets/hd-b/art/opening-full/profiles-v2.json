@@ -1,0 +1,29 @@
+{
+  "classification": "calibrated generated art and exact runtime-observed source; not static decode completion",
+  "version": 2,
+  "tool_sha256": "080f9c523e025da15e4b39b23c56516c8554c1a49207527d6e6ae13ff916324a",
+  "generation_sha256": "994c22e98947423ab7272a4ced82a4b55746fe127f511af197382385645c4d8d",
+  "pillow": "9.4.0",
+  "record": {
+    "source": "OP-FULL.OZM",
+    "status": "runtime_observed",
+    "width": 640,
+    "height": 400,
+    "indices_sha256": "c9b332bfc54a189abfc4b7caf3c1821738624dedd41f19332ee5e4b44a1716a3",
+    "plane_sha256": [
+      "7a3b8c91a6928da52803e3062be4720882a280ba763d1056dab01bd87fba04ee",
+      "3f77eaae57a9183454cde37dbd9b25b3c499d762fe6dc1e46a4626f4510a00cf",
+      "4be1bd2e59a0085035c9a2011fb4b9fb9c7b692a1bb5bfb4b898e31f06989038",
+      "9451b3ce42103719eca4edb2c641470375efe6d9acde5a243a9a0019b4e9c746"
+    ],
+    "asset": "opening-full/OP-FULL.OZM-hd-v2.png",
+    "asset_sha256": "b460fc80cbcafa150cbeb4be991d5217c1a8bf29c5339f6d768981be4a7dc717",
+    "raw_asset": "OP-FULL-hd-b-v2.png",
+    "raw_asset_sha256": "891cddb971b142ffea88841af6b4f771661a203344884ce33af4364af4abb2b2",
+    "prompt": "OP-FULL-hd-b-v2.prompt.txt",
+    "prompt_sha256": "8fe98084ddccad67d5151a2667aecc7812d0d7eb3c84b80fdb6829715cd8b2d1",
+    "source_proof_sha256": "9c42fb441cacd903eb4c82c902a9faadbb774e2bc76407eef9009940b22bac5b",
+    "source_scope": "two matching ordinary history executions; on-disk decode remains unsupported",
+    "geometry": "whole canvas 640x400 to 1280x800; no source bytes or text modified"
+  }
+}

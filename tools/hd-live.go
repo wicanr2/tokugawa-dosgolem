@@ -1,8 +1,26 @@
 package main
 
-import "encoding/binary"
+import (
+	"bytes"
+	"encoding/binary"
+)
 
-type hdDrawReturn struct{ Return, Stack uint32 }
+type hdDrawReturn struct{ Return, Stack, Entry uint32 }
+
+var hdScrollSourcePlanes = []string{"ea6c9f57424df636a60d144e1405fa2467429d14e87f2f854d47fe48b910acb5", "655790f2a54acccb050c4fbe0b29b3fb510976611807edbb1b4653656f4a29c6", "7fccd2bd1a06751fe2c043ac4693aa8cd088871bc742e12a861689fa360f4ab5", "b87ca90699e63248f74cac792f3f53b7576056af0c8427a8d0a6bcc1b1abd76a"}
+
+func openingScrollMatches(mem []byte, snapshot func() (nativeSnapshot, error)) bool {
+	if !openingPlaneAlias(mem) || snapshot == nil {
+		return false
+	}
+	profile := graphicsSourceProfile{Name: "VISUAL.OZM", Width: 640, Height: 400, Planes: hdScrollSourcePlanes}
+	_, source, ok := graphicsSource(mem, []graphicsSourceProfile{profile})
+	if !ok {
+		return false
+	}
+	native, err := snapshot()
+	return err == nil && len(native.Indexed) == len(source) && bytes.Equal(native.Indexed, source)
+}
 
 // 固定 EXE 的原版入口與返回觀測；不修改 guest 或取代指令。
 type hdLive struct {
@@ -33,9 +51,12 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 	h.Kao.observe(step, eip, esp, mem)
 	if h.ScrollPending != nil && eip == h.ScrollPending.Return && uint64(esp) == uint64(h.ScrollPending.Stack)+4 {
 		h.ScrollActive = true
+		if h.ScrollPending.Entry == 0x11f14 {
+			h.ScrollActive = openingScrollMatches(mem, snapshot)
+		}
 		h.ScrollPending = nil
 		if len(h.Events) < 128 {
-			h.Events = append(h.Events, map[string]any{"kind": "scroll_draw_return", "step": step, "linear_eip": eip, "eligible": true})
+			h.Events = append(h.Events, map[string]any{"kind": "scroll_draw_return", "step": step, "linear_eip": eip, "eligible": h.ScrollActive})
 		}
 	}
 	if h.Pending != nil && eip == h.Pending.Return && uint64(esp) == uint64(h.Pending.Stack)+4 {
@@ -63,7 +84,7 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 			h.LastName, _ = e["name"].(string)
 			if h.LastName == "VISUAL.OZM" && e["raw_columns"] == uint32(80) && e["raw_rows"] == uint32(400) {
 				planes, ok := e["planes"].([]map[string]any)
-				want := []string{"ea6c9f57424df636a60d144e1405fa2467429d14e87f2f854d47fe48b910acb5", "655790f2a54acccb050c4fbe0b29b3fb510976611807edbb1b4653656f4a29c6", "7fccd2bd1a06751fe2c043ac4693aa8cd088871bc742e12a861689fa360f4ab5", "b87ca90699e63248f74cac792f3f53b7576056af0c8427a8d0a6bcc1b1abd76a"}
+				want := hdScrollSourcePlanes
 				h.ScrollValidated = ok && len(planes) == 4
 				if h.ScrollValidated {
 					for i := range planes {
@@ -87,15 +108,15 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 			}
 		}
 	}
-	if eip == 0x1c084 {
+	if eip == 0x1c084 || eip == 0x11f14 {
 		h.ScrollActive = false
 		h.ScrollPending = nil
 		h.Active = false
 		h.Pending = nil
-		if h.ScrollValidated && h.LastName == "VISUAL.OZM" && uint64(esp)+4 <= uint64(len(mem)) {
+		if h.ScrollValidated && h.LastName == "VISUAL.OZM" && uint64(esp)+4 <= uint64(len(mem)) && (eip != 0x11f14 || openingPlaneAlias(mem)) {
 			ret := binary.LittleEndian.Uint32(mem[esp:])
 			if uint64(ret) < uint64(len(mem)) {
-				h.ScrollPending = &hdDrawReturn{ret, esp}
+				h.ScrollPending = &hdDrawReturn{Return: ret, Stack: esp, Entry: eip}
 				if len(h.Events) < 128 {
 					h.Events = append(h.Events, map[string]any{"kind": "scroll_draw_enter", "step": step, "linear_eip": eip, "return_linear": ret, "stack_linear": esp, "logical_rect": []int{0, 250, 640, 150}})
 				}
@@ -125,7 +146,7 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 	if uint64(ret) >= uint64(len(mem)) {
 		return
 	}
-	h.Pending = &hdDrawReturn{ret, esp}
+	h.Pending = &hdDrawReturn{Return: ret, Stack: esp, Entry: eip}
 	if len(h.Events) < 128 {
 		h.Events = append(h.Events, map[string]any{"kind": "draw_enter", "step": step, "linear_eip": eip, "return_linear": ret, "stack_linear": esp, "raw_args": args, "logical_rect": []int{160, 50, 320, 150}})
 	}
