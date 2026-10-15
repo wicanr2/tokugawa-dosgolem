@@ -467,3 +467,17 @@ GitHub 收尾：功能、第二版開場圖與提示詞提交 `6a2e45d71ea9a0c95
 - 覆蓋表為 111 OZM 有素材、一項 VISUAL 分層，四部分來源已條件式註冊；PCX 為新草稿。私人保存目前 807 PNG、163 提示詞、596522181 indexed bytes。全遊戲 HD、其他動畫消費端及 PCX 尚未完成，打包未開始。遠端核對及最後清理結果接續記錄。
 
 本批提交 `68a89729e1f403edc7fd28d6904e9493cd0d2a9d` 已推送 main。主機 gh 核對仍為 PRIVATE、遠端 main 相同；1050 份 assets/hd-b 檔案的 Git 子樹 `9de9713108cf662e0b2bb39e46b5ab7aec8c1561` 與本機相同，tree 未截斷，original/、workplace/ 未加入遠端。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6184379063 。807 PNG／163 提示詞的保存及 verify-only 通過；180 項來源快照與 90 項目前凍結來源相同。原始 ZIP CRC、十二個解包檔於 2026-10-15T04:20:44Z 再核對通過，Python 語法、Go 格式、文件連結、工具入口正對照及 Git whitespace 通過。完整工作根沒有 root-owned 檔案或 .md 目錄，全部 tokugawa 容器已退出並移除，沒有重建 image。
+
+## 2026-10-15：啟動顯示選擇完成，MARK 自然執行及跨頁例外定位
+
+- 使用者確認恢復包內 MARK 標誌、MARK 也要 HD，並指定進入遊戲前選原版／HD，遊戲內頂端功能列仍可動態切換。本次完成啟動選擇與既有功能列整合，MARK 的正式接入仍進行中。
+- 路由載入 spec-gated workflow、文件職責、IDA 工具及平台規格優先。X11 首幀擷取問題另載入 retro-game-playtest。沿用既有固定 Docker image、UID/GID 1000，未修改外部 dosgolem 或正式 IDA 資料庫。
+- 新桌面選擇預設 ask；滑鼠、Tab／方向鍵與 Enter／Space 操作。確認手勢放開前原版維持 0 步，選擇只改呈現設定。明示 original／hd 旗標供自動驗證；既有驗證器已更新明示 original。
+- 同一二進位 56f1a4897e40cbe30c42d47068f9bbfe0761e5084a7ccaf942fc3be85fd6c8ee、93 項凍結來源：原版／HD 選擇各自然 200M，功能列原版／HD／還原的原版 proof 相同；完整首戰 750M／390 事件，RAM 與十五欄符合既有原版基準，三張 X11 與呈現 PNG 相同。四套件通過，cmd/leprobe 65.334 秒。
+- 初輪腳本誤把正常游標移動列為失敗，保留兩份失敗輸出與原腳本，乾淨重跑通過。初始黑圖是首幀呈現前擷取，保留原圖並加 X11 像素後置條件；獨立 startup-only 擷取及目視確認通過。沒有把環境或驗證器問題登記成遊戲缺陷。
+- 匯總驗收 desktop-prototype/startup-choice/verification-summary.json，SHA-256 173ca02527bafa43cffcb3698b5db435bfe111f8c8bec7246ebf61897297f9de。精確 R2 驗證器由保留前版與本次已記錄修正重建，SHA-256 必須符合當次收據；來源快照與各版本輸出保留。
+- MARK.EXE.BAK 自然 LE 入口先停在記憶體 byte SHR，依 Intel 規格擴充 C0 /5 ib。131072 組值／計數／DS、SS 輸入與界限拒絕測試通過。DPMI 初始 data descriptor 的可寫性依公開 DPMI 契約及固定 dosemu2 實作修正；base／limit 邊界保留。兩項修正接在 dosgolem.patch 後，只套研究副本。
+- MARK 已自然選取 VESA 0101h 的 640×480、256 色，仍在 5,381,498 步因原版跨頁例外停止。IDA 確認原版 INT 0Dh handler、分頁及 IRET；Open Watcom 官方文件確認 DOS/4GW 正規化中斷／例外堆疊。原版 MARK 尚未繪圖返回、自然退出或 HD 接入，不稱啟動標誌恢復完成。位址、原始雜湊、R 陣列順序勘誤與後續最小入口見 RESEARCH-LOG。
+- 另保存動畫 OR 合成與透明繪圖消費端的窄範圍原始證據；其他動畫未因定位而列完成。
+- 原版 ZIP／12 檔、唯讀及 UID/GID 於 05:20:40Z 通過；807 PNG、163 提示詞、596522181 bytes 保存核對通過。沒有新增生成圖，原版、PCX 合成預覽及執行收據仍留本機。
+- 主機 gh auth status 通過，repo 確認 PRIVATE，Issue #5 為 OPEN。提交、推送與遠端留言核對於本筆後續追加。全遊戲 HD、MARK 及三平台打包尚未完成。

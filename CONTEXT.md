@@ -14,7 +14,7 @@
 | dosgolem 格式解析 | 完成；40 pages、2 objects、4,831 fixup records；relocation preview 成功 | `workplace/leprobe/stdout.log`，stderr 為空，exit 0 |
 | dosgolem 執行本作 | 桌面步進重構後通過原版入口至首場戰場；750,000,000 步、390 筆普通滑鼠事件，只因預算結束。全部 RAM、trace、原生畫面、輸入與 CD PCM 和先前完整驗收一致 | [最近完整收據](workplace/desktop-prototype/headless/startup-probe/latest.json)，SHA-256 `1eb3fe503bac5ecfb0261e0f94cf762a765895d5d4fb9b4a0e1e712ee210ac7c`；[原生戰場畫面](workplace/startup-probe/frame-b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846.png) |
 | 通用平台修正 | 在隔離副本實作 CPU 指令形式、DPMI 主機服務轉接與明確啟用的 MCB 配置池；支援標頭、重用、合併與縮放，保留外部預設配置器 | [dosgolem.patch](tools/dosgolem.patch)、[MCB](tools/dpmi-mcb.go)、[回歸](tools/dpmi-mcb_test.go) |
-| 平台回歸 | 最新四套件通過，研究入口 79.627 秒。新增兩組實際已知平面、四來源名稱、兩個故事消費端、256 種未知末 byte 測試輸入、來源／基址／目的／guard、色盤與缺圖防護。相同二進位及 90 項凍結來源的歷史 600M、首戰 750M 通過；三張首戰完整視窗與前版相同 | [platform-test.log](workplace/hd-prototype/catalog/remaining/partial-story/runtime/startup-probe/platform-test.log)、[本批驗收](workplace/hd-prototype/catalog/remaining/partial-story/verification-summary.json) |
+| 平台回歸 | 最新四套件通過，研究入口 65.334 秒。啟動選擇使用同一二進位及 93 項凍結來源，兩種選擇各自然 200M；完整首戰 750M／390 事件的 RAM 與十五欄符合原版基準，三張實際 X11 畫面符合呈現 PNG | [platform-test.log](workplace/desktop-prototype/startup-choice/startup-probe/platform-test.log)、[本批驗收](workplace/desktop-prototype/startup-choice/verification-summary.json) |
 | 原版時間等待 | DOS 時間與 VGA 回掃共用一微秒／成功指令的虛擬時間；原版自行校準等待迴圈 | 最新收據 `virtual_clock`；[回掃契約](RESEARCH-LOG.md)；未略過指令 |
 | 光碟 | AUDIO PREGAP 依 CUE 輸出靜音；有效起點的超長請求在 lead-out 停止，保存原始長度與實際終點。原版末軌表格重疊仍保留，沒有改 EXE 或表格 | [cdrom.go](tools/cdrom.go)、[cdda.go](tools/cdda.go)、[因果與契約](RESEARCH-LOG.md) |
 | CDDA 技術驗證 | 完成 PLAY／STOP／RESUME、狀態、自然結束、分塊、跨軌、PREGAP、極大長度與非法起點測試；十五條音軌全段與 BIN 一致。正常流程八次選曲無拒絕，輸出 19,818,728 個立體聲樣本框。桌面與人耳確認未完成 | [CDDA 測試](tools/cdda_test.go)、`workplace/startup-probe/cdda-boundary-test.log`、[獨立核對](workplace/startup-probe/cdda-verification.json)；79,274,912 bytes 逐段與 BIN 及時間公式相符 |
@@ -24,6 +24,8 @@
 | DOSBox 輔助基準 | 可顯示原版標題；實際 DOS/4GW 的 MCB 配置可重用，段號相差 2。第 1、2 軌 MSF 起點保留，控制欄位仍遭重疊覆蓋；未作音訊驗證 | [25s.png](workplace/dosbox-aux/25s.png)、[aux-cd-trace.py](tools/aux-cd-trace.py)、`workplace/cd-trace/aux-toc/manifest.json`；詳見 RESEARCH-LOG |
 | 正常玩家路徑、存讀檔與音訊 | 原版入口、角色建立、敘事、選項、出陣與首場戰場顯示保持通過，原版選曲／換曲與 PCM 同步通過；單位操作、戰鬥、存讀檔及桌面聽覺未驗證 | [普通輸入時間表](tools/player-path.json)；精確畫面、音訊雜湊與範圍見 RESEARCH-LOG |
 | 普通歷史簡介與離開 | 普通點擊後自然 600M，經 OP2、OP2_P、OP4、劇情、OP8、OP9、OP-FULL 回到 OP5 主選單，沒有未支援指令。完整、未位移局部與 OP2／OP8 捲動皆已接 HD，抽樣範圍分別記錄。普通離開在 80017192 步正常 dos_exit，BDA 恢復模式 3／80 欄；不宣稱文字畫面驗收 | [歷史原版收據](workplace/hd-prototype/catalog/remaining/source-boundary/menu-history/rcr/receipt.json)、[捲動驗收](workplace/hd-prototype/catalog/remaining/history/scrolling/verification-summary.json)、[離開收據](workplace/hd-prototype/catalog/remaining/source-boundary/menu-exit/platform/ready/receipt.json) |
+| 啟動顯示選擇 | 已接入桌面。預設先選原版／HD，滑鼠及 Tab／Enter 可操作；選擇及確認手勢期間 DOS 保持 0 步、沒有滑鼠點擊轉送。兩種選擇各自然 200M，切換前後 proof 相同；功能列原版／HD／還原及實際首幀已驗證 | [啟動選擇](tools/desktop-startup.go)、[真實畫面](workplace/desktop-prototype/startup-choice/preview/startup-choice.png)、[驗收](workplace/desktop-prototype/startup-choice/verification-summary.json) |
+| MARK 恢復及 HD | 使用者已確認納入啟動。包內 MARK.EXE.BAK 直接讀取 RAINEND.PCX，已由自然 LE 入口選取 640×480、256 色 VESA。byte SHR 與新 data descriptor 可寫性已修正；仍停在原版跨頁例外，尚未完成原生顯示、退出或 HD 接入 | [研究工具](tools/mark-probe-prepare.py)、[公開契約及原版證據](RESEARCH-LOG.md)、workplace/hd-prototype/catalog/remaining/consumers/mark-probe/r3/ |
 | remake | 排除 | 使用者明確指定原版與 dosgolem 整合 |
 | 後續功能範圍 | CDDA 裝置與 PCM 已實作；桌面播放、繁中／簡中／英文／日文與可切換 HD 素材包待後續切片 | 已確認範圍與驗收見 [WORKLIST.md](WORKLIST.md) |
 | 後續使用介面 | 桌面版；全遊戲 HD 後打包 Windows、Linux、macOS；瀏覽器排除 | 使用者已確認；目前只驗證 Linux 容器桌面 |
@@ -56,7 +58,7 @@
 | private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 已建立；#2 技術切片驗收後已關閉，HD 接續 #5，桌面與聽覺驗收留 #3 | [CDDA 完成記錄](https://github.com/wicanr2/tokugawa-dosgolem/issues/2#issuecomment-6121828738)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)、[HD #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5)；Issue 即時狀態直接查 GitHub |
 | Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試、文件及使用者授權的生成美術；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
-| Docker 收尾 | 本批建置及全部 GUI 容器均已結束，沿用既有 image；完整工作根沒有 root-owned 檔案或 .md 目錄，最後清理與遠端結果見 WORKLOG | 本批入口為 remaining/partial-story/verification-summary.json |
+| Docker 收尾 | 本批全部研究、建置與 GUI 容器已結束，沿用既有 image；最終擁有權、來源及清理結果見 WORKLOG | 本批入口為 desktop-prototype/startup-choice/verification-summary.json |
 
 ## 固定來源與版本差異
 
@@ -102,6 +104,7 @@
 
 ## 後續擴充的已確認決定
 
+- 2026-10-15 使用者確認恢復包內 `MARK.EXE.BAK` 的出版商標誌，並要求 MARK 也可切換 HD。啟動遊戲前先選「原版／HD」，進入後仍可從頂端功能列動態切換。啟動選擇與既有功能列切換已實作並驗證；MARK 的跨頁例外、原生顯示及退出仍待接入。原始 `.BAK` 保持不變，其版本來源仍未知。
 - 原版 DOS 程式繼續負責玩法、狀態與存檔。本次沒有改成 remake。
 - 使用者選擇可切換 HD 素材包，逐項替換人物、場景與介面。原版顯示保留作對照與缺圖備援；單純放大原圖不作為 HD 素材包完成標準。
 - 使用者已選 B 戰國手繪風，依同場景比較的自然地形與手繪人物、介面方向製作。生成概念圖不作正式版面或幾何來源，原版邏輯座標仍為 640×400。

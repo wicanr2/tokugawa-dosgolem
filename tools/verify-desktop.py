@@ -190,7 +190,7 @@ try:
         time.sleep(0.05)
     for name in ("desktop-status.json", "desktop-status.pending"):
         (root / name).unlink(missing_ok=True)
-    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-desktop-speed", "5" if is_scroll else "60" if long_path or is_frame or is_window else "20",
+    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-startup-display", "original", "-desktop-speed", "5" if is_scroll else "60" if long_path or is_frame or is_window else "20",
                "-steps", "750000000" if long_path else "150000000", "-hd-trace"]
     command += ["-hd-graphics-dir", "/output/no-opaque-graphics"]
     if args.mode != "mouse":

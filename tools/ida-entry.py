@@ -19,7 +19,10 @@ import idc
 ida_auto.auto_wait()
 path = pathlib.Path(ida_nalt.get_input_file_path())
 digest = hashlib.sha256(path.read_bytes()).hexdigest()
-assert digest == "2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a"
+assert digest in {
+    "2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a",
+    "1ea6dc335b42b39542ba8dec35c8ffd103e4b495d30700c4100e60dbcbecaa60",
+}
 entry = ida_ida.inf_get_start_ea()
 segments = []
 for ea in idautils.Segments():

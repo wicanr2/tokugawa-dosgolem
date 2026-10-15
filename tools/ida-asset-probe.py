@@ -18,7 +18,12 @@ ida_auto.auto_wait()
 source = pathlib.Path(ida_nalt.get_input_file_path())
 data = source.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
-assert digest == "2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a"
+assert digest in {
+    "2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a",
+    "1ea6dc335b42b39542ba8dec35c8ffd103e4b495d30700c4100e60dbcbecaa60",
+}
+header = int.from_bytes(data[0x3c:0x40], "little")
+assert data[header:header+2] == b"LE"
 needles = (b"DX5.DAT", b"Ken Lin", b"KAO.GRP")
 suffix = ""
 if len(idc.ARGV) > 1:

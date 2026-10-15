@@ -12,6 +12,7 @@
 | DOS 檔案與光碟 | 進行中 | 真實光碟掛載與 MSCDEX TOC 子集通過；原版正常資料讀取與音軌仍待驗證 |
 | 顯示與滑鼠輸入 | 開場至戰場範圍通過 | 原生標題、角色建立、敘事、出陣確認、地形、人物單位及小地圖已目視核對；普通滑鼠可推進，戰場持續查詢按鍵，時間表與畫面雜湊可重播 |
 | 音訊 | 裝置、PCM 與首場流程通過 | 原版正常流程八筆 PLAY 及換曲通過，PCM 逐段核對 BIN；桌面、人耳、含 PREGAP 的播放及末軌異常長度待驗 |
+| MARK 與啟動顯示選擇 | 啟動選擇與功能列通過，MARK 查證中 | 啟動先選原版／HD，再執行包內 MARK 標誌與遊戲；MARK 也使用同一顯示設定。頂端功能列可隨時切換，選擇輸入不進入 DOS，切換不改原版狀態。原版 MARK 的顯示模式、自然退出及來源核對後才接正式路徑 |
 | 正常玩家路徑 | 部分通過 | 原版入口、角色建立、選項效果與出陣確認已通過，戰場人物單位已顯示；後續驗證單位操作、戰鬥與存讀檔，不將本輪啟動驗收當成全遊戲相容 |
 | private GitHub repository 與 Issues | 遠端核對完成 | 主機 gh 確認 private 與六筆 Issues；CD-TRACE 修正與首場流程通過，後續由 [CDDA #2](https://github.com/wicanr2/tokugawa-dosgolem/issues/2)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3) 接續，最新狀態查 GitHub |
 

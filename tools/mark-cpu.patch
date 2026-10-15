@@ -1,0 +1,80 @@
+--- a/internal/cpu386/cpu.go
++++ b/internal/cpu386/cpu.go
+@@ -3220,6 +3220,41 @@
+ 			c.setReg8(rm, result)
+ 			break
+ 		}
++		if op == 0xc0 && modrm>>6 != 3 && group == 5 {
++			seg, addr, e := c.decodeAddress32(modrm)
++			if e != nil {
++				return fail(e.Error())
++			}
++			count, e := c.fetch8()
++			if e != nil {
++				return fail(e.Error())
++			}
++			value, ok := c.readSegment8(c.Seg[seg], addr)
++			if !ok {
++				return fail("SHR byte source unavailable")
++			}
++			count &= 31
++			if count == 0 {
++				break
++			}
++			result := value >> count
++			if !c.writeSegment8(c.Seg[seg], addr, result) {
++				return fail("SHR byte destination unavailable")
++			}
++			oldOF := c.EFlags & OF
++			c.setLogicFlags8(result)
++			if count <= 8 {
++				c.EFlags |= uint32((value >> (count - 1)) & 1)
++			}
++			if count == 1 {
++				if value & 0x80 != 0 {
++					c.EFlags |= OF
++				}
++			} else {
++				c.EFlags |= oldOF // undefined in the ISA; preserve existing policy
++			}
++			break
++		}
+ 		if modrm>>6 != 3 || (group != 4 && group != 5) {
+ 			return fail("byte shift形狀未支援")
+ 		}
+--- a/internal/machine/dpmi.go
++++ b/internal/machine/dpmi.go
+@@ -248,10 +248,9 @@
+ 		}
+ 		first := h.nextSel
+ 		for i := uint16(0); i < n; i++ {
+-			// 新配的描述子是**空的**（base 0、limit 0、不可寫）。
+-			// 給 4 GB 的話，程式忘記設 base 就直接用會讀到別人的資料，
+-			// 而那不會報錯。
+-			h.m.CPU.SetDescriptor(h.nextSel, cpu386.Descriptor{})
++			// DPMI data descriptor: present, writable, base/limit zero.
++			// Zero limit remains enforced; no implicit flat 4 GB mapping.
++			h.m.CPU.SetDescriptor(h.nextSel, cpu386.Descriptor{Writable: true})
+ 			h.nextSel += dpmiSelectorStep
+ 		}
+ 		c.R[cpu386.EAX] = c.R[cpu386.EAX]&0xffff0000 | uint32(first)
+--- a/internal/machine/dpmi_test.go
++++ b/internal/machine/dpmi_test.go
+@@ -22,7 +22,7 @@
+ 	return h.Handle(c)
+ }
+ 
+-// 配出來的描述子是**空的**：base 0、limit 0、不可寫。
++// 新 data descriptor 的 base／limit 為零，可寫；零界限仍限制存取。
+ //
+ // 給 4 GB 的話，程式忘記設 base 就直接用會讀到別人的資料，而那不會報錯。
+ func TestDPMIAllocatedDescriptorsStartEmpty(t *testing.T) {
+@@ -43,7 +43,7 @@
+ 		if !ok {
+ 			t.Fatalf("selector %04X 沒有描述子", sel)
+ 		}
+-		if d.Base != 0 || d.Limit != 0 || d.Writable {
++		if d.Base != 0 || d.Limit != 0 || !d.Writable {
+ 			t.Errorf("selector %04X 的描述子不是空的：%+v", sel, d)
+ 		}
+ 	}

@@ -88,6 +88,9 @@ type desktopGame struct {
 	battleFrameReport           hdBattleFrameReport
 	graphics                    map[string]hdGraphicsPair
 	graphicsReports             []hdGraphicsReport
+	choice                      startupChoice
+	choiceEvents                []map[string]any
+	startupFence                bool
 }
 
 type desktopPortrait struct {
@@ -101,6 +104,11 @@ func runDesktopWindow(c *desktopContext) error {
 		return fmt.Errorf("invalid desktop speed")
 	}
 	g := &desktopGame{c: c, lastMouse: [3]int{-1, -1, 0}, assetInfo: map[string]any{}, bar: newWindowBar()}
+	choice, err := newStartupChoice(*desktopStartupDisplay)
+	if err != nil {
+		return err
+	}
+	g.choice, g.enabled = choice, choice.Selection == "hd"
 	font, err := loadBarFont("/project/tools/toolbar-font.hex.gz")
 	if err != nil {
 		return err
@@ -458,6 +466,9 @@ func runDesktopWindow(c *desktopContext) error {
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowTitle("德川家康｜原版｜F6 切換 HD｜F7 暫停")
 	ebiten.SetCursorMode(ebiten.CursorModeHidden)
+	if g.choice.Pending {
+		ebiten.SetCursorMode(ebiten.CursorModeVisible)
+	}
 	ebiten.SetRunnableOnUnfocused(true)
 	g.texture = ebiten.NewImage(1280, 800)
 	g.barTexture = ebiten.NewImage(640, barHeight+2*barRowHeight)
@@ -470,6 +481,7 @@ func runDesktopWindow(c *desktopContext) error {
 	c.Report["terrain_scene"], c.Report["terrain_scene_enabled"] = g.sceneReport, *desktopTerrainScene
 	c.Report["battle_frame"] = g.battleFrameReport
 	c.Report["graphics"] = g.graphicsReports
+	c.Report["startup_selection"], c.Report["startup_selection_events"] = g.choice.Selection, g.choiceEvents
 	return err
 }
 
@@ -685,19 +697,26 @@ func (g *desktopGame) capture() error {
 
 func (g *desktopGame) Update() error {
 	g.updates++
-	consumed, err := g.updateBar()
+	choosing := g.choice.Pending
+	consumed := choosing || g.startupInputBlocked()
+	var err error
+	if choosing {
+		err = g.updateStartupChoice()
+	} else if !consumed {
+		consumed, err = g.updateBar()
+	}
 	if err != nil {
 		return err
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyF7) {
+	if !choosing && !g.startupFence && inpututil.IsKeyJustPressed(ebiten.KeyF7) {
 		g.paused = !g.paused
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyF6) {
+	if !choosing && !g.startupFence && inpututil.IsKeyJustPressed(ebiten.KeyF6) {
 		if err := g.setHD(!g.enabled); err != nil {
 			return err
 		}
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyF9) {
+	if !choosing && !g.startupFence && inpututil.IsKeyJustPressed(ebiten.KeyF9) {
 		if err := g.capture(); err != nil {
 			return err
 		}
@@ -737,8 +756,12 @@ func (g *desktopGame) Update() error {
 		n := int((int64(g.updates)*1000000*int64(*desktopSpeed))/60 - (int64(g.updates-1)*1000000*int64(*desktopSpeed))/60)
 		running = g.c.Advance(n)
 	}
-	if err := g.render(); err != nil {
-		return err
+	if choosing {
+		g.renderStartupChoice()
+	} else {
+		if err := g.render(); err != nil {
+			return err
+		}
 	}
 	g.texture.WritePixels(g.pixels.Pix)
 	if g.bar.Visible {
@@ -761,6 +784,7 @@ func (g *desktopGame) Update() error {
 	status["terrain_scene"], status["terrain_scene_enabled"], status["terrain_history"] = g.sceneReport, *desktopTerrainScene, g.c.Live.Terrain.History
 	status["battle_frame"], status["battle_frame_observation"] = g.battleFrameReport, g.c.Live.BattleFrame
 	status["graphics"], status["graphics_observation"] = g.graphicsReports, g.c.Live.Graphics
+	status["startup_pending"], status["startup_selection"], status["startup_fence"], status["startup_events"] = g.choice.Pending, g.choice.Selection, g.startupFence, g.choiceEvents
 	if *desktopTerrainScene {
 		status["terrain_draws"] = g.c.Live.Terrain.History
 	}

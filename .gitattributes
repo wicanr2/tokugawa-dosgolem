@@ -1,2 +1,2 @@
-# 統一差異的 context 行由一個空白接原始 tab；其餘 whitespace 檢查保留。
-tools/dosgolem.patch whitespace=-space-before-tab
+# Unified diff context prefixes are part of the patch format.
+*.patch -whitespace

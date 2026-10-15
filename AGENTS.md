@@ -39,10 +39,20 @@
 | [tools/verify-source.py](tools/verify-source.py) | 離線核對 ZIP、解包檔與擁有權 |
 | [tools/le-entry-probe.go](tools/le-entry-probe.go) | 不帶 runtime 的原始 LE 入口有界探針 |
 | [tools/startup-probe.go](tools/startup-probe.go) | 原版指令自然執行的 DOS/4G 啟動研究探針 |
+| [tools/mark-probe-prepare.py](tools/mark-probe-prepare.py) | 產生研究專用 MARK LE 入口探針與隔離 overlay，拒絕遊戲專用 HD 觀測；不修改正式啟動路徑 |
+| [tools/mark-cpu.patch](tools/mark-cpu.patch) | 接在 dosgolem.patch 後的標準記憶體 byte SHR 與 DPMI 新 data descriptor 可寫性修正；保留原始界限，契約及實際 MARK 阻塞證據見 RESEARCH-LOG |
+| `workplace/hd-prototype/catalog/remaining/consumers/mark-probe/` | 包內 MARK.EXE.BAK 的自然執行、原生畫面及顯示契約研究；原版資料與執行收據只留本機 |
+| [tools/startup-choice.go](tools/startup-choice.go)、[tools/desktop-startup.go](tools/desktop-startup.go) | 桌面啟動前的原版／HD 選擇及輸入隔離；與頂端功能列共用顯示設定 |
+| [tools/verify-startup-choice.py](tools/verify-startup-choice.py) | Docker X11 驗證啟動選擇、輸入隔離與進入後的功能列切換 |
+| [tools/verify-startup-integration.py](tools/verify-startup-integration.py) | 核對同一建置的啟動選擇、首戰回歸、93 項凍結來源與全部 RAM；固定 GUI image 內專案唯讀掛 /project，startup-choice/ 可寫掛 /output 執行 |
+| `workplace/desktop-prototype/startup-choice/` | 啟動選擇切片的隔離建置、X11 收據及本機截圖 |
 | [tools/ida-entry.py](tools/ida-entry.py) | 保留原名與位址的 IDA 入口證據；可傳入 `起點:終點` 匯出至多 16 KiB 的窄範圍 |
 | [tools/hd-asset-probe.py](tools/hd-asset-probe.py) | 唯讀盤點 DAT 的候選資源目錄；保存原始欄位、檔案偏移與逐項雜湊，不作正式 HD 識別器 |
-| [tools/ida-asset-probe.py](tools/ida-asset-probe.py) | IDA 9.4 的資源字串、直接交叉參照及有界函式證據；保留原名與位址 |
+| [tools/ida-asset-probe.py](tools/ida-asset-probe.py) | IDA 9.4 的資源字串、直接交叉參照及有界函式證據；只接受固定 SHA 的 DX5.EXE 或包內 MARK.EXE.BAK，另核對 LE header，保留原名與位址 |
 | [tools/ida-art-consumers.py](tools/ida-art-consumers.py) | IDA 9.4 的圖像資料讀取端 caller 視窗，只匯出原始定位與指令；從正式資料庫的隔離副本執行 |
+| `catalog/remaining/consumers/ida/` | PCX 及剩餘動畫消費端的 IDA 9.4 副本、最小輸出探針與窄範圍證據。沿用已存在的 4ac62de83339 image、UID/GID 1000，正式 workplace/ida/DX5.i64 與原版唯讀；只寫此目錄，副本在查詢前核對雜湊，不把資料庫或匯出收據加入 Git |
+| `catalog/remaining/consumers/ida/mark/` | 由唯讀 MARK.EXE.BAK 新建的一次性 IDA 9.4 資料庫與 PCX 名稱直接使用者證據；僅研究包內該 SHA 的檔案，不啟用或改名原始 .BAK，不推定出廠版本 |
+| [tools/hd-publisher-preview.go](tools/hd-publisher-preview.go)、`catalog/remaining/consumers/publisher-preview/` | 離線出版商標誌 HD 原型，依既有圖像幾何取樣並保留原版底部版權文字。固定 GUI image 內專案唯讀、publisher-preview 可寫掛 /output，工作目錄指定 /output，以 `go run /project/tools/hd-publisher-preview.go` 執行；不是正常執行收據，含原版文字的合成 PNG 只留本機，不加入 Git |
 | [tools/hd-trace.go](tools/hd-trace.go)、[tools/hd-trace_test.go](tools/hd-trace_test.go) | 固定 EXE 的唯讀素材載入觀測及記憶體不變、錯誤界限、事件上限測試；不替換素材 |
 | [tools/hd-extract.go](tools/hd-extract.go) | 從正常路徑 RAM 擷取 A-0.OZM，核對四平面雜湊與原生畫面矩形，輸出本機 PNG 及收據；不是正式素材包格式 |
 | [tools/hd-capture.go](tools/hd-capture.go) | `-hd-export` 在原版載入返回時輸出已核對平面的索引圖、當時 DAC 與收據；沒有 guest 寫入，不代表繪圖或遮擋已驗收 |
@@ -199,6 +209,7 @@
 | [CONTEXT.md](CONTEXT.md) | 目前狀態、有效結論、限制與下一個驗證入口 |
 | [WORKLOG.md](WORKLOG.md) | 按時間追加的工作歷程與清理結果 |
 | [.gitignore](.gitignore) | 排除本機原版資料、探針輸出與快取 |
+| [.gitattributes](.gitattributes) | unified diff 的 context 前綴是格式，不按普通來源檔檢查 whitespace；實際套用後由 git apply、gofmt 與平台測試驗證 |
 | [.gitattributes](.gitattributes) | dosgolem 統一差異的 context 行保留格式；只排除該補丁檔的 space-before-tab 誤報 |
 
 新增目錄或文件前讀 `/home/anr2/.codex/knowledge-base/local/project-document-responsibilities.md`，並更新本表。未有可執行待辦前不另建 WORKLIST；需要時只建立一份。README 只放穩定入口，工作歷程寫入 WORKLOG。
@@ -453,7 +464,7 @@ timeout 300s docker run --rm --name tokugawa-desktop-gui --network none \
   timeout -k 5s 280s python3 /project/tools/verify-desktop.py --mode hd
 ```
 
-桌面程式只有使用 `-desktop` 才開視窗，預設仍為無頭。F6 切換原圖／HD，F7 暫停試作步進，F9 擷取強化畫面。滑鼠移到頂端 6 個原版邏輯像素會展開功能列，移開自動收起。Esc 固定／收起；叉號只收起，Shift+Esc 或工具選單可關窗並輸出原生收據。功能列顯示時原版停止步進，畫面下移並增加視窗高度；收起後滑鼠按鍵全部放開才恢復步進與滑鼠轉送。Tab 切換欄位，方向鍵選取，Enter 展開／套用。顯示提供原版及 HD 圖像，肖像與捲軸分項缺圖回原圖；兩項素材都無效時 HD 列停用；執行提供繼續／暫停，工具提供截圖／離開。
+桌面程式只有使用 `-desktop` 才開視窗，預設仍為無頭。桌面互動預設 `-startup-display ask`，在原版成功指令數為零時選原版／HD；自動驗證須明示 `-startup-display original` 或 `hd`。選擇畫面及確認手勢放開前不步進 DOS、不轉送按鍵或滑鼠點擊；進入後與功能列共用顯示設定。F6 切換原圖／HD，F7 暫停試作步進，F9 擷取強化畫面。滑鼠移到頂端 6 個原版邏輯像素會展開功能列，移開自動收起。Esc 固定／收起；叉號只收起，Shift+Esc 或工具選單可關窗並輸出原生收據。功能列顯示時原版停止步進，畫面下移並增加視窗高度；收起後滑鼠按鍵全部放開才恢復步進與滑鼠轉送。Tab 切換欄位，方向鍵選取，Enter 展開／套用。顯示提供原版及 HD 圖像，肖像與捲軸分項缺圖回原圖；兩項素材都無效時 HD 列停用；執行提供繼續／暫停，工具提供截圖／離開。
 
 `-hd-source`／`-hd-asset` 指定肖像原圖及 HD 圖；`-hd-scroll-source`／`-hd-scroll-asset` 指定捲軸原圖及 HD 圖。兩份原圖各自固定雜湊，缺圖分項備援。捲軸的紙張、捲邊與外框換成 HD，文字前景維持原版像素與位置。`-desktop-speed` 預設 1，驗證用 20 不改虛擬時間公式。普通滑鼠只在沒有輸入時間表時啟用；一般鍵盤轉送與桌面音訊尚未接入。四語及音訊設定待功能接妥再加入。二進位留在 `workplace/` 作中間產物，不能稱為正式平台交付。
 

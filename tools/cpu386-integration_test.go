@@ -2,8 +2,83 @@ package cpu386
 
 import (
 	"encoding/binary"
+	"math/bits"
 	"testing"
 )
+
+func TestIntegrationMARKMemoryByteSHR(t *testing.T) {
+	for value := 0; value < 256; value++ {
+		for immediate := 0; immediate < 256; immediate++ {
+			for _, ss := range []bool{false, true} {
+				mem := testBus(make([]byte, 512))
+				// MARK 0x10044: C0 AC 11 80 00 00 00 02; the SS variant uses EBP.
+				copy(mem, []byte{0xc0, 0xac, 0x11, 0x80, 0, 0, 0, byte(immediate)})
+				if ss {
+					mem[2] = 0x15
+				}
+				c := New(mem)
+				c.Seg[SegDS], c.Seg[SegSS] = 8, 16
+				c.SetDescriptor(8, Descriptor{Base: 64, Limit: 255, Writable: true})
+				c.SetDescriptor(16, Descriptor{Base: 128, Limit: 255, Writable: true})
+				c.R[ECX], c.R[EBP], c.R[EDX] = 3, 3, 5
+				address := 200
+				if ss {
+					address += 64
+				}
+				mem[address-1], mem[address], mem[address+1] = 0xaa, byte(value), 0xbb
+				before := c.R
+				c.EFlags = IF | DF | CF | OF | AF | PF | ZF | SF
+				wantFlags := c.EFlags
+				count := uint(immediate & 31)
+				result := byte(value) >> count
+				if count > 0 {
+					wantFlags = IF | DF
+					if result == 0 {
+						wantFlags |= ZF
+					}
+					if result&0x80 != 0 {
+						wantFlags |= SF
+					}
+					if bits.OnesCount8(result)%2 == 0 {
+						wantFlags |= PF
+					}
+					if count <= 8 && (value>>(count-1))&1 != 0 {
+						wantFlags |= CF
+					}
+					if count != 1 || value&0x80 != 0 {
+						wantFlags |= OF
+					}
+				}
+				if err := c.Step(); err != nil || c.R != before || c.EFlags != wantFlags || c.EIP != 8 || mem[address] != result || mem[address-1] != 0xaa || mem[address+1] != 0xbb {
+					t.Fatalf("memory SHR value=%x count=%x ss=%v flags=%x want=%x: %v", value, immediate, ss, c.EFlags, wantFlags, err)
+				}
+			}
+		}
+	}
+	for _, readOnly := range []bool{false, true} {
+		mem := testBus(make([]byte, 256))
+		copy(mem, []byte{0xc0, 0x2d, 0x80, 0, 0, 0, 2})
+		mem[128] = 0xff
+		c := New(mem)
+		c.Seg[SegDS] = 8
+		limit := uint32(127)
+		if readOnly {
+			limit = 255
+		}
+		c.SetDescriptor(8, Descriptor{Limit: limit, Writable: false})
+		c.EFlags = IF | CF | OF | AF
+		if err := c.Step(); err == nil || c.EFlags != IF|CF|OF|AF || mem[128] != 0xff {
+			t.Fatal("rejected memory SHR published a result")
+		}
+	}
+	for _, code := range [][]byte{{0xc0, 0xac}, {0xc0, 0xac, 0x11, 0x80, 0, 0, 0}, {0x26, 0xc0, 0x2d, 0x80, 0, 0, 0, 2}} {
+		c := New(testBus(code))
+		c.EFlags = IF | CF | OF
+		if c.Step() == nil || c.EFlags != IF|CF|OF {
+			t.Fatal("unsupported/truncated SHR published flags")
+		}
+	}
+}
 
 func TestIntegrationSTDBackwardOverlap(t *testing.T) {
 	for _, initial := range []uint32{IF | CF | OF | AF | SF | ZF | PF, IF | DF} {

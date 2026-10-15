@@ -19,9 +19,12 @@ cp /dosgolem/internal/cpu386/cpu_test.go /output/engine/internal/cpu386/cpu_test
 cp /project/tools/cpu386-integration_test.go /output/engine/internal/cpu386/integration_test.go
 cp /dosgolem/internal/machine/dpmi_real_mode.go /output/engine/internal/machine/dpmi_real_mode.go
 cp /dosgolem/internal/machine/dpmi.go /output/engine/internal/machine/dpmi.go
+cp /dosgolem/internal/machine/dpmi_test.go /output/engine/internal/machine/dpmi_test.go
 cd /output/engine
 git apply --check /project/tools/dosgolem.patch
 git apply /project/tools/dosgolem.patch
+git apply --check /project/tools/mark-cpu.patch
+git apply /project/tools/mark-cpu.patch
 gofmt -w /output/engine/internal/cpu386/cpu.go /output/engine/internal/cpu386/integration_test.go /output/engine/internal/machine/dpmi_real_mode.go /output/engine/internal/machine/dpmi.go
 cat > /output/startup-probe/repro-overlay.json <<'JSON'
 {"Replace":{
@@ -30,6 +33,7 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/internal/cpu386/integration_test.go":"/output/engine/internal/cpu386/integration_test.go",
   "/dosgolem/internal/machine/dpmi_real_mode.go":"/output/engine/internal/machine/dpmi_real_mode.go",
   "/dosgolem/internal/machine/dpmi.go":"/output/engine/internal/machine/dpmi.go",
+  "/dosgolem/internal/machine/dpmi_test.go":"/output/engine/internal/machine/dpmi_test.go",
   "/dosgolem/internal/machine/dpmi_mcb.go":"/project/tools/dpmi-mcb.go",
   "/dosgolem/internal/machine/dpmi_mcb_test.go":"/project/tools/dpmi-mcb_test.go",
   "/dosgolem/cmd/leprobe/main.go":"/project/tools/startup-probe.go",
@@ -102,6 +106,8 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/cmd/leprobe/presentation.go":"/project/tools/presentation.go",
   "/dosgolem/cmd/leprobe/presentation_test.go":"/project/tools/presentation_test.go",
   "/dosgolem/cmd/leprobe/desktop.go":"/project/tools/desktop.go",
+  "/dosgolem/cmd/leprobe/startup_choice.go":"/project/tools/startup-choice.go",
+  "/dosgolem/cmd/leprobe/desktop_startup.go":"/project/tools/desktop-startup.go",
   "/dosgolem/cmd/leprobe/windowbar.go":"/project/tools/windowbar.go",
   "/dosgolem/cmd/leprobe/windowbar_test.go":"/project/tools/windowbar_test.go",
   "/dosgolem/cmd/leprobe/desktop_windowbar.go":"/project/tools/desktop-windowbar.go",

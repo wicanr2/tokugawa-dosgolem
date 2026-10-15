@@ -1821,3 +1821,71 @@ READY 的完成範圍為四項美術及已知區的條件式故事消費端。�
 內建 image_gen 依該參考重畫相同的彩色立體薄板標誌、rainbow 字樣及黑底星點。1448×1086 不透明 PNG 的 SHA-256 `d81bfa59067217ef2150cdf325a3bbde93385f6486230da9dda1233f79686d93`，完整提示詞 SHA-256 `b7266d44f0c14b019842da63d8756bea3997d75eff29fa0a7c9e76c88f120cbe`。圖像已檢視，品牌字樣與原構圖保留；底部 (0,449)..(640,480) 規劃使用原版文字，生成圖該區的星點不列入呈現。PNG、完整提示詞及有序參考用途已保存私人 repo 素材清單。
 
 目前原始 caller、載入路徑與正常顯示模式未知。沒有把圖片尺寸當成已支援 640×480 顯示，也沒有將草稿接入 production path。下一步從原始 IDA 證據或正常玩家路徑確認 PCX 消費端，再界定 READY；不為此追硬體逐週期細節。
+
+## 2026-10-15：MARK 恢復範圍、啟動選擇與第一個平台阻塞
+
+使用者已選恢復包內 MARK 標誌，再接 HD，並指定進入遊戲前先選原版／HD，頂端功能列也能動態切換。這些選擇已定案，不重新訪談。
+
+### 原版證據
+
+- 輸入 MARK.EXE.BAK，SHA-256 1ea6dc335b42b39542ba8dec35c8ffd103e4b495d30700c4100e60dbcbecaa60，MZ 內嵌 LE 位於檔案偏移 0x2998。版本來源未知，不稱為出廠原版。
+- IDA Pro 9.4 的 LE 線性 EA 與檔案偏移各自記錄於 `workplace/hd-prototype/catalog/remaining/consumers/ida/mark/`。sub_101E2 在 EA 0x101F3 開啟 DX5.DAT，在 EA 0x1021A 取 RAINEND.PCX，在 EA 0x10260 呼叫 sub_183BA 繪圖。這些關係已證實。實際顯示模式仍以原版執行為準。
+- 恢復前的 DX5 原版嘗試執行 .\\COMMAND.COM，命令尾為 /c MARK.EXE > nul。兩個檔案在來源包內皆不存在。既有缺檔 AX=2／CF=1 契約保留，不能假報 shell 成功。
+- 研究工具 `tools/mark-probe-prepare.py` 只改隔離探針的輸入與環境名稱，拒絕全部 DX5 位址觀測與桌面模式。MARK 自然 LE 入口 2,005,974 步停在 dosgolem 線性位址 0x10044，bytes C0 AC 11 80 00 00 00 02，SHR byte ptr [ECX+EDX+80h],2。原版指令沒有略過。收據 `consumers/mark-probe/startup-probe/receipt-3m.json`，fd2_startup_calls=0。未到繪圖，不算已恢復。
+
+### 記憶體 byte SHR 平台契約：READY
+
+公開來源：[Intel SDM Volume 2，SAL/SAR/SHL/SHR](https://cdrdv2-public.intel.com/789581/325383-sdm-vol-2abcd.pdf)。平台語意依規格，不從 MARK 猜測。此次只擴充 C0 /5 ib 的記憶體形式，沿用 decodeAddress32 的 DS／SS 與 SIB 解析。其他未核准形狀維持停止。
+
+計數取低五位；零計數不改資料或旗標。正計數右移並補零；SF／ZF／PF 依結果，CF 為最後移出位元。計數為 1 時 OF 為原值最高位；其他計數 OF 未定義，採既有保留政策。AF 未定義，採既有清零政策。計數不小於 8 的 CF 未定義，採迴圈末位政策。未定義旗標政策不聲稱實機一致。寫入失敗不得先發布新旗標。驗證真實 SIB bytes、SS 基址、截短指令、唯讀／越界與鄰接 byte 不變，再重跑原版 MARK。
+
+### 桌面啟動選擇：READY
+
+這是使用者指定的新桌面介面，無原版玩法語意。畫面只提供原版與 HD 兩個明確選項；滑鼠、左右鍵／Tab 選擇，Enter／Space 確認。預設顯示選擇畫面，不自動進入。選擇期間及確認輸入放開前，DOS 成功指令數、滑鼠事件、完整 RAM／原生畫面保持不變。選擇只設定桌面 enabled，和既有 setHD／功能列共用。缺圖沿用逐項備援。自動驗證可明示 -startup-display original／hd，正式互動預設 ask。不寫入 DOS 存檔。X11 驗證兩種選擇、選擇輸入隔離、正常進入及遊戲內功能列原版／HD／還原。
+
+### MARK 的 DPMI 描述子權限：READY
+
+右移修正後自然執行 5,380,886 步，原版 INT 10h/4F02 選 0101h，已證實 640×480、8-bit。隨後 sub_183BA 的 REP MOVSD 因目的 selector 0100h 不可寫停止。該 selector 由原版 AX=0000 配置，AX=0008 設 limit=0，AX=0007 設 base=000A0000h。實際 width 參數為 640，內部 SHR 2 得 160 dwords。
+
+既有平台把新描述子標為不可寫，這項假設與成熟 DPMI 實作不符。[DPMI 0000 規格](https://www.delorie.com/djgpp/doc/dpmi/api/310000.html)指定 data、present、base／limit=0；[dosemu2 原始實作](https://github.com/dosemu2/dosemu2/blob/master/src/dosext/dpmi/dpmi.c) AllocateDescriptors 的 SetSelector 使用 readonly=0。原始程式另把 limit=0 用作 SVGA 圖形 selector 的平坦界限，需再查明其擴充契約；不能把零界限靜默放寬為 4 GB。先修正已證實的可寫性，重跑確認下一阻塞。正式通用配置保持 base／limit=0，測試不再把不可寫當作防護；零界限的多 byte 存取仍必須拒絕。AX=0009 明確設唯讀後仍拒絕寫入，不回寫外部 dosgolem。
+
+勘誤：前段把中斷暫存器陣列順序讀錯。R 的順序為 EAX、ECX、EDX、EBX。IDA EA 0x180A6 的 B9 01 00 00 00 明確將 ECX 設 1，AX=0008 的實際 limit 為 0x10000，並非零。新描述子的初始 limit 仍為零；原版隨後設為 65536，SVGA 跨頁的保護例外處理見 sub_1801E。下一切片依實際執行判定是否需要例外交付。
+
+### MARK 跨頁例外的後續入口
+
+原版恢復可寫描述子後，自然 5,381,498 步停在 dosgolem 線性 0x183F3 的 REP MOVSD。此前已寫入第一頁 VRAM；當下仍在黑色 DAC 階段，不能把黑圖當成標誌完成。來源平面與繪圖尚未自然返回，HD 接入仍 DRAFT。
+
+IDA 9.4 `consumers/ida/mark/range-17f80-1810b.json` 證實 sub_18086 把 selector 的 base 設 A0000h、limit 設 10000h，並以 DOS AH=25h 安裝 interrupt 0Dh 至 sub_1801E。該 handler 依 ES／DS 選擇分頁，取 EDI／ESI 的高 16 位，呼叫原版分頁函式，再把偏移 AND FFFFh，以 IRET 返回。這是原版的 VESA 跨頁路徑；不放寬 descriptor 以繞過它。
+
+[Open Watcom C/C++ Programmer's Guide，DOS/4GW 中斷及例外](https://open-watcom.github.io/open-watcom-v2-wikidocs/cpguide.html)確認以 INT 21h/25h 安裝的 handler 同時接收 interrupts 和 exceptions，DOS/4GW 主機會轉換兩者堆疊差異。後續只需通用段界限失敗的結構化回報、這個已公開的主機轉接與同權限 IRET，未知 opcode／無註冊 handler 仍停止。規格與實作尚待完成，不以錯誤文字或 MARK 位址硬接跳躍。
+
+公開平台資料已下載至 `consumers/mark-probe/`，入口 `platform-references.json`：
+dosemu2 固定 commit d81f0f04804225a0fcedf49cf64b8611f8f01e6d、dpmi.c SHA-256 c98a3b783125ad9bdd86e744076638d9290da31c4840794b5be1ee44c9e2a878；
+Open Watcom 文件 SHA-256 d6268a44630bfbcc99aac94ba8dbbe09ec71aabd12c24689b5d7d6795793f37a；
+DPMI 0000 文件 SHA-256 10ffc6d4b13495ce140781f4c13612750905fbacbd7e8fa2507dba3593a183ca。
+GitHub API 的 master 查詢先回 422；查 repository 的 default_branch 後改取實際 branch 並固定 commit。這是來源下載問題，沒有改工具 image 或退回主機執行。
+
+### 動畫消費端的窄範圍定位
+
+以下為 IDA LE 線性 EA，原始 bytes／檔案偏移分別保存在 `consumers/ida/`。輸入 DX5.EXE SHA-256 2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a，IDA Pro 9.4。未把這些定位當成已接 HD。
+
+- 已證實：sub_1BF44 唯一直接 caller 為 sub_1BF73；後者按索引讀取 off_35438。ANIME01.OZM 對應 table EA 35460，BATTLE.OZM 在 3544C／35604，JIMEN0／1 在 3563C／35640；KAO 在 35644。表尾界限未另確認，不推定整張表的完整長度。
+- 已證實：sub_23EFE 在 EA 23F48 載入 index 5 的 BATTLE，EA 23F50 呼叫 sub_1C291。此函式四平面逐 dword 以 OR 合成 VRAM，不能沿用不透明複製端。
+- 已證實：EA 23F5A／23F93 分別載入 129／130 的 JIMEN0／1，EA 23F86／23FC0 呼叫 sub_1C35B。參數 22 個 word、64 列、來源 offset 0 及目的 offset，來源寬 352。前段指令先 OR 四平面來源，再反相為清除遮罩；完整尾端與步幅仍須讀既有 range-1bf73-1c550.json，不先猜補。
+- 強推論：sub_23415 在 EA 23477 動態選取動畫資源；索引運算需另追其資料表，沒有宣稱 48 格正常播放已驗收。
+- 已證實：sub_11B60 的四個額外 caller EA 185F2／18628／1865E／18694 位於 sub_185A7。它們是額外消費端，所屬段落仍待核對，不能把該 helper 當成所有 ANIME 的通用繪圖路徑。
+
+正式 DX5.i64 SHA-256 8afa40d3eaeed4851b78ed2ddc80ccbc1c65e14cb2481a09316d42670efce02e 未被寫入。查詢使用既有資料庫的隔離副本，MARK 則建立獨立資料庫。未改名或覆蓋位址。
+
+### 啟動選擇及既有功能列：CONFORMED
+
+此切片僅包含使用者指定的桌面選擇，不包含仍未接入的 MARK。固定 GUI image sha256:baa20f69bccc7dc8ac7a4bbcf93fbcb32019505bf1c31c1312f85aa873bbb9d4，Go 1.24.13、Ebitengine 2.9.9。二進位 SHA-256 56f1a4897e40cbe30c42d47068f9bbfe0761e5084a7ccaf942fc3be85fd6c8ee，93 項建置來源及快照保存在 `workplace/desktop-prototype/startup-choice/`。
+
+- 啟動時默認 ask；原版與 HD 兩種選擇各自然完成 200,000,000 步。確認前後完整 RAM、CPU、原生索引、色盤與游標 proof 相同；選擇期間及滑鼠／鍵盤確認手勢保持 0 步，沒有按下傳入 DOS。
+- 遊戲中以普通 X11 功能列選原版／HD／還原，各次切換前後 proof 相同，還原畫面相同。兩次完整 RAM 均為 027128acfd96319ad8691b28e7cd26ffcaaadb37fb89e222c5d9bfab25c04e19。普通滑鼠移動在不同暫停邊界送入，故兩次輸入時間戳不同，不稱整條輸入序列完全相同。
+- 額外首戰 GUI 自然 750M／390 事件，完整 RAM 4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9，十五個原版欄位與既有無頭基準完全相同。三張真實 X11 與呈現 PNG 相同。四套件通過。
+- 第一輪驗證器錯誤要求整段流程沒有滑鼠移動，實際沒有按下外洩；保留失敗收據及腳本，在乾淨 original-r2／hd-r2 用同一二進位重跑通過。
+- 第一張選擇截圖發生於首幀呈現前，黑色截圖保留；改由 X11 實際背景色與顏色數確認已呈現。獨立 startup-only 驗證保持 0 步、零滑鼠事件，真實選擇畫面 SHA-256 9ed46da494e302e76023f7f14aa4d8682b9e1305ecffa34b347cb5a8f0fa87ce，已目視確認。一般選擇驗證器也加入相同後置條件。
+- 匯總入口 `tools/verify-startup-integration.py`，驗收總表 SHA-256 173ca02527bafa43cffcb3698b5db435bfe111f8c8bec7246ebf61897297f9de。它核對各收據、實際二進位、93 項建置雜湊、來源快照與原版基準。
+
+原版資料完整性於 2026-10-15T05:20:40Z 通過。807 張生成 PNG、163 份提示詞保持通過保存核對，未新增原版圖或執行收據至 Git。MARK、其他動畫消費端及三平台封包尚未完成。
