@@ -426,3 +426,5 @@ GitHub 收尾：功能、來源契約與工具提交 f998956b63601749c61d1f2567d
 - 全遊戲 HD 維持進行中，下一步局部／捲動開場與其他動畫路徑；正式三平台打包尚未開始。本批建置、GUI 及準備容器已結束，沿用既有 image。遠端、文件入口及擁有權最後核對結果接續記錄。
 
 GitHub 收尾：功能、第二版開場圖與提示詞提交 `6a2e45d71ea9a0c9555b27ae73777879cd656a84` 已推送 main。主機 gh 確認 PRIVATE、遠端 main 相同；1035 份 assets/hd-b 檔案的完整 Git 子樹 SHA `01a2874f341b1b8aaf8d6604708211efb2391db1` 與本機一致，tree 未截斷，original/、workplace/ 未加入遠端。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6182178946 。保存核對、ZIP／12 解包檔與 CRC、Python 語法、文件連結、工具入口正對照、410 項目前來源／快照 SHA、UID/GID 與 Git whitespace 通過。完整工作根沒有 root-owned 檔案或 .md 目錄，全部 tokugawa 容器已退出並移除，沒有重建 image。
+
+本批後續只讀切片：新增 tools/verify-hd-opening-partial-source.py，以既有普通歷史簡介的匹配快照核對 14 次未位移局部繪圖。三格交鋒、五張歷史劇情及武將／眼部來源與目的逐點一致，矩形外未變；OP9 的差異只在已知暫存區。OP2_P／OP9 原生色盤另有差異，保留 DRAFT，未改 Go 或既有 HD 結論。證據 SHA-256 `e179e94ac069b7b8a255a38cd4cb0afcc1d3c33e64bd1c0b8ea9ecf0862f5245`，來源及產物留本機，工具與入口保存私人 repo。來源、色盤與暫存區審查是下一步，不重開已通過完整複製。此切片容器已正常結束並自動移除，沿用既有 image。

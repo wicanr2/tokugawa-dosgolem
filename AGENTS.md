@@ -82,6 +82,7 @@
 | [tools/hd-graphics-effects.go](tools/hd-graphics-effects.go)、[測試](tools/hd-graphics-effects_test.go) | OP4／OP-FULL 的精確原生色盤族識別與 HD 顯示轉換近似；其他來源及未知色盤維持原版備援，全部亮度級與 22 循環級另做測試 |
 | [tools/verify-hd-opening-summary.py](tools/verify-hd-opening-summary.py)、`remaining/history/verification-summary.json` | 固定 GUI image 內專案唯讀、history 可寫覆掛相同路徑，彙整完整複製、八時點色彩效果、缺圖、正常標題及首戰的匹配來源與收據；不宣稱局部／捲動路徑完成 |
 | `remaining/history/effects/ready/` | 最後一次 GUI 暫停由 549M 跨至色盤更新邊界，保留上層失敗的七組擷取與驗證器；此目錄在已確認的 548M 起等待，仍要求全部 48 通道匹配，不放寬產品條件 |
+| [tools/verify-hd-opening-partial-source.py](tools/verify-hd-opening-partial-source.py)、`remaining/history/partial/` | 固定 GUI image 內專案唯讀、partial 可寫覆掛原路徑；以既有普通 600M 的匹配來源快照核對交鋒、歷史劇情、武將及眼部的來源／目的索引、裁切、矩形外不變與 OP9 保留緩衝區。只作原版證據，不宣稱 HD 完成 |
 | [tools/hd-frame-prepare.py](tools/hd-frame-prepare.py) | 既有手繪 VISUAL 上方框架依原版矩形分區縮放；輸出 `workplace/hd-prototype/scroll/frame/` 的來源、HD 圖與幾何收據，遊戲內驗證另列 |
 | [tools/hd-frame.go](tools/hd-frame.go)、[tools/hd-frame_test.go](tools/hd-frame_test.go) | VISUAL 上方紅金框架的來源核對與呈現；中央劇情圖及下方捲軸保持獨立，遮擋時完整備援 |
 | [tools/hd-window-extract.py](tools/hd-window-extract.py) | 核對 WINDOW.OZM 九個 16×16 圖塊、原版 buffer 與正常視窗；輸出 `workplace/hd-prototype/catalog/window/` 的來源、原始圖塊、手繪參考與來源收據 |
