@@ -1,0 +1,32 @@
+{
+  "classification": "generated opening artwork; source geometry, shared consumer and normal HD verification remain separate",
+  "generator": "built-in image_gen",
+  "records": [
+    {
+      "sources": [
+        "OP-FULL.OZM"
+      ],
+      "asset": "OP-FULL-hd-b-v1.png",
+      "sha256": "d7cef9b5ac9f237baac15550da0c6c33223116cd8f90032bdb2c80f36b218af7",
+      "prompt": "OP-FULL-hd-b-v1.prompt.txt",
+      "prompt_sha256": "0675855351774d013ec49f9bbb3942ab439ab84b6d9568c172f1ac513d928787",
+      "size": [
+        1586,
+        992
+      ],
+      "inputs": [
+        {
+          "role": "composition and original character reference",
+          "path": "workplace/hd-prototype/catalog/remaining/source-boundary/OP-FULL-runtime/OP-FULL-runtime-reference-2x.png",
+          "sha256": "107b69c2083da81c513036a3bc1db84a717a60ab34ec407efede2011f4494ce1"
+        },
+        {
+          "role": "approved black and gold calligraphy style only",
+          "path": "assets/hd-b/art/remaining/prepared/OP5.OZM-hd-v3.png",
+          "sha256": "308e76bfe558167ee1c7e04b2e6559607ccf78503ea0ec9a1b78db34aebcd3bc"
+        }
+      ],
+      "source_scope": "one observed original RAM source; on-disk tail not filled"
+    }
+  ]
+}

@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 797,
-    "prompts": 158,
-    "bytes": 578511578
+    "png": 799,
+    "prompts": 159,
+    "bytes": 583222400
   },
-  "archive_tool_sha256": "7b4d0a14a8c6c6be313aa0cad4e25fb8f2589e12549a27c66ace75cb3fd5cc0a",
+  "archive_tool_sha256": "4800119f564ea727b4a324d92a949d2ea7e6f2e3ed93977d5e53c1d89a627590",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -1592,6 +1592,26 @@
       "local_source": "workplace/hd-prototype/catalog/art/MAP_WAKU-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/OP-FULL-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2908069,
+      "sha256": "d7cef9b5ac9f237baac15550da0c6c33223116cd8f90032bdb2c80f36b218af7",
+      "local_source": "workplace/hd-prototype/catalog/art/OP-FULL-hd-b-v1.png",
+      "prompt": "art/OP-FULL-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1586,
+        992
+      ]
+    },
+    {
+      "path": "art/OP-FULL-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1973,
+      "sha256": "0675855351774d013ec49f9bbb3942ab439ab84b6d9568c172f1ac513d928787",
+      "local_source": "workplace/hd-prototype/catalog/art/OP-FULL-hd-b-v1.prompt.txt"
+    },
+    {
       "path": "art/OP1-hd-b-v1.png",
       "kind": "png",
       "bytes": 527889,
@@ -1864,6 +1884,64 @@
       "bytes": 610,
       "sha256": "0087b4d4865aa4fa46f176ad54ea19f59a1ac27621d9c5eafb82e7532ac6f5aa",
       "local_source": "workplace/hd-prototype/catalog/art/logo-generation-v1.json"
+    },
+    {
+      "path": "art/opening-full-generation-v1.json",
+      "kind": "generation-metadata",
+      "bytes": 1217,
+      "sha256": "de65c0f82df352c368651a72569f925e9ac15f7dda0dc0334bb8cf66b31d645a",
+      "local_source": "workplace/hd-prototype/catalog/art/opening-full-generation-v1.json"
+    },
+    {
+      "path": "art/opening-full/OP-FULL.OZM-hd-v1.png",
+      "kind": "png",
+      "bytes": 1792670,
+      "sha256": "9b7654b014175c9076d14e767a175d248bd379fc190ed51055f21e257e84a7b7",
+      "local_source": "workplace/hd-prototype/catalog/remaining/history/art/OP-FULL.OZM-hd-v1.png",
+      "derivation": {
+        "source": "OP-FULL.OZM",
+        "status": "runtime_observed",
+        "width": 640,
+        "height": 400,
+        "indices_sha256": "c9b332bfc54a189abfc4b7caf3c1821738624dedd41f19332ee5e4b44a1716a3",
+        "plane_sha256": [
+          "7a3b8c91a6928da52803e3062be4720882a280ba763d1056dab01bd87fba04ee",
+          "3f77eaae57a9183454cde37dbd9b25b3c499d762fe6dc1e46a4626f4510a00cf",
+          "4be1bd2e59a0085035c9a2011fb4b9fb9c7b692a1bb5bfb4b898e31f06989038",
+          "9451b3ce42103719eca4edb2c641470375efe6d9acde5a243a9a0019b4e9c746"
+        ],
+        "asset": "opening-full/OP-FULL.OZM-hd-v1.png",
+        "asset_sha256": "9b7654b014175c9076d14e767a175d248bd379fc190ed51055f21e257e84a7b7",
+        "raw_asset": "OP-FULL-hd-b-v1.png",
+        "raw_asset_sha256": "d7cef9b5ac9f237baac15550da0c6c33223116cd8f90032bdb2c80f36b218af7",
+        "prompt": "OP-FULL-hd-b-v1.prompt.txt",
+        "prompt_sha256": "0675855351774d013ec49f9bbb3942ab439ab84b6d9568c172f1ac513d928787",
+        "source_proof_sha256": "9c42fb441cacd903eb4c82c902a9faadbb774e2bc76407eef9009940b22bac5b",
+        "source_scope": "two matching ordinary history executions; on-disk decode remains unsupported",
+        "geometry": "whole canvas 640x400 to 1280x800; no source bytes or text modified"
+      },
+      "prompts": [
+        "art/OP-FULL-hd-b-v1.prompt.txt"
+      ],
+      "status": "calibrated runtime-observed source; normal HD validation separately recorded",
+      "size": [
+        1280,
+        800
+      ]
+    },
+    {
+      "path": "art/opening-full/prepare-source.txt",
+      "kind": "preparation-metadata",
+      "bytes": 5364,
+      "sha256": "5884be3cccb61aa4d9ea94f2f3994ed3709effd3020f69dcefe60cee8e525789",
+      "local_source": "workplace/hd-prototype/catalog/remaining/history/art/prepare-source.txt"
+    },
+    {
+      "path": "art/opening-full/profiles.json",
+      "kind": "preparation-metadata",
+      "bytes": 1529,
+      "sha256": "106b8aa28d032d8f152e6e6fc7a628f080c5576ee6d9af48b9e8eee68e1377a7",
+      "local_source": "workplace/hd-prototype/catalog/remaining/history/art/profiles.json"
     },
     {
       "path": "art/opening-generation.json",
