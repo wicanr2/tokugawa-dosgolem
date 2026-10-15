@@ -2067,3 +2067,29 @@ IDA 9.4 在正式資料庫的獨立 battle-cpu-primitives.i64 匯出 363 列，r
 r7 同範圍篩查為 363 列載入後 bytes 相符、363 個合成單步及零錯誤；四套件亦通過。收據保存於 consumers/battle/r7/capabilities/battle-instruction-capabilities.json，明示 CPU 來源、工具來源及各自 SHA-256。此結果限於形狀篩查，正常攻擊仍另驗證。
 
 重跑工具時沿用固定 GUI Docker、UID 1000、網路隔離及 Go 快取，唯讀掛專案、原版及固定 dosgolem；將指定批次 capabilities/ 的獨立副本掛 /output。該目錄的 battle-capability-overlay.json 只覆蓋已凍結的 internal 平台來源及 cmd/leprobe/main.go，執行 `go run -overlay /output/battle-capability-overlay.json ./cmd/leprobe -cpu-source /project/workplace/hd-prototype/catalog/remaining/consumers/battle/r7/engine/internal/cpu386/cpu.go`。歷史重跑先核對當次 source-snapshot/tools/battle-instruction-probe.go 的 SHA，再將該檔另行唯讀掛至容器 /project/tools/battle-instruction-probe.go，保持實際編譯與工具自查的路徑一致；不覆寫原有篩查收據。
+
+### 平台補充：單次 SCASW，READY
+
+原版存檔 I003.SAV 經正常標題、FILE 3 與確認讀回，140M／九筆普通輸入的完整原生索引及 RGBA 與存檔畫面一致。普通回合探針沿用此資料，十九筆輸入從原始 LE 入口執行；於 180761953 步停在 dosgolem 線性 0x1F244，原始 bytes 66 AF，AX=0x801E、EDI=58785368、ECX=63。收據保存於 r8/native-turn/。這是單次 SCASW，沒有 REP，不把它解釋成重複掃描。
+
+依 [Intel SDM Volume 2B，SCAS，4-604..4-606](https://cdrdv2-public.intel.com/782151/253667-sdm-vol-2b.pdf)，以 AX 減 ES:EDI 的 16 位元值設定 OF／SF／ZF／AF／PF／CF，然後依 DF 將 EDI 加二或減二；不寫回來源，單次形式不改 ECX。READY 範圍只補 66 AF、32 位元位址及既有 ES 讀取契約。32 位元運算、REP、REPNZ、segment override 與 address-size 形式維持拒絕。以固定 ES、DS／ES 分離、雙 DF、CMP 差分、唯讀與界限、EDI 回繞及拒絕測試驗證後，重跑同一普通回合輸入。這是公開 CPU 規格，沒有重作遊戲 AI 或改 EXE。
+
+### 原版 FILE 3 存讀檔抽樣：已證實
+
+輸入 EXE 沿用本節固定 2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a；下載 DAT 為 de092d5ef59a3e790fd89c323dde1b447c8fe93f430043d1384a1565f27cef37。r8 在正常首戰後，以真實 X11 的原版「儲存進度」及確認寫入可寫工作副本，原始 original/game/ 保持唯讀。
+
+- 寫後 DAT 為 3de67e0b56826584420d9dbbd70d9cceea94641694610cd89663f0fd979f97e0，大小仍為 3908861 bytes。檔頭 4233 bytes 不變；已盤點的 201 個資源中，只有 I003.SAV 改動 134 bytes，檔案偏移 0x2DD456、長度 25000。其他 200 個資源完整位元組一致，沒有重編圖像或推測存檔欄位。
+- save-import/manifest.json 的 SHA-256 為 5f16734dfde5607b58ae0c9abd37003594406f7d53c7a64e8338e7bf0fe8f837，逐檔記錄全部十二個輸入。此輸入明示「原版程式資料加原版存檔」，不冒稱下載基準 DAT。檔案唯讀掛 /original，原版執行仍從真正 LE 入口開始。
+- 普通讀回輸入為 80M 點標題「轉入進度」座標 (300,191)、90M 點 FILE 3 (220,176)、100M 點確認 (250,174)，各含移動、按下及放開，間隔 100000 步。load-check/r4/continue-path.json 有九筆，SHA-256 76c111b89409b64331ea15f252bb54a2d20cd264f8746eea5483a27cc04d0fb8。
+- 原版自然到 140M，沒有未支援指令或跳過原版 runtime；完整原生索引 SHA-256 eac8871b05cc4a25ded2be4fb5f25baf0ef0f51f291b68fd11412d4f207cfb82，與存檔時相同。獨立 Pillow 9.4.0 比對全部 640×400 RGBA，包含游標，差異為零。收據 8e7d965e2117d8fa57a7a73aa595545694e901aaba0cb0d44484f91e347965ee，完整 RAM 840af476a537363b7009565ae12f875b2917329ae71ed65f458e909fa4740f4e 僅作本次可追溯資料，不稱存讀檔 RAM 相同。
+- r9 沿用 r7 桌面二進位及 106 項來源，正常讀檔後開武將表；五張實際 X11 與呈現 PNG 完整一致，原版／HD 切換 guest_unchanged=true。收據 28479c69bf2d791d50c3071575704de35b8a786e3a308de0d7f501efcb11b26c，停止為正常 desktop_closed，成功步數 121599999。軍表文字保留原版，沒有推定單位陣營。
+
+核對入口 tools/verify-original-save.py，固定既有 GUI image 及 Python 3.11.2／Pillow 9.4.0。歷史來源以 --source-root 指向 r8/source-snapshot，另以 --desktop 指向 r9；工具及完整提示以 AGENTS 的穩定路徑為準。本節只證實一個 FILE 3 樣本、畫面還原及武將表 HD 抽樣，不宣稱 SAV 格式已解碼、所有欄位、後續章節或其他平台通過。
+
+原先 load-check/r2 把原生 640×400 圖的座標再除二，點到 (110,62)，沒有選中 FILE 3。這是研究輸入錯誤；r3 改正原生座標後到確認，r4 補正常確認後成功，全部原始收據保留。r9 桌面速度 1 的工具按下只經一次畫面更新，未開武將表；真實 X11 保持按下至少 100000 個原版步數後成功。互動工具新增 hold_steps，預設 100000，記錄實際原版輸入，不改遊戲滑鼠契約或猜測硬體時序。
+
+### SCASW 正常回合追加
+
+r10 四套件通過，cmd/leprobe 58.404 秒，106 項凍結來源，桌面二進位 d61c9d0e2c2cc85ea313744c7c457082e38a95019d50b3ebb44f14c6785ab173。相同十九筆原版讀檔及回合輸入先自然到 200M，再以獨立輸出重跑至 600M，兩次只因預算結束。600M 畫面日期由 1／20 到 2／20，正常來源新增 KOYO.OZM，沒有 OR 或透明矩形返回。
+
+600M 收據 a43d9f2117a43591dbb372acd4d86706ee07d506746b95d109ba5cabf516ee3f，獨立核對 e38a062f3d8e3ec4ee944d911a579b1440098b5744da69e56e8ade2457c0c51b，入口 r10/native-turn-extended/verification-summary.json。verify-composite-probe.py --native-only 明示 native_execution=PASS、result=INCOMPLETE、HD_rendering_integrated=false；全部十九筆輸入及前綴邊界符合 SCASW 原停止批次，來源／資料／完整 RAM 雜湊均保存。這證實一次普通回合已可推進，沒有擴張為交鋒或全遊戲 HD 完成。

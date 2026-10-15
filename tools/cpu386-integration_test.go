@@ -2872,6 +2872,67 @@ func TestIntegrationWordAccumulatorAND(t *testing.T) {
 	}
 }
 
+func TestIntegrationSingleSCASW(t *testing.T) {
+	for _, backward := range []bool{false, true} {
+		for sample := uint32(0); sample < 2048; sample++ {
+			left, right := uint16(sample*7919+32767), uint16(sample*3571+1)
+			mem := testBus(make([]byte, 512))
+			copy(mem, []byte{0x66, 0xaf})
+			binary.LittleEndian.PutUint16(mem[128:], right^0xffff)
+			binary.LittleEndian.PutUint16(mem[192:], right)
+			before := append([]byte(nil), mem...)
+			c := New(mem)
+			c.Seg[SegDS], c.Seg[SegES] = 8, 16
+			c.SetDescriptor(8, Descriptor{Base: 64, Limit: 383, Writable: true})
+			c.SetDescriptor(16, Descriptor{Base: 128, Limit: 383, Writable: false})
+			c.R[EAX], c.R[EDI], c.R[ECX], c.R[ESI] = 0xabcd0000|uint32(left), 64, sample&63, 37
+			c.EFlags = IF | CF | OF | AF | SF | ZF | PF
+			wantEDI := uint32(66)
+			if backward {
+				c.EFlags |= DF
+				wantEDI = 62
+			}
+			regs := c.R
+			regs[EDI] = wantEDI
+			ref := New(testBus{0x66, 0x39, 0xc8})
+			ref.R[EAX], ref.R[ECX], ref.EFlags = uint32(left), uint32(right), c.EFlags
+			if err := ref.Step(); err != nil {
+				t.Fatal(err)
+			}
+			if err := c.Step(); err != nil || c.R != regs || c.EFlags != ref.EFlags || c.EIP != 2 {
+				t.Fatal("SCASW ES/DF/CMP differential", sample, backward, c.R, c.EFlags, ref.EFlags, err)
+			}
+			for i := range mem {
+				if mem[i] != before[i] {
+					t.Fatal("SCASW wrote read-only memory", i)
+				}
+			}
+		}
+	}
+	mem := testBus(make([]byte, 128))
+	copy(mem, []byte{0x66, 0xaf})
+	binary.LittleEndian.PutUint16(mem[64:], 7)
+	c := New(mem)
+	c.Seg[SegES] = 8
+	c.SetDescriptor(8, Descriptor{Base: 64, Limit: 63, Writable: false})
+	c.R[EAX], c.R[ECX], c.EFlags = 0xabcd0007, 0, IF|DF|CF|OF|AF
+	if err := c.Step(); err != nil || c.R[EDI] != 0xfffffffe || c.R[ECX] != 0 || c.R[EAX] != 0xabcd0007 || c.EFlags != IF|DF|ZF|PF {
+		t.Fatal("single SCASW count-zero or backward wrap", c.R, c.EFlags, err)
+	}
+	for _, code := range [][]byte{{0xaf}, {0xf2, 0x66, 0xaf}, {0xf3, 0x66, 0xaf}, {0x26, 0x66, 0xaf}, {0x66, 0xaf}} {
+		mem := testBus(make([]byte, 128))
+		copy(mem, code)
+		c := New(mem)
+		c.Seg[SegES] = 8
+		c.SetDescriptor(8, Descriptor{Limit: 64, Writable: false})
+		c.R[EAX], c.R[EDI], c.EFlags = 0xabcd0007, 64, IF|CF|OF|AF
+		regs := c.R
+		if c.Step() == nil || c.R != regs || c.EFlags != IF|CF|OF|AF {
+			t.Fatal("unverified or out-of-bounds SCAS published state", code)
+		}
+	}
+}
+
 func TestIntegrationD1SHLRegisters(t *testing.T) {
 	// D1 /4 is the Intel count-one form of C1 /4 imm8=1. AF is undefined.
 	for reg := byte(0); reg < 8; reg++ {

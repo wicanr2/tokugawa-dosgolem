@@ -15,10 +15,17 @@ env = dict(os.environ, DISPLAY=':98', LIBGL_ALWAYS_SOFTWARE='1', LP_NUM_THREADS=
 parser = argparse.ArgumentParser()
 parser.add_argument('--timeout', type=int, default=3600)
 parser.add_argument('--prefix-step', type=int, default=741000000)
+parser.add_argument('--harness-only', action='store_true')
+parser.add_argument('--desktop-speed', type=int, default=60)
+parser.add_argument('--mouse-file', default='/project/tools/player-path.json')
+parser.add_argument('--input-manifest', type=Path)
 args = parser.parse_args()
 assert 30 <= args.timeout <= 7200 and 0 <= args.prefix_step <= 1000000000
+assert 1 <= args.desktop_speed <= 60
 children, captures, commands = [], [], []
 process = None
+expected_input = json.loads(Path(args.mouse_file).read_text())
+data_origin = None
 deadline = time.monotonic() + args.timeout
 
 
@@ -89,7 +96,8 @@ def capture(label):
 def report(phase, error=None):
     d = dict(phase=phase, captures=captures, commands=commands, step=status().get('step'), error=error,
              binary_sha256=sha(root / 'tokugawa-desktop-prototype'), tool_sha256=sha(Path(__file__)),
-             harness_only=args.prefix_step < 741000000, timeout_seconds=args.timeout)
+             harness_only=args.harness_only, timeout_seconds=args.timeout,
+             input_data=data_origin, input_mouse_sha256=sha(Path(args.mouse_file)), desktop_speed=args.desktop_speed)
     pending = root / 'exploration-status.pending'
     pending.write_text(json.dumps(d, ensure_ascii=False, indent=2) + '\n')
     pending.replace(root / 'exploration-status.json')
@@ -107,13 +115,24 @@ def close_original():
     assert process.returncode == 0
     receipt = json.loads((root / 'receipt.json').read_text())
     assert receipt['integration_input_sha256'] == sources
-    assert len(receipt['mouse_input_schedule']) == 390 and receipt['desktop_script_handoff']
+    assert receipt['mouse_input_schedule'] == expected_input and receipt['desktop_script_handoff']
 
 
 try:
     sources = json.loads((root / 'build-sources.json').read_text())
     assert len(sources) == 106 and all(sha(project / n) == h for n, h in sources.items())
     assert sha(project / 'tools/player-path.json') == 'f621bd1f66e0d4bb492570317ec82b898ec95d3a1f4139a6ee5c451011b30395'
+    dat_sha = sha(Path('/original/DX5.DAT'))
+    if args.input_manifest:
+        manifest = json.loads(args.input_manifest.read_text())
+        assert manifest['classification'] == 'original program data plus original-game save; not downloaded baseline DAT'
+        assert manifest['saved_dat_sha256'] == dat_sha
+        assert all(sha(Path('/original') / f['path']) == f['sha256'] for f in manifest['files'])
+        data_origin = dict(kind='original-game save', manifest=str(args.input_manifest),
+                           manifest_sha256=sha(args.input_manifest), dat_sha256=dat_sha)
+    else:
+        assert dat_sha == 'de092d5ef59a3e790fd89c323dde1b447c8fe93f430043d1384a1565f27cef37'
+        data_origin = dict(kind='downloaded baseline', dat_sha256=dat_sha)
     with (root / 'xvfb.log').open('wb') as log:
         xvfb = subprocess.Popen(['Xvfb', ':98', '-screen', '0', '1600x1200x24', '-nolisten', 'tcp', '-ac'],
                                 env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -124,7 +143,7 @@ try:
         time.sleep(.05)
     run('xdotool', 'mousemove', '1590', '1190')
     command = [str(root / 'tokugawa-desktop-prototype'), '-desktop', '-publisher-intro=false', '-startup-display', 'original',
-               '-desktop-speed', '60', '-steps', '2000000000', '-mouse-file', '/project/tools/player-path.json',
+               '-desktop-speed', str(args.desktop_speed), '-steps', '2000000000', '-mouse-file', args.mouse_file,
                '-desktop-script-handoff', '-hd-composite-trace', '-hd-graphics-trace']
     with (root / 'receipt.json').open('wb') as out, (root / 'stderr.log').open('wb') as err:
         process = subprocess.Popen(command, env=env, stdout=out, stderr=err)
@@ -133,9 +152,9 @@ try:
     window = run('xdotool', 'search', '--onlyvisible', '--name', '德川家康', stdout=subprocess.PIPE).stdout.decode().splitlines()[0]
     run('xdotool', 'windowfocus', '--sync', window)
     wait(lambda s: s.get('step', 0) >= args.prefix_step and
-         (args.prefix_step < 741000000 or not s.get('scripted_input_pending')), 900)
+         (args.harness_only or not s.get('scripted_input_pending')), 900)
     paused(True)
-    capture('harness-start' if args.prefix_step < 741000000 else 'first-battle')
+    capture('harness-start' if args.harness_only else ('saved-checkpoint' if args.input_manifest else 'first-battle'))
     report('ready')
     while time.monotonic() < deadline:
         if process.poll() is not None:
@@ -168,6 +187,8 @@ try:
             begin = status()['step']
             n = command.get('steps', 5000000)
             assert isinstance(n, int) and 100000 <= n <= 200000000 and begin + n < 2000000000
+            hold_steps = command.get('hold_steps', 100000)
+            assert isinstance(hold_steps, int) and 100000 <= hold_steps <= n
             paused(False)
             if kind in ['click', 'drag']:
                 x, y, button = command['x'], command['y'], command.get('button', 1)
@@ -182,6 +203,8 @@ try:
                         assert 0 <= tx < 640 and 0 <= ty < 400
                         run('xdotool', 'mousemove', '--window', window, str(tx * 2 + 1), str(ty * 2 + 1))
                         wait(lambda s: (s.get('desktop_mouse') or [])[:2] == [tx, ty])
+                    held_from = status()['step']
+                    wait(lambda s: s.get('step', 0) >= held_from + hold_steps)
                 finally:
                     run('xdotool', 'mouseup', str(button))
                 wait(lambda s: s.get('desktop_mouse', [0, 0, 1])[2] == 0)

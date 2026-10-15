@@ -1,6 +1,19 @@
 --- a/internal/cpu386/cpu.go
 +++ b/internal/cpu386/cpu.go
-@@ -1326,12 +1326,17 @@
+@@ -645,6 +645,12 @@
+ 		return fail("segment override 只支援 8A／8B／8C／8E")
+ 	}
+ 	switch {
++	case op == 0xaf:
++		if !operand16 || segmentOverride >= 0 || repe || repne { return fail("SCASW 只支援單次 16-bit 形式") }
++		value, ok := c.readSegment16(c.Seg[SegES], c.R[EDI])
++		if !ok { return fail("SCASW ES 來源越界") }
++		c.sub16(uint16(c.R[EAX]), value)
++		if c.EFlags&DF == 0 { c.R[EDI] += 2 } else { c.R[EDI] -= 2 }
+ 	case op == 0xf8 || op == 0xf9 || op == 0xf5:
+ 		if operand16 || segmentOverride >= 0 || repe || repne {
+ 			return fail("CLC／STC前綴未支援")
+@@ -1326,12 +1332,17 @@
  			return fail(e.Error())
  		}
  		if modrm>>6 != 3 {
@@ -23,7 +36,7 @@
  			}
  			left, ok := c.readSegment32(c.Seg[seg], addr)
  			if !ok {
-@@ -2580,6 +2585,26 @@
+@@ -2580,6 +2591,26 @@
  		}
  		group := (modrm >> 3) & 7
  		if operand16 {
@@ -50,7 +63,7 @@
  			if modrm>>6 != 3 || (group != 0 && group != 1 && group != 4 && group != 5 && group != 6) {
  				return fail("81 word形狀尚未支援")
  			}
-@@ -3470,6 +3495,19 @@
+@@ -3470,6 +3501,19 @@
  			}
  			c.setLogicFlags(result)
  			c.EFlags |= value & 1
@@ -70,7 +83,7 @@
  			break
  		}
  		if modrm>>6 == 3 && group == 5 {
-@@ -3680,6 +3718,17 @@
+@@ -3680,6 +3724,17 @@
  			if carry != 0 {
  				c.EFlags |= CF
  			}
@@ -88,14 +101,18 @@
  			c.R[rm] = result
  		}
  	case op == 0xf6:
-@@ -4788,6 +4837,15 @@
+@@ -4788,6 +4843,19 @@
  		c.R[EAX] = c.R[EAX]&0xffffff00 | uint32(result)
  		c.setLogicFlags8(result)
  	case op == 0x25:
 +		if operand16 {
-+			if segmentOverride >= 0 || repe || repne { return fail("25 word 不接受目前的 prefix") }
++			if segmentOverride >= 0 || repe || repne {
++				return fail("25 word 不接受目前的 prefix")
++			}
 +			value, err := c.fetch16()
-+			if err != nil { return fail(err.Error()) }
++			if err != nil {
++				return fail(err.Error())
++			}
 +			result := uint16(c.R[EAX]) & value
 +			c.R[EAX] = c.R[EAX]&0xffff0000 | uint32(result)
 +			c.setLogicFlags16(result)
