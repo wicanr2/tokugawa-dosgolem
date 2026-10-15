@@ -424,3 +424,5 @@ GitHub 收尾：功能、來源契約與工具提交 f998956b63601749c61d1f2567d
 - 效果驗證首輪最後暫停跨至 550M 色盤更新邊界，保留失敗收據及七組擷取；以先前已確認的觀測起點在 ready 子目錄重跑通過。只調整擷取時點，沒有調整產品資格。素材 README 改版後的 verify-only 曾早於保存完成執行；同步保存工具文字並等保存結束後，重跑正常保存及核對通過。
 - 最終總表 SHA-256 `2ab4e2768c2fc6f59671f4102e47c2ec7cf0dfe3f9f9b5bbb44206fbfd190554`。素材庫保存與 verify-only 為 801 PNG、160 提示詞、587394203 indexed bytes；唯一覆蓋表為 107 OZM prepared、一項 VISUAL 分層及四項缺美術，靜態解碼仍有五項未知。原版來源、擷取、RAM／PCM 及執行收據維持本機。
 - 全遊戲 HD 維持進行中，下一步局部／捲動開場與其他動畫路徑；正式三平台打包尚未開始。本批建置、GUI 及準備容器已結束，沿用既有 image。遠端、文件入口及擁有權最後核對結果接續記錄。
+
+GitHub 收尾：功能、第二版開場圖與提示詞提交 `6a2e45d71ea9a0c9555b27ae73777879cd656a84` 已推送 main。主機 gh 確認 PRIVATE、遠端 main 相同；1035 份 assets/hd-b 檔案的完整 Git 子樹 SHA `01a2874f341b1b8aaf8d6604708211efb2391db1` 與本機一致，tree 未截斷，original/、workplace/ 未加入遠端。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6182178946 。保存核對、ZIP／12 解包檔與 CRC、Python 語法、文件連結、工具入口正對照、410 項目前來源／快照 SHA、UID/GID 與 Git whitespace 通過。完整工作根沒有 root-owned 檔案或 .md 目錄，全部 tokugawa 容器已退出並移除，沒有重建 image。
