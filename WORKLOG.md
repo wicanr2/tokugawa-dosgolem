@@ -519,3 +519,6 @@ https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6186670059
 覆蓋盤點初輪因舊收據要求目前驗證器的 SHA-256 而失敗，屬工具版本核對問題。新增 publisher-intro=false 改變了十一份局部驗證器的原始碼；三份受影響收據改以已保存的完整快照核對當時雜湊，並列出 verification_tool_sources。沒有修改舊收據或放寬雜湊比對，乾淨重跑通過。唯一覆蓋清單的 RAINEND 現為 game_startup_integrated=true；其他十七項動畫消費端未列完成。
 
 原始 ZIP CRC、十二個檔案、唯讀與 UID/GID 於 2026-10-15T07:37:58Z 通過；807 PNG、163 提示詞及 596522181 indexed bytes 核對通過，圖片子樹未改。文件另載入 README 現況規範，更新唯一狀態表、待辦與穩定入口。103 項編譯輸入保持凍結，完整根沒有 root-owned 或 .md 目錄；正式 DX5.i64 雜湊不變，全部本批容器已移除。下一步依既有證據接剩餘動畫及特殊繪圖消費端；全遊戲 HD、桌面音訊與三平台封包仍未完成。提交與遠端核對隨後追加。
+
+提交 d4a27beb0645cef522ccf9e0bce91ce704b1a32e 已推送 main，git ls-remote 與 GitHub tree API 核對一致；主機 gh 登入有效，repo 仍為 PRIVATE。遠端 assets/hd-b 仍有 1050 份檔案，子樹 9de9713108cf662e0b2bb39e46b5ab7aec8c1561 與本機一致，tree 未截斷，沒有 original/ 或 workplace/ 進入版控。103 項來源及快照、全部 Python 語法、Go 格式、文件連結與新工具入口核對通過。Issue #5 的完整鏈進度已送出，仍保留全遊戲 HD 待辦：
+https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6187209150
