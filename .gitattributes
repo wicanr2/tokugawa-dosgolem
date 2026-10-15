@@ -3,3 +3,4 @@ tools/dosgolem.patch whitespace=-space-before-tab
 # 新補丁含空白 context 行，保留 unified diff 的必要前綴。
 tools/mark-cpu.patch whitespace=-space-before-tab,-blank-at-eol
 tools/dos4g-exception.patch whitespace=-space-before-tab,-blank-at-eol
+tools/battle-cpu.patch whitespace=-space-before-tab,-blank-at-eol

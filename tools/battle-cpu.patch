@@ -1,0 +1,95 @@
+--- a/internal/cpu386/cpu.go
++++ b/internal/cpu386/cpu.go
+@@ -1326,12 +1326,17 @@
+ 			return fail(e.Error())
+ 		}
+ 		if modrm>>6 != 3 {
++			seg, addr, e := c.decodeAddress32(modrm)
++			if e != nil {
++				return fail(e.Error())
++			}
+ 			if operand16 {
+-				return fail("CMP word memory 尚未支援")
+-			}
+-			seg, addr, e := c.decodeAddress32(modrm)
+-			if e != nil {
+-				return fail(e.Error())
++				left, ok := c.readSegment16(c.Seg[seg], addr)
++				if !ok {
++					return fail("CMP word 來源越界")
++				}
++				c.sub16(left, uint16(c.R[(modrm>>3)&7]))
++				break
+ 			}
+ 			left, ok := c.readSegment32(c.Seg[seg], addr)
+ 			if !ok {
+@@ -2580,6 +2585,20 @@
+ 		}
+ 		group := (modrm >> 3) & 7
+ 		if operand16 {
++			if group == 7 {
++				value := uint16(c.R[modrm&7])
++				if modrm>>6 != 3 {
++					seg, addr, err := c.decodeAddress32(modrm)
++					if err != nil { return fail(err.Error()) }
++					var ok bool
++					value, ok = c.readSegment16(c.Seg[seg], addr)
++					if !ok { return fail("CMP word 來源越界") }
++				}
++				imm, err := c.fetch16()
++				if err != nil { return fail(err.Error()) }
++				c.sub16(value, imm)
++				break
++			}
+ 			if modrm>>6 != 3 || (group != 0 && group != 1 && group != 4 && group != 5 && group != 6) {
+ 				return fail("81 word形狀尚未支援")
+ 			}
+@@ -3470,6 +3489,19 @@
+ 			}
+ 			c.setLogicFlags(result)
+ 			c.EFlags |= value & 1
++			break
++		}
++		if modrm>>6 == 3 && group == 4 {
++			rm := modrm & 7
++			value := c.R[rm]
++			result := value << 1
++			carry := value >> 31
++			c.setLogicFlags(result)
++			c.EFlags |= carry
++			if result>>31^carry != 0 {
++				c.EFlags |= OF
++			}
++			c.R[rm] = result
+ 			break
+ 		}
+ 		if modrm>>6 == 3 && group == 5 {
+@@ -3680,6 +3712,17 @@
+ 			if carry != 0 {
+ 				c.EFlags |= CF
+ 			}
++			if count == 1 {
++				overflow := uint32(0)
++				if group == 4 {
++					overflow = result>>31 ^ carry
++				} else if group == 5 {
++					overflow = value >> 31
++				}
++				if overflow != 0 {
++					c.EFlags |= OF
++				}
++			}
+ 			c.R[rm] = result
+ 		}
+ 	case op == 0xf6:
+--- a/internal/cpu386/cpu_test.go
++++ b/internal/cpu386/cpu_test.go
+@@ -800,7 +800,7 @@
+ 		})
+ 	}
+ 
+-	for _, code := range [][]byte{{0xd1, 0x10}, {0xd1, 0xe0}, {0x66, 0xd1, 0xd0}} {
++	for _, code := range [][]byte{{0xd1, 0x10}, {0xd1, 0xc0}, {0x66, 0xd1, 0xd0}} {
+ 		c := New(testBus(code))
+ 		if err := c.Step(); err == nil {
+ 			t.Fatalf("未授權 D1 形狀 % X 被接受", code)

@@ -27,6 +27,8 @@ type desktopContext struct {
 	Proof         func() map[string]any
 	Live          *hdLive
 	Scripted      bool
+	PendingScript func() bool
+	Composite     *compositeProbe
 	Report        map[string]any
 }
 

@@ -48,19 +48,28 @@ func main() {
 	hdExport := flag.Bool("hd-export", false, "copy validated loader-return planes and DAC to local research output; implies hd-trace")
 	desktop := flag.Bool("desktop", false, "run isolated desktop presentation prototype")
 	dos4gExceptionABI := flag.Bool("dos4g-exceptions", false, "deliver actual segment limit faults to DOS4GW AH=25h handlers")
+	compositeDiagnostic := flag.Bool("hd-composite-trace", false, "DRAFT read-only OR/transparent primitive source and destination diagnostics")
+	scriptHandoff := flag.Bool("desktop-script-handoff", false, "validation only: ordinary X11 mouse continues after all scripted mouse events")
 	flag.Parse()
 	profile, profileErr := selectProgram(*program)
 	if profileErr != nil {
 		panic(profileErr)
 	}
 	if profile.Publisher {
-		if *hdDiagnostic || *hdExport || *terrainDiagnostic || *backdropDiagnostic || *battleFrameDiagnostic || *graphicsDiagnostic || *openingDiagnostic {
+		if *hdDiagnostic || *hdExport || *terrainDiagnostic || *backdropDiagnostic || *battleFrameDiagnostic || *graphicsDiagnostic || *openingDiagnostic || *compositeDiagnostic || *scriptHandoff {
 			panic("MARK rejects DX5-specific diagnostic callbacks")
 		}
 		*dos4gExceptionABI = true
 	}
 	var dos4gExceptions dos4gExceptionTrace
 	var markTrace markProbeTrace
+	composite := compositeProbe{Profiles: hdGraphicsSources}
+	if *compositeDiagnostic {
+		composite.Directory = "/output/composite-samples"
+		if err := os.Mkdir(composite.Directory, 0700); err != nil {
+			panic(err)
+		}
+	}
 	if *hdExport {
 		*hdDiagnostic = true
 	}
@@ -87,7 +96,7 @@ func main() {
 	if *desktop && runDesktop == nil {
 		panic("desktop build tag is required")
 	}
-	if *budget < 1 || *budget > 750000000 {
+	if *budget < 1 || *budget > 2000000000 {
 		panic("instruction budget out of range")
 	}
 	inputSource := "inline"
@@ -105,6 +114,9 @@ func main() {
 	mouseEvents, err := parseMouseEvents(*mouseScript, *budget)
 	if err != nil {
 		panic(err)
+	}
+	if *scriptHandoff && (!*desktop || len(mouseEvents) == 0 || mouseEvents[len(mouseEvents)-1].Buttons != 0) {
+		panic("desktop script handoff requires a desktop schedule ending with released buttons")
 	}
 	data, err := os.ReadFile("/original/" + profile.File)
 	if err != nil {
@@ -350,6 +362,13 @@ func main() {
 				nextMouse++
 			}
 			before = m.CPU.EIP
+			if *compositeDiagnostic {
+				if err := composite.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem, func() (nativeSnapshot, error) {
+					return snapshotNative(screen, cursor, int(mouseServices.Mouse.X), int(mouseServices.Mouse.Y))
+				}); err != nil {
+					panic(err)
+				}
+			}
 			if profile.Publisher {
 				markTrace.captureTarget(before, m.CPU.R[cpu386.EAX], m.Mem)
 				if err := markTrace.observe(steps, before, m.CPU.R[cpu386.ESP], m.Mem, screen, &cursor); err != nil {
@@ -458,6 +477,12 @@ func main() {
 				return map[string]any{"step": steps, "ram_sha256": fmt.Sprintf("%x", sha256.Sum256(m.Mem)), "eip": m.CPU.EIP, "registers": m.CPU.R, "segments": m.CPU.Seg, "flags": m.CPU.EFlags, "raw_indexed_sha256": fmt.Sprintf("%x", sha256.Sum256(s.Indexed)), "palette": s.Palette, "cursor": cursor, "mouse_x": s.X, "mouse_y": s.Y}
 			},
 		}
+		if *scriptHandoff {
+			ctx.PendingScript = func() bool { return nextMouse < len(mouseEvents) }
+		}
+		if *compositeDiagnostic {
+			ctx.Composite = &composite
+		}
 		if err := runDesktop(ctx); err != nil {
 			panic(err)
 		}
@@ -504,7 +529,7 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
-	for _, name := range []string{"tools/program.go", "tools/mark-trace.go", "tools/hd-publisher.go", "tools/hd-publisher_test.go", "tools/desktop-publisher.go"} {
+	for _, name := range []string{"tools/program.go", "tools/mark-trace.go", "tools/hd-publisher.go", "tools/hd-publisher_test.go", "tools/desktop-publisher.go", "tools/hd-composite-probe.go", "tools/hd-composite-probe_test.go", "tools/battle-cpu.patch"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)
@@ -600,6 +625,7 @@ func main() {
 		}
 	}
 	receipt := map[string]any{
+		"composite_diagnostic_enabled": *compositeDiagnostic, "composite_draw_trace": composite, "desktop_script_handoff": *scriptHandoff,
 		"publisher_prelude": publisherPrelude, "game_started": !profile.Publisher,
 		"dosgolem_head": "a9714ebdab2ad6b529f81225472680f2b11f2842", "integration_input_sha256": toolHashes,
 		"input_file": profile.File, "input_sha256": digest, "program": *program, "mark_observation": markTrace,

@@ -27,6 +27,8 @@ git apply --check /project/tools/mark-cpu.patch
 git apply /project/tools/mark-cpu.patch
 git apply --check /project/tools/dos4g-exception.patch
 git apply /project/tools/dos4g-exception.patch
+git apply --check /project/tools/battle-cpu.patch
+git apply /project/tools/battle-cpu.patch
 gofmt -w /output/engine/internal/cpu386/cpu.go /output/engine/internal/cpu386/integration_test.go /output/engine/internal/machine/dpmi_real_mode.go /output/engine/internal/machine/dpmi.go
 cat > /output/startup-probe/repro-overlay.json <<'JSON'
 {"Replace":{
@@ -69,6 +71,8 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/cmd/leprobe/hd_trace.go":"/project/tools/hd-trace.go",
   "/dosgolem/cmd/leprobe/hd_graphics_trace.go":"/project/tools/hd-graphics-trace.go",
   "/dosgolem/cmd/leprobe/hd_graphics_trace_test.go":"/project/tools/hd-graphics-trace_test.go",
+  "/dosgolem/cmd/leprobe/hd_composite_probe.go":"/project/tools/hd-composite-probe.go",
+  "/dosgolem/cmd/leprobe/hd_composite_probe_test.go":"/project/tools/hd-composite-probe_test.go",
   "/dosgolem/cmd/leprobe/hd_graphics.go":"/project/tools/hd-graphics.go",
   "/dosgolem/cmd/leprobe/hd_graphics_test.go":"/project/tools/hd-graphics_test.go",
   "/dosgolem/cmd/leprobe/hd_graphics_profiles.go":"/project/tools/hd-graphics-profiles.go",

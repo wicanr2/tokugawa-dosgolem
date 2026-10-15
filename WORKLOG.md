@@ -522,3 +522,22 @@ https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6186670059
 
 提交 d4a27beb0645cef522ccf9e0bce91ce704b1a32e 已推送 main，git ls-remote 與 GitHub tree API 核對一致；主機 gh 登入有效，repo 仍為 PRIVATE。遠端 assets/hd-b 仍有 1050 份檔案，子樹 9de9713108cf662e0b2bb39e46b5ab7aec8c1561 與本機一致，tree 未截斷，沒有 original/ 或 workplace/ 進入版控。103 項來源及快照、全部 Python 語法、Go 格式、文件連結與新工具入口核對通過。Issue #5 的完整鏈進度已送出，仍保留全遊戲 HD 待辦：
 https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6187209150
+
+## 2026-10-15：首戰普通操作與合成消費端查證
+
+- 依復古遊戲路由載入逆向證據、規格閘門、平台規格優先與 IDA 9.4 工具契約。從正式資料庫的獨立副本取得 OR 全畫面、透明矩形及動畫 caller，保留原始名稱、載入後位址與 bytes。
+- 初次交叉核對把 IDA 載入後 bytes 與原始檔案 bytes 混用而拒絕。改用固定 dosgolem LE loader 後，448 列指令全部相符，32 列 relocation 差異另記，不改正式 DX5.i64。
+- 新增預設關閉的唯讀合成探針及普通滑鼠接續旗標。既有 390 筆事件全部結束後，才以真實 X11 滑鼠接續；保存來源、繪圖前後索引、自然返回及實際視窗，不注入原版狀態。
+- 首批 105 項來源的四套件與 750M 控制組通過。普通選取單位開啟移動／攻擊／特殊選單；選攻擊後在 754004409 步遇到未支援的 D1 E0。原始失敗收據保留在 consumers/battle/。
+- 依 Intel SDM 補 D1 暫存器 SHL count-one。r2 測試同時發現舊 C1 count-one 沒有正確設定 OF，另有舊否定測試仍拒絕新形式；保留失敗並訂正標準契約與測試，不迎合錯誤 oracle。
+- r3 凍結 106 項來源，四套件通過，cmd/leprobe 147.457 秒。二進位 SHA-256 e963049505486439fb063df22364f2b73fea18e5d36e517242494ab02bd8c32a。原版控制組與相同普通攻擊操作正在重跑；正式 HD 合成仍為 DRAFT，尚未列為接入完成。
+
+本輪沒有新增圖片。主機 gh 登入有效，儲存庫仍為 PRIVATE，Issue #5 保持 OPEN。後續收據、來源核對、清理及提交於本節追加。
+
+r3 的 750M／390 事件控制組通過完整 RAM 與十五欄核對，普通攻擊越過 D1 後於 752026383 步停在 66 39 07。依 Intel CMP 契約補唯讀 word memory；r4 的標準邊界測試未設 DS 描述子而被正確拒絕，補測試條件後保留 r4，以 r5 新快照重跑。
+
+r5 四套件通過，cmd/leprobe 98.320 秒，桌面二進位 SHA-256 e46979be891ad469b6b274e822e5f8975bfa0be9025f310155898d48a9c30089。750M 控制組的完整 RAM／十五欄仍符合基準；同版 MARK 自然 15989208 步正常退出，完整 RAM／十三欄符合 r8。MARK 控制環境初次缺少 startup-probe，第二次缺少收據所需 engine 來源，兩次屬啟動／收據環境錯誤；保存 stderr，補完整輸出環境後以相同命令乾淨重跑通過，沒有修改產品。
+
+r5 普通攻擊於 751041328 步停在 66 81 3D 50 60 03 00 FF FF。依同一 Intel CMP 定義補 81 /7 16 位元立即值形式；r6 新快照凍結 106 項來源，正在建置及驗證。各次 X11 時間序列不同，沒有宣稱首戰後的不同停止步數可逐步同狀態比較。尚未取得實際 OR／透明返回，正式 HD 合成維持 DRAFT。
+
+r6 四套件通過，cmd/leprobe 90.797 秒，桌面二進位 SHA-256 3bd1f710e71ac3e44627c59ec815b811cfec56e23760632d8bc9e01efe81b09d。750M／390 事件控制組完整 RAM／十五欄、MARK 自然 15989208 步完整 RAM／十三欄皆通過；106 項目前來源與快照雜湊相同。桌面普通攻擊仍在接續，這是平台與研究工具的中途保存，不是戰鬥 HD 或全遊戲 HD 完成聲明。

@@ -2004,3 +2004,54 @@ source-snapshot/ 保存當次全部 102 項來源；歷史核對明示 --source-
 覆蓋盤點最初因十一份局部驗證器新增 publisher-intro=false 而拒絕舊工具雜湊，分類為研究台帳的工具版本核對問題。三份舊收據所記錄的驗證器，分別由已存在的 remaining/desktop-title/、graphics/static/desktop-logo/palette/ready/ 與 remaining/partial-story/desktop/source-snapshot/tools/ 取回完整快照；精確 SHA-256 仍嚴格核對。工具新增 verification_tool_sources 列出實際來源，沒有改動舊收據、歷史結果或原版基準。乾淨重跑覆蓋盤點通過，RAINEND 的 game_startup_integrated=true。
 
 完成聲明限於本節的桌面啟動鏈、模式沿用及首戰抽樣。兩個原版 LE 執行環境及虛擬時間獨立，未宣稱 DOS shell EXEC、共享硬體時鐘、全遊戲可通關、剩餘動畫、音訊人耳或其他平台完成。
+
+## 2026-10-15：戰鬥 OR 合成與透明矩形研究
+
+狀態：DRAFT。範圍是原版正常戰場到交鋒畫面的素材使用路徑。先保存來源、繪圖前後索引及普通滑鼠操作；正式 HD 呈現仍待正常路徑證據及 READY 契約，不把研究探針接成正式替換。
+
+### 已證實靜態證據
+
+- 輸入 DX5.EXE SHA-256 2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a。固定 IDA 9.4 image 4ac62de83339，從正式 DX5.i64 的獨立 animation-primitives.i64 查詢，不改正式資料庫。
+- IDA LE 線性 EA 0x1C291..0x1C35A：四平面各讀取 8000 個 dword，OR 當前 VGA 目的後寫回。索引層的期望為 before | source；來源為 0 時保留背景。
+- IDA LE 線性 EA 0x1C35B 起：四個 stack 參數依序為 width_words、rows、source_byte_offset、destination_byte_offset。每個 word 橫跨 16 像素，來源及目的每列 pitch 為 80 bytes。先以四來源平面 OR 的反相遮罩清除目的，再逐平面 OR，因此 source=0 保留背景，其他像素使用 source。
+- caller 0x23F48 載入 BATTLE.OZM 後，0x23F50 呼叫 0x1C291。0x23F5A／0x23F93 載入 JIMEN_0／JIMEN_1，0x23F86／0x23FC0 呼叫 0x1C35B，width_words=22、rows=64、source_offset=0；目的偏移由原版計算，保留原欄位與未知語意。
+- 0x23477 從原版表格選動畫來源後，0x23507 呼叫既有不透明矩形 0x1C1BC，width_bytes=26、rows=150、來源偏移來自表格。此分支無須推定兵種或以名稱取代來源指紋。
+- 原始範圍：consumers/ida/range-1c200-1c700.json，SHA-256 a12561fab5fb2ba94b7d0611c177115d02c536da73746c075d0fee456594beaa；另有 range-23380-23a00.json 及既有 range-23efe-241de.json。全部保留原始名稱、EA、檔案偏移及載入後 bytes。
+- 第一次交叉檢查錯把 IDA LE 載入後 bytes 當成檔案 bytes，因 relocation 不同而拒絕。改以固定 dosgolem LE loader 獨立核對，448 列 IDA 載入後指令 bytes 全部相同，32 列檔案差異另記 raw_file_bytes。收據 animation-loaded-byte-verification.json，不混用 EA、原始檔案偏移及 bytes。
+
+### 唯讀研究探針契約
+
+1. hd-composite-trace 預設關閉，只記 0x1C291／0x1C35B 的入口與自然返回，MARK 拒絕啟用。來源沿用完整四平面 SHA-256，不靠最近載入名稱猜測。
+2. 原生 640×400 索引在入口及返回分開擷取，依已證實公式核對完整目的矩形。記錄原參數、來源矩形、目的矩形、來源與前後雜湊；未知來源、越界、錯誤回返或來源變動皆拒絕。
+3. 索引資料只寫本機 composite-samples，最多 512 筆，檔名帶 SHA-256；不改 guest RAM、暫存器、VGA 狀態、原始資料或存檔。
+4. 為研究正常首戰之後的路徑，有界指令上限擴至 2000000000。既有預設及 750M 基準不改；每次 Docker 工作另有 wall-clock 上限。
+5. desktop-script-handoff 預設關閉，僅桌面驗證使用。390 筆原有普通滑鼠事件全部套用且末筆按鈕放開後，才交由真實 X11 普通滑鼠接續。保留完整輸入記錄，不注入狀態、座標到 RAM 或程式進入點。
+6. 測試包括 RAM 不變、真正返回、來源變動、目的不符、越界及上限。正常路徑先做原版 UI 擷取與研究來源核對，收據不足前不列特殊消費端完成。
+
+### 平台補充：D1 /4 register32，READY
+
+普通 X11 在首戰選取單位，再選「攻擊」，於成功步數 754004409 停在 dosgolem 線性 0x1F43D，原始 bytes D1 E0；EAX=2408。原始 GUI 收據及 105 項凍結來源保存在 consumers/battle/，750M／390 事件的原版控制組已通過完整 RAM 及十五欄比較。這是先前首戰後未執行到的 CPU 形式缺口，不是美術或遊戲規則錯誤。
+
+平台來源：[Intel SDM，SAL/SAR/SHL/SHR](https://cdrdv2-public.intel.com/835781/325462-sdm-vol-1-2abcd-3abcd-4.pdf)，Volume 2B 4-601。D1 /4 的 32 位暫存器形式為 SHL r32,1，CF 取原最高位，OF 為結果符號位 XOR CF；SF／ZF／PF 依結果，AF 未定義。本修正只增加 D1 E0..E7，保留既有 prefix、memory 與其他 group 的拒絕及錯誤界限；不修改 EXE、遊戲資料或原始程式控制流。
+
+實作以 battle-cpu.patch 接在既有平台補丁之後。驗收採 Intel 邊界值、八個暫存器與既有 C1 /4 imm8=1 的獨立差分、其他暫存器及非運算旗標不變、非法 prefix／memory 形式拒絕，四套件與 750M 控制組重跑；再以相同普通操作自然進入攻擊分支。正式 HD 合成仍為 DRAFT。
+
+### 追加勘誤：C1 count-one OF 與舊否定測試
+
+r2 四套件中，CPU 測試拒絕新支援 D1 E0，且 D1／C1 差分在輸入 B177BEDA 得到 OF 不同。這兩個失敗均保留於 consumers/battle/r2/startup-probe/platform-test.log。查證既有 C1 32 位 shift 在 count=1 沒有設定 OF，不能把該錯誤當成 D1 的預期結果。
+
+依 [Intel SDM 的 count-one 旗標契約](https://cdrdv2-public.intel.com/825743/325462-sdm-vol-1-2abcd-3abcd-4.pdf)，SHL 的 OF 為結果最高位 XOR CF，SHR 的 OF 為原最高位，SAR 清零。READY 契約補充修正現有 C1 32 位暫存器 count=1 的 SHL／SHR；count=0 保留所有旗標，其他 count 的既有未定義 OF 政策不改。舊否定測試將 D1 E0 改為仍未支援的 D1 C0，保留原拒絕範圍的覆蓋；新增支援另以正向標準邊界及差分驗證。r3/ 保存這次修正後的新凍結批次，不覆寫 r2。
+
+### 平台補充：CMP word memory，READY
+
+r3 四套件通過，同版 750M／390 事件控制組的完整 RAM 與十五欄符合既有基準。普通 X11 選攻擊已越過 D1 E0，於 752026383 步停在 dosgolem 線性 0x1F718，原始 bytes 66 39 07，暫存器 EAX=1、EDI=58790054。這是 CMP word [EDI],AX 的未支援形式；GUI 輸入的時間不同，停止步數不與首批作同狀態比較。
+
+依 [Intel SDM Volume 2A 的 CMP 定義](https://cdrdv2-public.intel.com/812383/253666-sdm-vol-2a.pdf)，39 /r 比較 r/m16 與 r16，按 destination minus source 設 CF／OF／SF／ZF／AF／PF，不儲存減法結果。READY 範圍為既有 39 /r 的 operand16 記憶體形式，沿用 decodeAddress32、預設 DS／SS 與 readSegment16；暫存器、記憶體及非運算旗標保持，原有 REP、segment override 與 address-size 拒絕不擴張。加入標準旗標邊界、暫存器形式差分、唯讀記憶體與界限測試，再保存 r4 新來源批次重跑。不改原版 EXE、控制流或遊戲規則。
+
+r4 的 4096 組 DS／SS 唯讀來源差分通過，標準邊界測試卻未建立 DS 描述子而被正確拒絕。此失敗屬測試初始條件缺漏，不修改 CPU 或記憶體界限。補齊唯讀 DS 描述子後以 r5 新快照重跑，r4 的原測試及失敗 log 保留。
+
+### 平台補充：CMP word immediate，READY
+
+r5 四套件通過，750M 控制組完整 RAM／十五欄及 MARK 自然 15989208 步的完整 RAM／十三欄皆符合既有基準。普通攻擊操作於 751041328 步停在 dosgolem 線性 0x1F4E8，bytes 66 81 3D 50 60 03 00 FF FF，為 CMP word [0x36050],0xFFFF。保留 r5 的原始操作與停止收據，不把與 r3 不同的 X11 時間序列稱為同狀態比較。
+
+沿用上節 Intel CMP 契約，81 /7 iw 是 r/m16 與 imm16 比較，讀取立即值後設定相同六個運算旗標，來源不寫回。READY 範圍補 81 operand16 group 7 的暫存器及 decodeAddress32 記憶體形式；其他記憶體 group、prefix 與界限維持拒絕。以既有 39 /r 的等價運算、八個暫存器、DS／SS 唯讀 SIB、來源界限及拒絕形式驗證，保存 r6 新批次後重跑普通攻擊。

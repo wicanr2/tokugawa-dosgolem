@@ -751,7 +751,11 @@ func (g *desktopGame) Update() error {
 	if !consumed {
 		mouseBlocked = g.mouseBlocked()
 	}
-	if !g.c.Scripted && !consumed && !mouseBlocked {
+	scripted := g.c.Scripted
+	if g.c.PendingScript != nil {
+		scripted = g.c.PendingScript()
+	}
+	if !scripted && !consumed && !mouseBlocked {
 		x, y := ebiten.CursorPosition()
 		p, inside := barGamePointFor(x, y, g.bar.Visible, g.canvasHeight/2)
 		buttons := 0
@@ -824,6 +828,8 @@ func (g *desktopGame) Update() error {
 	status["graphics"], status["graphics_observation"] = g.graphicsReports, g.c.Live.Graphics
 	status["startup_pending"], status["startup_selection"], status["startup_fence"], status["startup_events"] = g.choice.Pending, g.choice.Selection, g.startupFence, g.choiceEvents
 	status["program"], status["canvas_height"], status["publisher_observation"] = g.c.Program, g.canvasHeight, g.c.Mark
+	status["scripted_input_pending"] = scripted
+	status["composite_observation"], status["desktop_mouse"] = g.c.Composite, g.lastMouse
 	if *desktopTerrainScene {
 		status["terrain_draws"] = g.c.Live.Terrain.History
 	}

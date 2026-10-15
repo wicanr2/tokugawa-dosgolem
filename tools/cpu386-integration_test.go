@@ -2705,6 +2705,203 @@ func TestIntegrationWordORRegisters(t *testing.T) {
 	}
 }
 
+func TestIntegrationWordMemoryCMP(t *testing.T) {
+	for _, ss := range []bool{false, true} {
+		for sample := 0; sample < 2048; sample++ {
+			left := uint16(uint32(sample)*7919 + 32767)
+			right := uint16(uint32(sample)*3571 + 1)
+			mem := testBus(make([]byte, 512))
+			// Both SIB forms address offset 243. EBP base selects SS.
+			copy(mem, []byte{0x66, 0x39, 0x84, 0x2a, 0xf0, 0xfc, 0xff, 0xff})
+			address := 307
+			if ss {
+				mem[3], address = 0x15, 371
+			}
+			binary.LittleEndian.PutUint16(mem[address:], left)
+			before := append([]byte(nil), mem...)
+			c := New(mem)
+			c.Seg[SegDS], c.Seg[SegSS] = 8, 16
+			c.SetDescriptor(8, Descriptor{Base: 64, Limit: 383, Writable: false})
+			c.SetDescriptor(16, Descriptor{Base: 128, Limit: 383, Writable: false})
+			c.R[EAX], c.R[EDX], c.R[EBP] = 0xabcd0000|uint32(right), 3, 1024
+			c.EFlags = IF | DF | CF | OF | AF | SF | ZF | PF
+			regs := c.R
+			ref := New(testBus{0x66, 0x39, 0xc8})
+			ref.R[EAX], ref.R[ECX], ref.EFlags = uint32(left), uint32(right), c.EFlags
+			if err := ref.Step(); err != nil {
+				t.Fatal(err)
+			}
+			if err := c.Step(); err != nil || c.EFlags != ref.EFlags || c.R != regs || c.EIP != 8 {
+				t.Fatal("word memory CMP differential", sample, ss, c.EFlags, ref.EFlags, err)
+			}
+			for i := range mem {
+				if mem[i] != before[i] {
+					t.Fatal("CMP changed read-only source", i)
+				}
+			}
+		}
+	}
+	for _, v := range []struct {
+		left, right uint16
+		flags       uint32
+	}{
+		{0, 1, CF | SF | AF | PF}, {0x8000, 1, OF | AF | PF},
+		{0x7fff, 0xffff, CF | OF | SF | PF}, {0xffff, 0xffff, ZF | PF},
+	} {
+		mem := testBus(make([]byte, 256))
+		copy(mem, []byte{0x66, 0x39, 0x07})
+		binary.LittleEndian.PutUint16(mem[128:], v.left)
+		c := New(mem)
+		c.Seg[SegDS] = 8
+		c.SetDescriptor(8, Descriptor{Limit: 255, Writable: false})
+		c.R[EDI], c.R[EAX], c.EFlags = 128, 0xabcd0000|uint32(v.right), IF|DF
+		if err := c.Step(); err != nil || c.EFlags != IF|DF|v.flags || c.EIP != 3 {
+			t.Fatal("Intel CMP word boundary", v, c.EFlags, err)
+		}
+	}
+	for _, limit := range []uint32{128, 255} {
+		mem := testBus(make([]byte, 129))
+		copy(mem, []byte{0x66, 0x39, 0x05, 0x80, 0, 0, 0})
+		c := New(mem)
+		c.Seg[SegDS] = 8
+		c.SetDescriptor(8, Descriptor{Limit: limit, Writable: false})
+		c.R[EAX], c.EFlags = 1, IF|CF|OF|AF
+		regs := c.R
+		if c.Step() == nil || c.R != regs || c.EFlags != IF|CF|OF|AF {
+			t.Fatal("truncated word read published CMP flags")
+		}
+	}
+}
+
+func TestIntegrationWordImmediateCMP(t *testing.T) {
+	for sample := 0; sample < 1024; sample++ {
+		left, right := uint16(uint32(sample)*7919+32767), uint16(uint32(sample)*3571+1)
+		ref := New(testBus{0x66, 0x39, 0xc8})
+		ref.R[EAX], ref.R[ECX], ref.EFlags = uint32(left), uint32(right), IF|DF|CF|OF|AF|SF|ZF|PF
+		if err := ref.Step(); err != nil {
+			t.Fatal(err)
+		}
+		for reg := byte(0); reg < 8; reg++ {
+			c := New(testBus{0x66, 0x81, 0xf8 | reg, byte(right), byte(right >> 8)})
+			c.R[reg], c.EFlags = 0xabcd0000|uint32(left), IF|DF|CF|OF|AF|SF|ZF|PF
+			before := c.R
+			if err := c.Step(); err != nil || c.R != before || c.EFlags != ref.EFlags || c.EIP != 5 {
+				t.Fatal("word immediate CMP register differential", reg, sample, err)
+			}
+		}
+		for _, ss := range []bool{false, true} {
+			mem := testBus(make([]byte, 512))
+			copy(mem, []byte{0x66, 0x81, 0xbc, 0x2a, 0xf0, 0xfc, 0xff, 0xff, byte(right), byte(right >> 8)})
+			address := 307
+			if ss {
+				mem[3], address = 0x15, 371
+			}
+			binary.LittleEndian.PutUint16(mem[address:], left)
+			before := append([]byte(nil), mem...)
+			c := New(mem)
+			c.Seg[SegDS], c.Seg[SegSS] = 8, 16
+			c.SetDescriptor(8, Descriptor{Base: 64, Limit: 383, Writable: false})
+			c.SetDescriptor(16, Descriptor{Base: 128, Limit: 383, Writable: false})
+			c.R[EDX], c.R[EBP], c.EFlags = 3, 1024, IF|DF|CF|OF|AF|SF|ZF|PF
+			regs := c.R
+			if err := c.Step(); err != nil || c.R != regs || c.EFlags != ref.EFlags || c.EIP != 10 {
+				t.Fatal("word immediate CMP memory differential", sample, ss, err)
+			}
+			for i := range mem {
+				if mem[i] != before[i] {
+					t.Fatal("CMP immediate changed read-only source", i)
+				}
+			}
+		}
+	}
+	for _, code := range [][]byte{
+		{0x66, 0x81, 0x3d, 0x80, 0, 0, 0, 0xff, 0xff},
+		{0xf3, 0x66, 0x81, 0xf8, 1, 0},
+		{0x3e, 0x66, 0x81, 0xf8, 1, 0},
+		{0x66, 0x81, 0x05, 0x80, 0, 0, 0, 1, 0},
+	} {
+		mem := testBus(make([]byte, 256))
+		copy(mem, code)
+		c := New(mem)
+		c.Seg[SegDS] = 8
+		c.SetDescriptor(8, Descriptor{Limit: 128, Writable: false})
+		c.R[EAX], c.EFlags = 0xabcd0001, IF|CF|OF|AF
+		before := c.R
+		if c.Step() == nil || c.R != before || c.EFlags != IF|CF|OF|AF {
+			t.Fatal("unverified immediate CMP form published state", code)
+		}
+	}
+}
+
+func TestIntegrationD1SHLRegisters(t *testing.T) {
+	// D1 /4 is the Intel count-one form of C1 /4 imm8=1. AF is undefined.
+	for reg := byte(0); reg < 8; reg++ {
+		value := uint32(2408)
+		for sample := 0; sample < 4096; sample++ {
+			a := New(testBus{0xd1, 0xe0 | reg})
+			b := New(testBus{0xc1, 0xe0 | reg, 1})
+			for i := range a.R {
+				a.R[i], b.R[i] = uint32(i+1)*0x1234567, uint32(i+1)*0x1234567
+			}
+			a.R[reg], b.R[reg] = value, value
+			a.EFlags, b.EFlags = IF|DF|AF|CF|OF|ZF|SF|PF, IF|DF|AF|CF|OF|ZF|SF|PF
+			if err := a.Step(); err != nil {
+				t.Fatal(err)
+			}
+			if err := b.Step(); err != nil {
+				t.Fatal(err)
+			}
+			if a.R != b.R || a.R[reg] != value<<1 || a.EFlags&^AF != b.EFlags&^AF || a.EFlags&(IF|DF) != IF|DF || a.EIP != 2 || b.EIP != 3 {
+				t.Fatalf("SHL count-one differential reg=%d value=%X flags=%X/%X", reg, value, a.EFlags, b.EFlags)
+			}
+			value = value*1664525 + 1013904223
+		}
+	}
+	for _, v := range []struct{ before, result, flags uint32 }{
+		{0, 0, ZF | PF}, {0x80000000, 0, CF | OF | ZF | PF},
+		{0x40000000, 0x80000000, OF | SF | PF}, {0xffffffff, 0xfffffffe, CF | SF},
+	} {
+		c := New(testBus{0xd1, 0xe0})
+		c.R[EAX] = v.before
+		c.EFlags = IF | DF
+		if err := c.Step(); err != nil || c.R[EAX] != v.result || c.EFlags&(CF|OF|SF|ZF|PF) != v.flags {
+			t.Fatal("Intel SHL boundary", v, c.R[EAX], c.EFlags, err)
+		}
+	}
+	for _, code := range [][]byte{{0xd1, 0x20}, {0xf3, 0xd1, 0xe0}, {0x3e, 0xd1, 0xe0}} {
+		c := New(testBus(code))
+		c.R[EAX], c.EFlags = 17, IF|CF|OF
+		if c.Step() == nil || c.R[EAX] != 17 || c.EFlags != IF|CF|OF {
+			t.Fatal("unverified D1 form accepted or changed state", code)
+		}
+	}
+}
+
+func TestIntegrationC1CountOneFlagsAndZeroCount(t *testing.T) {
+	for _, v := range []struct {
+		modrm                byte
+		input, result, flags uint32
+	}{
+		{0xe0, 0x80000000, 0, CF | OF | ZF | PF},
+		{0xe8, 0x80000001, 0x40000000, CF | OF | PF},
+		{0xf8, 0x80000001, 0xc0000000, CF | SF | PF},
+	} {
+		c := New(testBus{0xc1, v.modrm, 1})
+		c.R[EAX], c.EFlags = v.input, IF|DF
+		if err := c.Step(); err != nil || c.R[EAX] != v.result || c.EFlags&(CF|OF|ZF|SF|PF) != v.flags {
+			t.Fatal("Intel count-one shift flags", v, c.R[EAX], c.EFlags, err)
+		}
+		for _, count := range []byte{0, 32} {
+			c := New(testBus{0xc1, v.modrm, count})
+			flags := uint32(IF | DF | CF | AF | OF | SF | ZF | PF)
+			c.R[EAX], c.EFlags = v.input, flags
+			if err := c.Step(); err != nil || c.R[EAX] != v.input || c.EFlags != flags {
+				t.Fatal("masked zero count changed state", count, err)
+			}
+		}
+	}
+}
+
 func TestIntegrationSegmentStoreWithWordPrefixES(t *testing.T) {
 	for _, writable := range []bool{false, true} {
 		mem := testBus(make([]byte, 128))
