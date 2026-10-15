@@ -256,11 +256,23 @@ def main():
         for name in ["draft-manifest.json","review.json","profiles.json","prepare-source.txt"]:
             copy(publisher_logo_root/name,"art/static/logo/"+name,"preparation-metadata")
     if background_profiles_path.exists():
+        sampled_static = set()
+        history_root = catalog/"remaining/history"
+        if (history_root/"verification-summary.json").exists():
+            proof = json.loads((history_root/"verification-summary.json").read_text())
+            if proof.get("verified"):
+                sampled_static.update(proof["normal_new_sources"])
+        if (history_root/"scrolling/verification-summary.json").exists():
+            proof = json.loads((history_root/"scrolling/verification-summary.json").read_text())
+            if proof.get("verified"):
+                sampled_static.update(proof["normal_static_sources"])
         for record in background_profiles["records"]:
             source = background_root/record["prepared"]
             assert sha(source) == record["asset_sha256"]
             copy(source,"art/"+record["asset"],"png",derivation=record,prompt="art/"+record["prompt"],
-                 status="reviewed calibrated static source; common opaque draw consumer registered, normal case not yet sampled")
+                 status=("reviewed calibrated static source; ordinary history HD/original/restored and full original state sampled"
+                         if record["name"] in sampled_static else
+                         "reviewed calibrated static source; common opaque draw consumer registered, normal case not yet sampled"))
         gallery = background_root/background_profiles["gallery"]
         assert sha(gallery) == background_profiles["gallery_sha256"]
         copy(gallery,"art/static/"+gallery.name,"png",status="generated-only calibrated static art gallery")

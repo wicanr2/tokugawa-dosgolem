@@ -71,6 +71,7 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 		}
 	}
 	if eip == 0x1bf44 {
+		h.Graphics.Shift = nil
 		h.ScrollValidated = false
 		h.ScrollPending = nil
 		h.Active = false
@@ -126,7 +127,7 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 			}
 		}
 	}
-	if openingPartialEntry(eip) {
+	if openingPartialEntry(eip) || openingShiftEntry(eip) {
 		h.Active, h.Pending = false, nil
 	}
 	if eip != 0x1c1bc && eip != 0x11dcb {

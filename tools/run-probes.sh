@@ -39,6 +39,8 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/cmd/leprobe/hd-opening-live_test.go":"/project/tools/hd-opening-live_test.go",
   "/dosgolem/cmd/leprobe/hd-opening-partial.go":"/project/tools/hd-opening-partial.go",
   "/dosgolem/cmd/leprobe/hd-opening-partial_test.go":"/project/tools/hd-opening-partial_test.go",
+  "/dosgolem/cmd/leprobe/hd-opening-shift.go":"/project/tools/hd-opening-shift.go",
+  "/dosgolem/cmd/leprobe/hd-opening-shift_test.go":"/project/tools/hd-opening-shift_test.go",
   "/dosgolem/cmd/leprobe/hd-graphics-effects.go":"/project/tools/hd-graphics-effects.go",
   "/dosgolem/cmd/leprobe/hd-graphics-effects_test.go":"/project/tools/hd-graphics-effects_test.go",
   "/dosgolem/cmd/leprobe/cdrom.go":"/project/tools/cdrom.go",

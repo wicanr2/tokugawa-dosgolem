@@ -90,6 +90,11 @@
 | [tools/hd-prefix-extract.py](tools/hd-prefix-extract.py)、`remaining/source-boundary/art-prefix/` | 固定 GUI image 中專案與原版唯讀、art-prefix 可寫掛 /output；僅擷取四項未完整解碼 OZM 的已知平面與索引位元，參考 PNG 將未知八像素設透明。不補來源 byte，不宣稱正常載入或正式素材資格 |
 | `catalog/art/E-4-generation-v1.json`、`B-6-generation-v1.json` | 四項尾端未知 OZM 的兩組手繪草稿、有序參考圖用途與 SHA；生成圖及完整提示詞同步私人 assets/hd-b/art，未知八像素、幾何與來源資格另列，不自動計入 prepared |
 | [tools/verify-hd-opening-scroll-source.py](tools/verify-hd-opening-scroll-source.py)、`remaining/history/scrolling/` | 固定 GUI image 中專案唯讀、scrolling 可寫掛 /output；從既有正常原版抽樣核對 OP2／OP8 的逐位來源位移、線性跨列複製及實際色盤。超出正式來源的像素另記未知，不據此推測美術或啟用正式替換 |
+| [tools/hd-opening-shift.go](tools/hd-opening-shift.go)、[測試](tools/hd-opening-shift_test.go) | OP2／OP8 原版自然繪圖的線性位移來源資格、跨列 HD 取樣與來源外像素保護；規格及限制見 RESEARCH-LOG，沿既有 GUI 建置入口 |
+| [tools/verify-hd-opening-shift.py](tools/verify-hd-opening-shift.py) | 固定 GUI image 中專案及原版唯讀，scrolling/desktop 或 desktop-missing 可寫掛 /output；先從 scrolling/runtime 的同一建置複製 engine、startup-probe 與二進位。再在容器執行 `python3 -c 'from shutil import copytree; copytree("/project/tools", "/output/source-snapshot/tools")'` 保存來源及授權快照，之後執行本工具，以 --missing 切換個別缺 OP2／OP8。抽測早晚位移及未知尾端，並完成普通歷史 600M；每次外層期限 1800 秒，程序由工具有界清理 |
+| [tools/verify-hd-opening-shift-summary.py](tools/verify-hd-opening-shift-summary.py)、`scrolling/verification-summary.json` | 固定 GUI image 中專案唯讀、scrolling 可寫掛 /output；核對兩次捲動視窗完整收據、86 項凍結來源、所有配對圖片及首戰回歸，總表只涵蓋已驗證切片 |
+| `remaining/history/scrolling/runtime/`、`scrolling/desktop/`、`scrolling/desktop-missing/`、`scrolling/regression/` | 捲動開場的隔離建置、完整普通歷史狀態、配對畫面與首戰回歸；原版及固定 dosgolem 唯讀，同一建置凍結後不改 Go |
+| `remaining/history/scrolling/regression/ready/` | 補齊 86 項凍結來源快照後，以相同二進位與命令乾淨重跑首戰；上層保存第一次缺字型授權快照的驗證器失敗 |
 | [tools/verify-hd-opening-partial-full.py](tools/verify-hd-opening-partial-full.py)、`partial/full/`、`partial/full-missing/` | 同一二進位及 84 項來源的快速普通歷史簡介完整 600M 對照，使用既有原圖／HD 按鍵。局部擷取另驗收，避免把短暫畫格的操作競態或收尾逾時當產品缺陷 |
 | [tools/verify-hd-opening-partial-captures.py](tools/verify-hd-opening-partial-captures.py)、`partial/capture-verification.json` | 重核已保存的正常 14 組與缺圖 17 組 X11／呈現 PNG、原生來源裁切、HD 公式與切換 proof；兩次提前停止如實記錄，完整原版狀態須另由 full／full-missing 收據證明 |
 | [tools/hd-frame-prepare.py](tools/hd-frame-prepare.py) | 既有手繪 VISUAL 上方框架依原版矩形分區縮放；輸出 `workplace/hd-prototype/scroll/frame/` 的來源、HD 圖與幾何收據，遊戲內驗證另列 |

@@ -119,6 +119,11 @@ def main():
     if partial_proof:
         assert partial_proof['verified'] and partial_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-opening-partial-captures.py')
         assert partial_proof['capture_proof_sha256'] == sha(history/'partial/capture-verification.json')
+    shift_proof_path = history/'scrolling/verification-summary.json'
+    shift_proof = json.loads(shift_proof_path.read_text()) if shift_proof_path.exists() else None
+    if shift_proof:
+        assert shift_proof['verified'] and shift_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-opening-shift-summary.py')
+        assert shift_proof['source_proof_sha256'] == sha(history/'scrolling/source-verification.json')
     frame_summary_path = ROOT/'battle-frame/verification-summary.json'
     frame_summary = json.loads(frame_summary_path.read_text()) if frame_summary_path.exists() else None
     if frame_summary:
@@ -152,6 +157,8 @@ def main():
         proof_sources.append({'verification':str(opening_proof_path.relative_to(PROJECT)), 'sha256':sha(opening_proof_path)})
     if partial_proof:
         proof_sources.append({'verification':str(partial_proof_path.relative_to(PROJECT)), 'sha256':sha(partial_proof_path)})
+    if shift_proof:
+        proof_sources.append({'verification':str(shift_proof_path.relative_to(PROJECT)), 'sha256':sha(shift_proof_path)})
     if pending_runtime_proof:
         proof_sources.append({'verification':str(pending_runtime_proof_path.relative_to(PROJECT)),'sha256':sha(pending_runtime_proof_path)})
     if static_proof:
@@ -471,6 +478,9 @@ def main():
         if opening_proof and name in opening_proof['normal_new_sources']:
             record.update(runtime_status='ordinary history HD/original/restored, six fade-in and two palette-cycle samples verified; full 600M state comparison',
                           runtime_proof_sha256=sha(opening_proof_path))
+        if shift_proof and name in shift_proof['normal_static_sources']:
+            record.update(runtime_status='ordinary history scrolling HD/original/restored and unknown tail preservation sampled; normal/missing full 600M state comparison',
+                          runtime_proof_sha256=sha(shift_proof_path))
         records.append(record)
     for source, prepared in zip(extraction["records"], selected["records"]):
         index = source["index"]
@@ -522,7 +532,7 @@ def main():
               "remaining_sources_normal_verified":len(set(pending_runtime_proof['normal_new_sources'] if pending_runtime_proof else []) | set(partial_proof['normal_graphics_sources'] if partial_proof else [])),
               "generated_partial_source_art_resources":len(prefix_art),
               "approved_static_sources":len(static_profiles),
-              "normal_static_sources_verified":len(set(static_proof['normal_new_source_names'] if static_proof else []) | (set(opening_proof['normal_new_sources']) & set(static_profiles) if opening_proof else set())),
+              "normal_static_sources_verified":len(set(static_proof['normal_new_source_names'] if static_proof else []) | (set(opening_proof['normal_new_sources']) & set(static_profiles) if opening_proof else set()) | set(shift_proof['normal_static_sources'] if shift_proof else [])),
               "runtime_observed_opening_art_prepared":1 if full_profile else 0,
               "runtime_observed_opening_sources_normal_verified":1 if opening_proof else 0,
               "approved_MAP_CHIP_floor_art": approved_floor_count,

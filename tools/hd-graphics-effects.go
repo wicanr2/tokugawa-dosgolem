@@ -49,6 +49,16 @@ func graphicsPaletteEffect(profile hdGraphicsProfile, s nativeSnapshot) graphics
 		}
 	}
 	if !graphicsEffectSource(profile.Source.Name) {
+		if _, shift := openingShiftByName(profile.Source.Name); shift {
+			if actual == ([16][3]byte{}) {
+				return graphicsEffect{Kind: "clamp", Valid: true}
+			}
+			name := "OP2_P.OZM"
+			if profile.Source.Name == "OP8.OZM" {
+				name = "OP9.OZM"
+			}
+			return graphicsEffect{Kind: "identity", Valid: exact || actual == hdOpeningPartialPalettes[name]}
+		}
 		extra, known := hdOpeningPartialPalettes[profile.Source.Name]
 		return graphicsEffect{Valid: exact || (known && actual == extra)}
 	}

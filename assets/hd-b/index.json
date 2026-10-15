@@ -9,7 +9,7 @@
     "prompts": 162,
     "bytes": 593441022
   },
-  "archive_tool_sha256": "1b7b727fbbaa8b5be41065fbe60c72e816ebfbda941a85bd56e46618d753563e",
+  "archive_tool_sha256": "7acac5cb271b483f5e857cffd2a7c397c5779086b91a2b083f5b11bd4c5e5966",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -18661,7 +18661,7 @@
         "padding_pixels": 56000
       },
       "prompt": "art/OP2-hd-b-v1.prompt.txt",
-      "status": "reviewed calibrated static source; common opaque draw consumer registered, normal case not yet sampled",
+      "status": "reviewed calibrated static source; ordinary history HD/original/restored and full original state sampled",
       "size": [
         1280,
         400
@@ -18738,7 +18738,7 @@
         ]
       },
       "prompt": "art/OP4-hd-b-v1.prompt.txt",
-      "status": "reviewed calibrated static source; common opaque draw consumer registered, normal case not yet sampled",
+      "status": "reviewed calibrated static source; ordinary history HD/original/restored and full original state sampled",
       "size": [
         1280,
         800
@@ -18805,7 +18805,7 @@
         "review_sha256": "1b734e05ce6cde08a7c8975cfc5494a3afc30cd2567cdc1ba78de9f8d1026244"
       },
       "prompt": "art/OP8-hd-b-v1.prompt.txt",
-      "status": "reviewed calibrated static source; common opaque draw consumer registered, normal case not yet sampled",
+      "status": "reviewed calibrated static source; ordinary history HD/original/restored and full original state sampled",
       "size": [
         1280,
         400

@@ -25,6 +25,8 @@ type graphicsDrawRecord struct {
 	SourceRect, DestRect   image.Rectangle
 	ExpectedSHA, ActualSHA string
 	Verified               bool              `json:"verified"`
+	SourceShift            int               `json:"source_shift,omitempty"`
+	QualifiedSHA           string            `json:"known_source_sha256,omitempty"`
 	Error                  string            `json:"observation_error,omitempty"`
 	VisibleRects           []image.Rectangle `json:"visible_rectangles,omitempty"`
 }
@@ -32,12 +34,14 @@ type graphicsDrawRecord struct {
 type graphicsPending struct {
 	Record   graphicsDrawRecord
 	Expected []byte
+	Shift    *openingShiftGuard
 }
 type graphicsTrace struct {
 	Profiles []graphicsSourceProfile `json:"-"`
 	Records  []graphicsDrawRecord    `json:"records"`
 	Pending  *graphicsPending        `json:"-"`
 	Dropped  uint64                  `json:"dropped_events"`
+	Shift    *openingShiftState      `json:"-"`
 }
 
 func newGraphicsTrace(path string) (graphicsTrace, error) {
@@ -142,6 +146,13 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 		r := p.Record
 		r.EndStep = step
 		profile, _, ok := graphicsSource(mem, t.Profiles)
+		if r.Kind == "opening_shift" {
+			ok = openingShiftReturn(p, mem)
+			profile.Name = r.Name
+			if !ok {
+				t.Shift = nil
+			}
+		}
 		if (r.Kind == "opening_full" || r.Kind == "opening_rect") && !openingPlaneAlias(mem) {
 			r.Error = "opening source alias changed before natural return"
 		} else if !ok || profile.Name != r.Name {
@@ -165,15 +176,22 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 				}
 			}
 		}
+		if r.Kind == "opening_shift" && !r.Verified {
+			t.Shift = nil
+		}
 		t.Records = append(t.Records, r)
 		t.Pending = nil
 	}
-	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 && !openingPartialEntry(eip) {
+	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 && !openingPartialEntry(eip) && !openingShiftEntry(eip) {
 		return
 	}
 	if len(t.Records) >= 512 {
 		t.Dropped++
 		t.Pending = nil
+		return
+	}
+	if openingShiftEntry(eip) {
+		t.openingShiftPrepare(step, eip, esp, mem)
 		return
 	}
 	r := graphicsDrawRecord{BeginStep: step, Stack: esp, Kind: "opaque_rect"}

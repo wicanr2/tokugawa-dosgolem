@@ -11,6 +11,7 @@ type hdGraphicsState struct {
 	Draws     []graphicsDrawRecord `json:"verified_draws"`
 	Pending   *graphicsPending     `json:"-"`
 	Completed uint64               `json:"completed_returns"`
+	Shift     *openingShiftState   `json:"-"`
 }
 
 // 只扣除後畫的不透明矩形，原始繪圖參數與來源／目的矩形仍保留。
@@ -92,19 +93,26 @@ func graphicsDestination(esp uint32, mem []byte) (image.Rectangle, bool) {
 
 // 只觀測原版來源及自然返回，所有圖像替換留在 host 畫布。
 func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapshot func() (nativeSnapshot, error)) {
-	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14 || openingPartialEntry(eip)
+	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14 || openingPartialEntry(eip) || openingShiftEntry(eip)
 	returned := h.Pending != nil && eip == h.Pending.Record.Return && uint64(esp) == uint64(h.Pending.Record.Stack)+4
 	if !entry && !returned {
 		return
 	}
 	if entry {
+		if h.Pending != nil && h.Pending.Shift != nil {
+			h.Shift = nil
+		}
 		h.Pending = nil
 		if eip == 0x1c084 || eip == 0x11f14 {
 			h.Draws = nil
+			h.Shift = nil
 		} else {
 			r, ok := graphicsDestination(esp, mem)
 			if openingPartialEntry(eip) {
 				r, ok = openingPartialDestination(eip), true
+			}
+			if spec, shift := openingShiftDefinition(eip); shift {
+				r, ok = spec.Dest, true
 			}
 			if !ok {
 				h.Draws = nil
@@ -130,9 +138,10 @@ func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapsho
 			}
 		}
 	}
-	trace := graphicsTrace{Profiles: hdGraphicsSources, Pending: h.Pending}
+	trace := graphicsTrace{Profiles: hdGraphicsSources, Pending: h.Pending, Shift: h.Shift}
 	trace.observe(step, eip, esp, mem, snapshot)
 	h.Pending = trace.Pending
+	h.Shift = trace.Shift
 	for _, draw := range trace.Records {
 		if draw.Verified {
 			draw.VisibleRects = []image.Rectangle{draw.DestRect}
@@ -232,6 +241,9 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 	r.Mode = p.Reason
 	if p.Reason != "ready" {
 		return r
+	}
+	if draw.Kind == "opening_shift" {
+		return p.applyOpeningShift(out, s, draw, r)
 	}
 	r.Mode = "fallback_geometry"
 	if out == nil || out.Bounds() != image.Rect(0, 0, 640*p.Scale, 400*p.Scale) || s.Image == nil || s.Image.Bounds() != image.Rect(0, 0, 640, 400) || len(s.Indexed) != 640*400 || !draw.DestRect.In(image.Rect(0, 0, 640, 400)) || draw.DestRect.Empty() || draw.DestRect.Size() != draw.SourceRect.Size() {
