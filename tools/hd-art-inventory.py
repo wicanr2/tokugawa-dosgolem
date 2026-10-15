@@ -342,6 +342,23 @@ def main():
             assert wall_proof['verified'] and wall_proof['profiles_sha256'] == sha(wall_profiles_path)
             assert wall_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-walls.py')
             proof_sources.append({'verification':str(wall_proof_path.relative_to(PROJECT)),'sha256':sha(wall_proof_path)})
+    combat_path = ROOT/'remaining/consumers/battle/r17/verification-summary.json'
+    combat = json.loads(combat_path.read_text()) if combat_path.exists() else None
+    combat_hd_sources = set()
+    if combat:
+        assert combat['result'] == 'PASS' and combat['native_steps'] == 600000000
+        assert len(combat['native_fields_equal']) == 17
+        assert combat['mixed_OR_native_pixels_preserved'] == 18
+        assert combat['original_black_foreground_pixels_preserved'] == 3012
+        assert combat['missing_ground_native_output_pixels'] == 82300
+        verifier_sources.append(recorded_verifier('verify-hd-combat.py', combat['tool_sha256'],
+                                                  'remaining/consumers/battle/r17/verify-hd-combat.py'))
+        for case, proof in combat['cases'].items():
+            assert proof['receipt_sha256'] == sha(combat_path.parent/case/'receipt.json')
+        state = json.loads((combat_path.parent/'desktop-animation/state-action-2.json').read_text())
+        combat_hd_sources = {r['resource'] for r in state['graphics'] if r['mode'] == 'hd'}
+        assert combat_hd_sources == {'BATTLE02.OZM', 'BATTLE.OZM', 'JIMEN_0.OZM', 'JIMEN_1.OZM', 'ANIME08.OZM'}
+        proof_sources.append({'verification': str(combat_path.relative_to(PROJECT)), 'sha256': sha(combat_path)})
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -568,6 +585,10 @@ def main():
                                                  'standalone_summary_sha256': sha(publisher_proof_path),
                                                  'scope': 'default selection, MARK original/HD, native exit, DX5 first battle and window close',
                                                  'game_startup_integrated': True})
+    for record in records:
+        if record['source'] in combat_hd_sources:
+            record.update(runtime_status='normal battle HD/original/restored and native state verified; composite masks, original text, individual missing ground and region restoration verified; top unit icons remain original',
+                          runtime_proof_sha256=sha(combat_path))
     records.append(pcx_record)
     runtime_tails = []
     tail_path = ROOT / 'remaining/source-boundary/OP-FULL-runtime/receipt.json'
@@ -601,12 +622,12 @@ def main():
               "remaining_animation_atlases_prepared":8 if pending_art_proof else 0,
               "remaining_animation_frames_prepared":48 if pending_art_proof else 0,
               "remaining_sources_runtime_registered":len(pending_runtime.get('registered_source_names',[])),
-              "remaining_sources_normal_verified":len(set(pending_runtime_proof['normal_new_sources'] if pending_runtime_proof else []) | set(partial_proof['normal_graphics_sources'] if partial_proof else [])),
+              "remaining_sources_normal_verified":len(set(pending_runtime_proof['normal_new_sources'] if pending_runtime_proof else []) | set(partial_proof['normal_graphics_sources'] if partial_proof else []) | (combat_hd_sources & set(pending_profiles))),
               "generated_partial_source_art_resources":len(prefix_art),
               "prepared_partial_source_story_resources":len(prefix_story),
               "partial_source_story_resources_runtime_registered":len(prefix_runtime['registered_sources']) if prefix_runtime else 0,
               "approved_static_sources":len(static_profiles),
-              "normal_static_sources_verified":len(set(static_proof['normal_new_source_names'] if static_proof else []) | (set(opening_proof['normal_new_sources']) & set(static_profiles) if opening_proof else set()) | set(shift_proof['normal_static_sources'] if shift_proof else [])),
+              "normal_static_sources_verified":len(set(static_proof['normal_new_source_names'] if static_proof else []) | (set(opening_proof['normal_new_sources']) & set(static_profiles) if opening_proof else set()) | set(shift_proof['normal_static_sources'] if shift_proof else []) | (combat_hd_sources & set(static_profiles))),
               "runtime_observed_opening_art_prepared":1 if full_profile else 0,
               "runtime_observed_opening_sources_normal_verified":1 if opening_proof else 0,
               "approved_MAP_CHIP_floor_art": approved_floor_count,

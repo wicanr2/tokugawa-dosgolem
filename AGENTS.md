@@ -87,6 +87,8 @@
 | `workplace/hd-prototype/catalog/remaining/consumers/battle/r13/`、`r14/` | ADC AL,imm8 與 83 /2 word register 的新凍結來源及四套件；r13 保留舊否定測試仍拒絕新形式的失敗，r14 改以仍未支援的 word memory 核對拒絕。第三回合正常讀檔重播以 r12/load-turn3 的獨立收據作前綴，保留資料 manifest 與兩種不同存檔的界限 |
 | `workplace/hd-prototype/catalog/remaining/consumers/battle/r14/desktop-original/` | 正常讀回第三回合、結束回合後的原版交鋒 X11 擷取；先核對原版 UI、合成與動畫，當次二進位及 106 項來源保持凍結。正式 HD 消費端另開新來源批次 |
 | `workplace/hd-prototype/catalog/remaining/consumers/battle/r15/` | 依 RESEARCH-LOG 的 READY 契約接 BATTLE OR、JIMEN 透明與原版前景保留，保存凍結來源、四套件、正常原版控制及 X11 原圖／HD／缺圖驗證；頂端單位縮圖維持獨立待辦 |
+| `workplace/hd-prototype/catalog/remaining/consumers/battle/r16/`、`r17/` | 共用視窗原版矩形保存／還原與 graphics／KAO 呈現生命週期修正，先核對原版四平面保存內容及返回目的，再恢復該區 host 圖層；區域外新繪圖保留。r16 保留測試編譯失敗，r17 的 verification-summary.json 為十四張正常 X11、九次切換、個別缺圖及動畫還原驗收。unit-diagnostic/ 另存同版正常十九筆輸入的 215M 地形／前景唯讀診斷，原版資料只留本機 |
+| [tools/verify-hd-combat.py](tools/verify-hd-combat.py) | 固定 GUI image，專案唯讀掛 /project、r17 可寫掛 /output；獨立核對 600M 完整 RAM／十七欄、三種正常 X11、原版／HD 切換、十八個 OR 混色像素、文字、個別缺 JIMEN_1 及動畫矩形還原。--source-root 可指定歷史快照；保存 verification-summary.json，頂端單位縮圖不列本切片完成 |
 | [tools/hd-extract.go](tools/hd-extract.go) | 從正常路徑 RAM 擷取 A-0.OZM，核對四平面雜湊與原生畫面矩形，輸出本機 PNG 及收據；不是正式素材包格式 |
 | [tools/hd-capture.go](tools/hd-capture.go) | `-hd-export` 在原版載入返回時輸出已核對平面的索引圖、當時 DAC 與收據；沒有 guest 寫入，不代表繪圖或遮擋已驗收 |
 | [tools/hd-ozm-probe.py](tools/hd-ozm-probe.py) | 依 IDA 9.4 原始指令做離線資源盤點，只接受獨立解碼命令；遇到 VGA 來源命令明確拒絕。以正常路徑四平面與索引雜湊交叉核對 |

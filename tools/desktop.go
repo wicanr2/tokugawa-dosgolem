@@ -820,6 +820,7 @@ func (g *desktopGame) Update() error {
 	w, h := ebiten.WindowSize()
 	status := map[string]any{"step": g.c.Steps(), "mode": g.mode, "eligible": g.c.Live.Active, "portrait_resource": g.c.Live.LastName, "scroll_eligible": g.c.Live.ScrollActive, "scroll_mode": g.scrollMode, "frame_mode": g.frameMode, "scroll_foreground_pixels": g.scrollForeground, "portrait_mode": g.portraitMode, "kao_modes": g.kaoModes, "kao_hd_count": g.kaoHD, "kao_draws": g.c.Live.Kao.Draws, "enabled": g.enabled, "paused": g.paused, "events": g.events, "mouse_events": g.mouseEvents, "bar_visible": g.bar.Visible, "bar_pinned": g.bar.Pinned, "bar_menu": g.bar.Menu, "bar_focus": g.bar.Focus, "bar_hover": g.bar.Hover, "bar_events": g.barEvents, "window_size": []int{w, h}, "mouse_blocked": g.blockMouse}
 	status["window_modes"], status["window_hd_count"], status["window_foreground_pixels"], status["window_draws"] = g.windowModes, g.windowHD, g.windowForeground, g.c.Live.Window.Draws
+	status["window_layers"] = g.c.Live.WindowLayers
 	status["terrain_modes"], status["terrain_hd_count"], status["terrain_draws"] = g.terrainModes, g.terrainHD, g.c.Live.Terrain.Draws
 	status["terrain_foreground_pixels"], status["terrain_sprites"] = g.terrainForeground, g.c.Live.Terrain.Sprites
 	status["tree_modes"], status["tree_hd_count"], status["tree_protected_pixels"], status["tree_draws"] = g.treeModes, g.treeHD, g.treeProtected, g.c.Live.Terrain.Sprites

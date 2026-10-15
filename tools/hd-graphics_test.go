@@ -143,6 +143,170 @@ func TestHDGraphicsMaskBoundsEmptyAndFragmentLimit(t *testing.T) {
 	}
 }
 
+func TestHDGraphicsCompositeForegroundAndFallback(t *testing.T) {
+	var profile hdGraphicsProfile
+	for _, candidate := range hdGraphicsProfiles {
+		if candidate.Source.Name == "BATTLE.OZM" {
+			profile = candidate
+		}
+	}
+	indexed, err := os.ReadFile("/project/workplace/hd-prototype/catalog/decoded/BATTLE.OZM.idx")
+	if err != nil {
+		t.Skip("local original battle source unavailable")
+	}
+	asset := image.NewNRGBA(image.Rect(0, 0, 1280, 800))
+	for i := 0; i < len(asset.Pix); i += 4 {
+		copy(asset.Pix[i:i+4], []byte{190, 50, 30, 255})
+	}
+	pair := newHDGraphicsPair(profile, indexed, asset, 2)
+	draw := graphicsDrawRecord{Name: "BATTLE.OZM", Kind: "or_full", SourceRect: image.Rect(0, 0, 640, 400), DestRect: image.Rect(0, 0, 640, 400),
+		Verified: true, ExpectedSHA: "synthetic-native-result", ActualSHA: "synthetic-native-result",
+		SourceCropSHA: profile.IndicesSHA, CompositeSourceSHA: profile.IndicesSHA}
+	var foreground, ordinary, transparent, unit image.Point
+	found := [4]bool{}
+	for y := 0; y < 247; y++ {
+		for x := 0; x < 640; x++ {
+			point, value := image.Pt(x, y), indexed[y*640+x]
+			if value != 0 && graphicsCompositeForeground(draw, point) && !graphicsBattleUnit(point) && !found[0] {
+				foreground, found[0] = point, true
+			}
+			if value != 0 && !graphicsCompositeForeground(draw, point) && !graphicsBattleUnit(point) && !found[1] {
+				ordinary, found[1] = point, true
+			}
+			if value == 0 && !found[2] {
+				transparent, found[2] = point, true
+			}
+			if value != 0 && graphicsBattleUnit(point) && !found[3] {
+				unit, found[3] = point, true
+			}
+		}
+	}
+	if found != [4]bool{true, true, true, true} {
+		t.Fatal("actual source test regions absent", found)
+	}
+	s := nativeSnapshot{Image: image.NewNRGBA(image.Rect(0, 0, 640, 400)), Indexed: append([]byte(nil), indexed...), MaxColor: 15}
+	for i, value := range graphicsNativePalette(profile) {
+		s.DAC[i], s.Palette[i] = byte(i), [3]byte{value.R, value.G, value.B}
+	}
+	s.Indexed[foreground.Y*640+foreground.X] = 0
+	nativeColour := color.NRGBA{12, 34, 56, 255}
+	s.Image.SetNRGBA(foreground.X, foreground.Y, nativeColour)
+	draw.VisibleRects = []image.Rectangle{image.Rectangle{Min: foreground, Max: foreground.Add(image.Pt(1, 1))}}
+	out := image.NewNRGBA(image.Rect(0, 0, 1280, 800))
+	if report := pair.apply(out, s, draw, true); report.Mode != "hd" || report.PreservedNative != 1 || report.PaintedNative != 0 || out.NRGBAAt(foreground.X*2, foreground.Y*2) != nativeColour {
+		t.Fatal("original foreground colour or count", report)
+	}
+	for _, kind := range []string{"disabled", "missing", "source", "composite", "unknown-write", "transparent", "unit"} {
+		d, selected := draw, pair
+		if kind == "missing" {
+			selected = newHDGraphicsPair(profile, indexed, nil, 2)
+		}
+		if kind == "source" {
+			d.SourceCropSHA = "wrong"
+		}
+		if kind == "composite" {
+			d.ActualSHA = "wrong"
+		}
+		point := foreground
+		if kind == "unknown-write" {
+			point = ordinary
+			s.Indexed[point.Y*640+point.X] = indexed[point.Y*640+point.X] ^ 1
+		} else if kind == "transparent" {
+			point = transparent
+		} else if kind == "unit" {
+			point = unit
+		}
+		d.VisibleRects = []image.Rectangle{{Min: point, Max: point.Add(image.Pt(1, 1))}}
+		before := append([]byte(nil), out.Pix...)
+		if report := selected.apply(out, s, d, kind != "disabled"); report.Mode == "hd" || !bytes.Equal(before, out.Pix) {
+			t.Fatal("fallback modified output", kind, report)
+		}
+	}
+}
+
+func TestHDWindowLayersRestoreRegionAndRemoveTemporaryPortrait(t *testing.T) {
+	packed, err := os.ReadFile("/project/workplace/hd-prototype/catalog/window/WINDOW-packed.bin")
+	if err != nil {
+		t.Skip("local original window source unavailable")
+	}
+	mem := make([]byte, 0x200000)
+	copy(mem[0x100000:], packed)
+	binary.LittleEndian.PutUint32(mem[0x35153:], 0x100000)
+	esp, ret := uint32(0x1000), uint32(0x19000)
+	rect := image.Rect(128, 286, 208, 366)
+	for i, value := range []uint32{ret, 16, 286, 5, 5} {
+		binary.LittleEndian.PutUint32(mem[esp+uint32(i*4):], value)
+	}
+	frame := make([]byte, 640*400)
+	for i := range frame {
+		frame[i] = byte((i/640 + i%640) % 16)
+	}
+	original := graphicsDrawRecord{Name: "synthetic-background", Kind: "opaque_full", BeginStep: 1, EndStep: 2, Verified: true, SourceRect: image.Rect(0, 0, 640, 400), DestRect: image.Rect(0, 0, 640, 400)}
+	outsideRect := image.Rect(464, 291, 608, 365)
+	newOutside := graphicsDrawRecord{Name: "synthetic-later-weather", Kind: "opaque_rect", BeginStep: 6, EndStep: 7, Verified: true, SourceRect: image.Rect(0, 0, 144, 74), DestRect: outsideRect, VisibleRects: []image.Rectangle{outsideRect}}
+	portrait := hdKaoDraw{Index: 0, Rect: image.Rect(40, 66, 120, 146), EndStep: 3}
+	h := hdLive{Graphics: hdGraphicsState{Draws: []graphicsDrawRecord{original}}, Kao: hdKaoState{Draws: []hdKaoDraw{portrait}}}
+	snapshot := func() (nativeSnapshot, error) { return nativeSnapshot{Indexed: frame, MaxColor: 15}, nil }
+	before := graphicsCrop(frame, 640, rect)
+	ram := sha256.Sum256(mem)
+	h.observeWindowLayers(4, 0x1b165, esp, mem, snapshot)
+	if h.WindowLayers.PendingSave == nil || sha256.Sum256(mem) != ram {
+		t.Fatal("save entry guard or RAM mutation")
+	}
+	// 合成原版保存動作，並以獨立四平面編碼檢查讀取端。
+	for bit := 0; bit < 4; bit++ {
+		for i, value := range before {
+			mem[0x120000+bit*len(before)/8+i/8] |= (value >> uint(bit) & 1) << uint(7-i%8)
+		}
+	}
+	for i, value := range []uint32{16 + 286*80, 5, 5, 0x120000} {
+		binary.LittleEndian.PutUint32(mem[0x34ed3+i*4:], value)
+	}
+	binary.LittleEndian.PutUint32(mem[0x35157:], 1)
+	ram = sha256.Sum256(mem)
+	h.observeWindowLayers(5, ret, esp, mem, snapshot)
+	if h.WindowLayers.Saved != nil {
+		t.Fatal("wrong stack activated saved layers")
+	}
+	h.observeWindowLayers(5, ret, esp+4, mem, snapshot)
+	if h.WindowLayers.Saved[0] == nil || sha256.Sum256(mem) != ram {
+		t.Fatal("saved original buffer guard or RAM mutation")
+	}
+	saved := h.WindowLayers.Saved[0]
+	h.Graphics.Draws = graphicsClipRegion([]graphicsDrawRecord{original}, rect, false)
+	h.Graphics.Draws = graphicsClipRegion(h.Graphics.Draws, outsideRect, false)
+	h.Graphics.Draws = append(h.Graphics.Draws, graphicsDrawRecord{Name: "synthetic-animation", DestRect: rect, VisibleRects: []image.Rectangle{rect}}, newOutside)
+	h.Kao.Draws = append(h.Kao.Draws, hdKaoDraw{Index: 22, Rect: rect, EndStep: 8})
+	h.observeWindowLayers(9, 0x1b245, esp, mem, snapshot)
+	if len(h.Kao.Draws) != 1 || h.Kao.Draws[0] != portrait || h.WindowLayers.PendingRestore == nil {
+		t.Fatal("temporary portrait was not revoked")
+	}
+	binary.LittleEndian.PutUint32(mem[0x35157:], 0)
+	ram = sha256.Sum256(mem)
+	h.observeWindowLayers(10, ret, esp+4, mem, snapshot)
+	if len(h.Graphics.Draws) != 2 || h.WindowLayers.PendingRestore != nil || sha256.Sum256(mem) != ram || h.Graphics.Draws[1].Name != newOutside.Name {
+		t.Fatal("restoration lost newer outside drawing or changed RAM", h.Graphics.Draws)
+	}
+	area := 0
+	for _, visible := range h.Graphics.Draws[0].VisibleRects {
+		if visible.Overlaps(outsideRect) {
+			t.Fatal("restored old background over newer outside drawing")
+		}
+		area += visible.Dx() * visible.Dy()
+	}
+	if area != 640*400-outsideRect.Dx()*outsideRect.Dy() {
+		t.Fatal("restored region has a gap", area)
+	}
+	// 相同返回但原生目的不同時，不能恢復保存的圖層。
+	h.Graphics.Draws = nil
+	h.WindowLayers.PendingRestore = &hdWindowLayersPending{Return: ret, Stack: esp, Level: 0, Region: saved}
+	frame[rect.Min.Y*640+rect.Min.X] ^= 1
+	h.observeWindowLayers(11, ret, esp+4, mem, snapshot)
+	if len(h.Graphics.Draws) != 0 || h.WindowLayers.Events[len(h.WindowLayers.Events)-1]["verified"] != false {
+		t.Fatal("changed native restoration resurrected saved HD")
+	}
+}
+
 func TestHDGraphicsLogoUsesOnlyObservedSteadyPalette(t *testing.T) {
 	data, err := os.ReadFile("/project/workplace/hd-prototype/catalog/graphics/static/palette-probe/palette-captures.json")
 	if err != nil {

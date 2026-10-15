@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"image"
+	"reflect"
 	"sort"
 )
 
@@ -14,6 +15,75 @@ type hdGraphicsState struct {
 	Completed uint64               `json:"completed_returns"`
 	Shift     *openingShiftState   `json:"-"`
 	Composite *compositePending    `json:"-"`
+}
+
+func graphicsClipRegion(draws []graphicsDrawRecord, rect image.Rectangle, inside bool) []graphicsDrawRecord {
+	result := []graphicsDrawRecord{}
+	for _, draw := range draws {
+		visible := draw.VisibleRects
+		if visible == nil {
+			visible = []image.Rectangle{draw.DestRect}
+		}
+		draw.VisibleRects = []image.Rectangle{}
+		for _, old := range visible {
+			if inside {
+				if clipped := old.Intersect(rect); !clipped.Empty() {
+					draw.VisibleRects = append(draw.VisibleRects, clipped)
+				}
+			} else {
+				draw.VisibleRects = append(draw.VisibleRects, graphicsSubtract(old, rect)...)
+			}
+		}
+		if len(draw.VisibleRects) > 0 {
+			result = append(result, draw)
+		}
+	}
+	if len(result) > 64 || graphicsFragmentCount(result) > 256 {
+		return nil
+	}
+	return result
+}
+
+func graphicsRestoreRegion(outside, saved []graphicsDrawRecord) []graphicsDrawRecord {
+	result := append([]graphicsDrawRecord(nil), outside...)
+	for _, restored := range saved {
+		found := -1
+		key := restored
+		key.VisibleRects = nil
+		for i, draw := range result {
+			draw.VisibleRects = nil
+			if reflect.DeepEqual(draw, key) {
+				found = i
+				break
+			}
+		}
+		if found < 0 {
+			result = append(result, restored)
+			continue
+		}
+		draw := result[found]
+		mask := make([]bool, draw.DestRect.Dx()*draw.DestRect.Dy())
+		for _, rect := range append(append([]image.Rectangle(nil), draw.VisibleRects...), restored.VisibleRects...) {
+			if rect.Empty() || !rect.In(draw.DestRect) {
+				return outside
+			}
+			for y := rect.Min.Y; y < rect.Max.Y; y++ {
+				for x := rect.Min.X; x < rect.Max.X; x++ {
+					mask[(y-draw.DestRect.Min.Y)*draw.DestRect.Dx()+x-draw.DestRect.Min.X] = true
+				}
+			}
+		}
+		var ok bool
+		draw.VisibleRects, ok = graphicsMaskRectangles(mask, draw.DestRect)
+		if !ok {
+			return outside
+		}
+		result[found] = draw
+	}
+	if len(result) > 64 || graphicsFragmentCount(result) > 256 {
+		return outside
+	}
+	return result
 }
 
 // 合併相同逐列區間；空遮罩保持非 nil，避免被解讀成完整矩形。

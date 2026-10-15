@@ -19,6 +19,8 @@ parser.add_argument('--harness-only', action='store_true')
 parser.add_argument('--desktop-speed', type=int, default=60)
 parser.add_argument('--mouse-file', default='/project/tools/player-path.json')
 parser.add_argument('--input-manifest', type=Path)
+parser.add_argument('--graphics-dir', type=Path)
+parser.add_argument('--keep-pointer-outside', action='store_true')
 args = parser.parse_args()
 assert 30 <= args.timeout <= 7200 and 0 <= args.prefix_step <= 1000000000
 assert 1 <= args.desktop_speed <= 60
@@ -97,7 +99,8 @@ def report(phase, error=None):
     d = dict(phase=phase, captures=captures, commands=commands, step=status().get('step'), error=error,
              binary_sha256=sha(root / 'tokugawa-desktop-prototype'), tool_sha256=sha(Path(__file__)),
              harness_only=args.harness_only, timeout_seconds=args.timeout,
-             input_data=data_origin, input_mouse_sha256=sha(Path(args.mouse_file)), desktop_speed=args.desktop_speed)
+             input_data=data_origin, input_mouse_sha256=sha(Path(args.mouse_file)), desktop_speed=args.desktop_speed,
+             graphics_dir=str(args.graphics_dir) if args.graphics_dir else None, keep_pointer_outside=args.keep_pointer_outside)
     pending = root / 'exploration-status.pending'
     pending.write_text(json.dumps(d, ensure_ascii=False, indent=2) + '\n')
     pending.replace(root / 'exploration-status.json')
@@ -145,12 +148,16 @@ try:
     command = [str(root / 'tokugawa-desktop-prototype'), '-desktop', '-publisher-intro=false', '-startup-display', 'original',
                '-desktop-speed', str(args.desktop_speed), '-steps', '2000000000', '-mouse-file', args.mouse_file,
                '-desktop-script-handoff', '-hd-composite-trace', '-hd-graphics-trace']
+    if args.graphics_dir:
+        command += ['-hd-graphics-dir', str(args.graphics_dir)]
     with (root / 'receipt.json').open('wb') as out, (root / 'stderr.log').open('wb') as err:
         process = subprocess.Popen(command, env=env, stdout=out, stderr=err)
     children.append(process)
     wait(lambda s: s.get('program') == 'game', 90)
     window = run('xdotool', 'search', '--onlyvisible', '--name', '德川家康', stdout=subprocess.PIPE).stdout.decode().splitlines()[0]
     run('xdotool', 'windowfocus', '--sync', window)
+    if args.keep_pointer_outside:
+        run('xdotool', 'mousemove', '1590', '1190')
     wait(lambda s: s.get('step', 0) >= args.prefix_step and
          (args.harness_only or not s.get('scripted_input_pending')), 900)
     paused(True)
@@ -183,6 +190,31 @@ try:
         elif kind == 'toggle':
             enabled = not status()['enabled']
             key('F6', lambda s: s['enabled'] == enabled)
+        elif kind in ['wait_graphics', 'wait_restore']:
+            begin = status()['step']
+            n = command.get('steps', 50000000)
+            assert isinstance(n, int) and 100000 <= n <= 200000000 and begin + n < 2000000000
+            resource = command.get('resource')
+            target = command.get('rect', [216, 100, 424, 260])
+            if kind == 'wait_graphics':
+                assert status()['enabled'] and isinstance(resource, str) and resource.endswith('.OZM') and len(resource) <= 64
+            else:
+                assert len(target) == 4 and all(isinstance(v, int) for v in target)
+            def reached(s):
+                if s.get('step', 0) > begin + n:
+                    raise TimeoutError('ordinary graphics wait exceeded instruction limit')
+                if kind == 'wait_graphics':
+                    return any(report.get('resource') == resource and report.get('mode') == 'hd' for report in s.get('graphics') or [])
+                for event in (s.get('window_layers') or {}).get('events') or []:
+                    rect = event['logical_rect']
+                    bounds = [rect['Min']['X'], rect['Min']['Y'], rect['Max']['X'], rect['Max']['Y']]
+                    if event['kind'] == 'restore_return' and event['verified'] and event['step'] >= begin and bounds == target:
+                        return True
+                return False
+            paused(False)
+            wait(reached)
+            paused(True)
+            assert reached(status()), 'graphics stage ended before the ordinary pause'
         elif kind in ['click', 'drag', 'run']:
             begin = status()['step']
             n = command.get('steps', 5000000)
