@@ -441,3 +441,5 @@ GitHub 收尾：功能、第二版開場圖與提示詞提交 `6a2e45d71ea9a0c95
 - 等待 GUI 時，以既有原版收據核對十三個 OP2／OP8 位移與跨列複製；OP8 起初的 8／7／6／1 個來源外像素明示未知，未接入正式路徑。新證據 SHA-256 `b46d791603cf03c77261106439f703744edb5f67bceecb86bf60a14f4508e319`。兩組穩定色盤與 OP2_P／OP9 相同，下一步審查來源轉換及保護契約。
 - 四項 EOF 來源抽出 47992 個已知像素，未知八像素參考區設透明，不補 DAT。內建 imagegen 製作 E-4 營帳，再加入 B-6 前景武將；B-7／C-10 依相同 payload 共用草稿。兩圖、完整提示詞與有序參考 metadata 已先以 02412b9 推送私人 repo。保存及 verify-only 為 803 PNG、162 提示詞、593441022 indexed bytes；原版參考、平面、RAM／PCM 及執行收據仍留本機。
 - 全遊戲 HD 仍在進行，下一步捲動、四項部分來源的校準／資格及其他動畫消費端、PCX；三平台打包尚未開始。全部本批建置與 GUI 容器已結束，未重建 image。最後來源、文件、擁有權與遠端核對結果接續記錄。
+
+本批提交 `227d3b97fc56e161b5d2990f57cc2202c03f00b2` 已推送 main。主機 gh 核對 PRIVATE；1041 份 assets/hd-b 檔案的 Git 子樹 `2df9e2b6d4c3134cec8b80d499e6c3c188abdf8f` 與本機一致，tree 未截斷，original/、workplace/ 未加入遠端。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6183521430 。來源完整性、803 PNG／162 提示詞保存、504 項來源快照 SHA、六個相同二進位、文件入口與連結、Python 語法及 whitespace 通過。完整工作根沒有 root-owned 檔案或 .md 目錄，tokugawa 容器為空。
