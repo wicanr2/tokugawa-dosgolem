@@ -481,3 +481,10 @@ GitHub 收尾：功能、第二版開場圖與提示詞提交 `6a2e45d71ea9a0c95
 - 另保存動畫 OR 合成與透明繪圖消費端的窄範圍原始證據；其他動畫未因定位而列完成。
 - 原版 ZIP／12 檔、唯讀及 UID/GID 於 05:20:40Z 通過；807 PNG、163 提示詞、596522181 bytes 保存核對通過。沒有新增生成圖，原版、PCX 合成預覽及執行收據仍留本機。
 - 主機 gh auth status 通過，repo 確認 PRIVATE，Issue #5 為 OPEN。提交、推送與遠端留言核對於本筆後續追加。全遊戲 HD、MARK 及三平台打包尚未完成。
+
+本批程式提交 414278dca9cdbeaf9dce7eac142ec17fb12c61aa 已推送 main，主機 git ls-remote 核對一致。Issue #5 保持 OPEN，進度留言已送出並可回查：
+https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6185165391
+
+PRIVATE 狀態再次確認，遠端與本機 assets/hd-b 子樹皆為 9de9713108cf662e0b2bb39e46b5ab7aec8c1561。沒有原版或 workplace 進入版控。完整工作根沒有 root-owned 檔案或 .md 目錄，正式 DX5.i64 雜湊不變，本批 Docker 容器均已自動移除。
+
+Git 的補丁檔空白檢查曾把 unified diff context 前綴視為來源格式錯誤。更新 .gitattributes 時誤覆蓋原有 dosgolem.patch 規則，已恢復原兩行，只增加 mark-cpu.patch 的格式前綴例外；其餘 whitespace 檢查保留，補丁本身、二進位及 93 項凍結來源未改。這項修正與遠端記錄隨後續文件提交保存。

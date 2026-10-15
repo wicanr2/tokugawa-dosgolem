@@ -209,7 +209,7 @@
 | [CONTEXT.md](CONTEXT.md) | 目前狀態、有效結論、限制與下一個驗證入口 |
 | [WORKLOG.md](WORKLOG.md) | 按時間追加的工作歷程與清理結果 |
 | [.gitignore](.gitignore) | 排除本機原版資料、探針輸出與快取 |
-| [.gitattributes](.gitattributes) | unified diff 的 context 前綴是格式，不按普通來源檔檢查 whitespace；實際套用後由 git apply、gofmt 與平台測試驗證 |
+| [.gitattributes](.gitattributes) | 僅對兩份平台補丁排除 unified diff context 前綴的空白警告；其餘檢查保留。套用後另由 git apply、gofmt 與平台測試驗證 |
 | [.gitattributes](.gitattributes) | dosgolem 統一差異的 context 行保留格式；只排除該補丁檔的 space-before-tab 誤報 |
 
 新增目錄或文件前讀 `/home/anr2/.codex/knowledge-base/local/project-document-responsibilities.md`，並更新本表。未有可執行待辦前不另建 WORKLIST；需要時只建立一份。README 只放穩定入口，工作歷程寫入 WORKLOG。
