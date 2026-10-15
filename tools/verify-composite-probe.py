@@ -9,6 +9,7 @@ from PIL import Image
 assert Path('/.dockerenv').exists() and os.getuid() == 1000
 p = argparse.ArgumentParser()
 p.add_argument('--control-only', action='store_true')
+p.add_argument('--harness-close-only', action='store_true')
 p.add_argument('--source-root', type=Path, default=Path('/project'))
 args = p.parse_args()
 root, project = Path('/output'), Path('/project')
@@ -33,9 +34,41 @@ def rect(value):
 
 sources = read(root / 'build-sources.json')
 assert len(sources) in [105, 106] and all(sha(args.source_root / n) == h for n, h in sources.items())
+if args.harness_close_only:
+    cases = []
+    for name, phase in [('cleanup-check', 'failed'), ('cleanup-check-r2', 'finished_deadline')]:
+        case = root / name
+        e, r = read(case / 'exploration-status.json'), read(case / 'receipt.json')
+        assert e['phase'] == phase and e['harness_only']
+        assert r['stop'] == 'desktop_closed' and r['integration_input_sha256'] == sources
+        assert r['fd2_startup_calls'] == 0 and len(r['mouse_input_schedule']) == 390
+        assert sha(case / 'explore-battle-source.py') == e['tool_sha256']
+        assert sha(case / 'tokugawa-desktop-prototype') == e['binary_sha256']
+        if phase == 'finished_deadline':
+            assert r['successful_steps'] >= 10000000 and len(e['captures']) >= 1
+            for c in e['captures']:
+                actual = case / Path(c['actual']).relative_to('/output')
+                frame = case / Path(c['event']['frame']['path']).relative_to('/output')
+                assert sha(actual) == c['sha256'] and c['window_pixels_equal']
+                assert Image.open(actual).convert('RGBA').tobytes() == Image.open(frame).convert('RGBA').tobytes()
+        cases.append(dict(case=name, phase=phase, stop=r['stop'], steps=r['successful_steps'],
+                          receipt_sha256=sha(case / 'receipt.json'), ram_sha256=sha(case / 'startup-memory.bin'),
+                          harness_sha256=e['tool_sha256'], source_count=len(sources)))
+    report = dict(result='PASS', scope='research harness exception and deadline normal close; no player-path claim',
+                  cases=cases, tool_sha256=sha(Path(__file__)))
+    (root / 'cleanup-verification.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+    print('PASS exception/deadline normal close and complete native receipts; harness only')
+    raise SystemExit(0)
 baseline = read(project / 'workplace/desktop-prototype/headless/startup-probe/latest.json')
 control = root / 'control'
 c = read(control / 'receipt.json')
+reference = None
+if (control / 'reference.json').is_file():
+    reference = read(control / 'reference.json')
+    origin = project / reference['project_relative_origin']
+    assert reference['kind'] == 'copied existing control; no additional execution'
+    assert sha(origin / 'receipt.json') == sha(control / 'receipt.json') == reference['receipt_sha256']
+    assert sha(origin / 'startup-memory.bin') == sha(control / 'startup-memory.bin') == reference['ram_sha256']
 fields = ['successful_steps', 'instruction_budget', 'stop', 'stop_instruction_linear_eip', 'trace_tail',
           'interrupt_counts', 'dpmi_calls', 'dpmi_unimplemented', 'frame', 'cd_pcm', 'mounted_disc',
           'mouse_input_events', 'input_boundary_frames', 'real_mode_history', 'real_mode_last']
@@ -50,7 +83,8 @@ if args.control_only:
     raise SystemExit(0)
 
 exploration, r = read(root / 'exploration-status.json'), read(root / 'receipt.json')
-assert exploration['phase'] == 'finished' and r['stop'] == 'desktop_closed'
+assert exploration['phase'] in ['finished', 'finished_deadline'] and r['stop'] == 'desktop_closed'
+assert not exploration.get('harness_only', False)
 assert r['composite_diagnostic_enabled'] and r['desktop_script_handoff']
 assert r['integration_input_sha256'] == sources and r['fd2_startup_calls'] == 0
 assert r['mouse_input_schedule'] == baseline['mouse_input_schedule']
@@ -97,6 +131,7 @@ for capture in exploration['captures']:
 report = dict(result='PASS' if verified else 'INCOMPLETE', scope='read-only original composite diagnostics and ordinary battle input',
               HD_rendering_integrated=False, sources_verified=sorted({v['Source'] for v in verified}),
               source_count=len(sources), original_control=control_report, native_composites=verified,
+              original_control_reference=reference,
               rejected_observations=rejected, dropped_events=r['composite_draw_trace']['dropped_events'],
               normal_opaque_sources=sorted({d['resource'] for d in r['graphics_draw_trace'].get('records') or [] if d['verified']}),
               ordinary_events_after_prefix=len(r['mouse_input_events'])-390, actual_window_captures=len(exploration['captures']),

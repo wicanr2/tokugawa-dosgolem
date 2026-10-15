@@ -67,10 +67,11 @@
 | [tools/hd-publisher-preview.go](tools/hd-publisher-preview.go)、`catalog/remaining/consumers/publisher-preview/` | 離線出版商標誌 HD 原型，依既有圖像幾何取樣並保留原版底部版權文字。固定 GUI image 內專案唯讀、publisher-preview 可寫掛 /output，工作目錄指定 /output，以 `go run /project/tools/hd-publisher-preview.go` 執行；不是正常執行收據，含原版文字的合成 PNG 只留本機，不加入 Git |
 | [tools/hd-trace.go](tools/hd-trace.go)、[tools/hd-trace_test.go](tools/hd-trace_test.go) | 固定 EXE 的唯讀素材載入觀測及記憶體不變、錯誤界限、事件上限測試；不替換素材 |
 | [tools/hd-composite-probe.go](tools/hd-composite-probe.go)、[tools/hd-composite-probe_test.go](tools/hd-composite-probe_test.go) | 預設關閉的原版 OR／透明矩形唯讀探針，核對自然返回、完整四平面與目的索引；只作研究，不替換 HD |
-| [tools/battle-cpu.patch](tools/battle-cpu.patch) | 原版正常攻擊分支的 D1 /4 32 位暫存器左移、C1 count-one OF、39 /r 16 位元記憶體比較與 81 /7 16 位元立即值比較；依 Intel 規格及差分測試，套於 DOS/4GW 補丁後，外部 dosgolem 不改 |
-| [tools/explore-battle.py](tools/explore-battle.py) | 固定 GUI image 內從既有普通輸入走到首戰，再以真實 X11 滑鼠接續；有界互動研究、截圖與輸入收據，不直接進入戰鬥函式 |
-| [tools/verify-composite-probe.py](tools/verify-composite-probe.py) | 固定 GUI image 內專案唯讀掛 /project、consumers/battle 可寫掛 /output；--control-only 核對 750M 原版基準，完整模式另以保存的實際前後索引獨立驗證 OR／透明公式與 X11；沒有新消費端 HD 完成聲明 |
-| `workplace/hd-prototype/catalog/remaining/consumers/battle/` | 原版正常戰場操作、OR／透明矩形素材與有界桌面研究；來源快照、原生圖及執行收據只留本機。根目錄保留 D1 停止批次，r2/ 保留回歸失敗，r3/ 保留 CMP 停止與控制組，r4/ 保留測試條件缺漏，r5/ 保留立即值比較停止與控制組，r6/ 為目前批次 |
+| [tools/battle-cpu.patch](tools/battle-cpu.patch) | 原版正常攻擊分支的 D1 /4 32 位暫存器左移、C1 count-one OF、39 /r 16 位元記憶體比較、81 /7 16 位元立即值比較與 AND AX,imm16；依 Intel 規格及差分測試，套於 DOS/4GW 補丁後，外部 dosgolem 不改 |
+| [tools/battle-instruction-probe.go](tools/battle-instruction-probe.go) | 在 Docker 的原有 cmd/leprobe main overlay 執行：先以 LE loader 核對 IDA 載入後 bytes，再在合成 CPU 狀態單步列出攻擊窄範圍的指令形式缺口。只作平台能力篩查，不作正常玩家路徑、玩法或 HD 驗收；輸出保存 consumers/ida/ 及各批次 capabilities/，操作見 RESEARCH-LOG |
+| [tools/explore-battle.py](tools/explore-battle.py) | 固定 GUI image 內從既有普通輸入走到首戰，再以真實 X11 滑鼠接續；commands.json 支援 click／drag／run／capture／toggle／quit。--timeout 預設 3600 秒，到期及錯誤先正常關窗以保存收據；--prefix-step 的早期工具測試明示 harness_only，不作玩家路徑證據。原版與 Go 來源保持凍結，不直接進入戰鬥函式 |
+| [tools/verify-composite-probe.py](tools/verify-composite-probe.py) | 固定 GUI image 內專案唯讀掛 /project、指定 battle 批次可寫掛 /output；--control-only 核對 750M 基準，--harness-close-only 於 r7 核對例外／到期正常收尾。完整模式獨立核對 OR／透明索引公式與 X11，拒絕 harness_only 作玩家證據；複用控制組須核對 reference.json 的來源及雜湊，不計為新執行 |
+| `workplace/hd-prototype/catalog/remaining/consumers/battle/` | 原版正常戰場操作、OR／透明矩形素材與有界桌面研究；來源快照、原生圖及執行收據只留本機。根目錄保留 D1 停止批次，r2/ 保留回歸失敗，r3/ 保留 CMP 停止與控制組，r4/ 保留測試條件缺漏，r5/ 保留立即值比較停止與控制組，r6/ 保留 AND 停止與控制組。r7/ 保存最新平台控制組、互動到期失敗及 cleanup-check*/ 工具測試，r8/ 沿用同一二進位接續；複用控制組須另記來源及雜湊，不稱新測次 |
 | [tools/hd-extract.go](tools/hd-extract.go) | 從正常路徑 RAM 擷取 A-0.OZM，核對四平面雜湊與原生畫面矩形，輸出本機 PNG 及收據；不是正式素材包格式 |
 | [tools/hd-capture.go](tools/hd-capture.go) | `-hd-export` 在原版載入返回時輸出已核對平面的索引圖、當時 DAC 與收據；沒有 guest 寫入，不代表繪圖或遮擋已驗收 |
 | [tools/hd-ozm-probe.py](tools/hd-ozm-probe.py) | 依 IDA 9.4 原始指令做離線資源盤點，只接受獨立解碼命令；遇到 VGA 來源命令明確拒絕。以正常路徑四平面與索引雜湊交叉核對 |

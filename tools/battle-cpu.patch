@@ -23,7 +23,7 @@
  			}
  			left, ok := c.readSegment32(c.Seg[seg], addr)
  			if !ok {
-@@ -2580,6 +2585,20 @@
+@@ -2580,6 +2585,26 @@
  		}
  		group := (modrm >> 3) & 7
  		if operand16 {
@@ -31,20 +31,26 @@
 +				value := uint16(c.R[modrm&7])
 +				if modrm>>6 != 3 {
 +					seg, addr, err := c.decodeAddress32(modrm)
-+					if err != nil { return fail(err.Error()) }
++					if err != nil {
++						return fail(err.Error())
++					}
 +					var ok bool
 +					value, ok = c.readSegment16(c.Seg[seg], addr)
-+					if !ok { return fail("CMP word 來源越界") }
++					if !ok {
++						return fail("CMP word 來源越界")
++					}
 +				}
 +				imm, err := c.fetch16()
-+				if err != nil { return fail(err.Error()) }
++				if err != nil {
++					return fail(err.Error())
++				}
 +				c.sub16(value, imm)
 +				break
 +			}
  			if modrm>>6 != 3 || (group != 0 && group != 1 && group != 4 && group != 5 && group != 6) {
  				return fail("81 word形狀尚未支援")
  			}
-@@ -3470,6 +3489,19 @@
+@@ -3470,6 +3495,19 @@
  			}
  			c.setLogicFlags(result)
  			c.EFlags |= value & 1
@@ -64,7 +70,7 @@
  			break
  		}
  		if modrm>>6 == 3 && group == 5 {
-@@ -3680,6 +3712,17 @@
+@@ -3680,6 +3718,17 @@
  			if carry != 0 {
  				c.EFlags |= CF
  			}
@@ -82,6 +88,22 @@
  			c.R[rm] = result
  		}
  	case op == 0xf6:
+@@ -4788,6 +4837,15 @@
+ 		c.R[EAX] = c.R[EAX]&0xffffff00 | uint32(result)
+ 		c.setLogicFlags8(result)
+ 	case op == 0x25:
++		if operand16 {
++			if segmentOverride >= 0 || repe || repne { return fail("25 word 不接受目前的 prefix") }
++			value, err := c.fetch16()
++			if err != nil { return fail(err.Error()) }
++			result := uint16(c.R[EAX]) & value
++			c.R[EAX] = c.R[EAX]&0xffff0000 | uint32(result)
++			c.setLogicFlags16(result)
++			break
++		}
+ 		if operand16 || segmentOverride >= 0 || repe {
+ 			return fail("25 不接受目前的 prefix")
+ 		}
 --- a/internal/cpu386/cpu_test.go
 +++ b/internal/cpu386/cpu_test.go
 @@ -800,7 +800,7 @@

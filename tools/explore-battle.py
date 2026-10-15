@@ -1,4 +1,5 @@
 """有界正常戰場研究。commands.json 只接受公開 X11 輸入，不寫 guest 狀態。"""
+import argparse
 import hashlib
 import json
 import os
@@ -11,8 +12,14 @@ assert Path('/.dockerenv').exists() and os.getuid() == 1000
 root, project = Path('/output'), Path('/project')
 assert root.stat().st_uid == 1000
 env = dict(os.environ, DISPLAY=':98', LIBGL_ALWAYS_SOFTWARE='1', LP_NUM_THREADS='2')
+parser = argparse.ArgumentParser()
+parser.add_argument('--timeout', type=int, default=3600)
+parser.add_argument('--prefix-step', type=int, default=741000000)
+args = parser.parse_args()
+assert 30 <= args.timeout <= 7200 and 0 <= args.prefix_step <= 1000000000
 children, captures, commands = [], [], []
-deadline = time.monotonic() + 1500
+process = None
+deadline = time.monotonic() + args.timeout
 
 
 def sha(path):
@@ -81,10 +88,26 @@ def capture(label):
 
 def report(phase, error=None):
     d = dict(phase=phase, captures=captures, commands=commands, step=status().get('step'), error=error,
-             binary_sha256=sha(root / 'tokugawa-desktop-prototype'), tool_sha256=sha(Path(__file__)))
+             binary_sha256=sha(root / 'tokugawa-desktop-prototype'), tool_sha256=sha(Path(__file__)),
+             harness_only=args.prefix_step < 741000000, timeout_seconds=args.timeout)
     pending = root / 'exploration-status.pending'
     pending.write_text(json.dumps(d, ensure_ascii=False, indent=2) + '\n')
     pending.replace(root / 'exploration-status.json')
+
+
+def close_original():
+    if process is None or process.poll() is not None:
+        return
+    run('xdotool', 'keydown', 'Shift_L')
+    try:
+        run('xdotool', 'keydown', 'Escape')
+        process.wait(timeout=30)
+    finally:
+        run('xdotool', 'keyup', 'Escape', 'Shift_L')
+    assert process.returncode == 0
+    receipt = json.loads((root / 'receipt.json').read_text())
+    assert receipt['integration_input_sha256'] == sources
+    assert len(receipt['mouse_input_schedule']) == 390 and receipt['desktop_script_handoff']
 
 
 try:
@@ -109,9 +132,10 @@ try:
     wait(lambda s: s.get('program') == 'game', 90)
     window = run('xdotool', 'search', '--onlyvisible', '--name', '德川家康', stdout=subprocess.PIPE).stdout.decode().splitlines()[0]
     run('xdotool', 'windowfocus', '--sync', window)
-    wait(lambda s: s.get('step', 0) >= 741000000 and not s.get('scripted_input_pending'), 660)
+    wait(lambda s: s.get('step', 0) >= args.prefix_step and
+         (args.prefix_step < 741000000 or not s.get('scripted_input_pending')), 900)
     paused(True)
-    capture('first-battle')
+    capture('harness-start' if args.prefix_step < 741000000 else 'first-battle')
     report('ready')
     while time.monotonic() < deadline:
         if process.poll() is not None:
@@ -121,7 +145,7 @@ try:
         except FileNotFoundError:
             time.sleep(.1)
             continue
-        assert isinstance(pending, list) and len(pending) <= 64
+        assert isinstance(pending, list) and len(pending) <= 256
         if len(commands) >= len(pending):
             time.sleep(.1)
             continue
@@ -129,15 +153,9 @@ try:
         assert command['id'] == len(commands) + 1
         kind = command['kind']
         if kind == 'quit':
-            run('xdotool', 'keydown', 'Shift_L')
-            run('xdotool', 'keydown', 'Escape')
-            process.wait(timeout=30)
-            run('xdotool', 'keyup', 'Escape', 'Shift_L')
-            assert process.returncode == 0
+            close_original()
             commands.append(command)
             receipt = json.loads((root / 'receipt.json').read_text())
-            assert receipt['integration_input_sha256'] == sources
-            assert len(receipt['mouse_input_schedule']) == 390 and receipt['desktop_script_handoff']
             report('finished')
             print('finished ordinary battle exploration', receipt['successful_steps'], receipt['stop'])
             break
@@ -146,12 +164,12 @@ try:
         elif kind == 'toggle':
             enabled = not status()['enabled']
             key('F6', lambda s: s['enabled'] == enabled)
-        elif kind in ['click', 'run']:
+        elif kind in ['click', 'drag', 'run']:
             begin = status()['step']
             n = command.get('steps', 5000000)
             assert isinstance(n, int) and 100000 <= n <= 200000000 and begin + n < 2000000000
             paused(False)
-            if kind == 'click':
+            if kind in ['click', 'drag']:
                 x, y, button = command['x'], command['y'], command.get('button', 1)
                 assert 0 <= x < 640 and 0 <= y < 400 and button in [1, 3]
                 run('xdotool', 'mousemove', '--window', window, str(x * 2 + 1), str(y * 2 + 1))
@@ -159,6 +177,11 @@ try:
                 run('xdotool', 'mousedown', str(button))
                 try:
                     wait(lambda s: s.get('desktop_mouse', [0, 0, 0])[2] == (1 if button == 1 else 2))
+                    if kind == 'drag':
+                        tx, ty = command['to_x'], command['to_y']
+                        assert 0 <= tx < 640 and 0 <= ty < 400
+                        run('xdotool', 'mousemove', '--window', window, str(tx * 2 + 1), str(ty * 2 + 1))
+                        wait(lambda s: (s.get('desktop_mouse') or [])[:2] == [tx, ty])
                 finally:
                     run('xdotool', 'mouseup', str(button))
                 wait(lambda s: s.get('desktop_mouse', [0, 0, 1])[2] == 0)
@@ -170,9 +193,16 @@ try:
         capture('action-' + str(command['id']))
         report('ready')
     else:
-        raise TimeoutError('bounded exploration deadline reached')
+        close_original()
+        report('finished_deadline')
+        print('bounded exploration closed normally; complete receipt preserved')
 except BaseException as error:
-    report('failed', repr(error))
+    cleanup = None
+    try:
+        close_original()
+    except BaseException as close_error:
+        cleanup = repr(close_error)
+    report('failed', repr(error) + ('; normal close failed: ' + cleanup if cleanup else ''))
     raise
 finally:
     for child in reversed(children):

@@ -2833,6 +2833,45 @@ func TestIntegrationWordImmediateCMP(t *testing.T) {
 	}
 }
 
+func TestIntegrationWordAccumulatorAND(t *testing.T) {
+	for sample := uint32(0); sample < 4096; sample++ {
+		left, mask := uint16(sample*7919+32767), uint16(sample*3571+1)
+		c := New(testBus{0x66, 0x25, byte(mask), byte(mask >> 8)})
+		ref := New(testBus{0x66, 0x81, 0xe0, byte(mask), byte(mask >> 8)})
+		for reg := range c.R {
+			c.R[reg] = uint32(reg+1) * 0x1234567
+		}
+		c.R[EAX] = 0xabcd0000 | uint32(left)
+		ref.R = c.R
+		c.EFlags, ref.EFlags = IF|DF|CF|OF|AF|SF|ZF|PF, IF|DF|CF|OF|AF|SF|ZF|PF
+		if err := ref.Step(); err != nil {
+			t.Fatal(err)
+		}
+		if err := c.Step(); err != nil || c.R != ref.R || c.R[EAX] != 0xabcd0000|uint32(left&mask) || c.EFlags&^AF != ref.EFlags&^AF || c.EIP != 4 {
+			t.Fatal("word accumulator AND differential", sample, err)
+		}
+	}
+	for _, v := range []struct {
+		left, mask uint16
+		flags      uint32
+	}{
+		{0xffff, 0x8000, SF | PF}, {0xffff, 0, ZF | PF}, {1, 1, 0},
+	} {
+		c := New(testBus{0x66, 0x25, byte(v.mask), byte(v.mask >> 8)})
+		c.R[EAX], c.EFlags = 0xabcd0000|uint32(v.left), IF|DF|CF|OF
+		if err := c.Step(); err != nil || c.R[EAX] != 0xabcd0000|uint32(v.left&v.mask) || c.EFlags&^AF != IF|DF|v.flags {
+			t.Fatal("Intel word AND boundary", v, c.EFlags, err)
+		}
+	}
+	for _, code := range [][]byte{{0x66, 0x25, 0xff}, {0xf2, 0x66, 0x25, 1, 0}, {0xf3, 0x66, 0x25, 1, 0}, {0x3e, 0x66, 0x25, 1, 0}} {
+		c := New(testBus(code))
+		c.R[EAX], c.EFlags = 0xabcd0001, IF|CF|OF
+		if c.Step() == nil || c.R[EAX] != 0xabcd0001 || c.EFlags != IF|CF|OF {
+			t.Fatal("unverified word AND form published state", code)
+		}
+	}
+}
+
 func TestIntegrationD1SHLRegisters(t *testing.T) {
 	// D1 /4 is the Intel count-one form of C1 /4 imm8=1. AF is undefined.
 	for reg := byte(0); reg < 8; reg++ {

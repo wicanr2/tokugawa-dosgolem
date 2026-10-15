@@ -2055,3 +2055,15 @@ r4 的 4096 組 DS／SS 唯讀來源差分通過，標準邊界測試卻未建�
 r5 四套件通過，750M 控制組完整 RAM／十五欄及 MARK 自然 15989208 步的完整 RAM／十三欄皆符合既有基準。普通攻擊操作於 751041328 步停在 dosgolem 線性 0x1F4E8，bytes 66 81 3D 50 60 03 00 FF FF，為 CMP word [0x36050],0xFFFF。保留 r5 的原始操作與停止收據，不把與 r3 不同的 X11 時間序列稱為同狀態比較。
 
 沿用上節 Intel CMP 契約，81 /7 iw 是 r/m16 與 imm16 比較，讀取立即值後設定相同六個運算旗標，來源不寫回。READY 範圍補 81 operand16 group 7 的暫存器及 decodeAddress32 記憶體形式；其他記憶體 group、prefix 與界限維持拒絕。以既有 39 /r 的等價運算、八個暫存器、DS／SS 唯讀 SIB、來源界限及拒絕形式驗證，保存 r6 新批次後重跑普通攻擊。
+
+### 攻擊窄範圍的指令形式篩查及 AND AX：READY
+
+r6 四套件、750M 控制組與 MARK 控制組通過，普通攻擊於 752041330 步停在 dosgolem 線性 0x1F4F9，bytes 66 25 FF 7F。依連續同類缺口的路由檢查，集中篩查已遇到的 IDA LE 線性 0x1F400..0x1F800，沒有擴大到無關 helper 或玩法語意。
+
+IDA 9.4 在正式資料庫的獨立 battle-cpu-primitives.i64 匯出 363 列，range-1f400-1f800.json SHA-256 4e5c50c0bf523de41fbf23d827c439427057de0f4a504ca8852c6e9bc55b0bd0。tools/battle-instruction-probe.go 先由固定 dosgolem LE loader 核對全部載入後 bytes，再以合成 CPU 狀態單步篩查。r6 僅回報 66 25 FF 7F 的形式缺口。這是指令支援篩查，不是正常玩家路徑或語意對拍；不得用它替代普通攻擊驗收。原始範圍、獨立 DB 來源及 battle-instruction-capabilities.json 都留在 consumers/ida/。
+
+依 [Intel SDM Volume 2A，AND，3-78..3-79](https://cdrdv2-public.intel.com/812383/253666-sdm-vol-2a.pdf)，25 iw 為 AND AX,imm16，保留 EAX 高 16 位，CF／OF 清零，SF／ZF／PF 依結果，AF 未定義。READY 範圍只補 operand16 累加器形式，其他暫存器不改，既有 32 位路徑不變；新形式的 REP／REPNZ／segment override 及截斷立即值拒絕。以 81 /4 word register 的等價運算、標準邊界及拒絕測試驗證，r7 再篩查一次同範圍後接續正常攻擊。
+
+r7 同範圍篩查為 363 列載入後 bytes 相符、363 個合成單步及零錯誤；四套件亦通過。收據保存於 consumers/battle/r7/capabilities/battle-instruction-capabilities.json，明示 CPU 來源、工具來源及各自 SHA-256。此結果限於形狀篩查，正常攻擊仍另驗證。
+
+重跑工具時沿用固定 GUI Docker、UID 1000、網路隔離及 Go 快取，唯讀掛專案、原版及固定 dosgolem；將指定批次 capabilities/ 的獨立副本掛 /output。該目錄的 battle-capability-overlay.json 只覆蓋已凍結的 internal 平台來源及 cmd/leprobe/main.go，執行 `go run -overlay /output/battle-capability-overlay.json ./cmd/leprobe -cpu-source /project/workplace/hd-prototype/catalog/remaining/consumers/battle/r7/engine/internal/cpu386/cpu.go`。歷史重跑先核對當次 source-snapshot/tools/battle-instruction-probe.go 的 SHA，再將該檔另行唯讀掛至容器 /project/tools/battle-instruction-probe.go，保持實際編譯與工具自查的路徑一致；不覆寫原有篩查收據。
