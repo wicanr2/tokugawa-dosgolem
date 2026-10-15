@@ -453,3 +453,5 @@ GitHub 收尾：功能、第二版開場圖與提示詞提交 `6a2e45d71ea9a0c95
 - 首戰首次完成 750M 後，驗證器因漏準備 LICENSE-toolbar-font.txt 快照停止。保留上層結果並將失敗分類為驗證準備；補齊與早期凍結 SHA 相同的 86 項快照，在 regression/ready 用同一二進位與命令乾淨重跑通過。三張完整視窗與前批相同，沒有重建或改 Go。AGENTS 重生入口補上執行前保存 tools 快照的命令。
 - 捲動總表 SHA-256 6d33f51a4b447c21fc4747a5010922a92e06074d27df7158703d78278411415a。來源 ZIP、CRC 與十二個解包檔於 2026-10-15T03:35:53Z 再核對通過；86 項凍結來源、Python 語法及 Go 格式通過。兩個未使用的空輸出目錄已移除。
 - 已有素材及來源分類隨覆蓋清單更新；沒有新增或替換生成 PNG。下一步四項部分來源的校準／資格、其他動畫消費端及 PCX。全遊戲 HD 與三平台打包尚未完成。遠端提交、保存核對與清理結果接續記錄。
+
+本批提交 `707a24342d1e679fb0a0575edbb5502f4007db20` 已推送 main。主機 gh 確認仍為 PRIVATE、遠端 main 與本機相同；1041 份 assets/hd-b 檔案的 Git 子樹 `1c19a334ae65fdec5ad74d7541fd775f5f28f9d5` 相同，tree 未截斷，original/、workplace/ 未加入遠端。Issue #5 進度：https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6183897037 。保存與 verify-only 為 803 PNG、162 提示詞、593441022 indexed bytes；覆蓋表的正常靜態來源為四項，全遊戲範圍仍未完成。Python 語法、Go 格式、文件連結、工具入口正對照、凍結來源與快照、完整來源 CRC 及 Git whitespace 通過。完整工作根沒有 root-owned 檔案或 .md 目錄，全部 tokugawa 容器已退出並移除，沿用原 image。
