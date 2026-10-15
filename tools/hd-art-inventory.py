@@ -111,6 +111,20 @@ def main():
             for record in json.loads(path.read_text())['records']:
                 for source in record['aliases']:
                     prefix_art[source] = record
+    prefix_story_path = ROOT/'remaining/partial-story/profiles.json'
+    prefix_story = {}
+    if prefix_story_path.exists():
+        data = json.loads(prefix_story_path.read_text())
+        review = json.loads((prefix_story_path.parent/'review.json').read_text())
+        assert data['tool_sha256'] == sha(PROJECT/'tools/hd-prefix-prepare.py')
+        assert review['profiles_sha256'] == sha(prefix_story_path)
+        prefix_story = {r['resource']: r for r in data['records']}
+        assert set(prefix_story) == set(review['approved_resources'])
+    prefix_runtime_path = ROOT/'remaining/partial-story/verification-summary.json'
+    prefix_runtime = json.loads(prefix_runtime_path.read_text()) if prefix_runtime_path.exists() else None
+    if prefix_runtime:
+        assert prefix_runtime['verified'] and prefix_runtime['tool_sha256'] == sha(PROJECT/'tools/verify-hd-prefix-runtime.py')
+        assert prefix_runtime['profiles_sha256'] == sha(prefix_story_path)
     if opening_proof:
         assert opening_proof['verified'] and opening_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-opening-summary.py')
         assert opening_proof['art_profiles_sha256'] == sha(full_profile_path)
@@ -153,6 +167,8 @@ def main():
     verified_story = {}
     verified_kao = {}
     proof_sources = []
+    if prefix_runtime:
+        proof_sources.append({'verification':str(prefix_runtime_path.relative_to(PROJECT)), 'sha256':sha(prefix_runtime_path)})
     if opening_proof:
         proof_sources.append({'verification':str(opening_proof_path.relative_to(PROJECT)), 'sha256':sha(opening_proof_path)})
     if partial_proof:
@@ -475,6 +491,17 @@ def main():
             record.update(art_status='draft', art=art_info(path,ROOT/'art'/painting['prompt']),
                           art_source_resource=painting['source'], source_scope='47992 known pixels; eight unknown pixels remain excluded',
                           runtime_status='generated from known-region reference; geometry and partial-source qualification pending')
+        if name in prefix_story:
+            prepared = prefix_story[name]
+            path = PROJECT/'assets/hd-b/art'/prepared['asset']
+            assert sha(path) == prepared['asset_sha256']
+            assert sha(prefix_story_path.parent/prepared['known_indices']) == prepared['known_indices_sha256']
+            record.update(art_status='prepared', art=art_info(path,ROOT/'art'/prepared['prompt']), source_profile=prepared,
+                          source_scope='47992 known art pixels; eight source-unknown pixels remain native; static decode still incomplete',
+                          runtime_status='known-region common story consumer implemented; runtime regression pending')
+            if prefix_runtime:
+                record.update(runtime_status='known-region source/shared-consumer tests and existing history/battle regression verified; this scene not normally sampled',
+                              runtime_proof_sha256=sha(prefix_runtime_path))
         if opening_proof and name in opening_proof['normal_new_sources']:
             record.update(runtime_status='ordinary history HD/original/restored, six fade-in and two palette-cycle samples verified; full 600M state comparison',
                           runtime_proof_sha256=sha(opening_proof_path))
@@ -495,8 +522,18 @@ def main():
             record.update(runtime_status="normal player path verified", runtime_check=verified_kao[index])
         records.append(record)
     pcx = originals["RAINEND.PCX"]
-    records.append({"source": "RAINEND.PCX", "kind": "publisher logo and credits", "source_sha256": pcx["payload_sha256"],
-                    "art_status": "missing", "runtime_status": "not integrated"})
+    pcx_record = {"source": "RAINEND.PCX", "kind": "publisher logo and credits", "source_sha256": pcx["payload_sha256"],
+                  "art_status": "missing", "runtime_status": "not integrated"}
+    pcx_draft_path = ROOT/'art/RAINEND-generation-v1.json'
+    if pcx_draft_path.exists():
+        draft = json.loads(pcx_draft_path.read_text())
+        assert draft['source_payload_sha256'] == pcx['payload_sha256']
+        path = ROOT/'art'/draft['asset']
+        assert sha(path) == draft['asset_sha256'] and sha(ROOT/'art'/draft['prompt']) == draft['prompt_sha256']
+        pcx_record.update(art_status='draft',art=art_info(path,ROOT/'art'/draft['prompt']),
+                          runtime_status='publisher logo draft; caller, display mode and original copyright composition pending',
+                          native_text_preserve_rect=draft['planned_native_preserve_rect'])
+    records.append(pcx_record)
     runtime_tails = []
     tail_path = ROOT / 'remaining/source-boundary/OP-FULL-runtime/receipt.json'
     if tail_path.exists():
@@ -520,7 +557,7 @@ def main():
               "OZM_partial_art": sum(r["art_status"] == "partial" for r in records[:112]),
               "prepared_KAO_portraits": 81, "native_story_cases_verified": len(verified_story),
               "native_KAO_cases_verified": len(verified_kao), "unsupported_OZM_decodes": 5,
-              "reviewed_story_source_profiles": len(profiles),
+              "reviewed_story_source_profiles": len(profiles)+len(prefix_story),
               "generated_weather_sources":len(weather), "approved_weather_sources":len(weather_profiles),
               "normal_weather_sources_verified":1 if weather_proof else 0,
               "generated_opening_drafts":len(set(opening)-set(static_profiles)),
@@ -531,6 +568,8 @@ def main():
               "remaining_sources_runtime_registered":len(pending_runtime.get('registered_source_names',[])),
               "remaining_sources_normal_verified":len(set(pending_runtime_proof['normal_new_sources'] if pending_runtime_proof else []) | set(partial_proof['normal_graphics_sources'] if partial_proof else [])),
               "generated_partial_source_art_resources":len(prefix_art),
+              "prepared_partial_source_story_resources":len(prefix_story),
+              "partial_source_story_resources_runtime_registered":len(prefix_runtime['registered_sources']) if prefix_runtime else 0,
               "approved_static_sources":len(static_profiles),
               "normal_static_sources_verified":len(set(static_proof['normal_new_source_names'] if static_proof else []) | (set(opening_proof['normal_new_sources']) & set(static_profiles) if opening_proof else set()) | set(shift_proof['normal_static_sources'] if shift_proof else [])),
               "runtime_observed_opening_art_prepared":1 if full_profile else 0,

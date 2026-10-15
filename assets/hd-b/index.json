@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 803,
-    "prompts": 162,
-    "bytes": 593441022
+    "png": 807,
+    "prompts": 163,
+    "bytes": 596522181
   },
-  "archive_tool_sha256": "7acac5cb271b483f5e857cffd2a7c397c5779086b91a2b083f5b11bd4c5e5966",
+  "archive_tool_sha256": "bd08103f92f3495bc3faff1419f136548b562d05751c6069acaa69a45df55a28",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -505,7 +505,7 @@
       "sha256": "4e922e9d766114ac5882a95704e1576b950fd95453962a1371c410591a84eeda",
       "local_source": "workplace/hd-prototype/catalog/art/B-6-hd-b-v1.png",
       "prompt": "art/B-6-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "generation input for reviewed known-region story geometry; prepared child excludes eight unknown native pixels",
       "size": [
         1832,
         859
@@ -1012,7 +1012,7 @@
       "sha256": "d4568ad6fcf71d5b46438e7717c28afafaaa2175545102e5cc5df1ead84a1ed9",
       "local_source": "workplace/hd-prototype/catalog/art/E-4-hd-b-v1.png",
       "prompt": "art/E-4-hd-b-v1.prompt.txt",
-      "status": "draft; integration and review pending",
+      "status": "generation input for reviewed known-region story geometry; prepared child excludes eight unknown native pixels",
       "size": [
         1832,
         858
@@ -1846,6 +1846,33 @@
       "local_source": "workplace/hd-prototype/catalog/art/OP9-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/RAINEND-generation-v1.json",
+      "kind": "generation-metadata",
+      "bytes": 1392,
+      "sha256": "49505ecb4491ad036933a30b813b887df36065a1345913c422527e70768c8241",
+      "local_source": "workplace/hd-prototype/catalog/art/RAINEND-generation-v1.json"
+    },
+    {
+      "path": "art/RAINEND-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 1319392,
+      "sha256": "d81bfa59067217ef2150cdf325a3bbde93385f6486230da9dda1233f79686d93",
+      "local_source": "workplace/hd-prototype/catalog/art/RAINEND-hd-b-v1.png",
+      "prompt": "art/RAINEND-hd-b-v1.prompt.txt",
+      "status": "publisher-logo source-referenced draft; original PCX caller, display mode and native copyright presentation pending",
+      "size": [
+        1448,
+        1086
+      ]
+    },
+    {
+      "path": "art/RAINEND-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 2035,
+      "sha256": "b7266d44f0c14b019842da63d8756bea3997d75eff29fa0a7c9e76c88f120cbe",
+      "local_source": "workplace/hd-prototype/catalog/art/RAINEND-hd-b-v1.prompt.txt"
+    },
+    {
       "path": "art/WEATHER1-hd-b-v1.png",
       "kind": "png",
       "bytes": 2471879,
@@ -2081,6 +2108,203 @@
       "bytes": 1663,
       "sha256": "7c0515adcc63667762de73621b4f90088bf6760f47667e8e72ffb074cda767bf",
       "local_source": "workplace/hd-prototype/catalog/art/opening-generation.json"
+    },
+    {
+      "path": "art/partial-story/B-6-hd-v1.png",
+      "kind": "png",
+      "bytes": 435912,
+      "sha256": "6c0d996dd09ebe8035695d571572c0a49d4ec901563893683bd29901c962eb93",
+      "local_source": "workplace/hd-prototype/catalog/remaining/partial-story/prepared/B-6-hd-v1.png",
+      "prompt": "art/B-6-hd-b-v1.prompt.txt",
+      "derivation": {
+        "profile": {
+          "resource": "B-6.OZM",
+          "art_source_resource": "B-6.OZM",
+          "source_status": "partial; unknown final high-plane byte excluded",
+          "columns": 40,
+          "rows": 150,
+          "known_pixels": 47992,
+          "unknown_rect": [
+            312,
+            149,
+            320,
+            150
+          ],
+          "plane_known_sha256": [
+            "537e0ea84eafe80552bf960a70ed500248b488b304b51c5c747bcbc397fb26d6",
+            "5f357e5d36a6aa20573a1eb4de2c5af76a6261a46791929e8081d3e217b0e13e",
+            "1afca575a9671ecbe15f97eda5fd992ab4a7bf17ee78fa140cd2d93ed3956931",
+            "64ad02304c6e6db3ae959aef6bab7524da95ccf366da89b4cae8565807e3861d"
+          ],
+          "plane_known_bytes": [
+            6000,
+            6000,
+            6000,
+            5999
+          ],
+          "known_indices": "sources/B-6.OZM-known.idx",
+          "known_indices_sha256": "fce7996a6ea5e5ea20e5548fb748dc519282ed8a70b1da77d9d7f9dea3a79219",
+          "asset": "partial-story/B-6-hd-v1.png",
+          "prepared": "prepared/B-6-hd-v1.png",
+          "asset_sha256": "6c0d996dd09ebe8035695d571572c0a49d4ec901563893683bd29901c962eb93",
+          "raw_asset": "B-6-hd-b-v1.png",
+          "raw_asset_sha256": "4e922e9d766114ac5882a95704e1576b950fd95453962a1371c410591a84eeda",
+          "raw_size": [
+            1832,
+            859
+          ],
+          "prepared_size": [
+            640,
+            300
+          ],
+          "prompt": "B-6-hd-b-v1.prompt.txt",
+          "prompt_sha256": "3185c1518763bf7589bc55d248da369b45a2121f1aed4745e47b6bf816314182",
+          "generation_metadata_sha256": "1add33b08fbf81ebdaddaa937d0927738b7f96c4e1a032a446355aab017db3b3",
+          "local_review": "review/B-6-source-HD.png",
+          "local_review_sha256": "5215c5f041c58f66bfe2c384abba2769f52963c8086f7523bb7fb7bf3e74c706",
+          "paint_rects": [
+            [
+              0,
+              0,
+              320,
+              149
+            ],
+            [
+              0,
+              149,
+              312,
+              150
+            ]
+          ],
+          "labels": [],
+          "runtime_scope": "DRAFT; common verified story consumer only after READY; normal case not sampled"
+        },
+        "aliases": [
+          "B-6.OZM",
+          "B-7.OZM",
+          "C-10.OZM"
+        ],
+        "runtime_verification_sha256": "8ef0940819f3280b1763eb7b266514c6a565876c7ab5f6e2511b886af06f2d52"
+      },
+      "status": "known-region source/shared-consumer tests and existing normal-path regression verified; this scene not normally sampled",
+      "size": [
+        640,
+        300
+      ]
+    },
+    {
+      "path": "art/partial-story/E-4-hd-v1.png",
+      "kind": "png",
+      "bytes": 435104,
+      "sha256": "585374c1ab70422bd4739deb0f55ca27f9dddfda781bffbc5122c20a87d219c2",
+      "local_source": "workplace/hd-prototype/catalog/remaining/partial-story/prepared/E-4-hd-v1.png",
+      "prompt": "art/E-4-hd-b-v1.prompt.txt",
+      "derivation": {
+        "profile": {
+          "resource": "E-4.OZM",
+          "art_source_resource": "E-4.OZM",
+          "source_status": "partial; unknown final high-plane byte excluded",
+          "columns": 40,
+          "rows": 150,
+          "known_pixels": 47992,
+          "unknown_rect": [
+            312,
+            149,
+            320,
+            150
+          ],
+          "plane_known_sha256": [
+            "771be36bef8a01cba44755d2116b30f9168caa3fad06480aaf6ccb755d19d951",
+            "055e36c21cbf871e210dfdbca3d4e7ba50c1a8a33dfc4e2cfdd4fd264697a98c",
+            "8fd9fb679d38ddef9bdc3b65041bcc52b96f05c2581673dbe45d7c19d9454eec",
+            "ed1a4c29ccce040604576afa2cd0db6e69c8c000011c357cd537b6b6f6e28099"
+          ],
+          "plane_known_bytes": [
+            6000,
+            6000,
+            6000,
+            5999
+          ],
+          "known_indices": "sources/E-4.OZM-known.idx",
+          "known_indices_sha256": "4b0def05a1018c63d331c22880a50fcad79c214d1cff33ec2c2951c7ff075b98",
+          "asset": "partial-story/E-4-hd-v1.png",
+          "prepared": "prepared/E-4-hd-v1.png",
+          "asset_sha256": "585374c1ab70422bd4739deb0f55ca27f9dddfda781bffbc5122c20a87d219c2",
+          "raw_asset": "E-4-hd-b-v1.png",
+          "raw_asset_sha256": "d4568ad6fcf71d5b46438e7717c28afafaaa2175545102e5cc5df1ead84a1ed9",
+          "raw_size": [
+            1832,
+            858
+          ],
+          "prepared_size": [
+            640,
+            300
+          ],
+          "prompt": "E-4-hd-b-v1.prompt.txt",
+          "prompt_sha256": "005f5a46802eb6b6a4a5ce23c2af01e0e65fcd478af8d131a9954ce008091ee5",
+          "generation_metadata_sha256": "35f7552b277c5e5cef0405b11619690ef6604a71710c75e5859c2b1b7f5dc15b",
+          "local_review": "review/E-4-source-HD.png",
+          "local_review_sha256": "91acf09346330144a0d5e1784bc04d48eed668932898d9485b8ec48117942376",
+          "paint_rects": [
+            [
+              0,
+              0,
+              320,
+              149
+            ],
+            [
+              0,
+              149,
+              312,
+              150
+            ]
+          ],
+          "labels": [],
+          "runtime_scope": "DRAFT; common verified story consumer only after READY; normal case not sampled"
+        },
+        "aliases": [
+          "E-4.OZM"
+        ],
+        "runtime_verification_sha256": "8ef0940819f3280b1763eb7b266514c6a565876c7ab5f6e2511b886af06f2d52"
+      },
+      "status": "known-region source/shared-consumer tests and existing normal-path regression verified; this scene not normally sampled",
+      "size": [
+        640,
+        300
+      ]
+    },
+    {
+      "path": "art/partial-story/hd-contact-sheet.png",
+      "kind": "png",
+      "bytes": 870906,
+      "sha256": "7b389f7e1d64df690d1e48041db82c251d8cf9d4bbea12b29ea21f5cbd1da7af",
+      "local_source": "workplace/hd-prototype/catalog/remaining/partial-story/hd-contact-sheet.png",
+      "status": "generated-only known-region story gallery",
+      "size": [
+        640,
+        600
+      ]
+    },
+    {
+      "path": "art/partial-story/prepare-source.txt",
+      "kind": "preparation-metadata",
+      "bytes": 7145,
+      "sha256": "5a3b480c2cbc16e7a1a3b7d89f5ed49b3d586f333e3f48f919957b44d4d3eca7",
+      "local_source": "workplace/hd-prototype/catalog/remaining/partial-story/prepare-source.txt"
+    },
+    {
+      "path": "art/partial-story/profiles.json",
+      "kind": "preparation-metadata",
+      "bytes": 8649,
+      "sha256": "ab4288a9b554ce811f3ad1e2b09e448eb5bf66b0b2018072f109b2b6cefbc2ca",
+      "local_source": "workplace/hd-prototype/catalog/remaining/partial-story/profiles.json"
+    },
+    {
+      "path": "art/partial-story/review.json",
+      "kind": "preparation-metadata",
+      "bytes": 624,
+      "sha256": "9811354bb7191df96c9a1de8e2280a4ddd3d742ab8cad80daca0c7a94971d926",
+      "local_source": "workplace/hd-prototype/catalog/remaining/partial-story/review.json"
     },
     {
       "path": "art/remaining-full-generation-v1.json",

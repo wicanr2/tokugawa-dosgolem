@@ -1,0 +1,262 @@
+{
+  "classification": "reviewable known-region story art; source unknowns are preserved, not decoded",
+  "tool_sha256": "5a3b480c2cbc16e7a1a3b7d89f5ed49b3d586f333e3f48f919957b44d4d3eca7",
+  "python": "3.11.2",
+  "pillow": "9.4.0",
+  "source_proof_sha256": "e8583620e2011fe959849ce5c8e337eb6451217783ce397922bb45ee23377a69",
+  "dat_sha256": "de092d5ef59a3e790fd89c323dde1b447c8fe93f430043d1384a1565f27cef37",
+  "source_count": 4,
+  "art_count": 2,
+  "gallery": "hd-contact-sheet.png",
+  "gallery_sha256": "7b389f7e1d64df690d1e48041db82c251d8cf9d4bbea12b29ea21f5cbd1da7af",
+  "records": [
+    {
+      "resource": "B-6.OZM",
+      "art_source_resource": "B-6.OZM",
+      "source_status": "partial; unknown final high-plane byte excluded",
+      "columns": 40,
+      "rows": 150,
+      "known_pixels": 47992,
+      "unknown_rect": [
+        312,
+        149,
+        320,
+        150
+      ],
+      "plane_known_sha256": [
+        "537e0ea84eafe80552bf960a70ed500248b488b304b51c5c747bcbc397fb26d6",
+        "5f357e5d36a6aa20573a1eb4de2c5af76a6261a46791929e8081d3e217b0e13e",
+        "1afca575a9671ecbe15f97eda5fd992ab4a7bf17ee78fa140cd2d93ed3956931",
+        "64ad02304c6e6db3ae959aef6bab7524da95ccf366da89b4cae8565807e3861d"
+      ],
+      "plane_known_bytes": [
+        6000,
+        6000,
+        6000,
+        5999
+      ],
+      "known_indices": "sources/B-6.OZM-known.idx",
+      "known_indices_sha256": "fce7996a6ea5e5ea20e5548fb748dc519282ed8a70b1da77d9d7f9dea3a79219",
+      "asset": "partial-story/B-6-hd-v1.png",
+      "prepared": "prepared/B-6-hd-v1.png",
+      "asset_sha256": "6c0d996dd09ebe8035695d571572c0a49d4ec901563893683bd29901c962eb93",
+      "raw_asset": "B-6-hd-b-v1.png",
+      "raw_asset_sha256": "4e922e9d766114ac5882a95704e1576b950fd95453962a1371c410591a84eeda",
+      "raw_size": [
+        1832,
+        859
+      ],
+      "prepared_size": [
+        640,
+        300
+      ],
+      "prompt": "B-6-hd-b-v1.prompt.txt",
+      "prompt_sha256": "3185c1518763bf7589bc55d248da369b45a2121f1aed4745e47b6bf816314182",
+      "generation_metadata_sha256": "1add33b08fbf81ebdaddaa937d0927738b7f96c4e1a032a446355aab017db3b3",
+      "local_review": "review/B-6-source-HD.png",
+      "local_review_sha256": "5215c5f041c58f66bfe2c384abba2769f52963c8086f7523bb7fb7bf3e74c706",
+      "paint_rects": [
+        [
+          0,
+          0,
+          320,
+          149
+        ],
+        [
+          0,
+          149,
+          312,
+          150
+        ]
+      ],
+      "labels": [],
+      "runtime_scope": "DRAFT; common verified story consumer only after READY; normal case not sampled"
+    },
+    {
+      "resource": "B-7.OZM",
+      "art_source_resource": "B-6.OZM",
+      "source_status": "partial; unknown final high-plane byte excluded",
+      "columns": 40,
+      "rows": 150,
+      "known_pixels": 47992,
+      "unknown_rect": [
+        312,
+        149,
+        320,
+        150
+      ],
+      "plane_known_sha256": [
+        "537e0ea84eafe80552bf960a70ed500248b488b304b51c5c747bcbc397fb26d6",
+        "5f357e5d36a6aa20573a1eb4de2c5af76a6261a46791929e8081d3e217b0e13e",
+        "1afca575a9671ecbe15f97eda5fd992ab4a7bf17ee78fa140cd2d93ed3956931",
+        "64ad02304c6e6db3ae959aef6bab7524da95ccf366da89b4cae8565807e3861d"
+      ],
+      "plane_known_bytes": [
+        6000,
+        6000,
+        6000,
+        5999
+      ],
+      "known_indices": "sources/B-6.OZM-known.idx",
+      "known_indices_sha256": "fce7996a6ea5e5ea20e5548fb748dc519282ed8a70b1da77d9d7f9dea3a79219",
+      "asset": "partial-story/B-6-hd-v1.png",
+      "prepared": "prepared/B-6-hd-v1.png",
+      "asset_sha256": "6c0d996dd09ebe8035695d571572c0a49d4ec901563893683bd29901c962eb93",
+      "raw_asset": "B-6-hd-b-v1.png",
+      "raw_asset_sha256": "4e922e9d766114ac5882a95704e1576b950fd95453962a1371c410591a84eeda",
+      "raw_size": [
+        1832,
+        859
+      ],
+      "prepared_size": [
+        640,
+        300
+      ],
+      "prompt": "B-6-hd-b-v1.prompt.txt",
+      "prompt_sha256": "3185c1518763bf7589bc55d248da369b45a2121f1aed4745e47b6bf816314182",
+      "generation_metadata_sha256": "1add33b08fbf81ebdaddaa937d0927738b7f96c4e1a032a446355aab017db3b3",
+      "local_review": "review/B-6-source-HD.png",
+      "local_review_sha256": "5215c5f041c58f66bfe2c384abba2769f52963c8086f7523bb7fb7bf3e74c706",
+      "paint_rects": [
+        [
+          0,
+          0,
+          320,
+          149
+        ],
+        [
+          0,
+          149,
+          312,
+          150
+        ]
+      ],
+      "labels": [],
+      "runtime_scope": "DRAFT; common verified story consumer only after READY; normal case not sampled"
+    },
+    {
+      "resource": "C-10.OZM",
+      "art_source_resource": "B-6.OZM",
+      "source_status": "partial; unknown final high-plane byte excluded",
+      "columns": 40,
+      "rows": 150,
+      "known_pixels": 47992,
+      "unknown_rect": [
+        312,
+        149,
+        320,
+        150
+      ],
+      "plane_known_sha256": [
+        "537e0ea84eafe80552bf960a70ed500248b488b304b51c5c747bcbc397fb26d6",
+        "5f357e5d36a6aa20573a1eb4de2c5af76a6261a46791929e8081d3e217b0e13e",
+        "1afca575a9671ecbe15f97eda5fd992ab4a7bf17ee78fa140cd2d93ed3956931",
+        "64ad02304c6e6db3ae959aef6bab7524da95ccf366da89b4cae8565807e3861d"
+      ],
+      "plane_known_bytes": [
+        6000,
+        6000,
+        6000,
+        5999
+      ],
+      "known_indices": "sources/B-6.OZM-known.idx",
+      "known_indices_sha256": "fce7996a6ea5e5ea20e5548fb748dc519282ed8a70b1da77d9d7f9dea3a79219",
+      "asset": "partial-story/B-6-hd-v1.png",
+      "prepared": "prepared/B-6-hd-v1.png",
+      "asset_sha256": "6c0d996dd09ebe8035695d571572c0a49d4ec901563893683bd29901c962eb93",
+      "raw_asset": "B-6-hd-b-v1.png",
+      "raw_asset_sha256": "4e922e9d766114ac5882a95704e1576b950fd95453962a1371c410591a84eeda",
+      "raw_size": [
+        1832,
+        859
+      ],
+      "prepared_size": [
+        640,
+        300
+      ],
+      "prompt": "B-6-hd-b-v1.prompt.txt",
+      "prompt_sha256": "3185c1518763bf7589bc55d248da369b45a2121f1aed4745e47b6bf816314182",
+      "generation_metadata_sha256": "1add33b08fbf81ebdaddaa937d0927738b7f96c4e1a032a446355aab017db3b3",
+      "local_review": "review/B-6-source-HD.png",
+      "local_review_sha256": "5215c5f041c58f66bfe2c384abba2769f52963c8086f7523bb7fb7bf3e74c706",
+      "paint_rects": [
+        [
+          0,
+          0,
+          320,
+          149
+        ],
+        [
+          0,
+          149,
+          312,
+          150
+        ]
+      ],
+      "labels": [],
+      "runtime_scope": "DRAFT; common verified story consumer only after READY; normal case not sampled"
+    },
+    {
+      "resource": "E-4.OZM",
+      "art_source_resource": "E-4.OZM",
+      "source_status": "partial; unknown final high-plane byte excluded",
+      "columns": 40,
+      "rows": 150,
+      "known_pixels": 47992,
+      "unknown_rect": [
+        312,
+        149,
+        320,
+        150
+      ],
+      "plane_known_sha256": [
+        "771be36bef8a01cba44755d2116b30f9168caa3fad06480aaf6ccb755d19d951",
+        "055e36c21cbf871e210dfdbca3d4e7ba50c1a8a33dfc4e2cfdd4fd264697a98c",
+        "8fd9fb679d38ddef9bdc3b65041bcc52b96f05c2581673dbe45d7c19d9454eec",
+        "ed1a4c29ccce040604576afa2cd0db6e69c8c000011c357cd537b6b6f6e28099"
+      ],
+      "plane_known_bytes": [
+        6000,
+        6000,
+        6000,
+        5999
+      ],
+      "known_indices": "sources/E-4.OZM-known.idx",
+      "known_indices_sha256": "4b0def05a1018c63d331c22880a50fcad79c214d1cff33ec2c2951c7ff075b98",
+      "asset": "partial-story/E-4-hd-v1.png",
+      "prepared": "prepared/E-4-hd-v1.png",
+      "asset_sha256": "585374c1ab70422bd4739deb0f55ca27f9dddfda781bffbc5122c20a87d219c2",
+      "raw_asset": "E-4-hd-b-v1.png",
+      "raw_asset_sha256": "d4568ad6fcf71d5b46438e7717c28afafaaa2175545102e5cc5df1ead84a1ed9",
+      "raw_size": [
+        1832,
+        858
+      ],
+      "prepared_size": [
+        640,
+        300
+      ],
+      "prompt": "E-4-hd-b-v1.prompt.txt",
+      "prompt_sha256": "005f5a46802eb6b6a4a5ce23c2af01e0e65fcd478af8d131a9954ce008091ee5",
+      "generation_metadata_sha256": "35f7552b277c5e5cef0405b11619690ef6604a71710c75e5859c2b1b7f5dc15b",
+      "local_review": "review/E-4-source-HD.png",
+      "local_review_sha256": "91acf09346330144a0d5e1784bc04d48eed668932898d9485b8ec48117942376",
+      "paint_rects": [
+        [
+          0,
+          0,
+          320,
+          149
+        ],
+        [
+          0,
+          149,
+          312,
+          150
+        ]
+      ],
+      "labels": [],
+      "runtime_scope": "DRAFT; common verified story consumer only after READY; normal case not sampled"
+    }
+  ]
+}

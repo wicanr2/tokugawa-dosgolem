@@ -1,0 +1,23 @@
+{
+  "classification": "source geometry and existing style B art reviewed; unknown source pixels excluded",
+  "approved_resources": [
+    "B-6.OZM",
+    "B-7.OZM",
+    "C-10.OZM",
+    "E-4.OZM"
+  ],
+  "profiles_sha256": "ab4288a9b554ce811f3ad1e2b09e448eb5bf66b0b2018072f109b2b6cefbc2ca",
+  "unknown_rect": [
+    312,
+    149,
+    320,
+    150
+  ],
+  "checks": [
+    "original known-reference and raw art visually inspected",
+    "calibrated original/HD comparisons visually inspected",
+    "original raw PNG and full prompts unchanged",
+    "no labels in these two source scenes"
+  ],
+  "normal_player_path_sampled": false
+}

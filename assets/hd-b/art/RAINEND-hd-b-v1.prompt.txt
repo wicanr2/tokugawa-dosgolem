@@ -1,0 +1,10 @@
+Use case: logo-brand
+Asset type: high resolution publisher splash artwork for a faithful DOS desktop HD asset pack.
+Primary request: redraw the provided Rainbow Multimedia splash logo at high resolution, preserving its exact visual identity, proportions, placement and original 4:3 composition. The image is an art-layer draft, not a new game screen.
+Input image 1 role: strict composition and color reference, decoded locally from RAINEND.PCX; not an edit target containing final UI text.
+Subject: the same distinctive curved procession of thin upright beveled metallic/glass plates forming the large abstract emblem, and the exact lowercase word "rainbow" as angled extruded three dimensional lettering below. Spell r-a-i-n-b-o-w exactly, with no additional letters or typography.
+Composition: preserve the reference silhouette and perspective. Keep the emblem upper-left through center, and keep the word on the same rising diagonal across the lower middle-right. Do not center, rotate, simplify, crop, or reinterpret the logo into a different mark.
+Materials and colors: polished violet, lavender, pink and blue bevels, subtle original green and orange/yellow plate edges; crisp thin separated plates and convincing original extrusion. Retain the publisher's original digital metallic character rather than introducing samurai or a different art theme.
+Background: deep black with only sparse very small subdued star speckles as in the source, no nebulae and no scenery.
+Text handling: the bottom copyright/Chinese credit strip will be composited from the original source separately. Leave the bottom 31/480 of the canvas plain black, with absolutely no copyright, Chinese text, subtitles, labels or replacement credits. The only generated word is the logo's original "rainbow".
+Constraints: full opaque 4:3 canvas, high resolution detail and clean antialiased contours, readable matching brand lettering, no new symbols, no invented objects, no watermark, no border, no UI. Preserve all source subjects and spatial relationships.

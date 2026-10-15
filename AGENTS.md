@@ -88,6 +88,12 @@
 | `remaining/history/partial/runtime/ready/` | 首輪測試 fixture 將既有 NRGBA 指標誤作介面轉型，保留上層編譯錯誤；修正測試型別後的新建置與 84 項來源快照，產品契約不改 |
 | [tools/verify-hd-opening-partial.py](tools/verify-hd-opening-partial.py) | 固定 GUI image 中專案／原版唯讀，乾淨擷取目錄可寫掛 /output；普通歷史簡介局部 HD／缺圖的逐格擷取，短武將段落使用既有 F7 逐次暫停控制。完整慢速擷取外層期限至少 3000 秒；正式彙整使用下列 capture 與 full 工具 |
 | [tools/hd-prefix-extract.py](tools/hd-prefix-extract.py)、`remaining/source-boundary/art-prefix/` | 固定 GUI image 中專案與原版唯讀、art-prefix 可寫掛 /output；僅擷取四項未完整解碼 OZM 的已知平面與索引位元，參考 PNG 將未知八像素設透明。不補來源 byte，不宣稱正常載入或正式素材資格 |
+| [tools/hd-prefix-prepare.py](tools/hd-prefix-prepare.py)、`catalog/remaining/partial-story/` | 固定 GUI image 中專案唯讀、partial-story 可寫掛 /output；核對兩組已知來源及既有生成圖，準備四項來源的共用素材、已知索引及幾何。原圖對照僅留本機；來源外八像素以未知標記保留，READY 後才接入執行器 |
+| [tools/hd-prefix-story.go](tools/hd-prefix-story.go)、[測試](tools/hd-prefix-story_test.go)、[對照表](tools/hd-prefix-profiles.go)、[桌面載入](tools/desktop-prefix.go) | 四項部分來源故事圖的三完整平面／第四前綴識別、完整自然返回 guard、已知原生索引與來源外八像素保留；只有既有已證實故事消費端取得資格，不冒稱四項正常路徑已抽樣 |
+| `catalog/remaining/partial-story/runtime/`、`partial-story/desktop/`、`partial-story/history/` | 部分來源故事接入的隔離建置與同一凍結來源之首戰／歷史 GUI 回歸；原版來源與已知索引只留本機 |
+| [tools/verify-hd-prefix-runtime.py](tools/verify-hd-prefix-runtime.py)、`partial-story/verification-summary.json` | 固定 GUI image、原版及專案唯讀，history 可寫掛 /output，以 --mode history 驗證普通歷史 600M 及四項素材載入；改掛 partial-story、--mode summary 彙整首戰與 90 項來源。執行前複製同一建置的 engine、startup-probe、二進位及完整 tools 來源快照；不宣稱四項場景已正常抽樣 |
+| `assets/hd-b/art/partial-story/` | 部分來源故事圖的生成圖衍生素材、純 HD 總覽與準備 metadata；由 archive-hd-art.py 保存，沒有原版來源 PNG、索引或平面 |
+| `catalog/art/RAINEND-hd-b-v1.png`、`catalog/art/RAINEND-generation-v1.json` | RAINEND.PCX 的出版商標誌 HD 草稿與完整提示詞；保持原構圖及品牌字樣，底部原版文字另留，PCX 正常消費端與顯示模式未確認，不接 production path。生成圖同步 assets/hd-b/art |
 | `catalog/art/E-4-generation-v1.json`、`B-6-generation-v1.json` | 四項尾端未知 OZM 的兩組手繪草稿、有序參考圖用途與 SHA；生成圖及完整提示詞同步私人 assets/hd-b/art，未知八像素、幾何與來源資格另列，不自動計入 prepared |
 | [tools/verify-hd-opening-scroll-source.py](tools/verify-hd-opening-scroll-source.py)、`remaining/history/scrolling/` | 固定 GUI image 中專案唯讀、scrolling 可寫掛 /output；從既有正常原版抽樣核對 OP2／OP8 的逐位來源位移、線性跨列複製及實際色盤。超出正式來源的像素另記未知，不據此推測美術或啟用正式替換 |
 | [tools/hd-opening-shift.go](tools/hd-opening-shift.go)、[測試](tools/hd-opening-shift_test.go) | OP2／OP8 原版自然繪圖的線性位移來源資格、跨列 HD 取樣與來源外像素保護；規格及限制見 RESEARCH-LOG，沿既有 GUI 建置入口 |

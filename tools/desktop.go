@@ -63,6 +63,7 @@ type desktopGame struct {
 	scrollMode, portraitMode    string
 	scrollForeground            int
 	portraits                   map[string]desktopPortrait
+	prefixPortraits             map[string]hdPrefixPair
 	kao                         [81]desktopPortrait
 	kaoModes                    map[int]string
 	kaoHD                       int
@@ -166,6 +167,7 @@ func runDesktopWindow(c *desktopContext) error {
 		g.portraits[name], portraitInfo[name] = pair, info
 	}
 	g.assetInfo["story_portraits"] = portraitInfo
+	g.loadPrefixStories()
 	kaoInfo := map[int]any{}
 	for index, profile := range hdKaoProfiles {
 		pair := desktopPortrait{}
@@ -489,6 +491,9 @@ func (g *desktopGame) render() error {
 	out, mode, err := previewA0(s.Image, source, asset, 2, g.enabled && g.c.Live.Active)
 	if err != nil {
 		return err
+	}
+	if pair, partial := g.prefixPortraits[g.c.Live.LastName]; partial {
+		mode = pair.apply(out, s, g.c.Live.LastName, g.enabled && g.c.Live.Active)
 	}
 	if g.enabled && !g.c.Live.Active {
 		mode = "fallback_no_original_draw"

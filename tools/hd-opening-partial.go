@@ -57,6 +57,10 @@ func openingPartialSource(eip uint32) string {
 }
 
 func openingStorySource(name string, mem []byte) ([]byte, bool) {
+	if _, partial := hdPrefixProfiles[name]; partial {
+		current, ok := prefixStorySource(name, mem, true)
+		return current.Indexed, ok
+	}
 	profile, known := hdPortraitProfiles[name]
 	if !known || profile.Columns != 40 || !openingPlaneAlias(mem) {
 		return nil, false

@@ -1,0 +1,32 @@
+{
+  "classification": "generated publisher-logo HD draft; caller, mode and native copyright composition unverified",
+  "tool": "built-in image_gen",
+  "source_facts_sha256": "08150cf263a12ffeb372b131039a04a897d94addcd5dd3f7c9aba1fdce3be0c5",
+  "source": "RAINEND.PCX",
+  "source_payload_sha256": "78d0179bac1793eabb170925fd9b24378249c83c49320eaac27c8f70f65c1763",
+  "references": [
+    {
+      "index": 1,
+      "path": "workplace/hd-prototype/catalog/remaining/source-boundary/RAINEND-original-reference.png",
+      "sha256": "8e5d4ff9a5b677ddeab48a33a9502b28941529625c10a7ca3c6c73dbf3c42be7",
+      "role": "strict publisher-logo composition and color reference; offline decoded source, not runtime capture"
+    }
+  ],
+  "asset": "RAINEND-hd-b-v1.png",
+  "asset_sha256": "d81bfa59067217ef2150cdf325a3bbde93385f6486230da9dda1233f79686d93",
+  "size": [
+    1448,
+    1086
+  ],
+  "prompt": "RAINEND-hd-b-v1.prompt.txt",
+  "prompt_sha256": "b7266d44f0c14b019842da63d8756bea3997d75eff29fa0a7c9e76c88f120cbe",
+  "default_generation_path": "/home/anr2/.codex/generated_images/01a12b06-3c8d-7ce1-a1d6-73af88ea9201/exec-922379a0-c830-4ce4-b142-17174dc4cfd0.png",
+  "planned_native_preserve_rect": [
+    0,
+    449,
+    640,
+    480
+  ],
+  "excluded_generated_region": "bottom copyright strip; generated speckles there are not planned for presentation",
+  "status": "DRAFT; not runtime registered"
+}

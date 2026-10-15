@@ -5,7 +5,12 @@ import (
 	"encoding/binary"
 )
 
-type hdDrawReturn struct{ Return, Stack, Entry uint32 }
+type hdDrawReturn struct {
+	Return, Stack, Entry uint32
+	SourceName           string    `json:"source_name,omitempty"`
+	SourceGuard          string    `json:"source_guard_sha256,omitempty"`
+	SourceBases          [4]uint32 `json:"source_bases,omitempty"`
+}
 
 var hdScrollSourcePlanes = []string{"ea6c9f57424df636a60d144e1405fa2467429d14e87f2f854d47fe48b910acb5", "655790f2a54acccb050c4fbe0b29b3fb510976611807edbb1b4653656f4a29c6", "7fccd2bd1a06751fe2c043ac4693aa8cd088871bc742e12a861689fa360f4ab5", "b87ca90699e63248f74cac792f3f53b7576056af0c8427a8d0a6bcc1b1abd76a"}
 
@@ -60,8 +65,11 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 		}
 	}
 	if h.Pending != nil && eip == h.Pending.Return && uint64(esp) == uint64(h.Pending.Stack)+4 {
-		_, known := hdPortraitProfiles[h.LastName]
+		known := prefixStoryKnown(h.LastName)
 		h.Active = h.Validated && known
+		if h.Pending.SourceGuard != "" {
+			h.Active = h.Active && prefixStoryReturned(h.Pending, h.LastName, mem, snapshot)
+		}
 		if h.Pending.Entry == 0x11dcb {
 			h.Active = h.Active && openingStoryMatches(h.LastName, mem, snapshot)
 		}
@@ -110,6 +118,9 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 					}
 				}
 			}
+			if _, partial := hdPrefixProfiles[h.LastName]; partial {
+				_, h.Validated = prefixStorySource(h.LastName, mem, false)
+			}
 		}
 	}
 	if eip == 0x1c084 || eip == 0x11f14 {
@@ -135,7 +146,7 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 	}
 	h.Active = false
 	h.Pending = nil
-	_, known := hdPortraitProfiles[h.LastName]
+	known := prefixStoryKnown(h.LastName)
 	stackBytes := uint64(24)
 	if eip == 0x11dcb {
 		stackBytes = 4
@@ -165,6 +176,16 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 		return
 	}
 	h.Pending = &hdDrawReturn{Return: ret, Stack: esp, Entry: eip}
+	if _, partial := hdPrefixProfiles[h.LastName]; partial {
+		current, valid := prefixStorySource(h.LastName, mem, eip == 0x11dcb)
+		if !valid {
+			h.Pending = nil
+			return
+		}
+		h.Pending.SourceName = h.LastName
+		h.Pending.SourceGuard = prefixStorySHA(current.Indexed)
+		h.Pending.SourceBases = current.Bases
+	}
 	if len(h.Events) < 128 {
 		h.Events = append(h.Events, map[string]any{"kind": "draw_enter", "step": step, "linear_eip": eip, "return_linear": ret, "stack_linear": esp, "raw_args": args, "logical_rect": []int{160, 50, 320, 150}})
 	}

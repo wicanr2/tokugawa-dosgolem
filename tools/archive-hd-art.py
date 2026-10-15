@@ -29,6 +29,8 @@ README = """# 戰國手繪 HD 素材
 - [動畫、標題與剩餘介面素材](art/remaining/)，20 項來源的逐格裁切、鏡像與留白核對；美術準備與執行器接入分開記錄。
 - [OP-FULL 開場肖像](art/opening-full-generation-v2.json)與[完整提示詞](art/OP-FULL-hd-b-v2.prompt.txt)，第二版校正原生色盤下的藍白雲帶；[選定素材](art/opening-full/OP-FULL.OZM-hd-v2.png)與第一版均保存，來源、校準與遊戲內驗證分開記錄。
 - [營帳場景](art/E-4-generation-v1.json)與[前景武將變體](art/B-6-generation-v1.json)，由已知來源區域製作，涵蓋 E-4 及三個相同 payload 的 B-6／B-7／C-10；未知八像素與正式來源資格另列，保持草稿。
+- [部分來源故事素材](art/partial-story/)，沿用上述兩組生成圖，準備四項來源的校準圖及純 HD 總覽；原版未知八像素保留原圖，來源資格與正常路徑驗證分開記錄。
+- [RAINEND 出版商標誌草稿](art/RAINEND-generation-v1.json)與[完整提示詞](art/RAINEND-hd-b-v1.prompt.txt)，保持彩色立體標誌與原構圖；PCX 繪圖端及底部原版文字呈現尚未接入。
 - [風格比較](concept/style-comparison-v1.png)。
 
 索引中的狀態區分已驗證、已製作與草稿。圖片存在不代表遊戲內整合完成。正式素材包格式及全遊戲覆蓋以專案 CONTEXT、WORKLIST 與 RESEARCH-LOG 為準。
@@ -215,8 +217,18 @@ def main():
         if name in calibrated_inputs:
             assert sha(source) == calibrated_inputs[name]["raw_asset_sha256"]
             status = "generation input for reviewed static source geometry; runtime uses calibrated child asset"
+        if name in ["B-6-hd-b-v1.png", "E-4-hd-b-v1.png"] and (catalog/"remaining/partial-story/review.json").exists():
+            status = "generation input for reviewed known-region story geometry; prepared child excludes eight unknown native pixels"
+        if name == "RAINEND-hd-b-v1.png":
+            status = "publisher-logo source-referenced draft; original PCX caller, display mode and native copyright presentation pending"
         picture(source, "art/"+name, source.with_suffix(".prompt.txt"), "art/"+source.with_suffix(".prompt.txt").name, status)
     revisions = catalog/"art/revisions.json"
+    publisher_draft = catalog/"art/RAINEND-generation-v1.json"
+    if publisher_draft.exists():
+        metadata = json.loads(publisher_draft.read_text())
+        assert sha(catalog/"art"/metadata["asset"]) == metadata["asset_sha256"]
+        assert sha(catalog/"art"/metadata["prompt"]) == metadata["prompt_sha256"]
+        copy(publisher_draft,"art/"+publisher_draft.name,"generation-metadata")
     if revisions.exists():
         copy(revisions, "art/revisions.json", "revision-metadata")
     if remaining_path.exists():
@@ -279,6 +291,36 @@ def main():
         for name in ["draft-manifest.json","prepare-source.txt","review.json","profiles.json"]:
             copy(background_root/name,"art/static/"+name,"preparation-metadata")
     battle_frame = catalog/"battle-frame"
+    partial_story = catalog/"remaining/partial-story"
+    if (partial_story/"review.json").exists():
+        prepared = json.loads((partial_story/"profiles.json").read_text())
+        review = json.loads((partial_story/"review.json").read_text())
+        assert review["profiles_sha256"] == sha(partial_story/"profiles.json")
+        assert prepared["tool_sha256"] == sha(project/"tools/hd-prefix-prepare.py")
+        assert set(review["approved_resources"]) == {r["resource"] for r in prepared["records"]}
+        runtime_path = partial_story/"verification-summary.json"
+        runtime_sha = None
+        if runtime_path.exists():
+            runtime = json.loads(runtime_path.read_text())
+            assert runtime["verified"] and runtime["profiles_sha256"] == sha(partial_story/"profiles.json")
+            assert runtime["tool_sha256"] == sha(project/"tools/verify-hd-prefix-runtime.py")
+            runtime_sha = sha(runtime_path)
+        selected = set()
+        for record in prepared["records"]:
+            if record["asset"] in selected:
+                continue
+            selected.add(record["asset"])
+            source = partial_story/record["prepared"]
+            assert sha(source) == record["asset_sha256"]
+            copy(source,"art/"+record["asset"],"png",prompt="art/"+record["prompt"],
+                 derivation={"profile":record,"aliases":[r["resource"] for r in prepared["records"] if r["asset"] == record["asset"]],"runtime_verification_sha256":runtime_sha},
+                 status=("known-region source/shared-consumer tests and existing normal-path regression verified; this scene not normally sampled"
+                         if runtime_sha else "reviewed known-region story art; original final eight pixels remain native; normal case not sampled"))
+        gallery = partial_story/prepared["gallery"]
+        assert sha(gallery) == prepared["gallery_sha256"]
+        copy(gallery,"art/partial-story/"+gallery.name,"png",status="generated-only known-region story gallery")
+        for name in ["profiles.json","review.json","prepare-source.txt"]:
+            copy(partial_story/name,"art/partial-story/"+name,"preparation-metadata")
     for revision in (1,2):
         geometry_path = battle_frame/("battle-frame-geometry.json" if revision == 1 else "battle-frame-geometry-v2.json")
         if not geometry_path.exists():
