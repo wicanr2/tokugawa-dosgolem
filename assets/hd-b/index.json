@@ -9,7 +9,7 @@
     "prompts": 162,
     "bytes": 593441022
   },
-  "archive_tool_sha256": "39af28b523ae96301876cc6eb1c9204c25ed15a60953b5257abb0a241e9f6f54",
+  "archive_tool_sha256": "1b7b727fbbaa8b5be41065fbe60c72e816ebfbda941a85bd56e46618d753563e",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -38,7 +38,7 @@
       "sha256": "a8835885296bbdc9a14367c7c05d548c4db6ce1e9a0944de54a98c6a3ea0d211",
       "local_source": "workplace/hd-prototype/catalog/art/11-hd-b-v1.png",
       "prompt": "art/11-hd-b-v1.prompt.txt",
-      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
+      "status": "normal player path verified",
       "size": [
         1832,
         858
@@ -58,7 +58,7 @@
       "sha256": "b37934b35e42d480c2b06828cd0f27f50e8be690c614271fd0bab94213cbfdab",
       "local_source": "workplace/hd-prototype/catalog/art/19-hd-b-v1.png",
       "prompt": "art/19-hd-b-v1.prompt.txt",
-      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
+      "status": "normal player path verified",
       "size": [
         1832,
         858
@@ -78,7 +78,7 @@
       "sha256": "34d5a876947e5729d6a3d9b41ef0fb051b698e2d16bde95cc9809f9dab054020",
       "local_source": "workplace/hd-prototype/catalog/art/28-hd-b-v1.png",
       "prompt": "art/28-hd-b-v1.prompt.txt",
-      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
+      "status": "normal player path verified",
       "size": [
         1832,
         858
@@ -98,7 +98,7 @@
       "sha256": "421afae1db798cadb086ae15d6d13d8842ce9c2c89d38b0cf1b4225da389ade5",
       "local_source": "workplace/hd-prototype/catalog/art/43-hd-b-v1.png",
       "prompt": "art/43-hd-b-v1.prompt.txt",
-      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
+      "status": "normal player path verified",
       "size": [
         1832,
         858
@@ -118,7 +118,7 @@
       "sha256": "6bbc003ea7b6d7e23b81a036afe1e36ccc1a36dc75dae05d80c7405d960c6ee5",
       "local_source": "workplace/hd-prototype/catalog/art/6-hd-b-v1.png",
       "prompt": "art/6-hd-b-v1.prompt.txt",
-      "status": "reviewed source and common draw consumer integrated; normal path not yet sampled",
+      "status": "normal player path verified",
       "size": [
         1832,
         858

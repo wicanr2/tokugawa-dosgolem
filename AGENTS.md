@@ -83,6 +83,15 @@
 | [tools/verify-hd-opening-summary.py](tools/verify-hd-opening-summary.py)、`remaining/history/verification-summary.json` | 固定 GUI image 內專案唯讀、history 可寫覆掛相同路徑，彙整完整複製、八時點色彩效果、缺圖、正常標題及首戰的匹配來源與收據；不宣稱局部／捲動路徑完成 |
 | `remaining/history/effects/ready/` | 最後一次 GUI 暫停由 549M 跨至色盤更新邊界，保留上層失敗的七組擷取與驗證器；此目錄在已確認的 548M 起等待，仍要求全部 48 通道匹配，不放寬產品條件 |
 | [tools/verify-hd-opening-partial-source.py](tools/verify-hd-opening-partial-source.py)、`remaining/history/partial/` | 固定 GUI image 內專案唯讀、partial 可寫覆掛原路徑；以既有普通 600M 的匹配來源快照核對交鋒、歷史劇情、武將及眼部的來源／目的索引、裁切、矩形外不變與 OP9 保留緩衝區。只作原版證據，不宣稱 HD 完成 |
+| [tools/hd-opening-partial.go](tools/hd-opening-partial.go)、[測試](tools/hd-opening-partial_test.go) | 未位移開場局部繪圖的固定參數、原版來源偏移及兩組精確色盤；歷史劇情沿原有呈現。維持完整來源指紋，READY 與抽樣限制見 RESEARCH-LOG |
+| `remaining/history/partial/runtime/`、`partial/desktop/`、`partial/desktop-missing/`、`partial/title/`、`partial/regression/` | 本批隔離建置、匹配來源快照及普通 GUI 收據；既有完整複製與原版診斷不覆寫 |
+| `remaining/history/partial/runtime/ready/` | 首輪測試 fixture 將既有 NRGBA 指標誤作介面轉型，保留上層編譯錯誤；修正測試型別後的新建置與 84 項來源快照，產品契約不改 |
+| [tools/verify-hd-opening-partial.py](tools/verify-hd-opening-partial.py) | 固定 GUI image 中專案／原版唯讀，乾淨擷取目錄可寫掛 /output；普通歷史簡介局部 HD／缺圖的逐格擷取，短武將段落使用既有 F7 逐次暫停控制。完整慢速擷取外層期限至少 3000 秒；正式彙整使用下列 capture 與 full 工具 |
+| [tools/hd-prefix-extract.py](tools/hd-prefix-extract.py)、`remaining/source-boundary/art-prefix/` | 固定 GUI image 中專案與原版唯讀、art-prefix 可寫掛 /output；僅擷取四項未完整解碼 OZM 的已知平面與索引位元，參考 PNG 將未知八像素設透明。不補來源 byte，不宣稱正常載入或正式素材資格 |
+| `catalog/art/E-4-generation-v1.json`、`B-6-generation-v1.json` | 四項尾端未知 OZM 的兩組手繪草稿、有序參考圖用途與 SHA；生成圖及完整提示詞同步私人 assets/hd-b/art，未知八像素、幾何與來源資格另列，不自動計入 prepared |
+| [tools/verify-hd-opening-scroll-source.py](tools/verify-hd-opening-scroll-source.py)、`remaining/history/scrolling/` | 固定 GUI image 中專案唯讀、scrolling 可寫掛 /output；從既有正常原版抽樣核對 OP2／OP8 的逐位來源位移、線性跨列複製及實際色盤。超出正式來源的像素另記未知，不據此推測美術或啟用正式替換 |
+| [tools/verify-hd-opening-partial-full.py](tools/verify-hd-opening-partial-full.py)、`partial/full/`、`partial/full-missing/` | 同一二進位及 84 項來源的快速普通歷史簡介完整 600M 對照，使用既有原圖／HD 按鍵。局部擷取另驗收，避免把短暫畫格的操作競態或收尾逾時當產品缺陷 |
+| [tools/verify-hd-opening-partial-captures.py](tools/verify-hd-opening-partial-captures.py)、`partial/capture-verification.json` | 重核已保存的正常 14 組與缺圖 17 組 X11／呈現 PNG、原生來源裁切、HD 公式與切換 proof；兩次提前停止如實記錄，完整原版狀態須另由 full／full-missing 收據證明 |
 | [tools/hd-frame-prepare.py](tools/hd-frame-prepare.py) | 既有手繪 VISUAL 上方框架依原版矩形分區縮放；輸出 `workplace/hd-prototype/scroll/frame/` 的來源、HD 圖與幾何收據，遊戲內驗證另列 |
 | [tools/hd-frame.go](tools/hd-frame.go)、[tools/hd-frame_test.go](tools/hd-frame_test.go) | VISUAL 上方紅金框架的來源核對與呈現；中央劇情圖及下方捲軸保持獨立，遮擋時完整備援 |
 | [tools/hd-window-extract.py](tools/hd-window-extract.py) | 核對 WINDOW.OZM 九個 16×16 圖塊、原版 buffer 與正常視窗；輸出 `workplace/hd-prototype/catalog/window/` 的來源、原始圖塊、手繪參考與來源收據 |

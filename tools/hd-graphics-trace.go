@@ -142,7 +142,7 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 		r := p.Record
 		r.EndStep = step
 		profile, _, ok := graphicsSource(mem, t.Profiles)
-		if r.Kind == "opening_full" && !openingPlaneAlias(mem) {
+		if (r.Kind == "opening_full" || r.Kind == "opening_rect") && !openingPlaneAlias(mem) {
 			r.Error = "opening source alias changed before natural return"
 		} else if !ok || profile.Name != r.Name {
 			r.Error = "source changed before natural return"
@@ -168,7 +168,7 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 		t.Records = append(t.Records, r)
 		t.Pending = nil
 	}
-	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 {
+	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 && !openingPartialEntry(eip) {
 		return
 	}
 	if len(t.Records) >= 512 {
@@ -177,7 +177,11 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 		return
 	}
 	r := graphicsDrawRecord{BeginStep: step, Stack: esp, Kind: "opaque_rect"}
-	if uint64(esp)+24 > uint64(len(mem)) {
+	stackBytes := uint64(24)
+	if openingPartialEntry(eip) {
+		stackBytes = 8
+	}
+	if uint64(esp)+stackBytes > uint64(len(mem)) {
 		r.Error = "stack outside RAM"
 		t.Records = append(t.Records, r)
 		return
@@ -197,6 +201,15 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 			}
 		}
 		r.Args = [5]uint32{0, 80, 400, 80, 0xa0000}
+	} else if openingPartialEntry(eip) {
+		r.Kind = "opening_rect"
+		var valid bool
+		r.Args, valid = openingPartialArgs(eip, esp, mem)
+		if !valid || !openingPlaneAlias(mem) {
+			r.Error = "unsupported opening offset or source aliases"
+			t.Records = append(t.Records, r)
+			return
+		}
 	} else {
 		for i := range r.Args {
 			r.Args[i] = binary.LittleEndian.Uint32(mem[uint64(esp)+4+uint64(i*4):])
@@ -209,6 +222,11 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 		return
 	}
 	r.Name = p.Name
+	if openingPartialEntry(eip) && r.Name != openingPartialSource(eip) {
+		r.Error = "opening entry does not match exact source"
+		t.Records = append(t.Records, r)
+		return
+	}
 	a := r.Args
 	sy, sx := a[0]/80, a[0]%80
 	if a[1] < 1 || a[1] > 80 || a[2] < 1 || a[2] > 400 || a[3] != 80 || a[4] < 0xa0000 || a[4] >= 0xa0000+32000 {

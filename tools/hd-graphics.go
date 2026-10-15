@@ -92,7 +92,7 @@ func graphicsDestination(esp uint32, mem []byte) (image.Rectangle, bool) {
 
 // 只觀測原版來源及自然返回，所有圖像替換留在 host 畫布。
 func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapshot func() (nativeSnapshot, error)) {
-	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14
+	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14 || openingPartialEntry(eip)
 	returned := h.Pending != nil && eip == h.Pending.Record.Return && uint64(esp) == uint64(h.Pending.Record.Stack)+4
 	if !entry && !returned {
 		return
@@ -101,27 +101,33 @@ func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapsho
 		h.Pending = nil
 		if eip == 0x1c084 || eip == 0x11f14 {
 			h.Draws = nil
-		} else if r, ok := graphicsDestination(esp, mem); ok {
-			keep := h.Draws[:0]
-			for _, draw := range h.Draws {
-				visible := draw.VisibleRects
-				if visible == nil {
-					visible = []image.Rectangle{draw.DestRect}
-				}
-				draw.VisibleRects = nil
-				for _, old := range visible {
-					draw.VisibleRects = append(draw.VisibleRects, graphicsSubtract(old, r)...)
-				}
-				if len(draw.VisibleRects) > 0 {
-					keep = append(keep, draw)
-				}
-			}
-			h.Draws = keep
-			if graphicsFragmentCount(h.Draws) > 256 {
-				h.Draws = nil
-			}
 		} else {
-			h.Draws = nil
+			r, ok := graphicsDestination(esp, mem)
+			if openingPartialEntry(eip) {
+				r, ok = openingPartialDestination(eip), true
+			}
+			if !ok {
+				h.Draws = nil
+			} else {
+				keep := h.Draws[:0]
+				for _, draw := range h.Draws {
+					visible := draw.VisibleRects
+					if visible == nil {
+						visible = []image.Rectangle{draw.DestRect}
+					}
+					draw.VisibleRects = nil
+					for _, old := range visible {
+						draw.VisibleRects = append(draw.VisibleRects, graphicsSubtract(old, r)...)
+					}
+					if len(draw.VisibleRects) > 0 {
+						keep = append(keep, draw)
+					}
+				}
+				h.Draws = keep
+				if graphicsFragmentCount(h.Draws) > 256 {
+					h.Draws = nil
+				}
+			}
 		}
 	}
 	trace := graphicsTrace{Profiles: hdGraphicsSources, Pending: h.Pending}

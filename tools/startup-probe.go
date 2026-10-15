@@ -462,6 +462,13 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
+	for _, name := range []string{"tools/hd-opening-partial.go", "tools/hd-opening-partial_test.go"} {
+		b, e := os.ReadFile("/project/" + name)
+		if e != nil {
+			panic(e)
+		}
+		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
+	}
 	for _, name := range []string{"tools/hd-opening-probe.go", "tools/hd-opening-probe_test.go", "tools/hd-graphics-opening-profiles.go", "tools/hd-opening-live_test.go", "tools/hd-graphics-effects.go", "tools/hd-graphics-effects_test.go"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {

@@ -49,7 +49,8 @@ func graphicsPaletteEffect(profile hdGraphicsProfile, s nativeSnapshot) graphics
 		}
 	}
 	if !graphicsEffectSource(profile.Source.Name) {
-		return graphicsEffect{Valid: exact}
+		extra, known := hdOpeningPartialPalettes[profile.Source.Name]
+		return graphicsEffect{Valid: exact || (known && actual == extra)}
 	}
 	if exact {
 		return graphicsEffect{Kind: "clamp", NativeLimit: peak, HDLimit: 255, Valid: true}

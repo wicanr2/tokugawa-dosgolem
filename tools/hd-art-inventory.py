@@ -104,9 +104,21 @@ def main():
     full_profile = json.loads(full_profile_path.read_text())['record'] if full_profile_path.exists() else None
     opening_proof_path = history/'verification-summary.json'
     opening_proof = json.loads(opening_proof_path.read_text()) if opening_proof_path.exists() else None
+    prefix_art = {}
+    for name in ['E-4-generation-v1.json', 'B-6-generation-v1.json']:
+        path = ROOT/'art'/name
+        if path.exists():
+            for record in json.loads(path.read_text())['records']:
+                for source in record['aliases']:
+                    prefix_art[source] = record
     if opening_proof:
         assert opening_proof['verified'] and opening_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-opening-summary.py')
         assert opening_proof['art_profiles_sha256'] == sha(full_profile_path)
+    partial_proof_path = history/'partial/verification-summary.json'
+    partial_proof = json.loads(partial_proof_path.read_text()) if partial_proof_path.exists() else None
+    if partial_proof:
+        assert partial_proof['verified'] and partial_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-opening-partial-captures.py')
+        assert partial_proof['capture_proof_sha256'] == sha(history/'partial/capture-verification.json')
     frame_summary_path = ROOT/'battle-frame/verification-summary.json'
     frame_summary = json.loads(frame_summary_path.read_text()) if frame_summary_path.exists() else None
     if frame_summary:
@@ -114,7 +126,7 @@ def main():
         proof_sources_frame = {'verification':str(frame_summary_path.relative_to(PROJECT)),'sha256':sha(frame_summary_path)}
     direct = {}
     for record in decoded["records"]:
-        if record['name'] == 'OP-FULL.OZM':
+        if record['name'] in ['OP-FULL.OZM', 'B-6.OZM', 'B-7.OZM', 'C-10.OZM', 'E-4.OZM']:
             continue
         if record['name'] in ui_drafts or record['name'] in weather or record['name'] in opening or record['name'] in remaining_art or record['name'] in static_profiles or record['name'] in pending_generation or record['name'] in pending_profiles:
             continue
@@ -138,6 +150,8 @@ def main():
     proof_sources = []
     if opening_proof:
         proof_sources.append({'verification':str(opening_proof_path.relative_to(PROJECT)), 'sha256':sha(opening_proof_path)})
+    if partial_proof:
+        proof_sources.append({'verification':str(partial_proof_path.relative_to(PROJECT)), 'sha256':sha(partial_proof_path)})
     if pending_runtime_proof:
         proof_sources.append({'verification':str(pending_runtime_proof_path.relative_to(PROJECT)),'sha256':sha(pending_runtime_proof_path)})
     if static_proof:
@@ -165,6 +179,13 @@ def main():
             if check["mode"] == "hd":
                 verified_kao[check["index"]] = check
 
+    if partial_proof:
+        captures = json.loads((history/'partial/capture-verification.json').read_text())
+        complete = json.loads((history/'partial/full/desktop-full.json').read_text())
+        for name in partial_proof['normal_story_sources']:
+            check = next(r for r in captures['runs']['partial']['checks'] if r['source'] == name and r['mode'] == 'hd')
+            assert complete['desktop']['assets']['story_portraits'][name]['hd_sha256'] == direct[name]['sha256']
+            verified_story[name] = check
     terrain_path = ROOT / "terrain/prepared/profiles.json"
     terrain_profiles = json.loads(terrain_path.read_text()) if terrain_path.exists() else None
     material_profiles_path = ROOT/'terrain/materials/profiles.json'
@@ -431,12 +452,22 @@ def main():
             if pending_runtime_proof and name in pending_runtime_proof['normal_new_sources']:
                 record.update(runtime_status='normal title/menu HD, individual missing asset and 200M original state comparison verified',
                               runtime_proof_sha256=sha(pending_runtime_proof_path))
+            if partial_proof and name in partial_proof['normal_graphics_sources']:
+                record.update(runtime_status='ordinary history partial draw, exact source and palette, HD/original/restored and missing asset verified; OP9 normal HD X11 samples include four eyes and two of five portraits',
+                              runtime_proof_sha256=sha(partial_proof_path))
         if name == 'OP-FULL.OZM' and full_profile:
             path = PROJECT/'assets/hd-b/art'/full_profile['asset']
             assert sha(path) == full_profile['asset_sha256']
             record.update(art_status='prepared', kind='runtime-observed complete opening illustration',
                           art=art_info(path, ROOT/'art'/full_profile['prompt']), source_profile=full_profile,
                           runtime_status='exact runtime source and full-copy consumer registered; normal HD verification pending')
+        if name in prefix_art:
+            painting = prefix_art[name]
+            path = ROOT/'art'/painting['asset']
+            assert sha(path) == painting['sha256']
+            record.update(art_status='draft', art=art_info(path,ROOT/'art'/painting['prompt']),
+                          art_source_resource=painting['source'], source_scope='47992 known pixels; eight unknown pixels remain excluded',
+                          runtime_status='generated from known-region reference; geometry and partial-source qualification pending')
         if opening_proof and name in opening_proof['normal_new_sources']:
             record.update(runtime_status='ordinary history HD/original/restored, six fade-in and two palette-cycle samples verified; full 600M state comparison',
                           runtime_proof_sha256=sha(opening_proof_path))
@@ -488,7 +519,8 @@ def main():
               "remaining_animation_atlases_prepared":8 if pending_art_proof else 0,
               "remaining_animation_frames_prepared":48 if pending_art_proof else 0,
               "remaining_sources_runtime_registered":len(pending_runtime.get('registered_source_names',[])),
-              "remaining_sources_normal_verified":len(pending_runtime_proof['normal_new_sources']) if pending_runtime_proof else 0,
+              "remaining_sources_normal_verified":len(set(pending_runtime_proof['normal_new_sources'] if pending_runtime_proof else []) | set(partial_proof['normal_graphics_sources'] if partial_proof else [])),
+              "generated_partial_source_art_resources":len(prefix_art),
               "approved_static_sources":len(static_profiles),
               "normal_static_sources_verified":len(set(static_proof['normal_new_source_names'] if static_proof else []) | (set(opening_proof['normal_new_sources']) & set(static_profiles) if opening_proof else set())),
               "runtime_observed_opening_art_prepared":1 if full_profile else 0,

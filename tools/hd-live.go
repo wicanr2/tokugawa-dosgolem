@@ -62,6 +62,9 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 	if h.Pending != nil && eip == h.Pending.Return && uint64(esp) == uint64(h.Pending.Stack)+4 {
 		_, known := hdPortraitProfiles[h.LastName]
 		h.Active = h.Validated && known
+		if h.Pending.Entry == 0x11dcb {
+			h.Active = h.Active && openingStoryMatches(h.LastName, mem, snapshot)
+		}
 		h.Pending = nil
 		if len(h.Events) < 128 {
 			h.Events = append(h.Events, map[string]any{"kind": "draw_return", "step": step, "linear_eip": eip, "eligible": h.Active})
@@ -123,18 +126,32 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 			}
 		}
 	}
-	if eip != 0x1c1bc {
+	if openingPartialEntry(eip) {
+		h.Active, h.Pending = false, nil
+	}
+	if eip != 0x1c1bc && eip != 0x11dcb {
 		return
 	}
 	h.Active = false
 	h.Pending = nil
 	_, known := hdPortraitProfiles[h.LastName]
-	if !h.Validated || !known || uint64(esp)+24 > uint64(len(mem)) {
+	stackBytes := uint64(24)
+	if eip == 0x11dcb {
+		stackBytes = 4
+	}
+	if !h.Validated || !known || uint64(esp)+stackBytes > uint64(len(mem)) {
 		return
 	}
 	args := make([]uint32, 5)
-	for i := range args {
-		args[i] = binary.LittleEndian.Uint32(mem[uint64(esp)+4+uint64(i*4):])
+	if eip == 0x11dcb {
+		if _, valid := openingStorySource(h.LastName, mem); !valid {
+			return
+		}
+		copy(args, []uint32{0, 40, 150, 80, 0xa0fb4})
+	} else {
+		for i := range args {
+			args[i] = binary.LittleEndian.Uint32(mem[uint64(esp)+4+uint64(i*4):])
+		}
 	}
 	want := []uint32{0, 40, 150, 80, 0xa0fb4}
 	for i := range args {
