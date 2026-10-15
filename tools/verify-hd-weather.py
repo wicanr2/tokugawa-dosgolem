@@ -82,7 +82,7 @@ def main():
             time.sleep(0.05)
         for name in ['desktop-status.json','desktop-status.pending']:
             (root/name).unlink(missing_ok=True)
-        command = [str(root/'tokugawa-desktop-prototype'),'-desktop','-desktop-speed','60',
+        command = [str(root/'tokugawa-desktop-prototype'),'-desktop', "-publisher-intro=false",'-desktop-speed','60',
                    '-steps','750000000','-mouse-file','/project/tools/player-path.json','-hd-battle-frame-proof']
         if args.mode == 'weather-missing':
             command += ['-hd-graphics-dir','/output/no-weather']

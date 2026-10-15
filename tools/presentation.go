@@ -31,6 +31,7 @@ type desktopContext struct {
 }
 
 var runDesktop func(*desktopContext) error
+var runDesktopPrelude func() (map[string]any, bool, error)
 
 func snapshotNative(v *bankVideo, cursor mouseCursor, x, y int) (nativeSnapshot, error) {
 	s := nativeSnapshot{Cursor: cursor, X: x, Y: y, MaxColor: 15}

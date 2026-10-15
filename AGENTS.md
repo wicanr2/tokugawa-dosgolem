@@ -54,6 +54,10 @@
 | `workplace/desktop-prototype/publisher/` | MARK 原生與 HD 桌面的隔離建置、缺圖、功能列及完整原版狀態驗證 |
 | [tools/verify-publisher.py](tools/verify-publisher.py) | 在既有 GUI image 內以 X11 操作 MARK 的啟動選擇、原圖／HD、功能列與自然退出；收據及原圖保持本機 |
 | [tools/verify-publisher-integration.py](tools/verify-publisher-integration.py) | 固定 GUI image 內專案唯讀掛 /project、publisher/ 可寫掛 /output，執行後核對 MARK 與首戰、獨立 PCX 解碼、HD 採樣及來源快照；歷史核對可加 --source-root /output/source-snapshot |
+| [tools/desktop-publisher.go](tools/desktop-publisher.go) | 桌面啟動器依序執行固定 MARK 與 DX5，沿用最後顯示設定；關窗停止並保存各自原版收據，不偽造 DOS EXEC |
+| [tools/verify-startup-chain.py](tools/verify-startup-chain.py) | 固定 GUI image 內的預設完整啟動鏈、雙向設定沿用、實際 X11、原版 RAM／欄位及正常關窗驗證；模式為 original、hd 或 cancel |
+| [tools/verify-startup-chain-integration.py](tools/verify-startup-chain-integration.py) | 固定 GUI image 內專案唯讀掛 /project、startup-chain/ 可寫掛 /output，重查三模式實際收據、完整 RAM、X11 與 103 項來源並輸出總表；歷史核對可加 --source-root /output/source-snapshot |
+| `workplace/desktop-prototype/startup-chain/` | 完整啟動鏈的凍結建置與三模式隔離驗證；原版資料及執行收據只留本機 |
 | [tools/ida-entry.py](tools/ida-entry.py) | 保留原名與位址的 IDA 入口證據；可傳入 `起點:終點` 匯出至多 16 KiB 的窄範圍 |
 | [tools/hd-asset-probe.py](tools/hd-asset-probe.py) | 唯讀盤點 DAT 的候選資源目錄；保存原始欄位、檔案偏移與逐項雜湊，不作正式 HD 識別器 |
 | [tools/ida-asset-probe.py](tools/ida-asset-probe.py) | IDA 9.4 的資源字串、直接交叉參照及有界函式證據；只接受固定 SHA 的 DX5.EXE 或包內 MARK.EXE.BAK，另核對 LE header，保留原名與位址 |
@@ -67,7 +71,7 @@
 | [tools/hd-ozm-probe.py](tools/hd-ozm-probe.py) | 依 IDA 9.4 原始指令做離線資源盤點，只接受獨立解碼命令；遇到 VGA 來源命令明確拒絕。以正常路徑四平面與索引雜湊交叉核對 |
 | [tools/hd-kao-extract.py](tools/hd-kao-extract.py) | 擷取 81 張 80×80 KAO.GRP 頭像、九頁來源圖集與收據；核對正常路徑載入的完整資料及第 76 張的 6400 原生像素 |
 | [tools/hd-kao-prepare.py](tools/hd-kao-prepare.py) | 依已檢視的實際格線裁切九張 HD 圖集，補黑底保持人物比例；輸出 `workplace/hd-prototype/catalog/kao/selected/` 的 81 張素材、manifest 與總覽 |
-| [tools/hd-art-inventory.py](tools/hd-art-inventory.py) | 重生 `workplace/hd-prototype/catalog/art-coverage.json`，區分已製作、逐項替換、正常路徑驗證與未知素材；資源數不當成圖集完成百分比 |
+| [tools/hd-art-inventory.py](tools/hd-art-inventory.py) | 重生 `workplace/hd-prototype/catalog/art-coverage.json`，區分已製作、逐項替換、正常路徑驗證與未知素材；歷史收據核對當時驗證器的精確快照及 SHA-256，來源列於 verification_tool_sources；資源數不當成圖集完成百分比 |
 | [tools/hd-remaining-intake.py](tools/hd-remaining-intake.py) | 從唯一覆蓋清單核對剩餘已解碼 OZM，保存來源、原圖總覽及動畫逐格參考；不猜補五項解碼未知 |
 | [tools/hd-remaining-prepare.py](tools/hd-remaining-prepare.py) | 依原始格線準備 20 項美術，逐格驗證 16 項鏡像、保留動畫空格、黑色及彩色緩衝區。固定 GUI image 內專案唯讀掛 `/project`、remaining 可寫覆掛原路徑，`--version 3` 產生 draft-v3；審查及核對通過後加 `--approve` 選定美術，不修改 Go 執行器。draft-v1／2 保留單像素緩衝區邊界及 BATTLE 美術末列修正前版本 |
 | [tools/verify-hd-remaining.py](tools/verify-hd-remaining.py) | 固定 GUI image 與相同掛載執行 `--version 3`，核對 20 張圖、48 動畫格、16 鏡像、空格、緩衝區及來源。輸出 art-verification，不作正常玩家路徑或執行器接入收據 |

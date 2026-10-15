@@ -82,7 +82,7 @@ try:
         time.sleep(.05)
     run('xdotool','mousemove','700','500')
     with (root/'receipt.json').open('wb') as out, (root/'stderr.log').open('wb') as err:
-        process=subprocess.Popen([str(root/'tokugawa-desktop-prototype'),'-desktop','-desktop-speed','30','-steps','200000000'],env=env,stdout=out,stderr=err)
+        process=subprocess.Popen([str(root/'tokugawa-desktop-prototype'),'-desktop', "-publisher-intro=false",'-desktop-speed','30','-steps','200000000'],env=env,stdout=out,stderr=err)
     children.append(process)
     s=wait(lambda s:s.get('startup_pending') and s.get('mode')=='startup_choice',60)
     window=run('xdotool','search','--name','德川家康',stdout=subprocess.PIPE).stdout.decode().splitlines()[0]

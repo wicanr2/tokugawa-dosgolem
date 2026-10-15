@@ -33,7 +33,7 @@ def main():
     static = json.loads((project/'assets/hd-b/art/static/profiles.json').read_text())
     profiles = {r['name']: r for r in static['records']}
     mode = 'shift-missing' if args.missing else 'shift'
-    command = [str(root/'tokugawa-desktop-prototype'), '-desktop', '-desktop-speed', '10', '-steps', '600000000',
+    command = [str(root/'tokugawa-desktop-prototype'), '-desktop', "-publisher-intro=false", '-desktop-speed', '10', '-steps', '600000000',
                '-mouse-file', '/project/workplace/hd-prototype/catalog/remaining/source-boundary/menu-history/mouse.json',
                '-hd-battle-frame-proof']
     if args.missing:

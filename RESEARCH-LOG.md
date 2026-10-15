@@ -1956,3 +1956,51 @@ SHA-256 580a71ffc2fe8e23cda8c6122871b9f9b2f1c4c05f1c07b5c0c08fceb7e63e0b。
 source-snapshot/ 保存當次全部 102 項來源；歷史核對明示 --source-root /output/source-snapshot，不以未來工作樹誤判舊收據。
 
 目前獨立操作入口為 tools/run-desktop.sh -program mark -steps 75000000；仍在固定 Docker 執行。game 預設不自動執行 MARK，啟動器後續須先選模式、原生執行 MARK 再進 DX5，沿用最後顯示設定並保存各自收據。既有缺少 COMMAND.COM 的原版 EXEC 錯誤保持原樣。其他動畫消費端、完整啟動串接、全遊戲 HD 及三平台打包仍未完成。
+
+## 2026-10-15：桌面選擇、MARK 與 DX5 串接契約
+
+狀態：READY。使用者已確認恢復 MARK、MARK 也要 HD、進入遊戲前選擇原版／HD，以及頂端功能列可動態切換。本切片完成這條已確認的啟動路徑，不更動原版規則、存檔或素材包格式。
+
+### 已證實前提與停止線
+
+- 原版輸入沿用上節固定 MARK.EXE.BAK、DX5.EXE、DX5.DAT 與 CUE/BIN 的 SHA-256。MARK 獨立原版正常 15989208 步、退出碼 0；DX5 正常首戰 750M／390 事件及完整 RAM 基準均已保存。
+- 固定 Ebitengine 2.9.9 的 /go/pkg/mod/github.com/hajimehoshi/ebiten/v2@v2.9.9/run.go 明示同一程序不得呼叫 RunGame 兩次。桌面啟動器先以同一二進位的 mark profile 執行 MARK，正常結束後再啟動目前程序的 game profile；每個程序各開一次遊戲迴圈。
+- 這是桌面層恢復順序，兩個 LE 執行環境各自從虛擬時間零開始，分別保存完整收據與 RAM。沒有偽造 COMMAND.COM、DOS EXEC 成功或跨程序 DOS 記憶體延續；不宣稱原版 DOS shell 串接的硬體時鐘一致。
+- 原版及 HD 標誌、來源資格與版權區沿用上一節 CONFORMED 契約，不新製圖片。
+
+### 輸入、狀態與錯誤
+
+| 狀態 | 輸入與輸出 |
+|---|---|
+| 啟動 | 桌面 game profile 預設 publisher-intro=true。先核對 DX5 來源，MARK 由子程序自行核對固定來源與光碟。無頭與明示 mark profile 不重複開啟前置流程 |
+| 模式選擇 | 原有 startup-display=ask 在 MARK 視窗顯示一次。滑鼠、Tab／Enter、確認手勢隔離與原版 0 步保持原契約 |
+| MARK | 75M 有界原版指令預算，正常自然退出；顯示模式及 hd-publisher-asset 旗標傳入。publisher-speed=0 沿用桌面速度，1..60 只供驗證加速 |
+| 進入遊戲 | 只在 MARK program、來源雜湊、dos_exit、exit_code=0、fd2_startup_calls=0 與顯示設定皆有效時繼續。最後 hd_enabled 轉為遊戲的 startup-display，遊戲不再詢問；遊戲腳本輸入不轉送 MARK |
+| 關窗 | 在選擇或 MARK 關窗時，以 desktop_closed 的子收據結束整個啟動器；game_started=false，DX5 不執行 |
+| 失敗 | MARK 非正常退出、預算耗盡、來源錯誤、子程序失敗或不完整收據均停止，不默默略過。程序中斷會取消 MARK 子程序 |
+| 收據 | MARK stdout 保存為帶 SHA-256 的本機收據，stderr 另存；MARK 狀態檔及 RAM 與遊戲分開。父收據附 publisher_prelude，保留子原文及最後模式 |
+| 隔離驗證 | 既有只測 DX5 的桌面驗證器明示 publisher-intro=false；完整流程驗證器使用預設值，不以旁路作完成證據 |
+
+### 驗收與垂直鏈
+
+原版 EXE → 固定 program profile → 自然 LE 執行 → 模式選擇／頂端功能列 → MARK 正常退出 → DX5 正常玩家路徑。切換只作用桌面呈現，原版存檔及寫入副本契約不改。
+
+1. 同一凍結二進位驗證兩條正常流程：先選原版再於 MARK 切 HD、先選 HD 再切回原版，證明進入遊戲沿用最後設定。MARK 亮起區與遊戲首戰皆擷取實際 X11、原圖／HD 與原版狀態 proof。
+2. MARK 完整 RAM 及十三個原版欄位符合 r8；兩次遊戲 750M／390 普通事件的完整 RAM、十五欄及 PCM 符合既有 headless 基準。切換及還原的 proof 必須相同。
+3. 模式選擇畫面正常 WM_DELETE_WINDOW 關閉，驗證 MARK 0 步、沒有選擇或按鈕洩漏、沒有 DX5 的 RAM／收據。
+4. 完成四套件、來源快照、素材保存與 Docker 清理核對後，才將本契約標為 CONFORMED。其他十七項動畫消費端、完整遊戲可玩性、音訊人耳與三平台封包維持原待辦。
+
+### 驗收追加：CONFORMED
+
+上節完整桌面啟動鏈的 READY 契約已通過。唯一總表為 workplace/desktop-prototype/startup-chain/verification-summary.json，SHA-256 1ad1539a0bca5c4eabd0d2ff0dfef099af235ed74a8359f0afd2c207fa074a72。驗證工具為 tools/verify-startup-chain.py 與 tools/verify-startup-chain-integration.py，後者可使用 --source-root 指定當次凍結來源。
+
+- 同一二進位 baafa065d2f8b204dae538371ee9de617b2f53717a14ec5d9c54d3086ca2d859、103 項凍結來源，四套件通過，研究入口 53.770 秒。
+- 預設完整鏈通過兩次：先選原版、MARK 改 HD、遊戲沿用 HD；先選 HD、MARK 改原版、遊戲沿用原版。模式只詢問一次，MARK 選擇的 before／after 均為 0 步且 guest_unchanged=true；MARK 操作沒有按鈕轉送，遊戲只使用原有 390 筆普通時間表。
+- 兩次 MARK 均自然 15989208 步、dos_exit、退出碼 0，完整 RAM 62da54cc0cef42e9a55c64cb1ac958b05b851f19c12247023f6feddd023fa085 與 r8 一致；十三個原版欄位一致。亮起區原版／HD 四張實際 X11 相符，下方版權區保持原版。
+- 兩次 DX5 各自然 750M／390 事件，完整 RAM 4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9、十五欄及完整 CD PCM 與既有 headless 基準一致。首戰原版／HD／還原各三張實際 X11 相符，三次 proof 相同。MARK HD 及首戰 HD 已目視檢視。
+- 模式選擇畫面以正常 WM_DELETE_WINDOW 關閉，MARK 為 0 步、沒有選擇或原版輸入，父收據 game_started=false，沒有 DX5 RAM。子收據原文、SHA-256、獨立 MARK RAM／狀態檔及遊戲收據均保留。
+- 原始 ZIP CRC、十二個檔案及 UID/GID 於 2026-10-15T07:37:58Z 通過；807 PNG、163 提示詞及 596522181 indexed bytes 保存核對通過，沒有新增圖片。全根沒有 root-owned 或 .md 目錄，正式 DX5.i64 雜湊不變，本批容器全部已移除。
+
+覆蓋盤點最初因十一份局部驗證器新增 publisher-intro=false 而拒絕舊工具雜湊，分類為研究台帳的工具版本核對問題。三份舊收據所記錄的驗證器，分別由已存在的 remaining/desktop-title/、graphics/static/desktop-logo/palette/ready/ 與 remaining/partial-story/desktop/source-snapshot/tools/ 取回完整快照；精確 SHA-256 仍嚴格核對。工具新增 verification_tool_sources 列出實際來源，沒有改動舊收據、歷史結果或原版基準。乾淨重跑覆蓋盤點通過，RAINEND 的 game_startup_integrated=true。
+
+完成聲明限於本節的桌面啟動鏈、模式沿用及首戰抽樣。兩個原版 LE 執行環境及虛擬時間獨立，未宣稱 DOS shell EXEC、共享硬體時鐘、全遊戲可通關、剩餘動畫、音訊人耳或其他平台完成。

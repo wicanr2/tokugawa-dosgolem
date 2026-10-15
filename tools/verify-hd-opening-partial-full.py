@@ -24,7 +24,7 @@ def main():
     (root / 'startup-probe').mkdir(exist_ok=True)
     (root / 'verifier-source.txt').write_bytes(Path(__file__).read_bytes())
     mode = 'full-missing' if args.missing else 'full'
-    command = [str(root / 'tokugawa-desktop-prototype'), '-desktop', '-desktop-speed', '60', '-steps', '600000000',
+    command = [str(root / 'tokugawa-desktop-prototype'), '-desktop', "-publisher-intro=false", '-desktop-speed', '60', '-steps', '600000000',
                '-mouse-file', '/project/workplace/hd-prototype/catalog/remaining/source-boundary/menu-history/mouse.json',
                '-hd-battle-frame-proof']
     if args.missing:

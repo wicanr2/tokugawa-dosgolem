@@ -33,7 +33,7 @@ def prefix_assets(receipt, project):
 def history(root, project):
     assert not (root/'verifier-source.txt').exists()
     (root/'verifier-source.txt').write_bytes(Path(__file__).read_bytes())
-    command = [str(root/'tokugawa-desktop-prototype'), '-desktop', '-desktop-speed', '60', '-steps', '600000000',
+    command = [str(root/'tokugawa-desktop-prototype'), '-desktop', "-publisher-intro=false", '-desktop-speed', '60', '-steps', '600000000',
                '-mouse-file', '/project/workplace/hd-prototype/catalog/remaining/source-boundary/menu-history/mouse.json',
                '-hd-battle-frame-proof']
     env = dict(os.environ, DISPLAY=':98', LIBGL_ALWAYS_SOFTWARE='1', LP_NUM_THREADS='2')

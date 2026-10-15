@@ -80,7 +80,7 @@ def logo_gui(root, project):
             assert xvfb.poll() is None and time.monotonic()<deadline
             time.sleep(0.05)
         receipt_path = root/'desktop-logo.json'
-        command = [str(root/'tokugawa-desktop-prototype'),'-desktop','-desktop-speed','60','-steps','200000000',
+        command = [str(root/'tokugawa-desktop-prototype'),'-desktop', "-publisher-intro=false",'-desktop-speed','60','-steps','200000000',
                    '-mouse-file',str(root/'idle-mouse.json'),'-hd-battle-frame-proof']
         with receipt_path.open('wb') as stdout,(root/'desktop.stderr.log').open('wb') as stderr:
             process = subprocess.Popen(command,env=env,stdout=stdout,stderr=stderr)

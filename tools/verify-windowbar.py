@@ -107,7 +107,7 @@ try:
     run("xdotool", "mousemove", "700", "500")
     for name in ("desktop-status.json", "desktop-status.pending"):
         (root / name).unlink(missing_ok=True)
-    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-startup-display", "original", "-desktop-speed", "20",
+    command = [str(root / "tokugawa-desktop-prototype"), "-desktop", "-publisher-intro=false", "-startup-display", "original", "-desktop-speed", "20",
                "-steps", "150000000", "-hd-trace"]
     if mode != "mouse":
         source = Path("/project/workplace/cd-trace/first-play-input.json")

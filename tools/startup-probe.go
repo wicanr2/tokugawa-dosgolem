@@ -114,6 +114,21 @@ func main() {
 	if digest != profile.SHA {
 		panic(profile.File + " hash mismatch")
 	}
+	var publisherPrelude map[string]any
+	if *desktop && !profile.Publisher && runDesktopPrelude != nil {
+		var proceed bool
+		publisherPrelude, proceed, err = runDesktopPrelude()
+		if err != nil {
+			panic(err)
+		}
+		if !proceed {
+			if err := json.NewEncoder(os.Stdout).Encode(map[string]any{"program": "launcher", "stop": "desktop_closed", "successful_steps": 0,
+				"game_started": false, "publisher_prelude": publisherPrelude}); err != nil {
+				panic(err)
+			}
+			return
+		}
+	}
 	m, err := machine.LoadLE(data)
 	if err != nil {
 		panic(err)
@@ -489,7 +504,7 @@ func main() {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
-	for _, name := range []string{"tools/program.go", "tools/mark-trace.go", "tools/hd-publisher.go", "tools/hd-publisher_test.go"} {
+	for _, name := range []string{"tools/program.go", "tools/mark-trace.go", "tools/hd-publisher.go", "tools/hd-publisher_test.go", "tools/desktop-publisher.go"} {
 		b, e := os.ReadFile("/project/" + name)
 		if e != nil {
 			panic(e)
@@ -585,6 +600,7 @@ func main() {
 		}
 	}
 	receipt := map[string]any{
+		"publisher_prelude": publisherPrelude, "game_started": !profile.Publisher,
 		"dosgolem_head": "a9714ebdab2ad6b529f81225472680f2b11f2842", "integration_input_sha256": toolHashes,
 		"input_file": profile.File, "input_sha256": digest, "program": *program, "mark_observation": markTrace,
 		"file_state_directory": fileState, "original_read_only": true,

@@ -33,7 +33,7 @@ def title(root,project,missing):
     source=next(r for r in metadata['records'] if r['name']=='OP5.OZM')
     profiles=json.loads((project/'workplace/hd-prototype/catalog/remaining/profiles.json').read_text())
     art_record=next(r for r in profiles['records'] if r['name']=='OP5.OZM')
-    command=[str(root/'tokugawa-desktop-prototype'),'-desktop','-desktop-speed','60','-steps','200000000',
+    command=[str(root/'tokugawa-desktop-prototype'),'-desktop', "-publisher-intro=false",'-desktop-speed','60','-steps','200000000',
              '-mouse-file',str(root/'idle-mouse.json'),'-hd-battle-frame-proof']
     if missing:
         folder=root/'missing-graphics'

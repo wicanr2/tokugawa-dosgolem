@@ -82,7 +82,7 @@ def main():
         assert normal['verified']
         reference_steps = {name: proof['step'] for name, proof in normal['stages'].items()}
     (root / 'startup-probe').mkdir(exist_ok=True)
-    command = [str(root / 'tokugawa-desktop-prototype'), '-desktop', '-desktop-speed', '60',
+    command = [str(root / 'tokugawa-desktop-prototype'), '-desktop', "-publisher-intro=false", '-desktop-speed', '60',
                '-steps', '600000000', '-mouse-file',
                '/project/workplace/hd-prototype/catalog/remaining/source-boundary/menu-history/mouse.json',
                '-hd-battle-frame-proof']

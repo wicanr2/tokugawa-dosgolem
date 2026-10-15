@@ -43,6 +43,7 @@ cat > /output/startup-probe/repro-overlay.json <<'JSON'
   "/dosgolem/internal/machine/dpmi_mcb.go":"/project/tools/dpmi-mcb.go",
   "/dosgolem/internal/machine/dpmi_mcb_test.go":"/project/tools/dpmi-mcb_test.go",
   "/dosgolem/cmd/leprobe/main.go":"/project/tools/startup-probe.go",
+  "/dosgolem/cmd/leprobe/desktop_publisher.go":"/project/tools/desktop-publisher.go",
   "/dosgolem/cmd/leprobe/program.go":"/project/tools/program.go",
   "/dosgolem/cmd/leprobe/mark_trace.go":"/project/tools/mark-trace.go",
   "/dosgolem/cmd/leprobe/hd_publisher.go":"/project/tools/hd-publisher.go",

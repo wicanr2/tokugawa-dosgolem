@@ -506,3 +506,16 @@ Git 的補丁檔空白檢查曾把 unified diff context 前綴視為來源格式
 
 程式提交 e42ed9356d44059a9b3ef49c881eddb4ff2932e3 已推送 main，git ls-remote 與 GitHub tree API 核對一致。102 項目前來源與建置快照的 SHA-256 完全相同，十一份新增工具均已登記 AGENTS 入口且為 UID/GID 1000:1000。儲存庫仍為 PRIVATE，遠端 1050 份 assets/hd-b 檔案的子樹為 9de9713108cf662e0b2bb39e46b5ab7aec8c1561，tree 未截斷；沒有 original/ 或 workplace/ 進入版控。Issue #5 的進度已送出，標示獨立 MARK 驗證完成、完整啟動鏈仍待串接：
 https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6186670059
+
+## 2026-10-15：完整桌面啟動鏈實作及驗收
+
+- 前輪為實質進展，完成 MARK 原版執行及獨立 HD。依已確認範圍接續顯示選擇 → MARK → DX5；載入 spec-gated workflow、桌面試玩與文件職責，grilling 核對已有相同決定，沒有重新詢問。
+- 固定 Ebitengine 2.9.9 原始碼明示同一程序不得呼叫 RunGame 兩次。READY 契約先寫入 RESEARCH-LOG，再以同一二進位的 mark profile 作子程序；父程序確認原版正常退出後才執行 game profile。兩份 RAM 與虛擬時間獨立保存，沒有模擬 COMMAND.COM 或假造 EXEC 成功。
+- 預設在 MARK 前選擇一次；MARK 的最後 hd_enabled 帶進遊戲，遊戲保留既有功能列。關窗停止整個啟動器，錯誤與非正常退出停止；中斷會取消子程序。十一份既有 DX5 局部驗證器明示 publisher-intro=false，完整鏈驗證器使用預設值。
+- 凍結 103 項來源，二進位 SHA-256 baafa065d2f8b204dae538371ee9de617b2f53717a14ec5d9c54d3086ca2d859。四套件通過，研究入口 53.770 秒。正常 WM_DELETE_WINDOW 關閉模式選擇畫面已通過，MARK 0 步、無輸入轉送，DX5 未執行。兩種最後模式的完整鏈及首戰回歸仍在驗收，未先宣稱 CONFORMED。
+
+三模式驗收與獨立匯總均已通過，完整啟動鏈契約追加為 CONFORMED。兩條正常流程刻意在 MARK 改成另一種模式，遊戲確實沿用最後設定且沒有再詢問；各自然完成 MARK 15989208 步與遊戲 750M／390 事件。兩次 MARK 完整 RAM／十三欄、兩次遊戲完整 RAM／十五欄及完整 PCM 符合各自基準，十張實際 X11 與呈現相同；MARK 的版權區及功能列切換／還原的原版 proof 均保持。總表 startup-chain/verification-summary.json 的 SHA-256 為 1ad1539a0bca5c4eabd0d2ff0dfef099af235ed74a8359f0afd2c207fa074a72。MARK HD 與首戰 HD 已目視檢視。
+
+覆蓋盤點初輪因舊收據要求目前驗證器的 SHA-256 而失敗，屬工具版本核對問題。新增 publisher-intro=false 改變了十一份局部驗證器的原始碼；三份受影響收據改以已保存的完整快照核對當時雜湊，並列出 verification_tool_sources。沒有修改舊收據或放寬雜湊比對，乾淨重跑通過。唯一覆蓋清單的 RAINEND 現為 game_startup_integrated=true；其他十七項動畫消費端未列完成。
+
+原始 ZIP CRC、十二個檔案、唯讀與 UID/GID 於 2026-10-15T07:37:58Z 通過；807 PNG、163 提示詞及 596522181 indexed bytes 核對通過，圖片子樹未改。文件另載入 README 現況規範，更新唯一狀態表、待辦與穩定入口。103 項編譯輸入保持凍結，完整根沒有 root-owned 或 .md 目錄；正式 DX5.i64 雜湊不變，全部本批容器已移除。下一步依既有證據接剩餘動畫及特殊繪圖消費端；全遊戲 HD、桌面音訊與三平台封包仍未完成。提交與遠端核對隨後追加。

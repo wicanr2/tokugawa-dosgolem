@@ -48,7 +48,7 @@ def verify(root, project, missing):
     assert not verifier_path.exists()
     verifier_path.write_bytes(Path(__file__).read_bytes())
     (root / 'startup-probe').mkdir(exist_ok=True)
-    command = [str(root / 'tokugawa-desktop-prototype'), '-desktop', '-desktop-speed', '1', '-steps', '600000000',
+    command = [str(root / 'tokugawa-desktop-prototype'), '-desktop', "-publisher-intro=false", '-desktop-speed', '1', '-steps', '600000000',
                '-mouse-file', '/project/workplace/hd-prototype/catalog/remaining/source-boundary/menu-history/mouse.json',
                '-hd-battle-frame-proof']
     if missing:

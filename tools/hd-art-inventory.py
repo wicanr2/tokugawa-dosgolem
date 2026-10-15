@@ -15,6 +15,14 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def recorded_verifier(name, expected, snapshot):
+    path = PROJECT / 'tools' / name
+    if sha(path) != expected:
+        path = ROOT / snapshot
+    assert sha(path) == expected, (name, path, expected)
+    return {'tool': name, 'sha256': expected, 'source': str(path.relative_to(PROJECT))}
+
+
 def art_info(path, prompt):
     assert path.is_file() and prompt.is_file(), (path, prompt)
     with Image.open(path) as im:
@@ -31,6 +39,7 @@ def main():
     assert pillow_version == "9.4.0"
     output = Path("/output")
     assert output.stat().st_uid == 1000
+    verifier_sources = []
     decoded = json.loads((ROOT / "decoded/inventory.json").read_text())
     extraction = json.loads((ROOT / "kao/kao-extraction.json").read_text())
     selected = json.loads((ROOT / "kao/selected/manifest.json").read_text())
@@ -81,7 +90,8 @@ def main():
     if pending_runtime_proof_path.exists():
         pending_runtime_proof = json.loads(pending_runtime_proof_path.read_text())
         assert pending_runtime_proof['verified'] and pending_runtime_proof['runtime_profiles_sha256'] == sha(pending_runtime_path)
-        assert pending_runtime_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-remaining-runtime.py')
+        verifier_sources.append(recorded_verifier('verify-hd-remaining-runtime.py', pending_runtime_proof['tool_sha256'],
+                                                  'remaining/desktop-title/verify-hd-remaining-runtime.py'))
     static_profiles = {}
     for relative, tool in [('graphics/static/profiles.json', 'hd-background-prepare.py'),
                            ('graphics/static/logo/profiles.json', 'hd-logo-prepare.py')]:
@@ -95,7 +105,9 @@ def main():
     static_proof_path = ROOT/'graphics/static/verification-summary.json'
     static_proof = json.loads(static_proof_path.read_text()) if static_proof_path.exists() else None
     if static_proof:
-        assert static_proof['verified'] and static_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-background.py')
+        assert static_proof['verified']
+        verifier_sources.append(recorded_verifier('verify-hd-background.py', static_proof['tool_sha256'],
+                                                  'graphics/static/desktop-logo/palette/ready/verify-hd-background.py'))
         assert static_proof['profiles_sha256'] == sha(ROOT/'graphics/static/profiles.json')
         assert static_proof['logo_profiles_sha256'] == sha(ROOT/'graphics/static/logo/profiles.json')
         assert set(static_proof['reviewed_sources']) == set(static_profiles)
@@ -123,7 +135,9 @@ def main():
     prefix_runtime_path = ROOT/'remaining/partial-story/verification-summary.json'
     prefix_runtime = json.loads(prefix_runtime_path.read_text()) if prefix_runtime_path.exists() else None
     if prefix_runtime:
-        assert prefix_runtime['verified'] and prefix_runtime['tool_sha256'] == sha(PROJECT/'tools/verify-hd-prefix-runtime.py')
+        assert prefix_runtime['verified']
+        verifier_sources.append(recorded_verifier('verify-hd-prefix-runtime.py', prefix_runtime['tool_sha256'],
+                                                  'remaining/partial-story/desktop/source-snapshot/tools/verify-hd-prefix-runtime.py'))
         assert prefix_runtime['profiles_sha256'] == sha(prefix_story_path)
     if opening_proof:
         assert opening_proof['verified'] and opening_proof['tool_sha256'] == sha(PROJECT/'tools/verify-hd-opening-summary.py')
@@ -543,6 +557,17 @@ def main():
                               runtime_check={'summary_sha256': sha(publisher_proof_path),
                                              'scope': 'standalone MARK native entry, display, HD switching, fallback and exit',
                                              'game_startup_integrated': False})
+            chain_path = Path('/project/workplace/desktop-prototype/startup-chain/verification-summary.json')
+            if chain_path.exists():
+                chain = json.loads(chain_path.read_text())
+                assert chain['result'] == 'PASS' and chain['game_startup_integrated']
+                assert set(chain['normal_last_displays']) == {'original', 'hd'}
+                assert {item['mode'] for item in chain['cases']} == {'original', 'hd', 'cancel'}
+                pcx_record.update(runtime_status='default startup MARK HD and last display setting verified through DX5 first battle',
+                                  runtime_check={'summary_sha256': sha(chain_path),
+                                                 'standalone_summary_sha256': sha(publisher_proof_path),
+                                                 'scope': 'default selection, MARK original/HD, native exit, DX5 first battle and window close',
+                                                 'game_startup_integrated': True})
     records.append(pcx_record)
     runtime_tails = []
     tail_path = ROOT / 'remaining/source-boundary/OP-FULL-runtime/receipt.json'
@@ -601,7 +626,7 @@ def main():
               "whole_game_HD_complete": False,
               "count_limit": "resource counts do not count atlas tiles, animation frames or UI pieces; no completion percentage",
               "dat_sha256": decoded["dat_sha256"], "tool_sha256": sha(Path(__file__)), "pillow_version": pillow_version,
-              "counts": counts, "runtime_proof_sources": proof_sources, "records": records}
+              "counts": counts, "runtime_proof_sources": proof_sources, "verification_tool_sources": verifier_sources, "records": records}
     (output / "art-coverage.json").write_text(json.dumps(result, ensure_ascii=False, indent=2)+"\n")
     print(json.dumps(counts, ensure_ascii=False))
 
