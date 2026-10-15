@@ -740,7 +740,7 @@ func TestIntegrationADCSignExtendedImmediate(t *testing.T) {
 			}
 		}
 	}
-	for _, code := range [][]byte{{0x83, 0xd7}, {0x66, 0x83, 0xd7, 0}, {0x83, 0x17, 0}, {0x26, 0x83, 0xd7, 0}, {0xf3, 0x83, 0xd7, 0}} {
+	for _, code := range [][]byte{{0x83, 0xd7}, {0x66, 0x83, 0x17, 0}, {0x83, 0x17, 0}, {0x26, 0x83, 0xd7, 0}, {0xf3, 0x83, 0xd7, 0}} {
 		c := New(testBus(code))
 		c.R[EDI] = 0xabcdef12
 		before := c.R
@@ -2868,6 +2868,273 @@ func TestIntegrationWordAccumulatorAND(t *testing.T) {
 		c.R[EAX], c.EFlags = 0xabcd0001, IF|CF|OF
 		if c.Step() == nil || c.R[EAX] != 0xabcd0001 || c.EFlags != IF|CF|OF {
 			t.Fatal("unverified word AND form published state", code)
+		}
+	}
+}
+
+func TestIntegrationADCSmallImmediates(t *testing.T) {
+	wantFlags := func(left, right, carry uint32, width uint) uint32 {
+		mask, sign := uint32(1<<width)-1, uint32(1<<(width-1))
+		sum := uint64(left) + uint64(right) + uint64(carry)
+		value, flags := uint32(sum)&mask, uint32(IF|DF)
+		if sum > uint64(mask) {
+			flags |= CF
+		}
+		if value == 0 {
+			flags |= ZF
+		}
+		if value&sign != 0 {
+			flags |= SF
+		}
+		if bits.OnesCount8(byte(value))%2 == 0 {
+			flags |= PF
+		}
+		if (left&15)+(right&15)+carry > 15 {
+			flags |= AF
+		}
+		signedLeft, signedRight := int64(left), int64(right)
+		if left&sign != 0 {
+			signedLeft -= 1 << width
+		}
+		if right&sign != 0 {
+			signedRight -= 1 << width
+		}
+		signedSum := signedLeft + signedRight + int64(carry)
+		if signedSum < -int64(sign) || signedSum >= int64(sign) {
+			flags |= OF
+		}
+		return flags
+	}
+	for left := uint32(0); left < 256; left++ {
+		for right := uint32(0); right < 256; right++ {
+			for carry := uint32(0); carry < 2; carry++ {
+				c := New(testBus{0x14, byte(right)})
+				c.R = [8]uint32{0xabcdef00 | left, 17, 27, 37, 47, 57, 67, 77}
+				c.EFlags = IF | DF | AF | SF | ZF | PF | OF | carry
+				regs := c.R
+				regs[EAX] = 0xabcdef00 | uint32(byte(left+right+carry))
+				if err := c.Step(); err != nil || c.R != regs || c.EFlags != wantFlags(left, right, carry, 8) || c.EIP != 2 {
+					t.Fatal("ADC AL independent wide-integer oracle", left, right, carry, c.R, c.EFlags, err)
+				}
+			}
+		}
+	}
+	for reg := byte(0); reg < 8; reg++ {
+		for immediate := 0; immediate < 256; immediate++ {
+			for sample := uint32(0); sample < 64; sample++ {
+				left := uint32(uint16(sample*7919 + 32767))
+				right := uint32(uint16(int16(int8(immediate))))
+				for carry := uint32(0); carry < 2; carry++ {
+					c := New(testBus{0x66, 0x83, 0xd0 | reg, byte(immediate)})
+					for i := range c.R {
+						c.R[i] = 0xcafe0000 | uint32(i+1)
+					}
+					c.R[reg] = 0xcafe0000 | left
+					c.EFlags = IF | DF | AF | SF | ZF | PF | OF | carry
+					regs := c.R
+					regs[reg] = 0xcafe0000 | uint32(uint16(left+right+carry))
+					if err := c.Step(); err != nil || c.R != regs || c.EFlags != wantFlags(left, right, carry, 16) || c.EIP != 4 {
+						t.Fatal("ADC word independent wide-integer oracle", reg, immediate, sample, carry, c.R, c.EFlags, err)
+					}
+				}
+			}
+		}
+	}
+	for _, code := range [][]byte{
+		{0x14}, {0x66, 0x14, 0}, {0xf2, 0x14, 0}, {0xf3, 0x14, 0}, {0x3e, 0x14, 0},
+		{0x66, 0x83, 0xd0}, {0x66, 0x83, 0x10, 0}, {0xf2, 0x66, 0x83, 0xd0, 0},
+		{0xf3, 0x66, 0x83, 0xd0, 0}, {0x3e, 0x66, 0x83, 0xd0, 0},
+	} {
+		c := New(testBus(code))
+		c.R[EAX], c.EFlags = 0xabcdef01, IF|DF|CF|OF|AF
+		regs := c.R
+		if c.Step() == nil || c.R != regs || c.EFlags != IF|DF|CF|OF|AF {
+			t.Fatal("unverified or truncated ADC published state", code)
+		}
+	}
+}
+
+func TestIntegrationSHRMemoryImmediate8(t *testing.T) {
+	for _, form := range []struct {
+		code []byte
+		addr int
+	}{
+		{[]byte{0xc1, 0x68, 4}, 132},
+		{[]byte{0xc1, 0x6d, 0xfc}, 252},
+		{[]byte{0xc1, 0x6c, 0x8c, 0xfc}, 196},
+		{[]byte{0xc1, 0x2d, 68, 0, 0, 0}, 132},
+	} {
+		for immediate := 0; immediate < 256; immediate++ {
+			for sample := uint32(0); sample < 16; sample++ {
+				value := sample*2654435761 + 0x80000000
+				mem := testBus(make([]byte, 512))
+				copy(mem, append(append([]byte(nil), form.code...), byte(immediate)))
+				binary.LittleEndian.PutUint32(mem[form.addr:], value)
+				before := append([]byte(nil), mem...)
+				c := New(mem)
+				c.Seg[SegDS], c.Seg[SegSS] = 8, 16
+				c.SetDescriptor(8, Descriptor{Base: 64, Limit: 383, Writable: true})
+				c.SetDescriptor(16, Descriptor{Base: 128, Limit: 383, Writable: true})
+				c.R[EAX], c.R[EBP], c.R[ESP], c.R[ECX] = 64, 128, 64, 2
+				c.EFlags = IF | DF | CF | OF | AF | SF | ZF | PF
+				regs := c.R
+				ref := New(testBus{0xc1, 0xea, byte(immediate)})
+				ref.R[EDX], ref.EFlags = value, c.EFlags
+				if err := ref.Step(); err != nil {
+					t.Fatal(err)
+				}
+				undefined := uint32(0)
+				if immediate&31 != 0 {
+					undefined = AF
+					if immediate&31 != 1 {
+						undefined |= OF
+					}
+				}
+				if err := c.Step(); err != nil || c.R != regs || c.EFlags&^undefined != ref.EFlags&^undefined || c.EIP != uint32(len(form.code)+1) || binary.LittleEndian.Uint32(mem[form.addr:]) != ref.R[EDX] {
+					t.Fatal("C1 SHR memory/register differential", form, immediate, sample, c.EFlags, ref.EFlags, err)
+				}
+				for i := range mem {
+					if (i < form.addr || i >= form.addr+4) && mem[i] != before[i] {
+						t.Fatal("SHR changed a byte outside destination", i)
+					}
+				}
+			}
+		}
+	}
+	for _, v := range []struct{ value, count, result, flags, undefined uint32 }{
+		{1, 1, 0, CF | ZF | PF, AF},
+		{0x80000000, 1, 0x40000000, OF | PF, AF},
+		{0x80000003, 2, 0x20000000, CF | PF, AF | OF},
+		{0xffffffff, 31, 1, CF, AF | OF},
+	} {
+		mem := testBus(make([]byte, 128))
+		copy(mem, []byte{0xc1, 0x2d, 64, 0, 0, 0, byte(v.count)})
+		binary.LittleEndian.PutUint32(mem[64:], v.value)
+		c := New(mem)
+		c.Seg[SegDS] = 8
+		c.SetDescriptor(8, Descriptor{Limit: 127, Writable: true})
+		c.EFlags = IF | DF
+		if err := c.Step(); err != nil || binary.LittleEndian.Uint32(mem[64:]) != v.result || c.EFlags&^v.undefined != IF|DF|v.flags {
+			t.Fatal("Intel SHR boundary", v, c.EFlags, err)
+		}
+	}
+	for _, v := range []struct {
+		code     []byte
+		limit    uint32
+		writable bool
+	}{
+		{[]byte{0xc1, 0x6d, 0xfc, 2}, 63, false},
+		{[]byte{0xc1, 0x6d, 0xfc, 0}, 63, false},
+		{[]byte{0xc1, 0x6d, 0xfc, 2}, 62, true},
+		{[]byte{0x66, 0xc1, 0x6d, 0xfc, 2}, 63, true},
+		{[]byte{0xf2, 0xc1, 0x6d, 0xfc, 2}, 63, true},
+		{[]byte{0xf3, 0xc1, 0x6d, 0xfc, 2}, 63, true},
+		{[]byte{0x36, 0xc1, 0x6d, 0xfc, 2}, 63, true},
+		{[]byte{0x67, 0xc1, 0x6d, 0xfc, 2}, 63, true},
+		{[]byte{0xd1, 0x6d, 0xfc}, 63, true},
+		{[]byte{0xc1, 0x65, 0xfc, 2}, 63, true},
+		{[]byte{0xc1, 0x7d, 0xfc, 2}, 63, true},
+	} {
+		mem := testBus(make([]byte, 256))
+		copy(mem, v.code)
+		binary.LittleEndian.PutUint32(mem[188:], 0x12345678)
+		before := append([]byte(nil), mem...)
+		c := New(mem)
+		c.Seg[SegSS] = 8
+		c.SetDescriptor(8, Descriptor{Base: 128, Limit: v.limit, Writable: v.writable})
+		c.R[EBP], c.EFlags = 64, IF|DF|CF|OF|AF
+		regs := c.R
+		if c.Step() == nil || c.R != regs || c.EFlags != IF|DF|CF|OF|AF {
+			t.Fatal("unverified or invalid SHR memory form published state", v)
+		}
+		for i := range mem {
+			if mem[i] != before[i] {
+				t.Fatal("rejected SHR memory form wrote a byte", v, i)
+			}
+		}
+	}
+}
+
+func TestIntegrationXORMemoryImmediate8(t *testing.T) {
+	for _, form := range []struct {
+		code []byte
+		addr int
+	}{
+		{[]byte{0x83, 0x70, 4}, 132},
+		{[]byte{0x83, 0x75, 0xfc}, 252},
+		{[]byte{0x83, 0x74, 0x8c, 0xfc}, 196},
+		{[]byte{0x83, 0x35, 68, 0, 0, 0}, 132},
+	} {
+		for immediate := 0; immediate < 256; immediate++ {
+			for sample := uint32(0); sample < 16; sample++ {
+				value := sample*2654435761 + 0x80000000
+				mem := testBus(make([]byte, 512))
+				copy(mem, append(append([]byte(nil), form.code...), byte(immediate)))
+				binary.LittleEndian.PutUint32(mem[form.addr:], value)
+				before := append([]byte(nil), mem...)
+				c := New(mem)
+				c.Seg[SegDS], c.Seg[SegSS] = 8, 16
+				c.SetDescriptor(8, Descriptor{Base: 64, Limit: 383, Writable: true})
+				c.SetDescriptor(16, Descriptor{Base: 128, Limit: 383, Writable: true})
+				c.R[EAX], c.R[EBP], c.R[ESP], c.R[ECX] = 64, 128, 64, 2
+				c.EFlags = IF | DF | CF | OF | AF | SF | ZF | PF
+				regs := c.R
+				ref := New(testBus{0x83, 0xf2, byte(immediate)})
+				ref.R[EDX], ref.EFlags = value, c.EFlags
+				if err := ref.Step(); err != nil {
+					t.Fatal(err)
+				}
+				if err := c.Step(); err != nil || c.R != regs || c.EFlags&^AF != ref.EFlags&^AF || c.EIP != uint32(len(form.code)+1) || binary.LittleEndian.Uint32(mem[form.addr:]) != ref.R[EDX] {
+					t.Fatal("83 XOR memory/register differential", form, immediate, sample, c.EFlags, ref.EFlags, err)
+				}
+				for i := range mem {
+					if (i < form.addr || i >= form.addr+4) && mem[i] != before[i] {
+						t.Fatal("XOR changed a byte outside destination", i)
+					}
+				}
+			}
+		}
+	}
+	for _, v := range []struct{ value, immediate, result, flags uint32 }{
+		{0, 0x80, 0xffffff80, SF}, {0xffffffff, 0xff, 0, ZF | PF},
+		{0x80000000, 0, 0x80000000, SF | PF},
+	} {
+		mem := testBus(make([]byte, 128))
+		copy(mem, []byte{0x83, 0x35, 64, 0, 0, 0, byte(v.immediate)})
+		binary.LittleEndian.PutUint32(mem[64:], v.value)
+		c := New(mem)
+		c.Seg[SegDS] = 8
+		c.SetDescriptor(8, Descriptor{Limit: 127, Writable: true})
+		c.EFlags = IF | DF | CF | OF
+		if err := c.Step(); err != nil || binary.LittleEndian.Uint32(mem[64:]) != v.result || c.EFlags&^AF != IF|DF|v.flags {
+			t.Fatal("Intel sign-extended XOR boundary", v, c.EFlags, err)
+		}
+	}
+	for _, v := range []struct {
+		prefix   byte
+		limit    uint32
+		writable bool
+	}{{0, 63, false}, {0, 62, true}, {0x66, 63, true}, {0xf2, 63, true}, {0xf3, 63, true}, {0x36, 63, true}, {0x67, 63, true}} {
+		mem := testBus(make([]byte, 256))
+		code := []byte{0x83, 0x75, 0xfc, 1}
+		if v.prefix != 0 {
+			code = append([]byte{v.prefix}, code...)
+		}
+		copy(mem, code)
+		binary.LittleEndian.PutUint32(mem[188:], 0x12345678)
+		before := append([]byte(nil), mem...)
+		c := New(mem)
+		c.Seg[SegSS] = 8
+		c.SetDescriptor(8, Descriptor{Base: 128, Limit: v.limit, Writable: v.writable})
+		c.R[EBP], c.EFlags = 64, IF|DF|CF|OF|AF
+		regs := c.R
+		if c.Step() == nil || c.R != regs || c.EFlags != IF|DF|CF|OF|AF {
+			t.Fatal("unverified or invalid XOR memory form published state", v)
+		}
+		for i := range mem {
+			if mem[i] != before[i] {
+				t.Fatal("rejected XOR memory form wrote a byte", v, i)
+			}
 		}
 	}
 }

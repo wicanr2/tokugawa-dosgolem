@@ -12,6 +12,137 @@ import (
 	"testing"
 )
 
+func graphicsCompositeRAM(t *testing.T, profile graphicsSourceProfile, indexed []byte) []byte {
+	t.Helper()
+	mem := make([]byte, 0x200000)
+	binary.LittleEndian.PutUint32(mem[0x5b1b8:], uint32(profile.Width/8))
+	binary.LittleEndian.PutUint32(mem[0x5b1b4:], uint32(profile.Height))
+	for bit, global := range []int{0x38c00, 0x38bf8, 0x38c04, 0x38bfc} {
+		base, stride := 0x100000+bit*0x20000, profile.Width/8
+		binary.LittleEndian.PutUint32(mem[global:], uint32(base))
+		plane := make([]byte, stride*profile.Height)
+		for i, value := range indexed {
+			plane[i/8] |= (value >> uint(bit) & 1) << uint(7-i%8)
+		}
+		if fmt.Sprintf("%x", sha256.Sum256(plane)) != profile.Planes[bit] {
+			t.Fatal("actual source planes differ", profile.Name, bit)
+		}
+		for y := 0; y < profile.Height; y++ {
+			copy(mem[base+y*80:], plane[y*stride:(y+1)*stride])
+		}
+	}
+	return mem
+}
+
+func TestHDGraphicsCompositeActualSourcesAndVisibility(t *testing.T) {
+	root := "/project/workplace/hd-prototype/catalog/remaining/consumers/battle/r14/native-turn3/"
+	data, err := os.ReadFile(root + "receipt.json")
+	if err != nil {
+		t.Skip("local original combat receipt unavailable")
+	}
+	var receipt struct {
+		Composite struct{ Records []compositeRecord } `json:"composite_draw_trace"`
+	}
+	if json.Unmarshal(data, &receipt) != nil || len(receipt.Composite.Records) != 12 {
+		t.Fatal("four original combat samples required")
+	}
+	readBlob := func(path string) []byte {
+		blob, err := os.ReadFile(root + path[len("/output/"):])
+		if err != nil {
+			t.Fatal(err)
+		}
+		return blob
+	}
+	first := receipt.Composite.Records[0]
+	frame := append([]byte(nil), readBlob(first.BeforePath)...)
+	state := hdGraphicsState{Draws: []graphicsDrawRecord{{Name: "BATTLE02.OZM", SourceRect: image.Rect(0, 0, 640, 400), DestRect: image.Rect(0, 0, 640, 400), Verified: true, ExpectedSHA: first.BeforeSHA}}}
+	owners := bytes.Repeat([]byte{1}, 640*400)
+	profiles := map[string]hdGraphicsProfile{}
+	for _, profile := range hdGraphicsProfiles {
+		profiles[profile.Source.Name] = profile
+	}
+	for sequence, record := range receipt.Composite.Records[:3] {
+		profile := profiles[record.Source]
+		indexed := readBlob(record.SourcePath)
+		mem := graphicsCompositeRAM(t, profile.Source, indexed)
+		binary.LittleEndian.PutUint32(mem[record.Stack:], record.Return)
+		for i, arg := range record.Args {
+			binary.LittleEndian.PutUint32(mem[record.Stack+4+uint32(i*4):], arg)
+		}
+		before, after := readBlob(record.BeforePath), readBlob(record.AfterPath)
+		for y := 0; y < record.DestRect.Dy(); y++ {
+			copy(frame[(record.DestRect.Min.Y+y)*640+record.DestRect.Min.X:], before[y*record.DestRect.Dx():(y+1)*record.DestRect.Dx()])
+		}
+		snapshot := func() (nativeSnapshot, error) { return nativeSnapshot{Indexed: frame, MaxColor: 15}, nil }
+		ram := sha256.Sum256(mem)
+		state.observe(record.BeginStep, record.Entry, record.Stack, mem, snapshot)
+		state.observe(record.BeginStep+1, record.Return, record.Stack, mem, snapshot)
+		if state.Composite == nil || state.Completed != uint64(sequence) {
+			t.Fatal("incorrect return accepted")
+		}
+		for y := 0; y < record.DestRect.Dy(); y++ {
+			copy(frame[(record.DestRect.Min.Y+y)*640+record.DestRect.Min.X:], after[y*record.DestRect.Dx():(y+1)*record.DestRect.Dx()])
+		}
+		state.observe(record.EndStep, record.Return, record.Stack+4, mem, snapshot)
+		if state.Composite != nil || state.Completed != uint64(sequence+1) || sha256.Sum256(mem) != ram || len(state.Draws) != sequence+2 {
+			t.Fatal("actual composite return, read-only state or fragment limit", sequence, len(state.Draws), graphicsFragmentCount(state.Draws))
+		}
+		selected := graphicsCrop(indexed, profile.Source.Width, record.SourceRect)
+		for i, value := range selected {
+			x, y := record.DestRect.Min.X+i%record.DestRect.Dx(), record.DestRect.Min.Y+i/record.DestRect.Dx()
+			if value != 0 {
+				owners[y*640+x] = 0
+				if value == after[i] && !(record.Source == "BATTLE.OZM" && graphicsBattleUnit(image.Pt(x, y))) {
+					owners[y*640+x] = byte(sequence + 2)
+				}
+			}
+		}
+		actual := make([]byte, 640*400)
+		for layer, draw := range state.Draws {
+			visible := draw.VisibleRects
+			if visible == nil {
+				visible = []image.Rectangle{draw.DestRect}
+			}
+			for _, rect := range visible {
+				for y := rect.Min.Y; y < rect.Max.Y; y++ {
+					for x := rect.Min.X; x < rect.Max.X; x++ {
+						if actual[y*640+x] != 0 {
+							t.Fatal("overlapping composite ownership", x, y)
+						}
+						actual[y*640+x] = byte(layer + 1)
+					}
+				}
+			}
+		}
+		if !bytes.Equal(actual, owners) || graphicsFragmentCount(state.Draws) > 256 {
+			t.Fatal("native source-zero or mixed-OR visibility differs")
+		}
+	}
+	// 缺圖不改已撤銷的較早圖層；後續全畫面原版複製必須撤銷合成。
+	state.observe(999999999, 0x1c084, 0, make([]byte, 32), nil)
+	if len(state.Draws) != 0 || state.Composite != nil {
+		t.Fatal("full copy resurrected an old composite")
+	}
+}
+
+func TestHDGraphicsMaskBoundsEmptyAndFragmentLimit(t *testing.T) {
+	if rects, ok := graphicsMaskRectangles(make([]bool, 16), image.Rect(0, 0, 4, 4)); !ok || rects == nil || len(rects) != 0 {
+		t.Fatal("empty mask became a full source")
+	}
+	mask := make([]bool, 640*400)
+	for y := 0; y < 400; y++ {
+		for x := 0; x < 640; x++ {
+			mask[y*640+x] = (x+y)&1 == 0
+		}
+	}
+	if _, ok := graphicsMaskRectangles(mask, image.Rect(0, 0, 640, 400)); ok {
+		t.Fatal("unbounded mask fragments accepted")
+	}
+	if _, ok := graphicsMaskRectangles(nil, image.Rect(-1, 0, 2, 2)); ok {
+		t.Fatal("invalid mask geometry accepted")
+	}
+}
+
 func TestHDGraphicsLogoUsesOnlyObservedSteadyPalette(t *testing.T) {
 	data, err := os.ReadFile("/project/workplace/hd-prototype/catalog/graphics/static/palette-probe/palette-captures.json")
 	if err != nil {

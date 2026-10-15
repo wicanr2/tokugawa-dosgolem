@@ -28,6 +28,7 @@ type compositeRecord struct {
 type compositePending struct {
 	Record   compositeRecord
 	Expected []byte
+	Selected []byte
 }
 
 type compositeProbe struct {
@@ -180,6 +181,6 @@ func (t *compositeProbe) observe(step int, eip, esp uint32, mem []byte, snapshot
 	if err != nil {
 		return err
 	}
-	t.Pending = &compositePending{Record: r, Expected: expected}
+	t.Pending = &compositePending{Record: r, Expected: expected, Selected: append([]byte(nil), selected...)}
 	return nil
 }

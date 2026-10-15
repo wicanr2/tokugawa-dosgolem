@@ -33,6 +33,7 @@ func (b instructionProbeBus) Write8(addr uint32, value byte) error {
 
 func main() {
 	cpuSource := flag.String("cpu-source", "", "exact CPU source used by the overlay")
+	rowsPath := flag.String("rows", "/output/range-1f400-1f800.json", "bounded IDA instruction rows for synthetic screening")
 	flag.Parse()
 	if *cpuSource == "" {
 		panic("cpu-source is required")
@@ -49,7 +50,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	data, err := os.ReadFile("/output/range-1f400-1f800.json")
+	data, err := os.ReadFile(*rowsPath)
 	if err != nil {
 		panic(err)
 	}
@@ -63,6 +64,9 @@ func main() {
 	}
 	if err = json.Unmarshal(data, &inventory); err != nil {
 		panic(err)
+	}
+	if len(inventory.Rows) == 0 || len(inventory.Rows) > 8192 {
+		panic("IDA row count outside bounded screening limit")
 	}
 	var failures []map[string]any
 	bus := make(instructionProbeBus, 2<<20)
@@ -98,6 +102,7 @@ func main() {
 	report := map[string]any{
 		"scope":        "synthetic instruction-form screening; not a normal game path or semantic proof",
 		"input_sha256": inputSHA, "go_version": runtime.Version(), "IDA_rows_sha256": fmt.Sprintf("%x", sha256.Sum256(data)),
+		"IDA_rows_path":            *rowsPath,
 		"IDA_loaded_rows_verified": len(inventory.Rows), "synthetic_instructions_checked": checked, "failures": failures,
 		"dosgolem_head": "a9714ebdab2ad6b529f81225472680f2b11f2842",
 	}

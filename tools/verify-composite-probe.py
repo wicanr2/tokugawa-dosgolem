@@ -11,10 +11,14 @@ p = argparse.ArgumentParser()
 p.add_argument('--control-only', action='store_true')
 p.add_argument('--harness-close-only', action='store_true')
 p.add_argument('--native-only', action='store_true')
+p.add_argument('--artifact-root', type=Path)
+p.add_argument('--prefix-reference', type=Path)
 p.add_argument('--source-root', type=Path, default=Path('/project'))
 args = p.parse_args()
 root, project = Path('/output'), Path('/project')
+artifacts = args.artifact_root or root
 assert root.stat().st_uid == 1000
+assert args.artifact_root is None or args.native_only, '--artifact-root is only supported for native receipts'
 
 
 def sha(path):
@@ -26,7 +30,7 @@ def read(path):
 
 
 def local(path):
-    return root / Path(path).relative_to('/output')
+    return artifacts / Path(path).relative_to('/output')
 
 
 def rect(value):
@@ -104,31 +108,34 @@ if args.native_only:
     for item in manifest['files']:
         assert sha(manifest_path.parent / 'game' / item['path']) == item['sha256']
     schedule = read(root / 'player-path.json')
-    earlier = read(project / 'workplace/hd-prototype/catalog/remaining/consumers/battle/r8/native-turn/receipt.json')
-    assert schedule[:19] == earlier['mouse_input_schedule'] and len(schedule) >= 19
+    prefix_reference = args.prefix_reference or project / 'workplace/hd-prototype/catalog/remaining/consumers/battle/r8/native-turn/receipt.json'
+    earlier = read(prefix_reference)
+    prefix_count = len(earlier['mouse_input_schedule'])
+    assert prefix_count in [9, 19] and schedule[:prefix_count] == earlier['mouse_input_schedule'] and len(schedule) >= prefix_count
     assert r['mouse_input_schedule'] == schedule and len(r['mouse_input_events']) == len(schedule)
-    assert r['mouse_input_events'][:19] == earlier['mouse_input_events']
+    assert r['mouse_input_events'][:prefix_count] == earlier['mouse_input_events']
     assert r['input_boundary_frames'][:len(earlier['input_boundary_frames'])] == earlier['input_boundary_frames']
     assert all(event['actual_step'] == request['step'] for event, request in zip(r['mouse_input_events'], schedule))
     assert r['input_sha256'] == earlier['input_sha256'] == '2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a'
     assert r['integration_input_sha256'] == sources
-    assert r['cpu_source_sha256'] == sha(root / 'engine/internal/cpu386/cpu.go')
+    assert r['cpu_source_sha256'] == sha(artifacts / 'engine/internal/cpu386/cpu.go')
     assert r['original_read_only'] and r['fd2_startup_calls'] == r['native_runtime_instructions_skipped'] == 0
     assert r['successful_steps'] == r['instruction_budget'] > earlier['successful_steps']
     assert r['stop'] == 'instruction_budget' and r['composite_diagnostic_enabled'] and not r['desktop_script_handoff']
-    assert (root / 'startup-memory.bin').stat().st_size == r['memory_bytes']
-    frame = root / 'startup-probe' / Path(r['frame']['path']).name
+    assert (artifacts / 'startup-memory.bin').stat().st_size == r['memory_bytes']
+    frame = artifacts / 'startup-probe' / Path(r['frame']['path']).name
     assert sha(frame) == r['frame']['png_sha256']
     verified, rejected = verify_records(r)
     report = dict(result='PASS' if verified else 'INCOMPLETE', native_execution='PASS',
                   scope='ordinary original-game save/load and turn inputs; no HD presentation or whole-game claim',
                   HD_rendering_integrated=False, sources_verified=sorted({v['Source'] for v in verified}),
                   source_count=len(sources), steps=r['successful_steps'], ordinary_mouse_events=len(schedule),
-                  initial_input_prefix_equal=19, input_manifest_sha256=sha(manifest_path),
+                  initial_input_prefix_equal=prefix_count, prefix_reference_sha256=sha(prefix_reference),
+                  input_manifest_sha256=sha(manifest_path),
                   saved_dat_sha256=data['saved_dat_sha256'], native_composites=verified,
                   rejected_observations=rejected, dropped_events=r['composite_draw_trace']['dropped_events'],
                   normal_opaque_sources=sorted({d['resource'] for d in r['graphics_draw_trace'].get('records') or [] if d['verified']}),
-                  receipt_sha256=sha(root / 'receipt.json'), ram_sha256=sha(root / 'startup-memory.bin'),
+                  receipt_sha256=sha(root / 'receipt.json'), ram_sha256=sha(artifacts / 'startup-memory.bin'),
                   input_mouse_sha256=sha(root / 'player-path.json'), binary_sha256=sha(root / 'tokugawa-headless-probe'),
                   frame_sha256=sha(frame), tool_sha256=sha(Path(__file__)))
     (root / 'verification-summary.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')

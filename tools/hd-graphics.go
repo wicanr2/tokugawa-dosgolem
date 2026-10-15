@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"image"
+	"sort"
 )
 
 type hdGraphicsState struct {
@@ -12,6 +13,180 @@ type hdGraphicsState struct {
 	Pending   *graphicsPending     `json:"-"`
 	Completed uint64               `json:"completed_returns"`
 	Shift     *openingShiftState   `json:"-"`
+	Composite *compositePending    `json:"-"`
+}
+
+// 合併相同逐列區間；空遮罩保持非 nil，避免被解讀成完整矩形。
+func graphicsMaskRectangles(mask []bool, rect image.Rectangle) ([]image.Rectangle, bool) {
+	if rect.Empty() || !rect.In(image.Rect(0, 0, 640, 400)) || len(mask) != rect.Dx()*rect.Dy() {
+		return nil, false
+	}
+	type span struct{ left, right int }
+	active := map[span]image.Rectangle{}
+	result := []image.Rectangle{}
+	for y := rect.Min.Y; y < rect.Max.Y; y++ {
+		next := map[span]image.Rectangle{}
+		for x := rect.Min.X; x < rect.Max.X; {
+			if !mask[(y-rect.Min.Y)*rect.Dx()+x-rect.Min.X] {
+				x++
+				continue
+			}
+			left := x
+			for x < rect.Max.X && mask[(y-rect.Min.Y)*rect.Dx()+x-rect.Min.X] {
+				x++
+			}
+			key := span{left, x}
+			r, ok := active[key]
+			if !ok {
+				r = image.Rect(left, y, x, y)
+			}
+			r.Max.Y = y + 1
+			next[key] = r
+		}
+		for key, r := range active {
+			if _, ok := next[key]; !ok {
+				result = append(result, r)
+			}
+		}
+		if len(result)+len(next) > 256 {
+			return nil, false
+		}
+		active = next
+	}
+	for _, r := range active {
+		result = append(result, r)
+	}
+	sort.Slice(result, func(i, j int) bool {
+		a, b := result[i], result[j]
+		if a.Min.Y != b.Min.Y {
+			return a.Min.Y < b.Min.Y
+		}
+		if a.Min.X != b.Min.X {
+			return a.Min.X < b.Min.X
+		}
+		if a.Max.Y != b.Max.Y {
+			return a.Max.Y < b.Max.Y
+		}
+		return a.Max.X < b.Max.X
+	})
+	return result, true
+}
+
+func graphicsCompositeSource(entry uint32, name string) bool {
+	return entry == 0x1c291 && name == "BATTLE.OZM" || entry == 0x1c35b && (name == "JIMEN_0.OZM" || name == "JIMEN_1.OZM")
+}
+
+func graphicsBattleUnit(point image.Point) bool {
+	return point.In(image.Rect(240, 56, 288, 112)) || point.In(image.Rect(400, 56, 448, 112))
+}
+
+// 正常交鋒的數值及姓名區；單位縮圖另保留整區，不能靠背景差分猜輪廓。
+func graphicsCompositeForeground(draw graphicsDrawRecord, point image.Point) bool {
+	return draw.Kind == "or_full" && draw.Name == "BATTLE.OZM" &&
+		(point.In(image.Rect(176, 52, 464, 148)) || point.In(image.Rect(24, 170, 136, 216)) || point.In(image.Rect(504, 170, 616, 216)))
+}
+
+func graphicsCompositeOcclude(draw graphicsDrawRecord, source []byte, destination image.Rectangle) (graphicsDrawRecord, bool) {
+	if draw.DestRect.Empty() || !draw.DestRect.In(image.Rect(0, 0, 640, 400)) || len(source) != destination.Dx()*destination.Dy() {
+		return draw, false
+	}
+	visible := draw.VisibleRects
+	if visible == nil {
+		visible = []image.Rectangle{draw.DestRect}
+	}
+	mask := make([]bool, draw.DestRect.Dx()*draw.DestRect.Dy())
+	for _, rect := range visible {
+		if rect.Empty() || !rect.In(draw.DestRect) {
+			return draw, false
+		}
+		for y := rect.Min.Y; y < rect.Max.Y; y++ {
+			for x := rect.Min.X; x < rect.Max.X; x++ {
+				mask[(y-draw.DestRect.Min.Y)*draw.DestRect.Dx()+x-draw.DestRect.Min.X] = true
+			}
+		}
+	}
+	cut := destination.Intersect(draw.DestRect)
+	for y := cut.Min.Y; y < cut.Max.Y; y++ {
+		for x := cut.Min.X; x < cut.Max.X; x++ {
+			if source[(y-destination.Min.Y)*destination.Dx()+x-destination.Min.X] != 0 {
+				mask[(y-draw.DestRect.Min.Y)*draw.DestRect.Dx()+x-draw.DestRect.Min.X] = false
+			}
+		}
+	}
+	var ok bool
+	draw.VisibleRects, ok = graphicsMaskRectangles(mask, draw.DestRect)
+	return draw, ok
+}
+
+func (h *hdGraphicsState) observeComposite(step int, eip, esp uint32, mem []byte, snapshot func() (nativeSnapshot, error)) {
+	entry := eip
+	previous := h.Composite
+	if eip != 0x1c291 && eip != 0x1c35b && previous != nil {
+		entry = previous.Record.Entry
+	}
+	var profiles []graphicsSourceProfile
+	for _, profile := range hdGraphicsSources {
+		if graphicsCompositeSource(entry, profile.Name) {
+			profiles = append(profiles, profile)
+		}
+	}
+	trace := compositeProbe{Profiles: profiles, Pending: previous}
+	if err := trace.observe(step, eip, esp, mem, snapshot); err != nil {
+		h.Draws, h.Composite = nil, nil
+		return
+	}
+	h.Composite = trace.Pending
+	if eip == 0x1c291 || eip == 0x1c35b {
+		h.Pending, h.Shift = nil, nil
+		if h.Composite == nil {
+			h.Draws = nil
+			return
+		}
+		keep := []graphicsDrawRecord{}
+		for _, draw := range h.Draws {
+			masked, ok := graphicsCompositeOcclude(draw, h.Composite.Selected, h.Composite.Record.DestRect)
+			if !ok {
+				h.Draws = nil
+				return
+			}
+			if len(masked.VisibleRects) > 0 {
+				keep = append(keep, masked)
+			}
+		}
+		h.Draws = keep
+		if graphicsFragmentCount(h.Draws) > 256 {
+			h.Draws = nil
+		}
+		return
+	}
+	if previous == nil || len(trace.Records) != 1 || !trace.Records[0].Verified {
+		h.Draws = nil
+		return
+	}
+	r := trace.Records[0]
+	mask := make([]bool, len(previous.Selected))
+	for i, value := range previous.Selected {
+		point := image.Pt(r.DestRect.Min.X+i%r.DestRect.Dx(), r.DestRect.Min.Y+i/r.DestRect.Dx())
+		mask[i] = value != 0 && value == previous.Expected[i] && !(r.Source == "BATTLE.OZM" && graphicsBattleUnit(point))
+	}
+	visible, ok := graphicsMaskRectangles(mask, r.DestRect)
+	if !ok {
+		h.Draws = nil
+		return
+	}
+	draw := graphicsDrawRecord{Name: r.Source, Kind: r.Kind, BeginStep: r.BeginStep, EndStep: r.EndStep,
+		Return: r.Return, Stack: r.Stack, SourceRect: r.SourceRect, DestRect: r.DestRect,
+		ExpectedSHA: r.ExpectedSHA, ActualSHA: r.ActualSHA, Verified: true, VisibleRects: visible,
+		SourceCropSHA: fmt.Sprintf("%x", sha256.Sum256(previous.Selected)), CompositeSourceSHA: r.SourceSHA}
+	copy(draw.Args[:], r.Args[:])
+	if len(h.Draws) == 64 {
+		h.Draws = h.Draws[1:]
+	}
+	h.Draws = append(h.Draws, draw)
+	if graphicsFragmentCount(h.Draws) > 256 {
+		h.Draws = nil
+	}
+	h.Completed++
 }
 
 // 只扣除後畫的不透明矩形，原始繪圖參數與來源／目的矩形仍保留。
@@ -93,12 +268,18 @@ func graphicsDestination(esp uint32, mem []byte) (image.Rectangle, bool) {
 
 // 只觀測原版來源及自然返回，所有圖像替換留在 host 畫布。
 func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapshot func() (nativeSnapshot, error)) {
+	compositeReturn := h.Composite != nil && eip == h.Composite.Record.Return && uint64(esp) == uint64(h.Composite.Record.Stack)+4
+	if eip == 0x1c291 || eip == 0x1c35b || compositeReturn {
+		h.observeComposite(step, eip, esp, mem, snapshot)
+		return
+	}
 	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14 || openingPartialEntry(eip) || openingShiftEntry(eip)
 	returned := h.Pending != nil && eip == h.Pending.Record.Return && uint64(esp) == uint64(h.Pending.Record.Stack)+4
 	if !entry && !returned {
 		return
 	}
 	if entry {
+		h.Composite = nil
 		if h.Pending != nil && h.Pending.Shift != nil {
 			h.Shift = nil
 		}
@@ -254,7 +435,19 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 		return r
 	}
 	expected := graphicsCrop(p.Source, p.Profile.Source.Width, draw.SourceRect)
-	if expected == nil || fmt.Sprintf("%x", sha256.Sum256(expected)) != draw.ExpectedSHA {
+	sourceCropSHA := draw.ExpectedSHA
+	composite := draw.Kind == "or_full" || draw.Kind == "masked_rect"
+	if composite {
+		entry := uint32(0x1c291)
+		if draw.Kind == "masked_rect" {
+			entry = 0x1c35b
+		}
+		if !graphicsCompositeSource(entry, draw.Name) || draw.ExpectedSHA != draw.ActualSHA || draw.CompositeSourceSHA != p.Profile.IndicesSHA || draw.SourceCropSHA == "" {
+			return r
+		}
+		sourceCropSHA = draw.SourceCropSHA
+	}
+	if expected == nil || fmt.Sprintf("%x", sha256.Sum256(expected)) != sourceCropSHA {
 		return r
 	}
 	r.Mode = "fallback_palette"
@@ -312,7 +505,20 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 	for _, f := range fragments {
 		src := f.Add(draw.SourceRect.Min.Sub(draw.DestRect.Min))
 		want, actual := graphicsCrop(p.Source, p.Profile.Source.Width, src), graphicsCrop(s.Indexed, 640, f)
-		if len(actual) != len(want) || fmt.Sprintf("%x", sha256.Sum256(actual)) != fmt.Sprintf("%x", sha256.Sum256(want)) {
+		if len(actual) != len(want) {
+			return r
+		}
+		if composite {
+			for i, value := range want {
+				point := image.Pt(f.Min.X+i%f.Dx(), f.Min.Y+i/f.Dx())
+				if value == 0 || draw.Name == "BATTLE.OZM" && graphicsBattleUnit(point) {
+					return r
+				}
+				if actual[i] != value && !graphicsCompositeForeground(draw, point) {
+					return r
+				}
+			}
+		} else if fmt.Sprintf("%x", sha256.Sum256(actual)) != fmt.Sprintf("%x", sha256.Sum256(want)) {
 			return r
 		}
 	}
@@ -321,6 +527,10 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 		for y := 0; y < f.Dy(); y++ {
 			for x := 0; x < f.Dx(); x++ {
 				preserved := p.preserves(src.Min.X+x, src.Min.Y+y)
+				point := image.Pt(f.Min.X+x, f.Min.Y+y)
+				if composite && graphicsCompositeForeground(draw, point) && s.Indexed[point.Y*640+point.X] != p.Source[(src.Min.Y+y)*p.Profile.Source.Width+src.Min.X+x] {
+					preserved = true
+				}
 				if preserved {
 					r.PreservedNative++
 				} else {

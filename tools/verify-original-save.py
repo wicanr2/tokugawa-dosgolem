@@ -5,7 +5,7 @@ import json
 import os
 from pathlib import Path
 import sys
-from PIL import Image
+from PIL import Image, ImageChops
 
 assert Path('/.dockerenv').exists() and os.getuid() == 1000
 root, project = Path('/output'), Path('/project')
@@ -13,9 +13,57 @@ assert root.stat().st_uid == 1000
 parser = argparse.ArgumentParser()
 parser.add_argument('--source-root', type=Path, default=project)
 parser.add_argument('--desktop', type=Path)
+parser.add_argument('--imported', action='store_true')
 args = parser.parse_args()
 read = lambda p: json.loads(p.read_text())
 sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+if args.imported:
+    data = read(root / 'input-data.json')
+    manifest_path = project / data['manifest_project_path']
+    manifest = read(manifest_path)
+    assert sha(manifest_path) == data['manifest_sha256']
+    assert manifest['classification'] == 'original program data plus original-game save; not downloaded baseline DAT'
+    assert manifest['saved_dat_sha256'] == data['saved_dat_sha256']
+    assert manifest['unchanged_resources'] == 200
+    assert len(manifest['changed_resources_from_download']) == 1
+    assert manifest['changed_resources_from_download'][0]['resource'] == 'I003.SAV'
+    for item in manifest['files']:
+        assert sha(manifest_path.parent / 'game' / item['path']) == item['sha256']
+    sources, receipt = read(root / 'build-sources.json'), read(root / 'receipt.json')
+    assert receipt['integration_input_sha256'] == sources and len(sources) == 106
+    assert all(sha(args.source_root / name) == digest for name, digest in sources.items())
+    assert receipt['successful_steps'] == 140000000 and receipt['stop'] == 'instruction_budget'
+    assert receipt['fd2_startup_calls'] == receipt['native_runtime_instructions_skipped'] == 0
+    assert receipt['input_sha256'] == '2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a'
+    schedule = read(root / 'player-path.json')
+    assert len(schedule) == len(receipt['mouse_input_events']) == 9 and receipt['mouse_input_schedule'] == schedule
+    assert all(event['actual_step'] == request['step'] for event, request in zip(receipt['mouse_input_events'], schedule))
+    origin = manifest_path.parent.parent
+    assert sha(origin / 'receipt.json') == manifest['save_origin_receipt_sha256']
+    saved_frame = manifest['save_origin_frame']
+    assert receipt['frame']['raw_indexed_sha256'] == saved_frame['raw_indexed_sha256']
+    a = root / 'startup-probe' / Path(receipt['frame']['path']).name
+    b = origin / 'startup-probe' / Path(saved_frame['path']).name
+    assert sha(a) == receipt['frame']['png_sha256'] and sha(b) == saved_frame['png_sha256']
+    loaded, saved = Image.open(a).convert('RGBA'), Image.open(b).convert('RGBA')
+    assert loaded.size == saved.size == (640, 400)
+    differences = sum(x != y for x, y in zip(loaded.getdata(), saved.getdata()))
+    loaded_rgb, saved_rgb = loaded.convert('RGB'), saved.convert('RGB')
+    report = dict(result='PASS' if differences == 0 else 'PASS_NATIVE_INDICES_ONLY',
+                  scope='one imported original FILE 3 save/load sample via normal title and confirmation inputs',
+                  source_count=len(sources), steps=140000000, ordinary_mouse_events=9,
+                  saved_dat_sha256=data['saved_dat_sha256'], unchanged_resources=200,
+                  raw_indexed_sha256=receipt['frame']['raw_indexed_sha256'],
+                  rgba_equal=differences == 0, rgba_differences=differences,
+                  rgb_differences=sum(x != y for x, y in zip(loaded_rgb.getdata(), saved_rgb.getdata())),
+                  rgb_difference_bbox=ImageChops.difference(loaded_rgb, saved_rgb).getbbox(),
+                  color_difference_cause='unknown; palette phase not reverse engineered',
+                  receipt_sha256=sha(root / 'receipt.json'), ram_sha256=sha(root / 'startup-memory.bin'),
+                  input_manifest_sha256=sha(manifest_path), tool_sha256=sha(Path(__file__)))
+    assert args.desktop is None, '--imported desktop verification is not implemented'
+    (root / 'verification.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
+    print(json.dumps({k: report[k] for k in ['result', 'raw_indexed_sha256', 'rgba_equal', 'rgb_differences']}))
+    raise SystemExit(0)
 before, after = root / 'save-before.dat', root / 'save-after.dat'
 original = project / 'original/game/DX5.DAT'
 assert sha(before) == sha(original) == 'de092d5ef59a3e790fd89c323dde1b447c8fe93f430043d1384a1565f27cef37'

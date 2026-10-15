@@ -24,6 +24,8 @@ type graphicsDrawRecord struct {
 	Args                   [5]uint32 `json:"raw_args"`
 	SourceRect, DestRect   image.Rectangle
 	ExpectedSHA, ActualSHA string
+	SourceCropSHA          string            `json:"source_crop_sha256,omitempty"`
+	CompositeSourceSHA     string            `json:"composite_source_sha256,omitempty"`
 	Verified               bool              `json:"verified"`
 	SourceShift            int               `json:"source_shift,omitempty"`
 	QualifiedSHA           string            `json:"known_source_sha256,omitempty"`

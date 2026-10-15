@@ -2093,3 +2093,50 @@ r7 同範圍篩查為 363 列載入後 bytes 相符、363 個合成單步及零�
 r10 四套件通過，cmd/leprobe 58.404 秒，106 項凍結來源，桌面二進位 d61c9d0e2c2cc85ea313744c7c457082e38a95019d50b3ebb44f14c6785ab173。相同十九筆原版讀檔及回合輸入先自然到 200M，再以獨立輸出重跑至 600M，兩次只因預算結束。600M 畫面日期由 1／20 到 2／20，正常來源新增 KOYO.OZM，沒有 OR 或透明矩形返回。
 
 600M 收據 a43d9f2117a43591dbb372acd4d86706ee07d506746b95d109ba5cabf516ee3f，獨立核對 e38a062f3d8e3ec4ee944d911a579b1440098b5744da69e56e8ade2457c0c51b，入口 r10/native-turn-extended/verification-summary.json。verify-composite-probe.py --native-only 明示 native_execution=PASS、result=INCOMPLETE、HD_rendering_integrated=false；全部十九筆輸入及前綴邊界符合 SCASW 原停止批次，來源／資料／完整 RAM 雜湊均保存。這證實一次普通回合已可推進，沒有擴張為交鋒或全遊戲 HD 完成。
+
+### 平台補充：83 /6 dword memory，READY
+
+r10 四套件、下載基準 750M 完整 RAM／十五欄及 MARK 完整 RAM／十三欄通過。原版存檔及 49 筆連續回合輸入在 1327438966 步停止於 dosgolem 線性 0x15B58，原始 bytes 83 75 FC 01，EBP=378252。這是 XOR dword [EBP-4],1；原版已套用 39 筆普通滑鼠，完整原停止保存於 r10/native-turns/receipt.json，不修改後十筆未套用的排程。
+
+依 [Intel 80386 Programmer's Reference Manual 1986，XOR，PDF 第 411 頁](https://read.seas.harvard.edu/~kohler/class/aosref/i386.pdf)，83 /6 ib 先將 imm8 符號擴展到 32 位元，與目的值 XOR 後寫回目的，CF／OF 清零，SF／ZF／PF 依結果，AF 未定義。READY 範圍只補 83 的 32 位元記憶體 group 6，沿用 decodeAddress32 的 DS／SS、來源及目的界限，REP／REPNZ／segment override／operand16 不擴張。失敗前不發布新旗標或寫入；既有暫存器、AND／OR 記憶體路徑保持契約。
+
+驗收採全部 256 種 imm8 與多組 32 位元來源、DS／SS SIB 與負位移、既有暫存器 XOR 的差分、唯讀及跨界拒絕、目的外位元組與其他暫存器不變。完成四套件後以相同 49 筆普通輸入從原始 LE 入口重播；不靠合成單步宣稱正常回合或交鋒通過。
+
+r11 四套件通過，研究入口 57.091 秒。IDA 9.4 窄範圍 0x15B00..0x15C00 的 86 列載入後 bytes 相符、合成單步零錯誤，來源 SHA-256 aa0919e2607d24cec35e44197fe9a2a072300bf0959bb63a7cbe7bd42b2c50a3。相同 49 筆輸入全部套用，原版於 1579516359 步遇到 C1 6D FC 02，保存 r11/native-turns/ 原停止；沒有交鋒 OR／透明返回。
+
+### 平台補充：C1 /5 dword memory，READY
+
+停止位置為 dosgolem 線性 0x22A06，原始 bytes C1 6D FC 02，EBP=378084，為 SHR dword [EBP-4],2。後續四個 stack 欄位也使用相同記憶體右移形式，這是標準 CPU 形式缺口，不推定遊戲欄位語意。
+
+依 [Intel SDM Volume 2B，SAL/SAR/SHL/SHR，4-591..4-594](https://cdrdv2-public.intel.com/782151/253667-sdm-vol-2b.pdf)，C1 /5 以 imm8 的低五位右移 32 位元目的，CF 為最後移出的 bit，SF／ZF／PF 依結果；count=1 的 OF 為來源最高位，count=0 的資料及全部旗標保持，其他 count 的 OF 與非零 count 的 AF 未定義。READY 範圍只補 C1 /5 的 32 位元記憶體形式，沿用 decodeAddress32 與可寫目的的完整四 bytes 事前檢查；不新增 D1 記憶體、其他 group、operand16 或 prefix。
+
+驗收採全部 256 種 count、多組來源與 DS／SS 定址、既有暫存器 SHR 差分、count 0／1／31 邊界、非運算旗標及來源外保護、唯讀／越界拒絕。未定義旗標不當成原版逐週期證據。重播仍只使用普通滑鼠及原版選單；第三回合另由正常「儲存進度」保存，若成功才作後續較短的原版輸入，不把 RAM 注入當讀檔。
+
+r12 四套件通過，cmd/leprobe 50.817 秒，106 項來源保持凍結。IDA 9.4 的 0x22A00..0x22B00 匯出有 86 列，LE 載入後 bytes 全部相符、合成單步零錯誤。已存在的合成原語 0x1C200..0x1C700 共 448 列亦在同版 CPU 篩查零錯誤，原始 IDA JSON 不改，獨立輸出保存 r12/capabilities/composite/。這些僅為 CPU 形式支援診斷，正常多回合與 HD 呈現分開驗證。
+
+r12 原版全部 49 筆普通輸入套用後，越過 SHR；於 1579516888 步停在 dosgolem 線性 0x20A81 的 14 00，AL=11，原始 trace 顯示下一條為 66 83 D3 00。IDA 9.4 的 0x20A00..0x20B00 共 115 列保留原始 EA／bytes，證實這兩個相鄰形式為 ADC AL,0 與 ADC BX,0，不推定整個 helper 的遊戲用途。
+
+### 平台補充：ADC AL 及 word register imm8，READY
+
+依 [Intel SDM Volume 2A，ADC，3-27..3-28](https://cdrdv2-public.intel.com/812383/253666-sdm-vol-2a.pdf)，ADC 計算目的加來源加執行前 CF，更新 OF／SF／ZF／AF／CF／PF。14 ib 為 8 位元 AL 立即值形式，保留 EAX 高 24 位；66 83 /2 register ib 將 imm8 符號擴展到 16 位元，保留目的暫存器高 16 位。READY 範圍只補這兩個形式，記憶體、額外 prefix 與其他 accumulator 形式保持原支援界限。
+
+驗收採 AL 全部 256×256×雙 CF 組合及八個 word 暫存器／全部 imm8／雙 CF；期望旗標以較寬整數、有號範圍及低四位進位獨立計算，驗證高位、其他暫存器及拒絕形式。四套件後以第三回合的原版實際存檔、普通標題及回合輸入重跑，不注入 PC、暫存器或 RAM。
+
+r13 的新運算測試全部通過，但既有 TestIntegrationADCSignExtendedImmediate 仍以 66 83 D7 00 作拒絕樣本，與本次 READY 範圍衝突。保留 r13 失敗，該樣本改為仍未支援的 66 83 17 00 word memory；不改 CPU 或放寬旗標期望。r14 重新凍結來源並乾淨重跑。
+
+### 正常交鋒來源與 HD 合成契約：READY
+
+r14 四套件通過，cmd/leprobe 43.395 秒；同版 750M／390 事件完整 RAM／十五欄及 MARK 自然 15989208 步完整 RAM／十三欄符合基準。第三回合原版存檔的十九筆普通讀檔／回合輸入自然到 600M，無未支援服務或跳過原版指令。收據 r14/native-turn3/receipt.json，SHA-256 91f8abba8873d785ee16ddd2c86fbbbe004743bb50cdfeafd3ceb6c582e65a03。
+
+- 四次 BATTLE.OZM OR 返回、四次 JIMEN_0.OZM 與四次 JIMEN_1.OZM 透明返回，全部十二筆通過完整原生索引的獨立公式核對，沒有拒絕或丟棄事件。verify-composite-probe.py --native-only 明示來源通過、HD_rendering_integrated=false，原版來源證據與正式呈現分開。
+- 首次 BATTLE 自然 186809142..186969340 步，來源非零 148320 像素，其中 18 個 OR 混色像素不等於來源色號。JIMEN_0 自然 187281947..187545969，參數 [22,64,0,24160]，目的 (0,302)..(352,366)；JIMEN_1 自然 187859683..188123705，參數 [22,64,0,24196]，目的 (288,302)..(640,366)。完整四平面與索引雜湊沿用既有來源契約。
+- 正常不透明來源新增 BATTLE02、ANIME01／03／04／08 及 WEATHER2。動畫仍用既有 208×150 局部消費端，不增加推測動畫路由。
+- r14/desktop-original/ready/ 的三張實際 X11 與呈現 PNG 一致，正常 desktop_closed，212M 步。已目視交鋒框架、數值、兩側姓名／等級及動畫階段。KAO.GRP 正常索引 22、0 位於 (40,66)..(120,146)、(520,66)..(600,146)，沿用既有頭像層；後續索引 0 的能力視窗另在 (128,286)..(208,366)。未推定其他武將姓名或兵種映射。
+
+正式呈現的範圍與界限如下。這是既有桌面 HD 圖層的擴充，沒有新遊戲引擎、存檔格式、素材包格式或 guest 寫入。
+
+1. 生產觀測只接受 0x1C291 的 BATTLE 與 0x1C35B 的 JIMEN_0／1，核對完整來源、原參數、真正返回、原生目的及完整公式；未知來源或失敗保持原版。診斷 IDX 寫出仍由顯式探針負責，正常呈現不寫研究檔。
+2. 原版來源 0 的位置保留較早 HD 背景；非零位置撤銷較早圖層，無論新素材是否存在。新圖層只替換非零且原版公式結果等於來源的像素，18 個 OR 混色像素保留原版。將遮罩逐列合併為既有 VisibleRects，不改素材格式；矩形及圖層仍受既有 256／64 上限保護，超限完整備援。
+3. 分別記錄來源裁切 SHA 與原生合成期望 SHA。呈現必須核對來源裁切，不把含背景的合成結果當成純來源；後續不透明繪圖、視窗、頭像及全畫面還原保持既有遮擋優先權，缺圖不得復活舊圖層。
+4. BATTLE 的數值區 (176,52)..(464,148)、左姓名／等級區 (24,170)..(136,216)、右區 (504,170)..(616,216)，依正常畫面允許原版前景差異並逐點保留。其他位置不放寬來源核對。兩個頂端單位縮圖區 (240,56)..(288,112)、(400,56)..(448,112) 先保留整區原版，另列來源消費端待辦，不以背景差分推測其完整輪廓。
+5. 單元測試核對真實來源遮罩、非零遮擋、混色保留、來源與返回錯誤、上限、缺圖、文字前景及原圖零變動。正常六億步完整 RAM／原版欄位應與本批原版相同；真實 X11 抽樣交鋒、動畫、原圖／HD／還原及個別缺圖。通過後只將已驗收的戰鬥合成切片標為 CONFORMED，頂端單位縮圖及其他未抽測來源另列。
