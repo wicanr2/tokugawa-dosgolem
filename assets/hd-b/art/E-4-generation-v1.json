@@ -1,0 +1,34 @@
+{
+  "records": [
+    {
+      "source": "E-4.OZM",
+      "aliases": [
+        "E-4.OZM"
+      ],
+      "asset": "E-4-hd-b-v1.png",
+      "sha256": "d4568ad6fcf71d5b46438e7717c28afafaaa2175545102e5cc5df1ead84a1ed9",
+      "size": [
+        1832,
+        858
+      ],
+      "prompt": "E-4-hd-b-v1.prompt.txt",
+      "prompt_sha256": "005f5a46802eb6b6a4a5ce23c2af01e0e65fcd478af8d131a9954ce008091ee5",
+      "generator": "built-in image_gen.imagegen",
+      "style": "B 戰國手繪風",
+      "inputs": [
+        {
+          "role": "composition from known pixels; shared research palette",
+          "path": "workplace/hd-prototype/catalog/remaining/source-boundary/art-prefix/E-4.OZM-known-reference.png",
+          "sha256": "5641f1bebaac7de594054de04e68a8c5babe7e8de57b080eabe360f743a5fa25"
+        },
+        {
+          "role": "style only",
+          "path": "assets/hd-b/art/11-hd-b-v1.png",
+          "sha256": "a8835885296bbdc9a14367c7c05d548c4db6ce1e9a0944de54a98c6a3ea0d211"
+        }
+      ],
+      "source_prefix_sha256": "e8583620e2011fe959849ce5c8e337eb6451217783ce397922bb45ee23377a69",
+      "status": "generated draft from 47992 known pixels; eight unknown source pixels and runtime qualification remain separate"
+    }
+  ]
+}

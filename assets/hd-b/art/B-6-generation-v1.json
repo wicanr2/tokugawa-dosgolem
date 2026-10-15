@@ -1,0 +1,37 @@
+{
+  "records": [
+    {
+      "source": "B-6.OZM",
+      "aliases": [
+        "B-6.OZM",
+        "B-7.OZM",
+        "C-10.OZM"
+      ],
+      "asset": "B-6-hd-b-v1.png",
+      "sha256": "4e922e9d766114ac5882a95704e1576b950fd95453962a1371c410591a84eeda",
+      "size": [
+        1832,
+        859
+      ],
+      "prompt": "B-6-hd-b-v1.prompt.txt",
+      "prompt_sha256": "3185c1518763bf7589bc55d248da369b45a2121f1aed4745e47b6bf816314182",
+      "generator": "built-in image_gen.imagegen",
+      "style": "B 戰國手繪風",
+      "inputs": [
+        {
+          "role": "edit target; retain two characters and camp composition",
+          "path": "workplace/hd-prototype/catalog/art/E-4-hd-b-v1.png",
+          "sha256": "d4568ad6fcf71d5b46438e7717c28afafaaa2175545102e5cc5df1ead84a1ed9"
+        },
+        {
+          "role": "foreground visitor composition from known pixels",
+          "path": "workplace/hd-prototype/catalog/remaining/source-boundary/art-prefix/B-6.OZM-known-reference.png",
+          "sha256": "ef9aa1ec9345d6973a38fc56a4a29d1382796c428b183172713287574fcc6748"
+        }
+      ],
+      "source_prefix_sha256": "e8583620e2011fe959849ce5c8e337eb6451217783ce397922bb45ee23377a69",
+      "reuse_basis": "identical original payload and known region; no unknown source tail inferred",
+      "status": "generated draft from 47992 known pixels; eight unknown source pixels and runtime qualification remain separate"
+    }
+  ]
+}

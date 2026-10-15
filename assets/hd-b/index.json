@@ -5,11 +5,11 @@
   "generator": "built-in image_gen.imagegen",
   "rights": "private project archive; no public release authorization",
   "counts": {
-    "png": 801,
-    "prompts": 160,
-    "bytes": 587394203
+    "png": 803,
+    "prompts": 162,
+    "bytes": 593441022
   },
-  "archive_tool_sha256": "081b54800f853f3dfda2e0068bf8b0970d589cc0f779de2689641203607a0784",
+  "archive_tool_sha256": "39af28b523ae96301876cc6eb1c9204c25ed15a60953b5257abb0a241e9f6f54",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",
@@ -492,6 +492,33 @@
       "local_source": "workplace/hd-prototype/catalog/art/B-4-hd-b-v1.prompt.txt"
     },
     {
+      "path": "art/B-6-generation-v1.json",
+      "kind": "generation-metadata",
+      "bytes": 1441,
+      "sha256": "1add33b08fbf81ebdaddaa937d0927738b7f96c4e1a032a446355aab017db3b3",
+      "local_source": "workplace/hd-prototype/catalog/art/B-6-generation-v1.json"
+    },
+    {
+      "path": "art/B-6-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 2953698,
+      "sha256": "4e922e9d766114ac5882a95704e1576b950fd95453962a1371c410591a84eeda",
+      "local_source": "workplace/hd-prototype/catalog/art/B-6-hd-b-v1.png",
+      "prompt": "art/B-6-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        859
+      ]
+    },
+    {
+      "path": "art/B-6-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 1846,
+      "sha256": "3185c1518763bf7589bc55d248da369b45a2121f1aed4745e47b6bf816314182",
+      "local_source": "workplace/hd-prototype/catalog/art/B-6-hd-b-v1.prompt.txt"
+    },
+    {
       "path": "art/BATTLE-hd-b-v1.png",
       "kind": "png",
       "bytes": 1673485,
@@ -970,6 +997,33 @@
       "bytes": 1167,
       "sha256": "6a80a44123b2ad47c701c1c7c0cefd11cd13684cd6f09fe4ae462b788b119188",
       "local_source": "workplace/hd-prototype/catalog/art/E-3-hd-b-v1.prompt.txt"
+    },
+    {
+      "path": "art/E-4-generation-v1.json",
+      "kind": "generation-metadata",
+      "bytes": 1242,
+      "sha256": "35f7552b277c5e5cef0405b11619690ef6604a71710c75e5859c2b1b7f5dc15b",
+      "local_source": "workplace/hd-prototype/catalog/art/E-4-generation-v1.json"
+    },
+    {
+      "path": "art/E-4-hd-b-v1.png",
+      "kind": "png",
+      "bytes": 3086510,
+      "sha256": "d4568ad6fcf71d5b46438e7717c28afafaaa2175545102e5cc5df1ead84a1ed9",
+      "local_source": "workplace/hd-prototype/catalog/art/E-4-hd-b-v1.png",
+      "prompt": "art/E-4-hd-b-v1.prompt.txt",
+      "status": "draft; integration and review pending",
+      "size": [
+        1832,
+        858
+      ]
+    },
+    {
+      "path": "art/E-4-hd-b-v1.prompt.txt",
+      "kind": "prompt",
+      "bytes": 2082,
+      "sha256": "005f5a46802eb6b6a4a5ce23c2af01e0e65fcd478af8d131a9954ce008091ee5",
+      "local_source": "workplace/hd-prototype/catalog/art/E-4-hd-b-v1.prompt.txt"
     },
     {
       "path": "art/E-5-hd-b-v1.png",

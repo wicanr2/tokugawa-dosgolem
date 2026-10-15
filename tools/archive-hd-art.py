@@ -504,6 +504,13 @@ def main():
         full_opening_generation = catalog/f"art/opening-full-generation-v{version}.json"
         if full_opening_generation.exists():
             copy(full_opening_generation,f"art/opening-full-generation-v{version}.json","generation-metadata")
+    for name in ["E-4-generation-v1.json", "B-6-generation-v1.json"]:
+        metadata = catalog/"art"/name
+        if metadata.exists():
+            for record in json.loads(metadata.read_text())["records"]:
+                assert sha(catalog/"art"/record["asset"]) == record["sha256"]
+                assert sha(catalog/"art"/record["prompt"]) == record["prompt_sha256"]
+            copy(metadata,"art/"+name,"generation-metadata")
     for version, folder in [(1, "art"), (2, "art-v2")]:
         full_opening_root = catalog/"remaining/history"/folder
         if not (full_opening_root/"profiles.json").exists():
