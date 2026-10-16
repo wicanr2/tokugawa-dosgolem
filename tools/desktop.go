@@ -89,6 +89,8 @@ type desktopGame struct {
 	battleFrameReport           hdBattleFrameReport
 	graphics                    map[string]hdGraphicsPair
 	graphicsReports             []hdGraphicsReport
+	combatUnitModes             []string
+	combatUnitHD                int
 	choice                      startupChoice
 	choiceEvents                []map[string]any
 	startupFence                bool
@@ -494,6 +496,7 @@ func runDesktopWindow(c *desktopContext) error {
 	c.Report["terrain_scene"], c.Report["terrain_scene_enabled"] = g.sceneReport, *desktopTerrainScene
 	c.Report["battle_frame"] = g.battleFrameReport
 	c.Report["graphics"] = g.graphicsReports
+	c.Report["combat_unit_modes"], c.Report["combat_unit_hd_count"] = g.combatUnitModes, g.combatUnitHD
 	c.Report["startup_selection"], c.Report["startup_selection_events"] = g.choice.Selection, g.choiceEvents
 	c.Report["program"] = c.Program
 	if c.Program == "mark" {
@@ -628,6 +631,34 @@ func (g *desktopGame) render() error {
 		report := g.graphics[draw.Name].apply(out, s, draw, g.enabled)
 		g.graphicsReports = append(g.graphicsReports, report)
 		if report.Mode == "hd" {
+			mode = "hd"
+		}
+	}
+	g.combatUnitModes, g.combatUnitHD = nil, 0
+	var combatBackground graphicsDrawRecord
+	for i, draw := range g.c.Live.Graphics.Draws {
+		if draw.Name == "BATTLE.OZM" && g.graphicsReports[i].Mode == "hd" {
+			combatBackground = draw
+		}
+	}
+	for _, unit := range g.c.Live.Terrain.Sprites {
+		if unit.CombatReturn != 0x1f9be {
+			continue
+		}
+		blocked := g.c.Live.Terrain.Pending != nil
+		for _, draw := range g.c.Live.Graphics.Draws {
+			blocked = blocked || draw.BeginStep > unit.EndStep && draw.DestRect.Overlaps(unit.Rect)
+		}
+		for _, draw := range g.c.Live.Window.Draws {
+			blocked = blocked || draw.Rect.Overlaps(unit.Rect)
+		}
+		for _, draw := range g.c.Live.Kao.Draws {
+			blocked = blocked || draw.Rect.Overlaps(unit.Rect)
+		}
+		result := g.terrainUnits[hdTerrainSpriteKey{"units", unit.Index}].applyBattle(out, s, unit, g.graphics["BATTLE.OZM"], combatBackground, g.enabled, blocked)
+		g.combatUnitModes = append(g.combatUnitModes, result)
+		if result == "hd" {
+			g.combatUnitHD++
 			mode = "hd"
 		}
 	}
@@ -827,6 +858,7 @@ func (g *desktopGame) Update() error {
 	status["terrain_scene"], status["terrain_scene_enabled"], status["terrain_history"] = g.sceneReport, *desktopTerrainScene, g.c.Live.Terrain.History
 	status["battle_frame"], status["battle_frame_observation"] = g.battleFrameReport, g.c.Live.BattleFrame
 	status["graphics"], status["graphics_observation"] = g.graphicsReports, g.c.Live.Graphics
+	status["combat_unit_modes"], status["combat_unit_hd_count"] = g.combatUnitModes, g.combatUnitHD
 	status["startup_pending"], status["startup_selection"], status["startup_fence"], status["startup_events"] = g.choice.Pending, g.choice.Selection, g.startupFence, g.choiceEvents
 	status["program"], status["canvas_height"], status["publisher_observation"] = g.c.Program, g.canvasHeight, g.c.Mark
 	status["scripted_input_pending"] = scripted

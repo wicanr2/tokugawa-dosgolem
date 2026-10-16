@@ -359,6 +359,19 @@ def main():
         combat_hd_sources = {r['resource'] for r in state['graphics'] if r['mode'] == 'hd'}
         assert combat_hd_sources == {'BATTLE02.OZM', 'BATTLE.OZM', 'JIMEN_0.OZM', 'JIMEN_1.OZM', 'ANIME08.OZM'}
         proof_sources.append({'verification': str(combat_path.relative_to(PROJECT)), 'sha256': sha(combat_path)})
+    combat_units_path = ROOT/'remaining/consumers/battle/r19/verification-summary.json'
+    combat_units = json.loads(combat_units_path.read_text()) if combat_units_path.exists() else None
+    if combat_units:
+        assert combat_units['result'] == 'PASS' and combat_units['native_steps'] == 600000000
+        assert [r['index'] for r in combat_units['combat_unit_checks']] == [7, 3]
+        assert combat_units['missing_unit_changed_output_pixels'] == 9216
+        assert sum(r['actual_window_captures'] for r in combat_units['cases'].values()) == 17
+        assert sum(r['toggles'] for r in combat_units['cases'].values()) == 11
+        verifier_sources.append(recorded_verifier('verify-hd-combat.py', combat_units['tool_sha256'],
+                                                  'remaining/consumers/battle/r19/verify-hd-combat.py'))
+        for case in combat_units['cases'].values():
+            assert case['receipt_sha256'] == sha(combat_units_path.parent/case['artifact_root']/'receipt.json')
+        proof_sources.append({'verification': str(combat_units_path.relative_to(PROJECT)), 'sha256': sha(combat_units_path)})
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -589,6 +602,9 @@ def main():
         if record['source'] in combat_hd_sources:
             record.update(runtime_status='normal battle HD/original/restored and native state verified; composite masks, original text, individual missing ground and region restoration verified; top unit icons remain original',
                           runtime_proof_sha256=sha(combat_path))
+        if record['source'] == 'MAP_CHIP.OZM' and combat_units:
+            record['combat_unit_runtime_check'] = {'indices': [3, 7], 'summary_sha256': sha(combat_units_path),
+                                                    'scope': 'two normal top combat icons, independent alpha, missing unit, animation occlusion and restore; not world-map cases'}
     records.append(pcx_record)
     runtime_tails = []
     tail_path = ROOT / 'remaining/source-boundary/OP-FULL-runtime/receipt.json'
@@ -637,6 +653,8 @@ def main():
               "approved_MAP_CHIP_unit_art": len(reviewed_unit_indices),
               "normal_MAP_CHIP_unit_cases_verified": len(approved_units),
               "normal_MAP_CHIP_unit_instances_verified": 2 if scene_summary else 0,
+              "normal_combat_unit_source_cases_verified": 2 if combat_units else 0,
+              "normal_combat_unit_instances_verified": 2 if combat_units else 0,
               "generated_MAP_CHIP_object_drafts": object_drafts,
               "generated_MAP_CHIP_object_art": generated_objects,
               "native_MAP_CHIP_sprite_source_profiles": 39 if foreground_summary else 0,

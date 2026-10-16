@@ -16,6 +16,7 @@ type hdTerrainSpriteDraw struct {
 	Index                int             `json:"index"`
 	Rect                 image.Rectangle `json:"logical_rect"`
 	Order                uint64          `json:"draw_order"`
+	CombatReturn         uint32          `json:"combat_return_linear,omitempty"`
 	Background           *image.NRGBA    `json:"-"`
 	BackgroundIndexed    []byte          `json:"-"`
 	BackgroundIndexedSHA string          `json:"background_indexed_sha256,omitempty"`
@@ -23,6 +24,8 @@ type hdTerrainSpriteDraw struct {
 	BackgroundSHA        string          `json:"background_rgba_sha256,omitempty"`
 	SourceSHA            string          `json:"source_rgba_sha256,omitempty"`
 	AfterSHA             string          `json:"after_rgba_sha256,omitempty"`
+	SourceIndexedSHA     string          `json:"source_indexed_sha256,omitempty"`
+	AfterIndexedSHA      string          `json:"after_indexed_sha256,omitempty"`
 	BeginStep, EndStep   int
 }
 
@@ -85,6 +88,8 @@ func hdTerrainSpriteDecode(source, dest, ret uint32) (hdTerrainSpriteDraw, bool)
 		d.Group, d.Index = "objects", int((sy-256)/48*13+sx/6)
 	case sy == 352 && ret == 0x1fea2:
 		d.Group, d.Index = "units", int(sx/6)
+	case sy == 352 && ret == 0x1f9be && (dest == 60*80+30 || dest == 60*80+50):
+		d.Group, d.Index, d.CombatReturn = "units", int(sx/6), ret
 	default:
 		return d, false
 	}
@@ -115,6 +120,9 @@ func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte
 						d.BackgroundIndexed, d.BackgroundIndexedSHA = b.BeforeIndexed, b.BeforeIndexedSHA
 						d.BackgroundSHA, d.SourceSHA, d.AfterSHA = b.BeforeSHA, b.SourceSHA, b.AfterSHA
 						d.BeginStep, d.EndStep = b.BeginStep, b.EndStep
+						if d.CombatReturn != 0 {
+							d.SourceIndexedSHA, d.AfterIndexedSHA = b.SourceIndexedSHA, b.AfterIndexedSHA
+						}
 					}
 				}
 				h.Sprites = append(h.Sprites, d)

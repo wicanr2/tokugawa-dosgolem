@@ -80,6 +80,84 @@ func blendTerrainAlpha(back, front color.NRGBA) color.NRGBA {
 	return color.NRGBA{channel(back.R, front.R), channel(back.G, front.G), channel(back.B, front.B), 255}
 }
 
+// 交鋒縮圖只使用已證實的兩個 wrapper 目的；原版背景、來源與目前目的須完整相符。
+func (p hdTerrainSpritePair) applyBattle(out *image.NRGBA, s nativeSnapshot, target hdTerrainSpriteDraw, battle hdGraphicsPair, background graphicsDrawRecord, enabled, blocked bool) string {
+	if !enabled {
+		return "original"
+	}
+	if blocked {
+		return "fallback_occluded"
+	}
+	if p.Reason != "ready" {
+		return p.Reason
+	}
+	r, scale := target.Rect, battle.Scale
+	if target.CombatReturn != 0x1f9be || target.Group != "units" || target.Index < 0 || target.Index > 9 || p.Key != (hdTerrainSpriteKey{"units", target.Index}) ||
+		(r != image.Rect(240, 60, 288, 108) && r != image.Rect(400, 60, 448, 108)) {
+		return "fallback_unapproved_unit"
+	}
+	if out == nil || s.Image == nil || s.Image.Bounds() != image.Rect(0, 0, 640, 400) || len(s.Indexed) != 640*400 || scale < 1 || scale > 4 || out.Bounds() != image.Rect(0, 0, 640*scale, 400*scale) ||
+		p.Source == nil || p.Source.Bounds() != image.Rect(0, 0, 48, 48) || p.Asset == nil || p.Asset.Bounds() != image.Rect(0, 0, 48*scale, 48*scale) {
+		return "fallback_geometry"
+	}
+	if battle.Reason != "ready" || battle.Profile.Source.Name != "BATTLE.OZM" || len(battle.Source) != 640*400 || battle.Asset == nil ||
+		!background.Verified || background.Name != "BATTLE.OZM" || background.Kind != "or_full" || background.ExpectedSHA != background.ActualSHA ||
+		background.CompositeSourceSHA != battle.Profile.IndicesSHA || background.SourceCropSHA != battle.Profile.IndicesSHA ||
+		background.SourceRect != image.Rect(0, 0, 640, 400) || background.DestRect != background.SourceRect {
+		return "fallback_background_draw"
+	}
+	effect := graphicsPaletteEffect(battle.Profile, s)
+	if s.MaxColor != 15 || !effect.Valid {
+		return "fallback_palette"
+	}
+	wantBackground := graphicsCrop(battle.Source, 640, r)
+	if !target.BackgroundVerified || target.BeginStep >= target.EndStep || target.Background == nil || target.Background.Bounds() != image.Rect(0, 0, 48, 48) ||
+		!bytes.Equal(target.BackgroundIndexed, wantBackground) || target.BackgroundIndexedSHA != fmt.Sprintf("%x", sha256.Sum256(wantBackground)) ||
+		target.BackgroundSHA != fmt.Sprintf("%x", sha256.Sum256(target.Background.Pix)) {
+		return "fallback_background_source"
+	}
+	// 繪製時與呈現時可能跨過淡入；來源與自然返回用索引核對，RGB 取目前已核准色盤。
+	sourceIndices := make([]byte, 48*48)
+	expectedIndices := append([]byte(nil), wantBackground...)
+	for y := 0; y < 48; y++ {
+		for x := 0; x < 48; x++ {
+			index := wantBackground[y*48+x]
+			rgb := s.Palette[s.DAC[index]]
+			c := color.NRGBA{rgb[0], rgb[1], rgb[2], 255}
+			if source := p.Source.NRGBAAt(x, y); source.A == 255 {
+				matches := 0
+				for i := 1; i < 16; i++ {
+					rgb := s.Palette[s.DAC[i]]
+					if source == (color.NRGBA{rgb[0], rgb[1], rgb[2], 255}) {
+						sourceIndices[y*48+x] = byte(i)
+						matches++
+					}
+				}
+				if matches != 1 {
+					return "fallback_source_palette"
+				}
+				expectedIndices[y*48+x] = sourceIndices[y*48+x]
+				c = source
+			} else if source.A != 0 {
+				return "fallback_source_alpha"
+			}
+			if rgbaAt(s.Image, r.Min.X+x, r.Min.Y+y) != c {
+				return "fallback_scene_mismatch"
+			}
+		}
+	}
+	if target.SourceIndexedSHA != fmt.Sprintf("%x", sha256.Sum256(sourceIndices)) || target.AfterIndexedSHA != fmt.Sprintf("%x", sha256.Sum256(expectedIndices)) || !bytes.Equal(graphicsCrop(s.Indexed, 640, r), expectedIndices) {
+		return "fallback_original_composite"
+	}
+	for y := 0; y < 48*scale; y++ {
+		for x := 0; x < 48*scale; x++ {
+			back := effect.colour(rgbaAt(battle.Asset, r.Min.X*scale+x, r.Min.Y*scale+y))
+			out.SetNRGBA(r.Min.X*scale+x, r.Min.Y*scale+y, blendTerrainAlpha(back, p.Asset.NRGBAAt(x, y)))
+		}
+	}
+	return "hd"
+}
+
 // 完整背景與原始前景逐點核對後，在新畫布重建。此函式不改 native 或原版狀態。
 func (p hdTerrainSpritePair) apply(out *image.NRGBA, native image.Image, target hdTerrainSpriteDraw, state hdTerrainState, floors map[int]hdTerrainPair, floorModes []string, sources map[hdTerrainSpriteKey]*image.NRGBA, replaced []image.Rectangle, scale int, enabled bool) (string, int) {
 	if !enabled {

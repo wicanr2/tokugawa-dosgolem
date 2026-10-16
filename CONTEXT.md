@@ -1,6 +1,6 @@
 # 德川家康目前狀態
 
-更新日期：2026-10-15。規則入口：[AGENTS.md](AGENTS.md)。歷程：[WORKLOG.md](WORKLOG.md)。待辦：[WORKLIST.md](WORKLIST.md)。證據：[RESEARCH-LOG.md](RESEARCH-LOG.md)。
+更新日期：2026-10-16。規則入口：[AGENTS.md](AGENTS.md)。歷程：[WORKLOG.md](WORKLOG.md)。待辦：[WORKLIST.md](WORKLIST.md)。證據：[RESEARCH-LOG.md](RESEARCH-LOG.md)。
 
 ## 唯一目前狀態表
 
@@ -54,13 +54,14 @@
 | 部分來源故事圖 | CONFORMED，限已知區及既有已證實消費端。四項來源已校準，三完整平面／第四前綴與自然返回完整 guard 通過；每張八像素保留原生圖。所有未知末 byte 測試值均為 synthetic input，不當原版證據。四項素材桌面載入通過，既有歷史／首戰回歸通過；這四個正常場景未逐項抽測 | [驗收總表](workplace/hd-prototype/catalog/remaining/partial-story/verification-summary.json)、[準備與幾何](workplace/hd-prototype/catalog/remaining/partial-story/profiles.json)、[選定素材](assets/hd-b/art/partial-story/) |
 | PCX 出版商標誌 | CONFORMED。原版 640×480／256 色的來源、目的索引與獨立 PCX 解碼相同，目標色盤及 RAM guard 已核對。獨立模式原圖／HD／還原及缺圖通過；預設完整鏈的雙向切換、模式沿用與首戰通過，下方 y=449..479 版權區保留原版 | [HD 呈現](tools/hd-publisher.go)、[完整鏈驗收](workplace/desktop-prototype/startup-chain/verification-summary.json)、[獨立模式驗收](workplace/desktop-prototype/publisher/verification-summary.json)、[素材及提示詞](assets/hd-b/art/RAINEND-generation-v1.json) |
 | 剩餘動畫與介面美術 | 20 項已註冊且通過來源及共同呈現測試；八個 ANIME 圖集含 48 格、16 個精確鏡像及一空格，另有八格結局天空與三格交鋒。正常 OP5、OP2_P 三格、OP9 局部，以及 BATTLE、JIMEN_0／1 與 ANIME08 已有 HD 抽樣；其餘十三項未逐項正常抽測，特殊消費端仍須確認 | [既有註冊驗收](workplace/hd-prototype/catalog/remaining/runtime-verification-summary.json)、[局部接入](workplace/hd-prototype/catalog/remaining/history/partial/verification-summary.json)、[選定來源](assets/hd-b/art/remaining/profiles.json) |
-| 戰鬥特殊繪圖接入 | CONFORMED，限已驗收切片。r17 四套件、600M 完整 RAM／十七欄及三模式十四張實際 X11 通過，九次切換原版狀態不變。BATTLE OR／JIMEN 透明、十八個混色像素、3012 個文字前景像素、ANIME08 動畫及共用視窗區域還原已驗證；個別缺 JIMEN_1 的 82300 呈現像素退回原版且不影響其他 HD。關窗後舊頭像遮擋已修正。頂端單位縮圖另行接入，其他動畫只列已驗證的來源範圍 | [契約與驗收](RESEARCH-LOG.md)、[完整驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r17/verification-summary.json)、[正常 HD 動畫](workplace/hd-prototype/catalog/remaining/consumers/battle/r17/desktop-animation/action-2.png)、[核對工具](tools/verify-hd-combat.py) |
+| 戰鬥特殊繪圖接入 | CONFORMED，限已驗收切片。r17 的 BATTLE OR／JIMEN 透明、文字、混色及共用視窗還原通過；r19 再接頂端單位縮圖。四模式十七張實際 X11、十一次切換、600M 完整 RAM／十七欄通過。十八個 OR 混色、3012 個文字前景、個別缺 JIMEN_1 的 82300 呈現像素及其他 HD 不變；ANIME08 遮擋與還原保持。其他動畫只列已驗證的來源範圍 | [契約與驗收](RESEARCH-LOG.md)、[最新完整驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r19/verification-summary.json)、[HD 交鋒](workplace/hd-prototype/catalog/remaining/consumers/battle/r19/desktop-animation/action-1.png)、[核對工具](tools/verify-hd-combat.py) |
+| 交鋒單位縮圖 HD | CONFORMED。0x1F9BE wrapper 的兩個 48×48 目的矩形，沿用十個已核准單位及完整原版索引守衛；正常 sources 7／3 的 alpha、紙張背景、個別缺 7、動畫遮擋及結束後恢復通過。缺圖只退回左側 9216 呈現像素，其餘 HD 不變。其餘八來源列共同測試，不稱正常 GUI 已抽測；地圖單位樣本仍為 1／3 | [驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r19/verification-summary.json)、[來源與裁切](workplace/hd-prototype/catalog/terrain/units/profiles.json)、[呈現](tools/hd-terrain-sprites.go) |
 | 第三回合原版存檔 | 正常存檔成功，僅 I003.SAV 的 4399 bytes 相對下載基準不同，其他 200 資源不變。九筆正常讀回自然 140M，完整原生索引相同；217383 個非黑像素的 RGB 亮度不同，原因保留未知，不稱完整 RGBA 相同。後續原圖／HD 對照以讀回後原版為基準 | [原版存檔 manifest](workplace/hd-prototype/catalog/remaining/consumers/battle/r11/save-turn3/ready-r2/save-import/manifest.json)、[讀回核對](workplace/hd-prototype/catalog/remaining/consumers/battle/r12/load-turn3/verification.json)、[保存工具](tools/import-original-save.py) |
 | 頂端隱藏功能列 | Linux 容器試作通過。參考 softworld_san：頂端滑鼠展開、移開收起，Esc 固定／收起，Shift+Esc 離開。提供原版／HD 圖像、繼續／暫停、截圖／離開。顯示與收起手勢期間隔離原版步進及輸入；視窗擴高而保持遊戲比例。HD、缺圖兩次 150,000,000 步的完整 RAM、原生畫面與 PCM 符合原基準；普通滑鼠未誤觸，縮放後仍可開始新遊戲 | [驗收總表](workplace/desktop-prototype/toolbar/verification-summary.json)、[功能列畫面](workplace/desktop-prototype/toolbar/windowbar-hd-hd.png)、[原圖選單](workplace/desktop-prototype/toolbar/windowbar-hd-display-menu.png)、[普通滑鼠驗證](workplace/desktop-prototype/toolbar/verification-windowbar-mouse.json)；四語及音訊開關待功能接妥 |
 | private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 已建立；#2 技術切片驗收後已關閉，HD 接續 #5，桌面與聽覺驗收留 #3 | [CDDA 完成記錄](https://github.com/wicanr2/tokugawa-dosgolem/issues/2#issuecomment-6121828738)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)、[HD #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5)；Issue 即時狀態直接查 GitHub |
 | Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試、文件及使用者授權的生成美術；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
-| Docker 收尾 | 本批建置、三模式完整啟動鏈、覆蓋盤點及來源／美術核對均已結束；沿用既有 image，沒有 root-owned 或 .md 目錄，正式 IDA 資料庫不變，全部 tokugawa 容器已移除 | 本批入口為 desktop-prototype/startup-chain/verification-summary.json；遠端保存見 WORKLOG |
+| Docker 收尾 | r19 四模式驗收、覆蓋盤點及原始 ZIP／十二檔核對通過。沒有 root-owned 或 .md 目錄，正式 IDA 資料庫不變，全部本批 tokugawa 容器已移除；沿用既有 image | 本批入口為 consumers/battle/r19/verification-summary.json；遠端保存見 WORKLOG |
 
 ## 固定來源與版本差異
 

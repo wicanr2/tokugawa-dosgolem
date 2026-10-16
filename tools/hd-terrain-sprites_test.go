@@ -11,6 +11,129 @@ import (
 	"testing"
 )
 
+func TestBattleUnitActualSourcesTransparencyFallbackAndOcclusion(t *testing.T) {
+	profile := openingEffectProfile(t, "BATTLE.OZM")
+	indexed, err := os.ReadFile("/project/workplace/hd-prototype/catalog/decoded/BATTLE.OZM.idx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	art, err := previewPNG("/project/assets/hd-b/art/" + profile.Asset)
+	if err != nil {
+		t.Fatal(err)
+	}
+	battle := newHDGraphicsPair(profile, indexed, art, 2)
+	background := graphicsDrawRecord{Name: "BATTLE.OZM", Kind: "or_full", Verified: true,
+		SourceRect: image.Rect(0, 0, 640, 400), DestRect: image.Rect(0, 0, 640, 400),
+		ExpectedSHA: "original composite", ActualSHA: "original composite", SourceCropSHA: profile.IndicesSHA, CompositeSourceSHA: profile.IndicesSHA}
+	for index, unitProfile := range hdTerrainUnitProfiles {
+		original, err := previewPNG(fmt.Sprintf("/project/workplace/hd-prototype/catalog/terrain/objects/sources/units-%03d-original.png", index))
+		if err != nil {
+			t.Fatal(err)
+		}
+		asset, err := previewPNG("/project/assets/hd-b/terrain/" + unitProfile.Asset)
+		if err != nil {
+			t.Fatal(err)
+		}
+		pair := newHDTerrainSpritePair(original, asset, 2, hdTerrainSpriteKey{"units", index}, unitProfile.SourceBounds, unitProfile.Crop)
+		for _, x := range []int{240, 400} {
+			r := image.Rect(x, 60, x+48, 108)
+			s := nativeSnapshot{Image: image.NewNRGBA(image.Rect(0, 0, 640, 400)), Indexed: append([]byte(nil), indexed...), MaxColor: 15}
+			palette := graphicsNativePalette(profile)
+			for i, c := range palette {
+				s.DAC[i], s.Palette[i] = byte(i), [3]byte{c.R, c.G, c.B}
+			}
+			for i, value := range indexed {
+				s.Image.SetNRGBA(i%640, i/640, palette[value])
+			}
+			before := cropBackdrop(s.Image, r)
+			sourceIndices := make([]byte, 48*48)
+			for y := 0; y < 48; y++ {
+				for dx := 0; dx < 48; dx++ {
+					if c := pair.Source.NRGBAAt(dx, y); c.A == 255 {
+						s.Image.SetNRGBA(x+dx, 60+y, c)
+						for i := 1; i < 16; i++ {
+							if c == palette[i] {
+								sourceIndices[y*48+dx] = byte(i)
+								s.Indexed[(60+y)*640+x+dx] = byte(i)
+							}
+						}
+					}
+				}
+			}
+			target := hdTerrainSpriteDraw{Group: "units", Index: index, Rect: r, CombatReturn: 0x1f9be, BeginStep: 10, EndStep: 20,
+				Background: before, BackgroundVerified: true, BackgroundIndexed: graphicsCrop(indexed, 640, r)}
+			target.BackgroundIndexedSHA = fmt.Sprintf("%x", sha256.Sum256(target.BackgroundIndexed))
+			target.BackgroundSHA = fmt.Sprintf("%x", sha256.Sum256(before.Pix))
+			target.SourceSHA = fmt.Sprintf("%x", sha256.Sum256(pair.Source.Pix))
+			target.AfterSHA = fmt.Sprintf("%x", sha256.Sum256(cropBackdrop(s.Image, r).Pix))
+			target.SourceIndexedSHA = fmt.Sprintf("%x", sha256.Sum256(sourceIndices))
+			target.AfterIndexedSHA = fmt.Sprintf("%x", sha256.Sum256(graphicsCrop(s.Indexed, 640, r)))
+			// 原版繪製時的 RGB 可早於淡入；保持索引及保存內容的完整性。
+			for i := range before.Pix {
+				if i%4 != 3 {
+					before.Pix[i] = 0
+				}
+			}
+			target.BackgroundSHA = fmt.Sprintf("%x", sha256.Sum256(before.Pix))
+			target.SourceSHA, target.AfterSHA = "earlier palette source", "earlier palette result"
+			out, _, _ := previewA0(s.Image, nil, nil, 2, false)
+			prior, native := append([]byte(nil), out.Pix...), append([]byte(nil), s.Image.Pix...)
+			if mode := pair.applyBattle(out, s, target, battle, background, true, false); mode != "hd" {
+				t.Fatal("actual unit rejected", index, x, mode)
+			}
+			for y := 0; y < 96; y++ {
+				for dx := 0; dx < 96; dx++ {
+					base := rgbaAt(battle.Asset, x*2+dx, 120+y)
+					front := pair.Asset.NRGBAAt(dx, y)
+					a := int(front.A)
+					channel := func(b, f byte) byte { return byte((int(f)*a + int(b)*(255-a) + 127) / 255) }
+					want := color.NRGBA{channel(base.R, front.R), channel(base.G, front.G), channel(base.B, front.B), 255}
+					if out.NRGBAAt(x*2+dx, 120+y) != want {
+						t.Fatal("independent alpha formula", index, dx, y)
+					}
+				}
+			}
+			for i := 0; i < len(out.Pix); i += 4 {
+				if !image.Pt(i/4%1280, i/4/1280).In(image.Rect(x*2, 120, (x+48)*2, 216)) && !bytes.Equal(out.Pix[i:i+4], prior[i:i+4]) {
+					t.Fatal("outside unit changed")
+				}
+			}
+			if !bytes.Equal(native, s.Image.Pix) {
+				t.Fatal("native image changed")
+			}
+			for _, failure := range []string{"disabled", "occluded", "missing", "background", "return", "source", "palette", "scene"} {
+				unit, draw, snap := pair, target, s
+				if failure == "missing" {
+					unit.Reason = "fallback_missing_asset"
+				}
+				if failure == "background" {
+					draw.BackgroundIndexedSHA = "wrong"
+				}
+				if failure == "return" {
+					draw.CombatReturn = 0x1fea2
+				}
+				if failure == "source" {
+					draw.SourceIndexedSHA = "wrong"
+				}
+				if failure == "palette" {
+					snap.Palette[0][0] ^= 1
+				}
+				if failure == "scene" {
+					copyImage := image.NewNRGBA(s.Image.Bounds())
+					copy(copyImage.Pix, s.Image.Pix)
+					copyImage.SetNRGBA(x, 60, color.NRGBA{1, 2, 3, 255})
+					snap.Image = copyImage
+				}
+				copy(out.Pix, prior)
+				mode := unit.applyBattle(out, snap, draw, battle, background, failure != "disabled", failure == "occluded")
+				if mode == "hd" || !bytes.Equal(out.Pix, prior) {
+					t.Fatal("unsafe fallback", index, failure, mode)
+				}
+			}
+		}
+	}
+}
+
 func TestTreeBackgroundRestoreVisibleUnitsAndSafety(t *testing.T) {
 	grass, ink, blue, painted := color.NRGBA{44, 215, 44, 255}, color.NRGBA{32, 32, 32, 255}, color.NRGBA{20, 20, 227, 255}, color.NRGBA{80, 100, 50, 255}
 	floor := image.NewNRGBA(image.Rect(0, 0, 48, 32))

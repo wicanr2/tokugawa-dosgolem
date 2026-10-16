@@ -13,15 +13,16 @@ import (
 )
 
 type spriteBackdropRecord struct {
-	Draw                           hdTerrainSpriteDraw `json:"draw"`
-	BeginStep, EndStep             int
-	Return, Stack, SourceOffset    uint32
-	Before, Source, After          *image.NRGBA `json:"-"`
-	BeforeIndexed                  []byte       `json:"-"`
-	BeforeIndexedSHA               string
-	BeforeSHA, SourceSHA, AfterSHA string
-	Verified                       bool   `json:"primitive_verified"`
-	Error                          string `json:"observation_error,omitempty"`
+	Draw                              hdTerrainSpriteDraw `json:"draw"`
+	BeginStep, EndStep                int
+	Return, Stack, SourceOffset       uint32
+	Before, Source, After             *image.NRGBA `json:"-"`
+	BeforeIndexed                     []byte       `json:"-"`
+	BeforeIndexedSHA                  string
+	BeforeSHA, SourceSHA, AfterSHA    string
+	SourceIndexedSHA, AfterIndexedSHA string
+	Verified                          bool   `json:"primitive_verified"`
+	Error                             string `json:"observation_error,omitempty"`
 }
 
 type spriteBackdropTrace struct {
@@ -54,15 +55,15 @@ func cropBackdropIndices(indices []byte, r image.Rectangle) []byte {
 	return out
 }
 
-func originalSpriteSource(mem []byte, source uint32, s nativeSnapshot) *image.NRGBA {
-	if !hdTerrainSpriteSourceValid(mem) || s.MaxColor != 15 {
+func originalSpriteIndices(mem []byte, source uint32) []byte {
+	if !hdTerrainSpriteSourceValid(mem) {
 		return nil
 	}
 	var planes [4]uint32
 	for i, global := range []int{0x42174, 0x42168, 0x42170, 0x4216c} {
 		planes[i] = binary.LittleEndian.Uint32(mem[global:])
 	}
-	im := image.NewNRGBA(image.Rect(0, 0, 48, 48))
+	indices := make([]byte, 48*48)
 	for y := 0; y < 48; y++ {
 		for x := 0; x < 48; x++ {
 			off := uint64(source) + uint64(y*80+x/8)
@@ -76,10 +77,22 @@ func originalSpriteSource(mem []byte, source uint32, s nativeSnapshot) *image.NR
 					index |= 1 << bit
 				}
 			}
-			if index != 0 {
-				rgb := s.Palette[s.DAC[index]]
-				im.SetNRGBA(x, y, color.NRGBA{rgb[0], rgb[1], rgb[2], 255})
-			}
+			indices[y*48+x] = index
+		}
+	}
+	return indices
+}
+
+func originalSpriteSource(mem []byte, source uint32, s nativeSnapshot) *image.NRGBA {
+	indices := originalSpriteIndices(mem, source)
+	if len(indices) != 48*48 || s.MaxColor != 15 {
+		return nil
+	}
+	im := image.NewNRGBA(image.Rect(0, 0, 48, 48))
+	for n, index := range indices {
+		if index != 0 {
+			rgb := s.Palette[s.DAC[index]]
+			im.SetNRGBA(n%48, n/48, color.NRGBA{rgb[0], rgb[1], rgb[2], 255})
 		}
 	}
 	return im
@@ -110,6 +123,22 @@ func (p *spriteBackdropRecord) finish(step int, mem []byte, snapshot func() (nat
 				}
 			}
 			p.Verified = bytes.Equal(expected.Pix, p.After.Pix)
+			if p.Draw.CombatReturn != 0 {
+				indices := originalSpriteIndices(mem, p.SourceOffset)
+				afterIndices := cropBackdropIndices(s.Indexed, p.Draw.Rect)
+				p.AfterIndexedSHA = fmt.Sprintf("%x", sha256.Sum256(afterIndices))
+				if len(indices) != 48*48 || len(p.BeforeIndexed) != 48*48 || len(afterIndices) != 48*48 || fmt.Sprintf("%x", sha256.Sum256(indices)) != p.SourceIndexedSHA {
+					p.Verified = false
+				} else {
+					want := append([]byte(nil), p.BeforeIndexed...)
+					for n, index := range indices {
+						if index != 0 {
+							want[n] = index
+						}
+					}
+					p.Verified = p.Verified && bytes.Equal(want, afterIndices)
+				}
+			}
 			if !p.Verified {
 				p.Error = "original binary-alpha primitive mismatch"
 			}
@@ -147,6 +176,9 @@ func beginSpriteBackdrop(step int, esp, esi, edi uint32, mem []byte, snapshot fu
 	}
 	p.BeforeSHA = fmt.Sprintf("%x", sha256.Sum256(p.Before.Pix))
 	p.SourceSHA = fmt.Sprintf("%x", sha256.Sum256(p.Source.Pix))
+	if p.Draw.CombatReturn != 0 {
+		p.SourceIndexedSHA = fmt.Sprintf("%x", sha256.Sum256(originalSpriteIndices(mem, esi)))
+	}
 	return p
 }
 

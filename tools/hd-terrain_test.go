@@ -77,6 +77,19 @@ func TestTerrainSpriteNaturalOrderBoundsAndInvalidation(t *testing.T) {
 			t.Fatal("valid sprite rejected", tc)
 		}
 	}
+	for _, dest := range []uint32{60*80 + 30, 60*80 + 50} {
+		for index := uint32(0); index < 13; index++ {
+			d, ok := hdTerrainSpriteDecode(0x6e00+index*6, dest, 0x1f9be)
+			if !ok || d.Group != "units" || d.Index != int(index) || d.CombatReturn != 0x1f9be {
+				t.Fatal("combat wrapper source", index, dest)
+			}
+		}
+	}
+	for _, tc := range [][3]uint32{{0x6e00, 60*80 + 29, 0x1f9be}, {0x6e00, 61*80 + 30, 0x1f9be}, {0x5000, 60*80 + 30, 0x1f9be}, {0x6e00 + 78, 60*80 + 30, 0x1f9be}} {
+		if _, ok := hdTerrainSpriteDecode(tc[0], tc[1], tc[2]); ok {
+			t.Fatal("unapproved combat wrapper", tc)
+		}
+	}
 	for _, tc := range [][3]uint32{{0x5000, 0, 0x1fea2}, {0x6e00, 0, 0x1fe69}, {0x5000 + 78, 0, 0x1fe69}, {0x5050, 0, 0x1fe69}, {0x5000, 353 * 80, 0x1fe69}, {0x5000, 75, 0x1fe69}, {0xffffffff, 0, 0x1fe69}, {0x5000, 0xffffffff, 0x1fe69}} {
 		if _, ok := hdTerrainSpriteDecode(tc[0], tc[1], tc[2]); ok {
 			t.Fatal("invalid sprite accepted", tc)

@@ -20,6 +20,7 @@ parser.add_argument('--desktop-speed', type=int, default=60)
 parser.add_argument('--mouse-file', default='/project/tools/player-path.json')
 parser.add_argument('--input-manifest', type=Path)
 parser.add_argument('--graphics-dir', type=Path)
+parser.add_argument('--unit-dir', type=Path)
 parser.add_argument('--keep-pointer-outside', action='store_true')
 args = parser.parse_args()
 assert 30 <= args.timeout <= 7200 and 0 <= args.prefix_step <= 1000000000
@@ -150,6 +151,8 @@ try:
                '-desktop-script-handoff', '-hd-composite-trace', '-hd-graphics-trace']
     if args.graphics_dir:
         command += ['-hd-graphics-dir', str(args.graphics_dir)]
+    if args.unit_dir:
+        command += ['-hd-terrain-unit-dir', str(args.unit_dir)]
     with (root / 'receipt.json').open('wb') as out, (root / 'stderr.log').open('wb') as err:
         process = subprocess.Popen(command, env=env, stdout=out, stderr=err)
     children.append(process)

@@ -12,6 +12,7 @@ root, project = Path('/output'), Path('/project')
 assert root.stat().st_uid == 1000
 parser = argparse.ArgumentParser()
 parser.add_argument('--source-root', type=Path, default=project)
+parser.add_argument('--units', action='store_true')
 args = parser.parse_args()
 read = lambda p: json.loads(p.read_text())
 sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
@@ -32,8 +33,10 @@ assert n['integration_input_sha256'] == sources and n['successful_steps'] == 600
 assert n['fd2_startup_calls'] == n['native_runtime_instructions_skipped'] == 0
 assert sha(native / 'startup-memory.bin') == sha(reference / 'startup-memory.bin') == '28563d71227d03bbdd87f01eca9c10cf639bede783ddb2b0e6ef72f35533954d'
 cases = {}
-for name in ['desktop', 'desktop-animation', 'desktop-missing']:
+for name in ['desktop', 'desktop-animation', 'desktop-missing'] + (['desktop-unit-missing'] if args.units else []):
     case = root / name
+    if (case / 'ready/exploration-status.json').is_file():
+        case = case / 'ready'
     e, r = read(case / 'exploration-status.json'), read(case / 'receipt.json')
     assert e['phase'] == 'finished' and not e['harness_only'] and r['stop'] == 'desktop_closed'
     assert r['integration_input_sha256'] == sources and r['mouse_input_schedule'] == n['mouse_input_schedule']
@@ -62,7 +65,7 @@ for name in ['desktop', 'desktop-animation', 'desktop-missing']:
     toggles = [v for v in status['events'] if v['kind'] == 'toggle']
     assert toggles and all(v['guest_unchanged'] for v in toggles)
     cases[name] = dict(captures=captures, status=status, receipt=r, exploration=e,
-                       report=dict(actual_window_captures=len(captures), toggles=len(toggles),
+                       report=dict(artifact_root=str(case.relative_to(root)), actual_window_captures=len(captures), toggles=len(toggles),
                                    steps=r['successful_steps'], receipt_sha256=sha(case / 'receipt.json')))
 
 animation = cases['desktop-animation']['captures']
@@ -92,13 +95,53 @@ for x0, y0, x1, y1 in foreground_regions:
                 assert all(hd['image'].getpixel((x*2+dx, y*2+dy)) == pixel for dy in range(2) for dx in range(2))
                 foreground += 1
 assert foreground >= 1000
-for bounds in unit_regions:
-    area = tuple(v*2 for v in bounds)
-    assert original['image'].crop(area).tobytes() == hd['image'].crop(area).tobytes()
+unit_checks = []
+if args.units:
+    profiles_path = project / 'workplace/hd-prototype/catalog/terrain/units/profiles.json'
+    profiles = {r['index']: r for r in read(profiles_path)['records']}
+    assert hd['status']['combat_unit_hd_count'] == 2 and hd['status']['combat_unit_modes'] == ['hd', 'hd']
+    units = [r for r in hd['status']['terrain_sprites'] if r.get('combat_return_linear') == 0x1f9be]
+    assert [r['index'] for r in units] == [7, 3]
+    paper = image_at(project / 'assets/hd-b/art/remaining/prepared/BATTLE.OZM-hd-v3.png')
+    paper_indices = (project / 'workplace/hd-prototype/catalog/decoded/BATTLE.OZM.idx').read_bytes()
+    atlas_indices = (project / 'workplace/hd-prototype/catalog/decoded/MAP_CHIP.OZM.idx').read_bytes()
+    for unit, x in zip(units, [240, 400]):
+        assert rect(unit['logical_rect']) == (x, 60, x+48, 108) and unit['background_verified']
+        profile = profiles[unit['index']]
+        assert unit['source_indexed_sha256'] == profile['source_indices_sha256']
+        source_indices = b''.join(atlas_indices[y*640+unit['index']*48:y*640+unit['index']*48+48] for y in range(352, 400))
+        background_indices = b''.join(paper_indices[y*640+x:y*640+x+48] for y in range(60, 108))
+        after_indices = bytes(a or b for a, b in zip(source_indices, background_indices))
+        assert hashlib.sha256(source_indices).hexdigest() == unit['source_indexed_sha256']
+        assert hashlib.sha256(background_indices).hexdigest() == unit['background_indexed_sha256']
+        assert hashlib.sha256(after_indices).hexdigest() == unit['after_indexed_sha256']
+        source_path = project / profile['source']
+        assert sha(source_path) == profile['source_png_sha256']
+        prepared_path = profiles_path.parent / profile['prepared']
+        assert sha(prepared_path) == profile['prepared_sha256']
+        asset = image_at(prepared_path)
+        assert asset.size == (96, 96)
+        for y in range(96):
+            for dx in range(96):
+                back, front = paper.getpixel((x*2+dx, 120+y)), asset.getpixel((dx, y))
+                alpha = front[3]
+                expected = tuple((front[i]*alpha + back[i]*(255-alpha) + 127)//255 for i in range(3)) + (255,)
+                assert hd['image'].getpixel((x*2+dx, 120+y)) == expected, ('unit alpha', unit['index'], dx, y)
+        unit_checks.append(dict(index=unit['index'], native_rect=[x, 60, x+48, 108], prepared_sha256=sha(prepared_path)))
+else:
+    for bounds in unit_regions:
+        area = tuple(v*2 for v in bounds)
+        assert original['image'].crop(area).tobytes() == hd['image'].crop(area).tobytes()
 
 animated = animation['action-2']
 assert any(v['resource'] == 'ANIME08.OZM' and v['mode'] == 'hd' for v in animated['status']['graphics'])
 assert animated['event']['proof'] == animation['action-3']['event']['proof'] == animation['action-4']['event']['proof']
+if args.units:
+    assert animated['status']['combat_unit_hd_count'] == 0
+    assert animated['status']['combat_unit_modes'] == ['fallback_occluded', 'fallback_occluded']
+    for x in [240, 400]:
+        area = (x*2, 120, (x+48)*2, 200)
+        assert animated['image'].crop(area).tobytes() == animation['action-3']['image'].crop(area).tobytes()
 restored = animation['action-5']
 assert any(v['kind'] == 'restore_return' and v['verified'] and rect(v['logical_rect']) == (216, 100, 424, 260)
            for v in restored['status']['window_layers']['events'])
@@ -107,11 +150,18 @@ assert any(v['resource'] == 'BATTLE.OZM' and v['mode'] == 'hd' for v in restored
 restore_region = (432, 200, 848, 520)
 assert original['image'].crop(restore_region).tobytes() == animation['action-6']['image'].crop(restore_region).tobytes(), 'original animation region changed before comparison'
 assert hd['image'].crop(restore_region).tobytes() == restored['image'].crop(restore_region).tobytes(), 'HD animation region did not restore'
+if args.units:
+    assert restored['status']['combat_unit_hd_count'] == 2 and restored['status']['combat_unit_modes'] == ['hd', 'hd']
 
 enabled = cases['desktop']['captures']['action-1']
 missing = cases['desktop-missing']['captures']['action-1']
 missing_original = cases['desktop-missing']['captures']['saved-checkpoint']
-assert enabled['event']['proof'] == missing['event']['proof'] == missing_original['event']['proof']
+if args.units:
+    assert enabled['event']['proof'] == cases['desktop']['captures']['saved-checkpoint']['event']['proof']
+    assert missing['event']['proof'] == missing_original['event']['proof']
+    assert cases['desktop']['captures']['saved-checkpoint']['image'].tobytes() == missing_original['image'].tobytes(), 'missing ground comparison requires identical full native visible frame'
+else:
+    assert enabled['event']['proof'] == missing['event']['proof'] == missing_original['event']['proof']
 missing_reports = {v['resource']: v for v in missing['status']['graphics']}
 assert missing_reports['JIMEN_1.OZM']['mode'] == 'fallback_missing_asset'
 assert all(missing_reports[name]['mode'] == 'hd' for name in ['BATTLE02.OZM', 'BATTLE.OZM', 'JIMEN_0.OZM'])
@@ -131,6 +181,24 @@ for y in range(800):
             assert a == b, 'missing right ground changed another HD layer'
         changed += a != b
 assert native_fallback == 20575*4 and changed > 0
+unit_missing_changed = 0
+if args.units:
+    missing_unit = cases['desktop-unit-missing']['captures']['action-1']
+    missing_unit_original = cases['desktop-unit-missing']['captures']['saved-checkpoint']
+    assert missing_unit['event']['proof'] == missing_unit_original['event']['proof']
+    assert original['image'].tobytes() == missing_unit_original['image'].tobytes(), 'unit missing comparison requires identical full native visible frame'
+    assert original['status']['terrain_sprites'] == missing_unit_original['status']['terrain_sprites']
+    assert missing_unit['status']['combat_unit_modes'] == ['fallback_missing_asset', 'hd']
+    assert missing_unit['status']['combat_unit_hd_count'] == 1
+    for y in range(800):
+        for x in range(1280):
+            a, b = hd['image'].getpixel((x, y)), missing_unit['image'].getpixel((x, y))
+            if inside((x, y), (480, 120, 576, 216)):
+                assert b == missing_unit_original['image'].getpixel((x, y))
+                unit_missing_changed += a != b
+            else:
+                assert a == b, 'missing unit changed another HD layer'
+    assert unit_missing_changed > 0
 report = dict(result='PASS', scope='normal battle composites, animation and region restoration; top unit icons remain original',
               source_count=106, native_steps=600000000, native_fields_equal=fields,
               native_ram_sha256=sha(native / 'startup-memory.bin'), source_reference_receipt_sha256=sha(reference / 'receipt.json'),
@@ -138,5 +206,10 @@ report = dict(result='PASS', scope='normal battle composites, animation and regi
               original_black_foreground_pixels_preserved=foreground, missing_ground_native_output_pixels=native_fallback,
               missing_ground_changed_output_pixels=changed, animation_restore_region=list(restore_region),
               tool_sha256=sha(Path(__file__)), python=sys.version.split()[0])
+if args.units:
+    report.update(scope='normal battle composites, top unit icons, individual missing art, animation occlusion and region restoration',
+                  combat_unit_checks=unit_checks, missing_unit_changed_output_pixels=unit_missing_changed,
+                  missing_unit_comparison=dict(classification='identical full original visible frame and source draws; per-case toggles preserve complete guest proof',
+                                               normal_step=original['status']['step'], missing_step=missing_unit_original['status']['step']))
 (root / 'verification-summary.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
 print(json.dumps({k: report[k] for k in ['result', 'source_count', 'mixed_OR_native_pixels_preserved', 'original_black_foreground_pixels_preserved', 'missing_ground_native_output_pixels']}))
