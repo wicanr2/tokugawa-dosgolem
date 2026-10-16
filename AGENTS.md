@@ -18,6 +18,8 @@
 
 ## 開工入口
 
+下方 MAP_WAKU 快取圖塊的來源核對入口為 [tools/verify-hd-map-cache-source.py](tools/verify-hd-map-cache-source.py)。固定 GUI image 中專案唯讀掛 `/project`、`consumers/battle/r23/` 可寫掛 `/output`，執行該工具，核對正常 RAM 的完整快取、IDA 已載入 bytes、八次四平面呼叫與原始平面偏移。相同掛載執行 `python3 /project/tools/verify-hd-map-frame.py --corners`，核對完整原版對照、九處框架、正常 X11、缺圖及後畫場景；總表為 r23/verification-summary.json。來源核對與正常 HD 視窗驗收分開保存，16×16 字樣保留原版。
+
 MAP_WAKU 主框架快取驗證入口為 [tools/verify-hd-map-frame.py](tools/verify-hd-map-frame.py)。固定 GUI image 內專案唯讀掛 `/project`、`consumers/battle/r22/` 可寫掛 `/output`，執行該工具；正常存檔讀取、原版／HD、單獨缺框架與切換收據留本機。r21 保留真實視窗的後畫地面／單位遮擋診斷與無頭工具漏建 engine 目錄的失敗；r22 以原版地面真正返回步數裁切主框架。主框架只涵蓋前 88 列，下方圖塊及字樣另列，不以合成狀態測試取代正常視窗。
 
 本專案保存《德川家康》的 jsdos 來源與 dosgolem 接入證據。下載完成不代表遊戲已在 dosgolem 可玩。本次沒有建立 remake 引擎。

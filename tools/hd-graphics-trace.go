@@ -39,6 +39,85 @@ func wakuFrameEntry(eip, esp uint32, mem []byte) bool {
 	return eip == 0x1fff7 && uint64(esp)+4 <= uint64(len(mem)) && binary.LittleEndian.Uint32(mem[esp:]) == 0x1ec31
 }
 
+const wakuCachedLowerSHA = "a1c858f9c927dc56b81277328d84b2ffb00eb280ed91d6162c7bde374b608b9d"
+
+type wakuCornerSpec struct {
+	Return, Destination uint32
+	Tile                int
+}
+
+var wakuCorners = []wakuCornerSpec{
+	{0x1ecb4, 0xa2585, 0}, {0x1ed37, 0xa3985, 0}, {0x1edba, 0xa4d85, 0}, {0x1ee3d, 0xa6185, 2},
+	{0x1eec0, 0xa25b1, 1}, {0x1ef43, 0xa39b1, 1}, {0x1efc6, 0xa4db1, 1}, {0x1f049, 0xa61b1, 3},
+}
+
+var wakuCornerCropSHA = [4]string{
+	"efbd133e2c4cbbfad9298274c95812054155dae571810e34197e5f548c84f5d2",
+	"d097a97cc80cfb18223fa626ecd6c187315ed373e83c08c58fbffcca7f7ff11f",
+	"4d370301420d7cd334cf4da39ac2fecd5d93cc810d3ef6dcd4e74ccff966ee3f",
+	"49c1db8d57df9f1e763b9f28077d4a0efc25989b3ef0452fac74feef75b62296",
+}
+
+func wakuCornerByReturn(ret uint32) (wakuCornerSpec, bool) {
+	for _, spec := range wakuCorners {
+		if spec.Return == ret {
+			return spec, true
+		}
+	}
+	return wakuCornerSpec{}, false
+}
+
+func wakuCornerEntry(eip, esp uint32, mem []byte) (wakuCornerSpec, bool) {
+	if eip != 0x20020 || uint64(esp)+4 > uint64(len(mem)) {
+		return wakuCornerSpec{}, false
+	}
+	return wakuCornerByReturn(binary.LittleEndian.Uint32(mem[esp:]))
+}
+
+func (s wakuCornerSpec) sourceRect() image.Rectangle {
+	return image.Rect(s.Tile*32, 88, s.Tile*32+32, 120)
+}
+func (s wakuCornerSpec) destRect() image.Rectangle {
+	d := s.Destination - 0xa0000
+	return image.Rect(int(d%80*8), int(d/80), int(d%80*8)+32, int(d/80)+32)
+}
+
+// 對靜態來源獨立重建原版實際 reader；不將 0x4080 改成相鄰圖塊平面。
+func wakuCornerIndices(source []byte, tile int) []byte {
+	if len(source) != 384*120 || tile < 0 || tile > 3 {
+		return nil
+	}
+	indices := graphicsCrop(source, 384, image.Rect(tile*32, 88, tile*32+32, 120))
+	if tile == 0 {
+		for i, value := range indices {
+			indices[i] = (value &^ 2) | ((source[80*384+i] >> 3 & 1) << 1)
+		}
+	}
+	return indices
+}
+
+func wakuCornerSource(mem []byte, profiles []graphicsSourceProfile, spec wakuCornerSpec) (graphicsSourceProfile, []byte, uint32, bool) {
+	profile, _, base, ok := wakuFrameSource(mem, profiles)
+	if !ok || spec.Tile < 0 || spec.Tile > 3 || uint64(base)+0x4a00 > uint64(len(mem)) {
+		return graphicsSourceProfile{}, nil, 0, false
+	}
+	if fmt.Sprintf("%x", sha256.Sum256(mem[base+0x4200:base+0x4a00])) != wakuCachedLowerSHA {
+		return graphicsSourceProfile{}, nil, 0, false
+	}
+	indices := make([]byte, 1024)
+	for bit := 0; bit < 4; bit++ {
+		offset := uint32(0x4200 + spec.Tile*0x200 + bit*128)
+		if spec.Tile == 0 && bit == 1 {
+			offset = 0x4080
+		}
+		plane := mem[base+offset : base+offset+128]
+		for i := range indices {
+			indices[i] |= ((plane[i/8] >> uint(7-i%8)) & 1) << uint(bit)
+		}
+	}
+	return profile, indices, base, true
+}
+
 // 原始 dword_42188 的四個 packed plane；指紋來自完整 MAP_WAKU 前 88 列。
 func wakuFrameSource(mem []byte, profiles []graphicsSourceProfile) (graphicsSourceProfile, []byte, uint32, bool) {
 	if len(mem) < 0x4218c {
@@ -197,6 +276,12 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 			profile, _, base, ok = wakuFrameSource(mem, t.Profiles)
 			ok = ok && base == r.CacheBase
 		}
+		if r.Kind == "cached_corner" {
+			spec, matched := wakuCornerByReturn(r.Return)
+			var base uint32
+			profile, _, base, ok = wakuCornerSource(mem, t.Profiles, spec)
+			ok = ok && matched && base == r.CacheBase
+		}
 		if r.Kind == "opening_shift" {
 			ok = openingShiftReturn(p, mem)
 			profile.Name = r.Name
@@ -234,10 +319,21 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 		t.Pending = nil
 	}
 	cached := wakuFrameEntry(eip, esp, mem)
-	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 && !openingPartialEntry(eip) && !openingShiftEntry(eip) && !cached {
+	corner, cachedCorner := wakuCornerEntry(eip, esp, mem)
+	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 && !openingPartialEntry(eip) && !openingShiftEntry(eip) && !cached && !cachedCorner {
 		return
 	}
-	if len(t.Records) >= 512 {
+	used, limit := 0, 512
+	if cached || cachedCorner {
+		limit = 1024
+	}
+	for _, record := range t.Records {
+		isCache := record.Kind == "cached_frame" || record.Kind == "cached_corner"
+		if isCache == (cached || cachedCorner) {
+			used++
+		}
+	}
+	if used >= limit {
 		t.Dropped++
 		t.Pending = nil
 		return
@@ -251,7 +347,7 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 	if openingPartialEntry(eip) {
 		stackBytes = 8
 	}
-	if cached {
+	if cached || cachedCorner {
 		stackBytes = 12
 	}
 	if uint64(esp)+stackBytes > uint64(len(mem)) {
@@ -261,6 +357,25 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 	}
 	r.Return = binary.LittleEndian.Uint32(mem[esp:])
 	if uint64(r.Return) >= uint64(len(mem)) {
+		return
+	}
+	if cachedCorner {
+		r.Kind, r.Name = "cached_corner", "MAP_WAKU.OZM"
+		r.RawHelperArgs = []uint32{binary.LittleEndian.Uint32(mem[esp+4:]), binary.LittleEndian.Uint32(mem[esp+8:])}
+		_, indices, base, ok := wakuCornerSource(mem, t.Profiles, corner)
+		if !ok || uint64(r.RawHelperArgs[0]) != uint64(base)+uint64(0x4380+corner.Tile*0x200) || r.RawHelperArgs[1] != corner.Destination {
+			r.Error = "unmatched cached corner source or fourth-plane arguments"
+			t.Records = append(t.Records, r)
+			return
+		}
+		r.CacheBase = base
+		r.Args = [5]uint32{uint32(88*80 + corner.Tile*4), 4, 32, 80, corner.Destination}
+		r.SourceRect, r.DestRect = corner.sourceRect(), corner.destRect()
+		r.ExpectedSHA = fmt.Sprintf("%x", sha256.Sum256(indices))
+		r.SourceCropSHA = wakuCornerCropSHA[corner.Tile]
+		r.CompositeSourceSHA = "1d0ee5b9b52142beb6813ae52f1db215e5224fae1935a64ea83fe07b97fe9a6b"
+		r.QualifiedSHA = wakuCachedLowerSHA
+		t.Pending = &graphicsPending{Record: r, Expected: indices}
 		return
 	}
 	if cached {

@@ -795,6 +795,186 @@ func TestHDGraphicsVisibleFragmentsAndSameIndexUnknownCopy(t *testing.T) {
 	}
 }
 
+func TestWakuCachedCornersActualPlanesAndArt(t *testing.T) {
+	profile := openingEffectProfile(t, "MAP_WAKU.OZM")
+	mem, err := os.ReadFile("/project/workplace/hd-prototype/catalog/remaining/consumers/battle/r22/native-control/startup-memory.bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	indexed, err := os.ReadFile("/project/workplace/hd-prototype/catalog/decoded/MAP_WAKU.OZM.idx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	asset, err := previewPNG("/project/assets/hd-b/art/" + profile.Asset)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pair := newHDGraphicsPair(profile, indexed, asset, 2)
+	base := binary.LittleEndian.Uint32(mem[0x42188:])
+	for _, spec := range wakuCorners {
+		actual, err := os.ReadFile(fmt.Sprintf("/project/workplace/hd-prototype/catalog/remaining/consumers/battle/r23/map-cache-tile-%d.idx", spec.Tile))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Equal(actual, wakuCornerIndices(indexed, spec.Tile)) {
+			t.Fatal("independent actual reader reconstruction", spec)
+		}
+		for i, v := range []uint32{spec.Return, base + uint32(0x4380+spec.Tile*0x200), spec.Destination} {
+			binary.LittleEndian.PutUint32(mem[0x1000+i*4:], v)
+		}
+		beforeRAM := sha256.Sum256(mem)
+		s := nativeSnapshot{Image: image.NewNRGBA(image.Rect(0, 0, 640, 400)), Indexed: make([]byte, 640*400), MaxColor: 15}
+		for i, c := range graphicsNativePalette(profile) {
+			s.DAC[i], s.Palette[i] = byte(i), [3]byte{c.R, c.G, c.B}
+		}
+		dest := spec.destRect()
+		for y := 0; y < 32; y++ {
+			copy(s.Indexed[(dest.Min.Y+y)*640+dest.Min.X:], actual[y*32:(y+1)*32])
+		}
+		snapshot := func() (nativeSnapshot, error) { return s, nil }
+		var state hdGraphicsState
+		state.observe(1, 0x20020, 0x1000, mem, snapshot)
+		if state.Pending == nil || len(state.Draws) != 0 {
+			t.Fatal("cached corner activated before return", spec)
+		}
+		state.observe(2, spec.Return, 0x1000, mem, snapshot)
+		if state.Pending == nil {
+			t.Fatal("wrong return stack accepted", spec)
+		}
+		state.observe(3, spec.Return, 0x1004, mem, snapshot)
+		if len(state.Draws) != 1 || !state.Draws[0].Verified || state.Draws[0].Kind != "cached_corner" || beforeRAM != sha256.Sum256(mem) {
+			t.Fatal("actual cached corner/natural return or guest mutation", spec)
+		}
+		draw := state.Draws[0]
+		if draw.ExpectedSHA != fmt.Sprintf("%x", sha256.Sum256(actual)) || draw.SourceCropSHA != wakuCornerCropSHA[spec.Tile] || draw.SourceRect != spec.sourceRect() {
+			t.Fatal("static art and actual reader evidence mixed", spec)
+		}
+		underlay := color.NRGBA{21, 67, 102, 255}
+		out := image.NewNRGBA(image.Rect(0, 0, 1280, 800))
+		for i := 0; i < len(out.Pix); i += 4 {
+			copy(out.Pix[i:i+4], []byte{underlay.R, underlay.G, underlay.B, 255})
+		}
+		original := append([]byte(nil), out.Pix...)
+		for _, occluded := range []bool{false, true} {
+			copy(out.Pix, original)
+			d := draw
+			if occluded {
+				d = graphicsOcclude(d, nil, nil, hdTerrainState{History: []hdTerrainDraw{{Rect: image.Rect(dest.Min.X, dest.Min.Y, dest.Max.X, dest.Min.Y+16), EndStep: 4}}})
+			}
+			report := pair.apply(out, s, d, true)
+			if report.Mode != "hd" {
+				t.Fatal("cached corner rendering", spec, report)
+			}
+			want := append([]byte(nil), original...)
+			painted := 0
+			for y := 0; y < 64; y++ {
+				for x := 0; x < 64; x++ {
+					sx, sy := spec.Tile*32+x/2, 88+y/2
+					if (occluded && y < 32) || actual[y/2*32+x/2] == 8 || indexed[sy*384+sx] == 8 {
+						continue
+					}
+					pixel := rgbaAt(pair.Asset, spec.Tile*64+x, 176+y)
+					offset := (dest.Min.Y*2+y)*out.Stride + (dest.Min.X*2+x)*4
+					copy(want[offset:offset+4], []byte{pixel.R, pixel.G, pixel.B, pixel.A})
+					painted++
+				}
+			}
+			if painted == 0 || !bytes.Equal(want, out.Pix) {
+				t.Fatal("cached source/black buffer/occluded underlay/outside protection", spec, occluded, painted)
+			}
+		}
+		for _, failure := range []string{"disabled", "missing", "palette", "source_crop", "actual_hash", "cache_hash", "helper_args", "return", "destination", "current_indices"} {
+			copy(out.Pix, original)
+			p, d, native := pair, draw, s
+			if failure == "missing" {
+				p.Reason = "fallback_missing_asset"
+			}
+			if failure == "palette" {
+				native.Palette[0][0] ^= 1
+			}
+			if failure == "source_crop" {
+				d.SourceCropSHA = "wrong"
+			}
+			if failure == "actual_hash" {
+				d.ExpectedSHA = "wrong"
+			}
+			if failure == "cache_hash" {
+				d.QualifiedSHA = "wrong"
+			}
+			if failure == "helper_args" {
+				d.RawHelperArgs = []uint32{base, spec.Destination}
+			}
+			if failure == "return" {
+				d.Return++
+			}
+			if failure == "destination" {
+				d.DestRect = d.DestRect.Add(image.Pt(8, 0))
+			}
+			if failure == "current_indices" {
+				native.Indexed = append([]byte(nil), s.Indexed...)
+				for i, value := range actual {
+					if value != 8 {
+						native.Indexed[(dest.Min.Y+i/32)*640+dest.Min.X+i%32] ^= 1
+						break
+					}
+				}
+			}
+			if r := p.apply(out, native, d, failure != "disabled"); r.Mode == "hd" || !bytes.Equal(original, out.Pix) {
+				t.Fatal("unsafe cached corner fallback", spec, failure, r)
+			}
+		}
+		trace := graphicsTrace{Profiles: []graphicsSourceProfile{profile.Source}}
+		trace.observe(1, 0x20020, 0x1000, mem, snapshot)
+		mem[base+0x4200] ^= 1
+		trace.observe(2, spec.Return, 0x1004, mem, snapshot)
+		mem[base+0x4200] ^= 1
+		if len(trace.Records) != 1 || trace.Records[0].Verified {
+			t.Fatal("changed cached corner source accepted", spec)
+		}
+		binary.LittleEndian.PutUint32(mem[0x1008:], spec.Destination+1)
+		trace = graphicsTrace{Profiles: []graphicsSourceProfile{profile.Source}}
+		trace.observe(1, 0x20020, 0x1000, mem, snapshot)
+		if trace.Pending != nil {
+			t.Fatal("unregistered cached corner destination accepted", spec)
+		}
+	}
+}
+
+func TestGraphicsCachedTraceUsesIndependentBoundedQuota(t *testing.T) {
+	profile := openingEffectProfile(t, "MAP_WAKU.OZM")
+	mem, err := os.ReadFile("/project/workplace/hd-prototype/catalog/remaining/consumers/battle/r22/native-control/startup-memory.bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	spec := wakuCorners[0]
+	base := binary.LittleEndian.Uint32(mem[0x42188:])
+	for i, v := range []uint32{spec.Return, base + 0x4380, spec.Destination} {
+		binary.LittleEndian.PutUint32(mem[0x1000+i*4:], v)
+	}
+	trace := graphicsTrace{Profiles: []graphicsSourceProfile{profile.Source}, Records: make([]graphicsDrawRecord, 512)}
+	trace.observe(1, 0x20020, 0x1000, mem, nil)
+	if trace.Pending == nil || trace.Dropped != 0 {
+		t.Fatal("general quota consumed cached quota")
+	}
+	trace.Pending = nil
+	trace.observe(2, 0x1c084, 0x1000, mem, nil)
+	if trace.Dropped != 1 || len(trace.Records) != 512 {
+		t.Fatal("general quota changed")
+	}
+	trace = graphicsTrace{Profiles: []graphicsSourceProfile{profile.Source}, Records: make([]graphicsDrawRecord, 1024)}
+	for i := range trace.Records {
+		trace.Records[i].Kind = "cached_corner"
+	}
+	trace.observe(3, 0x20020, 0x1000, mem, nil)
+	if trace.Pending != nil || trace.Dropped != 1 || len(trace.Records) != 1024 {
+		t.Fatal("cached quota unbounded")
+	}
+	trace.observe(4, 0x1c084, 0x1000, mem, nil)
+	if trace.Dropped != 1 {
+		t.Fatal("cached quota consumed general quota")
+	}
+}
+
 func TestHDGraphicsCachedFrameOcclusionByNaturalTerrainReturn(t *testing.T) {
 	draw := graphicsDrawRecord{Name: "MAP_WAKU.OZM", Kind: "cached_frame", EndStep: 10, DestRect: image.Rect(40, 0, 424, 88)}
 	old := image.Rect(40, 0, 88, 32)

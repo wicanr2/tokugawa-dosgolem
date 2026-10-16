@@ -399,6 +399,25 @@ def main():
         for name, case in map_frame['cases'].items():
             assert case['receipt_sha256'] == sha(map_frame_path.parent/name/'receipt.json')
         proof_sources.append({'verification': str(map_frame_path.relative_to(PROJECT)), 'sha256': sha(map_frame_path)})
+    map_corners_path = ROOT/'remaining/consumers/battle/r23/verification-summary.json'
+    map_corners = json.loads(map_corners_path.read_text()) if map_corners_path.exists() else None
+    if map_corners:
+        assert map_corners['status'] == 'PASS' and map_corners['lower_cached_corners_verified']
+        assert map_corners['complete_original_ram_equal'] and map_corners['existing_graphics_trace_equal']
+        assert map_corners['added_corner_records'] == map_corners['added_cached_records']*8
+        assert [r['source_tile'] for r in map_corners['lower_corner_checks']] == [0,0,0,2,1,1,1,3]
+        assert all(r['painted_output_pixels'] > 0 for r in map_corners['lower_corner_checks'])
+        assert sum(r['painted_output_pixels'] for r in map_corners['lower_corner_checks']) == 18552
+        verifier_sources.append(recorded_verifier('verify-hd-map-frame.py', map_corners['verification_tool_sha256'],
+                                                  'remaining/consumers/battle/r23/verify-hd-map-frame.py'))
+        source_proof_path = map_corners_path.parent/'map-cache-source-verification.json'
+        source_proof = json.loads(source_proof_path.read_text())
+        assert source_proof['result'] == 'PASS' and len(source_proof['records']) == 8
+        verifier_sources.append(recorded_verifier('verify-hd-map-cache-source.py', source_proof['tool_sha256'],
+                                                  'remaining/consumers/battle/r23/verify-hd-map-cache-source.py'))
+        for name, case in map_corners['cases'].items():
+            assert case['receipt_sha256'] == sha(map_corners_path.parent/name/'receipt.json')
+        proof_sources.append({'verification': str(map_corners_path.relative_to(PROJECT)), 'sha256': sha(map_corners_path)})
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -630,6 +649,10 @@ def main():
             record.update(runtime_status='normal cached upper 88-row frame, later floor/sprite occlusion, HD underlay and individual missing frame verified; lower cache pieces pending',
                           runtime_proof_sha256=sha(map_frame_path), normal_upper_frame_rows_verified=88,
                           lower_cached_corners_verified=False)
+        if record['source'] == 'MAP_WAKU.OZM' and map_corners:
+            record.update(runtime_status='normal cached upper frame and eight lower tile blits, later scene occlusion, missing art and restoration verified; original glyphs retained',
+                          runtime_proof_sha256=sha(map_corners_path), normal_upper_frame_rows_verified=88,
+                          lower_cached_corners_verified=True, normal_lower_cache_instances_verified=8)
         if record['source'] in combat_hd_sources:
             record.update(runtime_status='normal battle HD/original/restored and native state verified; composite masks, original text, individual missing ground and region restoration verified; top unit icons remain original',
                           runtime_proof_sha256=sha(combat_path))
@@ -692,7 +715,7 @@ def main():
               "combat_paper_margin_native_pixels_verified": 768 if known_rows else 0,
               "ending_399_row_full_copy_bindings_verified": 2 if known_rows else 0,
               "normal_MAP_WAKU_upper_frame_rows_verified": 88 if map_frame else 0,
-              "normal_MAP_WAKU_lower_cache_pieces_verified": 0,
+              "normal_MAP_WAKU_lower_cache_pieces_verified": 8 if map_corners else 0,
               "generated_MAP_CHIP_object_drafts": object_drafts,
               "generated_MAP_CHIP_object_art": generated_objects,
               "native_MAP_CHIP_sprite_source_profiles": 39 if foreground_summary else 0,

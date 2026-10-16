@@ -316,7 +316,7 @@ func graphicsOcclude(draw graphicsDrawRecord, windows []hdWindowDraw, portraits 
 	for _, portrait := range portraits {
 		cut(portrait.Rect, portrait.EndStep)
 	}
-	if draw.Kind == "cached_frame" && draw.Name == "MAP_WAKU.OZM" && len(terrain) == 1 {
+	if (draw.Kind == "cached_frame" || draw.Kind == "cached_corner") && draw.Name == "MAP_WAKU.OZM" && len(terrain) == 1 {
 		for _, floor := range terrain[0].History {
 			cut(floor.Rect, floor.EndStep)
 		}
@@ -352,7 +352,8 @@ func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapsho
 		return
 	}
 	cached := wakuFrameEntry(eip, esp, mem)
-	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14 || openingPartialEntry(eip) || openingShiftEntry(eip) || cached
+	corner, cachedCorner := wakuCornerEntry(eip, esp, mem)
+	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14 || openingPartialEntry(eip) || openingShiftEntry(eip) || cached || cachedCorner
 	returned := h.Pending != nil && eip == h.Pending.Record.Return && uint64(esp) == uint64(h.Pending.Record.Stack)+4
 	if !entry && !returned {
 		return
@@ -370,6 +371,9 @@ func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapsho
 			r, ok := graphicsDestination(esp, mem)
 			if cached {
 				r, ok = image.Rect(40, 0, 424, 88), true
+			}
+			if cachedCorner {
+				r, ok = corner.destRect(), true
 			}
 			if openingPartialEntry(eip) {
 				r, ok = openingPartialDestination(eip), true
@@ -520,6 +524,22 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 	sourceCropSHA := draw.ExpectedSHA
 	composite := draw.Kind == "or_full" || draw.Kind == "masked_rect"
 	cachedFrame := draw.Kind == "cached_frame" && draw.Name == "MAP_WAKU.OZM"
+	cachedCorner := draw.Kind == "cached_corner" && draw.Name == "MAP_WAKU.OZM"
+	var cornerExpected []byte
+	if draw.Kind == "cached_corner" {
+		spec, ok := wakuCornerByReturn(draw.Return)
+		if !cachedCorner || !ok || draw.CacheBase < 0xc0000 || len(draw.RawHelperArgs) != 2 ||
+			uint64(draw.RawHelperArgs[0]) != uint64(draw.CacheBase)+uint64(0x4380+spec.Tile*0x200) || draw.RawHelperArgs[1] != spec.Destination ||
+			draw.SourceRect != spec.sourceRect() || draw.DestRect != spec.destRect() || draw.QualifiedSHA != wakuCachedLowerSHA ||
+			draw.CompositeSourceSHA != p.Profile.IndicesSHA || draw.ExpectedSHA != draw.ActualSHA {
+			return r
+		}
+		cornerExpected = wakuCornerIndices(p.Source, spec.Tile)
+		if cornerExpected == nil || fmt.Sprintf("%x", sha256.Sum256(cornerExpected)) != draw.ExpectedSHA {
+			return r
+		}
+		sourceCropSHA = draw.SourceCropSHA
+	}
 	if draw.Kind == "cached_frame" && (!cachedFrame || draw.Return != 0x1ec31 || draw.CacheBase < 0xc0000 || len(draw.RawHelperArgs) != 2 ||
 		uint64(draw.RawHelperArgs[0]) != uint64(draw.CacheBase)+0x3180 || draw.RawHelperArgs[1] != 0xa0005 ||
 		draw.SourceRect != image.Rect(0, 0, 384, 88) || draw.DestRect != image.Rect(40, 0, 424, 88)) {
@@ -606,7 +626,10 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 					return r
 				}
 			}
-		} else if cachedFrame {
+		} else if cachedFrame || cachedCorner {
+			if cachedCorner {
+				want = graphicsCrop(cornerExpected, 32, f.Sub(draw.DestRect.Min))
+			}
 			for i, value := range want {
 				if value != 8 && actual[i] != value {
 					return r
@@ -620,6 +643,10 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 		src := f.Add(draw.SourceRect.Min.Sub(draw.DestRect.Min))
 		for y := 0; y < f.Dy(); y++ {
 			for x := 0; x < f.Dx(); x++ {
+				if cachedCorner && (cornerExpected[(f.Min.Y+y-draw.DestRect.Min.Y)*32+f.Min.X+x-draw.DestRect.Min.X] == 8 || p.Source[(src.Min.Y+y)*p.Profile.Source.Width+src.Min.X+x] == 8) {
+					r.PreservedNative++
+					continue
+				}
 				if cachedFrame && p.Source[(src.Min.Y+y)*p.Profile.Source.Width+src.Min.X+x] == 8 {
 					r.PreservedNative++
 					continue

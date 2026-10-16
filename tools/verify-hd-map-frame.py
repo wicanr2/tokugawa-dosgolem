@@ -12,6 +12,7 @@ root, project = Path('/output'), Path('/project')
 assert root.stat().st_uid == 1000
 parser = argparse.ArgumentParser()
 parser.add_argument('--source-root', type=Path, default=project)
+parser.add_argument('--corners', action='store_true')
 args = parser.parse_args()
 read = lambda p: json.loads(p.read_text())
 sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
@@ -30,7 +31,8 @@ assert sha(native / 'startup-memory.bin') == sha(reference / 'startup-memory.bin
 assert current['integration_input_sha256'] == sources and current['successful_steps'] == 600000000
 assert current['fd2_startup_calls'] == current['native_runtime_instructions_skipped'] == 0
 trace = current['graphics_draw_trace']
-old_trace = dict(trace, records=[r for r in trace['records'] if r['kind'] != 'cached_frame'])
+cache_kinds = ['cached_frame', 'cached_corner'] if args.corners else ['cached_frame']
+old_trace = dict(trace, records=[r for r in trace['records'] if r['kind'] not in cache_kinds])
 assert old_trace == before['graphics_draw_trace'], 'existing trace records changed'
 cached = [r for r in trace['records'] if r['kind'] == 'cached_frame']
 assert cached and all(r['verified'] for r in cached), 'normal cached frame was not verified'
@@ -40,6 +42,28 @@ for r in cached:
     assert r['raw_args'] == [0, 48, 88, 80, 0xa0005]
     assert rect(r['SourceRect']) == (0, 0, 384, 88) and rect(r['DestRect']) == (40, 0, 424, 88)
     assert r['ExpectedSHA'] == r['ActualSHA'] == '30ebc83c166b0cfa7f2666a5c71a63b98466f440dbb1315b88d56a1842bc2383'
+corner_proof, corner_specs = None, {}
+if args.corners:
+    corner_proof = read(root/'map-cache-source-verification.json')
+    assert corner_proof['result'] == 'PASS'
+    assert sha(args.source_root/'tools/verify-hd-map-cache-source.py') == corner_proof['tool_sha256']
+    corner_specs = {r['fourth_plane_return']: r for r in corner_proof['records']}
+    assert len(corner_specs) == 8
+    corners = [r for r in trace['records'] if r['kind'] == 'cached_corner']
+    assert len(corners) == len(cached)*8
+    assert len(cached)+len(corners) <= 1024 and len(old_trace['records']) <= 512
+    for ret, spec in corner_specs.items():
+        records = [r for r in corners if r['Return'] == ret]
+        assert len(records) == len(cached)
+        for r in records:
+            assert r['verified'] and r['resource'] == 'MAP_WAKU.OZM'
+            assert r['raw_helper_args'] == [r['raw_cache_base_linear']+spec['raw_plane_offsets'][3], spec['destination_linear']]
+            assert r['raw_args'] == [88*80+spec['source_tile']*4,4,32,80,spec['destination_linear']]
+            assert rect(r['SourceRect']) == tuple(spec['source_rect']) and rect(r['DestRect']) == tuple(spec['destination_rect'])
+            assert r['ExpectedSHA'] == r['ActualSHA'] == spec['actual_reader_indices_sha256']
+            assert r['source_crop_sha256'] == spec['static_source_crop_sha256']
+            assert r['composite_source_sha256'] == corner_proof['source_indices_sha256']
+            assert r['known_source_sha256'] == corner_proof['cached_lower_sha256']
 
 cases = {}
 for name in ['desktop-map', 'desktop-map-missing']:
@@ -77,11 +101,12 @@ for name in ['desktop-map', 'desktop-map-missing']:
     toggles = [e for e in read(case / 'desktop-status.json')['events'] if e['kind'] == 'toggle']
     assert len(toggles) == 2 and all(e['guest_unchanged'] for e in toggles)
     reports = [r for r in hd['state']['graphics'] if r['resource'] == 'MAP_WAKU.OZM']
-    assert len(reports) == 1
-    assert reports[0]['mode'] == ('hd' if name == 'desktop-map' else 'fallback_missing_asset')
+    assert len(reports) == (9 if args.corners else 1)
+    assert all(r['mode'] == ('hd' if name == 'desktop-map' else 'fallback_missing_asset') for r in reports)
+    main_report = next(r for r in reports if rect(r['rect']) == (40,0,424,88))
     assert hd['state']['terrain_scene']['reason'] == 'hd'
     assert hd['state']['terrain_scene']['floor_hd_count'] > 0
-    cases[name] = dict(captures=captures, report=reports[0], summary=dict(
+    cases[name] = dict(captures=captures, report=main_report, reports=reports, summary=dict(
         steps=receipt['successful_steps'], actual_window_captures=3, toggles=2,
         receipt_sha256=sha(case / 'receipt.json'), terrain_hd_count=hd['state']['terrain_scene']['floor_hd_count']))
 
@@ -89,8 +114,8 @@ normal, missing = cases['desktop-map']['captures'], cases['desktop-map-missing']
 assert normal['saved-checkpoint']['image'].tobytes() == missing['saved-checkpoint']['image'].tobytes(), 'cross-case comparison requires identical complete native visible frame'
 state = normal['action-1']['state']
 draws = [d for d in state['graphics_observation']['verified_draws'] if d['resource'] == 'MAP_WAKU.OZM']
-assert len(draws) == 1 and draws[0]['verified']
-frame_draw = draws[0]
+assert len(draws) == (9 if args.corners else 1) and all(d['verified'] for d in draws)
+frame_draw = next(d for d in draws if d['kind'] == 'cached_frame')
 assert rect(frame_draw['DestRect']) == (40, 0, 424, 88)
 later = []
 for key in ['terrain_history', 'terrain_sprites', 'window_draws', 'kao_draws']:
@@ -113,6 +138,9 @@ asset = Image.open(asset_path).convert('RGBA')
 base_path = project / 'workplace/hd-prototype/catalog/decoded/MAPGAMEN.OZM.idx'
 assert sha(base_path) == '99a8497101f145c62d01934204f1c3ed74282fa6bd993fdbf4f8969eb0f7277c'
 base_indices = base_path.read_bytes()
+base_mask_path = project/'workplace/hd-prototype/catalog/battle-frame/frame-mask-v2.idx'
+assert sha(base_mask_path) == 'b0fc8f0075d0259e59f665f44527487d93472c05cf64201104a4cc385d065eaf'
+base_mask = base_mask_path.read_bytes()
 base_art_path = project / 'assets/hd-b/battle-frame/battle-frame-hd-b-v2.png'
 assert sha(base_art_path) == '3de79e3eebe01aa970e45b8bf377b6e381bec14c9b4d9f569994aaecbe78e435'
 base_art = Image.open(base_art_path).convert('RGBA')
@@ -124,35 +152,69 @@ native_palette = [(0,0,0),(32,32,32),(190,69,44),(81,20,20),(251,215,20),(44,81,
                   (20,20,227),(227,227,56),(0,0,0),(81,81,81),(227,190,93),(215,0,0),
                   (251,81,81),(44,215,44),(32,227,251),(251,251,251)]
 enabled, fallback, original = normal['action-1']['image'], missing['action-1']['image'], missing['saved-checkpoint']['image']
+pixel_plan, plan_counts, corner_checks = {}, {}, []
+for d in draws:
+    bounds, src = rect(d['DestRect']), rect(d['SourceRect'])
+    own_later = []
+    for key in ['terrain_history','terrain_sprites','window_draws','kao_draws']:
+        for item in state[key] or []:
+            step = item['completed_step'] if key in ['window_draws','kao_draws'] else item['EndStep']
+            if step > d['EndStep']:
+                own_later.append(rect(item['logical_rect']))
+    report = next(r for r in cases['desktop-map']['reports'] if rect(r['rect']) == bounds)
+    own_visible = [rect(r) for r in report['visible_rectangles']]
+    actual = None
+    if d['kind'] == 'cached_corner':
+        spec = corner_specs[d['Return']]
+        actual_path = root / ('map-cache-tile-%d.idx' % spec['source_tile'])
+        assert sha(actual_path) == spec['actual_reader_indices_sha256']
+        actual = actual_path.read_bytes()
+    plan_counts[d['Return']] = 0
+    for y in range(bounds[1], bounds[3]):
+        for x in range(bounds[0], bounds[2]):
+            sx, sy = src[0]+x-bounds[0], src[1]+y-bounds[1]
+            static = indices[sy*384+sx]
+            index = static if actual is None else actual[(y-bounds[1])*32+x-bounds[0]]
+            visible = not any(a <= x < c and b <= y < e for a,b,c,e in own_later)
+            assert sum(a <= x < c and b <= y < e for a,b,c,e in own_visible) == int(visible)
+            assert y*640+x not in pixel_plan
+            pixel_plan[y*640+x] = (sx,sy,index,visible,index == 8 or static == 8,d['Return'])
 painted, retained, retained_hd, changed, source_black, fallback_base = 0, 0, 0, 0, 0, 0
 for y in range(800):
     for x in range(1280):
         a, b = enabled.getpixel((x, y)), fallback.getpixel((x, y))
-        frame = 80 <= x < 848 and y < 176
-        eligible = any(left <= x//2 < right and top <= y//2 < bottom for left, top, right, bottom in visible)
-        black = frame and indices[(y//2)*384+(x-80)//2] == 8
+        plan = pixel_plan.get((y//2)*640+x//2)
+        frame = plan is not None
+        sx,sy,source_index,eligible,black,owner = plan if frame else (0,0,0,False,False,0)
         source_black += black
         if frame and eligible and not black:
-            assert a == asset.getpixel((x-80, y)), ('approved frame pixel', x, y)
-            source_index = indices[(y//2)*384+(x-80)//2]
+            assert a == asset.getpixel((sx*2+x%2,sy*2+y%2)), ('approved frame pixel', x, y)
             assert original.getpixel((x, y))[:3] == native_palette[source_index]
             # 非黑來源與原生目的相同時，既有 MAPGAMEN 底圖仍有獨立資格。
             crest = 100 <= x//2 < 360 and 70 <= y//2 < 320
             expected = original.getpixel((x, y))
-            if base_indices[(y//2)*640+x//2] == source_index and not crest:
+            if base_mask[(y//2)*640+x//2] and base_indices[(y//2)*640+x//2] == source_index and not crest:
                 expected = base_art.getpixel((x, y))
                 fallback_base += 1
             assert b == expected, ('individual missing frame/lower qualified layer', x, y)
             painted += 1
+            plan_counts[owner] += 1
         else:
             assert a == b, ('underlay or unrelated HD changed', x, y)
             if frame:
                 retained += 1
                 retained_hd += a != original.getpixel((x, y))
         changed += a != b
-assert painted > 0 and painted+retained == 33792*4 and source_black == 15906*4
+assert painted > 0 and painted+retained == len(pixel_plan)*4
+if not args.corners:
+    assert source_black == 15906*4
+else:
+    for ret,spec in corner_specs.items():
+        assert plan_counts[ret] > 0
+        corner_checks.append(dict(fourth_plane_return=ret, source_tile=spec['source_tile'],
+                                  native_rect=spec['destination_rect'], painted_output_pixels=plan_counts[ret]))
 assert retained_hd > 0 and changed > 0
-result = dict(status='PASS', classification='normal saved-game entry, cached upper 88 rows only',
+result = dict(status='PASS', classification='normal saved-game entry, cached upper 88 rows and eight lower tiles' if args.corners else 'normal saved-game entry, cached upper 88 rows only',
               source_count=len(sources), complete_original_ram_equal=True,
               original_fields_equal=len(fields), existing_graphics_trace_equal=True,
               added_cached_records=len(cached), cached_prefix_indices_sha256=cached[0]['ExpectedSHA'],
@@ -161,8 +223,10 @@ result = dict(status='PASS', classification='normal saved-game entry, cached upp
               retained_hd_output_pixels=retained_hd, individual_missing_changed_pixels=changed,
               missing_frame_qualified_base_output_pixels=fallback_base,
               missing_frame_policy='retain independently qualified MAPGAMEN HD underlay; native where no lower HD layer qualifies',
+              upper_frame_output_pixels=plan_counts[0x1ec31], lower_corner_checks=corner_checks,
+              added_corner_records=len(corners) if args.corners else 0,
               cases={k: v['summary'] for k, v in cases.items()},
-              lower_cached_corners_verified=False, whole_game_HD_complete=False,
+              lower_cached_corners_verified=args.corners, whole_game_HD_complete=False,
               verification_tool_sha256=sha(Path(__file__)))
 (root / 'verify-hd-map-frame.py').write_bytes(Path(__file__).read_bytes())
 (root / 'verification-summary.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
