@@ -708,3 +708,13 @@ r23 四套件通過，研究入口 113.317 秒，106 項來源凍結。普通十
 - 裝置驗證初次輸入檔位於自訂 state 根之外，工具路徑被轉接而停止；第二次的 20M 尚未走到原版選曲，桌面速度 1 亦在外層配額前未完成。保留兩批工具失敗，不列音訊產品缺陷或已驗證。第三次沿既有正常輸入至 150M，第一筆 PLAY 的既有證據為 136777435，採已有的速度 60 驗證模式，結果待回填。
 
 本節為實作與測試 checkpoint，裝置播放、四個平台／架構 ZIP 及 macOS 真機仍分開記錄。正常通關依使用者決定排除驗收，不將取消登記為通過。
+
+## 2026-10-16：桌面音訊與三平台本機打包完成
+
+- 桌面音訊第三次沿正常輸入至 150M 完成，實際 PulseAudio loopback 非靜音；開／關裝置的完整 RAM、十四欄與原版 PCM 相同。人耳未驗證，加速模式的丟框／補靜音計數與主機近似分類保存於 r4/audio-device/verification-summary.json。
+- 首批完成 Linux／Windows，但 macOS 的無 CGO 建置缺 GLFW／Metal 綁定。保留 failed-delivery 及原始錯誤，從相同 109 項來源重建現行版；四套件無變更，沿用逐項相同的 r4 收據。SDK image 缺 Git、Wine image 缺 GUI 驗證套件，補成既有 SDK 的版本化 revision，來源與套件清單保存。
+- v.0.1.0-20261016 四包完成，程式來源 d8f4a772f7b5a5736885cc8f312ecf0d57a70f4a。Windows／Linux amd64 與 macOS amd64／arm64 各約 528 MB；逐檔 SHA、版本、原版五檔、架構、macOS 12.0 目標、LICENSE、十份第三方聲明及 UTF-8／BOM 通過。現行入口 dist-all/v.0.1.0-20261016/，完整 SHA 保存 SHA256SUMS.json，含原版資料不加入 Git 或 Release。
+- Linux 與 Wine 真正 ZIP 各驗證 MARK 模式選擇、15989208 步自然退出、正常標題 82M、功能列雙向切換、三張 X11 與正常關窗。包內所有來源與原版 bytes 不變；macOS 編譯／格式核對通過，真機、分發簽章、人耳及預設速度的實體桌面效能未驗證。
+- 原始 ZIP／十二檔、UID/GID 與唯讀檢查通過。只修復原版控制輸出裡由 dockerd 建立的單一 root-owned 空 mountpoint，未遞迴 chown。807 張生成 PNG／163 份提示詞與私人素材子樹不變，程式、文件與工具鏈來源保存 GitHub。正常通關排除驗收；四語仍由 #4 接續，#6 保留共同與真機驗收限制。
+
+本批最終同步收據為 workplace/github-setup/desktop-package-v010-sync.json，Issue 本文與遠端狀態一同保存；版本總表為 dist-all/v.0.1.0-20261016/smoke/verification-summary.json。本輪收尾檢查專案容器並移除已完成的工作；保留現行專案工具 image 及其他專案既有 image。

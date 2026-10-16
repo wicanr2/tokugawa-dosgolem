@@ -38,6 +38,10 @@
 
 ## 開工入口
 
+跨平台工具鏈補件入口為 [tools/Dockerfile.desktop-platforms](tools/Dockerfile.desktop-platforms)。它沿用既有 Go 1.24.13／SDK 15.5 image，新增已確認缺少的 Git、Wine、Xvfb、xdotool、FFmpeg 與系統 Python／Pillow，固定主要套件版本；建置前核對註記的 base image ID。現行名稱 tokugawa-desktop-platforms:go1.24.13-sdk15.5-noble-r1，ID 為 sha256:a4323fc8a122c4bd3e629801776e3cd3d85a69e63069ad3a4226b4a2e2bf42c5。macOS 封包用 image 內的 python3，Windows GUI 驗證用 /usr/bin/python3；套件清單保存在 image 的 /desktop-platform-packages.tsv。本機來源、套件與工具鏈收據見 workplace/desktop-prototype/package/build-v.0.1.0-20261016-r2/。
+
+四包離線驗證入口為 [tools/verify-desktop-archives.py](tools/verify-desktop-archives.py)。專案及版本根目錄唯讀掛載，smoke 可寫掛 /output；在固定 Python image 執行 --version-root /delivery --output /output/archives-verification.json。逐檔 SHA、原版資料、完整版本、PE／ELF／Mach-O 架構、macOS 12.0 目標、ZIP UTF-8 與 Windows README BOM 均須通過，這不替代真機啟動。
+
 桌面本機封包入口為 [tools/package-desktop.py](tools/package-desktop.py)，只在固定 GUI image 內執行。專案／原版／固定 dosgolem 分別唯讀掛 `/project`、`/original`、`/dosgolem`，乾淨工作目錄可寫掛 `/output`，交付根目錄可寫掛 `/delivery`；參數為 `--version`、`--commit`、經實際執行產生的 `--asset-audit`、逐項相符的 `--prepared-dir` 及 `--platforms linux-windows|macos`。先在固定 GUI image 建前兩包，再在 READY 指定的既有 osxcross image 建兩個 macOS 包，兩批共用同一可寫工作目錄及 Go cache。子目錄遵守知識路由的 dist-all 契約，含原版的四個平台／架構 ZIP 只留 full-local。自製程式授權見 [LICENSE](LICENSE)，不涵蓋原版資料。
 
 桌面音訊入口為 [tools/verify-desktop-audio.py](tools/verify-desktop-audio.py)，沿 READY 指定的既有音訊 image，唯讀掛專案／原版，可寫工作目錄掛 `/output`，傳入 `--binary`、`--resource-dir`、`--game-dir`、`--cpu-source`。它重播既有正常輸入至首筆原版選曲後，核對開／關音訊的完整 RAM、原版欄位及 PulseAudio loopback，保留人耳未驗證分類。既有收據可用 `--verify-only` 重新核對，不冒稱新測次。

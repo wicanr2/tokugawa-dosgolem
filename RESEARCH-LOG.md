@@ -2411,3 +2411,16 @@ Ebitengine 十六位元播放器契約直接查固定工具 image 的 /go/pkg/mo
 封包工具改為 linux-windows 與 macos 兩批，在相同乾淨提交、同版號、同 109 項輸入及同 runtime audit 下建置。只在逐項 SHA 完全相符時沿用 r4 已通過的四套件與平台準備，不重跑同一測試。第二批先核對前兩包 SHA 與提交才追加 macOS 兩包。未發布的失敗交付移入原工作批次保存，從乾淨輸入重建現行版本，不覆寫已發布 tag 或 Release。
 
 首次封包 GUI 工具用速度 4，進度仍在正常執行但超過軟體繪圖環境的驗證時限，主動停止並保留；新版沿已通過裝置驗證的速度 60 作有界驗證，正式遊戲預設速度不改。模式選擇以普通滑鼠按下／放開確認，避免工具 Tab 檢查條件立即成立而漏掉按鍵。
+
+### 獨立桌面與本機四包：CONFORMED
+
+2026-10-16，版號 v.0.1.0-20261016，二進位來源 d8f4a772f7b5a5736885cc8f312ecf0d57a70f4a。現行交付只在 dist-all/v.0.1.0-20261016/full-local/，四包 SHA256SUMS.json 的 SHA 為 18cd6c735e4ce4ebf32790145b1b10e0e20b7872430b880061d94c911e70f81e。版本 smoke/verification-summary.json 的 SHA 為 1b6868a8312e0ea446625d41d1f0206ede75726a27acd2b3d03986d2d46e5f8c。此 CONFORMED 限已實作的桌面路徑／原版狀態隔離、技術播放、封包內容及已實測平台，不是四語或全平台真機完成。
+
+- r4 四套件通過，109 項來源與封包輸入逐項相同；新路徑 20M 完整 RAM 等於 r27，SHA 49545cf899202fc33c5383a82906fb466ed329857ac8c1a29caa8c66acb61bc6。Linux 與 Wine 的中文路徑、原版讀取／工作副本持續寫入、重開及來源不變測試通過，PCM 有界佇列與競態測試通過。
+- 裝置驗證沿既有正常滑鼠排程至 150M，第一筆 PLAY 仍在 136777435。開／關桌面輸出的全部 RAM SHA 0d9123e52923ba852b125ea04918e1007138a33e0a8e4d856b078865cb33562f、十四欄及原版 PCM 相同。583115 個原版樣本框，PCM SHA d8d44415d86494543767ac9831b27eb6682e3517d370f8bdbdc68486aa2b4407；PulseAudio monitor 的 31565884 bytes、峰值 32768 確認非靜音。速度 60 加速會發生有界丟最舊框與缺資料補靜音，計數保留；不宣稱人耳、實時硬體或逐波形一致。
+- Linux 與 Windows ZIP 都在沒有 /project／/original 的獨立容器解包並啟動，772 個檔案全部核對。模式選擇期間原版 0 步，MARK 原生 15989208 步退出碼 0 並沿用 HD；遊戲從正常入口至標題 82M，三張實際 X11 完整等於呈現圖，功能列原版／HD 及還原保持完整 proof，正常關窗退出，全部包內原始資料 SHA 不變。兩次 GUI 採速度 60，Windows 為 Wine 9.0，未冒稱 Windows 真機或預設速度效能。
+- macOS amd64／arm64 使用 CGO=1、SDK 15.5 與固定 Go 1.24.13 成功編譯，Mach-O 架構及 12.0 最低目標、Info.plist 與版本一致。兩包各 773 個檔案核對；原版五檔、全部 runtime 資源、RRSAL 與十份第三方授權皆通過。四個 ZIP 逐檔 SHA、CRC、Windows README BOM／CRLF 及非 ASCII ZIP UTF-8 規則通過。macOS 真機與正式簽章未完成。
+- 原有 SDK image 缺 Git，原有 Wine image 缺 Python／Pillow／FFmpeg。確認缺件後以既有 SDK image 為 base 建立明確替代 revision，來源 tools/Dockerfile.desktop-platforms，現行 ID a4323fc8a122c4bd3e629801776e3cd3d85a69e63069ad3a4226b4a2e2bf42c5。主要套件鎖版，完整套件清單與 SHA 保存 r2/desktop-platform-toolchain.json。初次 Dockerfile 將 image config ID 當 registry digest，metadata 階段失敗；改用已核對 ID 的本機 tag，同一 base 建置成功。未取用主機 runtime 或憑證。
+- 原始 ZIP／十二檔、唯讀與 UID/GID 1000:1000 核對通過，沒有 root-owned 或 .md 目錄。先前將原版控制的 engine 掛入可寫輸出子路徑時，dockerd 建立了一個 root-owned 空 mountpoint；只修復 package/r4/prior-control/engine 單一空目錄後核對，未遞迴變更專案。現行工具 image 保留，其他專案及既有 IDA image 不清除。
+
+完整 HD 與既定接入驗收沿 r30 的凍結來源維持；正常通關依使用者決定排除，不記作通關通過。原版資料、解碼參考、音訊與完整版只留本機。四語由 #4、共同驗收及真機限制由 #6 追蹤，不把這批桌面封包當成四語已完成。
