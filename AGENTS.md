@@ -18,6 +18,8 @@
 
 ## 開工入口
 
+MAP_WAKU 主框架快取驗證入口為 [tools/verify-hd-map-frame.py](tools/verify-hd-map-frame.py)。固定 GUI image 內專案唯讀掛 `/project`、`consumers/battle/r22/` 可寫掛 `/output`，執行該工具；正常存檔讀取、原版／HD、單獨缺框架與切換收據留本機。r21 保留真實視窗的後畫地面／單位遮擋診斷與無頭工具漏建 engine 目錄的失敗；r22 以原版地面真正返回步數裁切主框架。主框架只涵蓋前 88 列，下方圖塊及字樣另列，不以合成狀態測試取代正常視窗。
+
 本專案保存《德川家康》的 jsdos 來源與 dosgolem 接入證據。下載完成不代表遊戲已在 dosgolem 可玩。本次沒有建立 remake 引擎。
 
 1. 先讀 [CONTEXT.md](CONTEXT.md)，以其中唯一的目前狀態表為準。
@@ -93,6 +95,8 @@
 | `workplace/hd-prototype/catalog/remaining/consumers/battle/r19/` | 縮圖改用原生索引核對跨淡入來源與自然返回後的獨立建置及正常 GUI；r18 保存 RGB 跨時點資格拒絕及完整原版控制，舊來源和收據不覆寫 |
 | `workplace/hd-prototype/catalog/remaining/consumers/battle/r20/` | 已證實的 399 列結局完整複製資格與縮圖外側紙張呈現修正；原版最後一列保持。desktop-animation/ 保留新視窗只畫到一半的早期擷取，ready/ 用 wait_restore 的 steady_resource 等待已核准背景恢復後取樣，二進位與 106 項編譯來源不變。來源、共同消費端測試與正常交鋒 GUI 分開保存，不將共同測試稱為正常結局驗收 |
 | `workplace/hd-prototype/catalog/remaining/consumers/ida/remaining-consumer-audit.json` | 20 個來源與 23 個 EXE 名稱索引、DAT 目錄索引、正常 RAM 與 IDA 原始 bytes 核對；兩種索引以完整檔名配對，不互換。新匯出 range-18a80-18dc0、range-1c084-1c200、range-185a7-189c8、range-1e9e0-1ebc0 的用途與 READY 範圍見 RESEARCH-LOG |
+| `workplace/hd-prototype/catalog/remaining/consumers/ida/waku-frame-source-verification.json` | MAP_WAKU 前 384×88 的正常 RAM、四平面指紋、原始來源／目的與 IDA 9.4 bytes 核對；cache base 為原始 dword_42188，不改原名。range-1eb97-1ed10、range-1fff7-20090、range-205d0-20680 補讀取端，主框架 READY 契約見 RESEARCH-LOG，下方圖塊另列 |
+| `workplace/hd-prototype/catalog/remaining/consumers/battle/r21/` | MAP_WAKU 主框架快取讀取、原生返回與 HD 呈現的獨立建置、正常路徑及缺圖驗證；保留既有 HD 地形與單位，原版 source/index/收據只留本機 |
 | [tools/hd-extract.go](tools/hd-extract.go) | 從正常路徑 RAM 擷取 A-0.OZM，核對四平面雜湊與原生畫面矩形，輸出本機 PNG 及收據；不是正式素材包格式 |
 | [tools/hd-capture.go](tools/hd-capture.go) | `-hd-export` 在原版載入返回時輸出已核對平面的索引圖、當時 DAC 與收據；沒有 guest 寫入，不代表繪圖或遮擋已驗收 |
 | [tools/hd-ozm-probe.py](tools/hd-ozm-probe.py) | 依 IDA 9.4 原始指令做離線資源盤點，只接受獨立解碼命令；遇到 VGA 來源命令明確拒絕。以正常路徑四平面與索引雜湊交叉核對 |

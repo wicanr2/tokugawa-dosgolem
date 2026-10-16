@@ -119,6 +119,174 @@ func TestEnding399KnownRowsFromOriginalFullCopy(t *testing.T) {
 	}
 }
 
+func TestWakuCachedFrameActualPlanesAndUnderlay(t *testing.T) {
+	profile := openingEffectProfile(t, "MAP_WAKU.OZM")
+	mem, err := os.ReadFile("/project/workplace/hd-prototype/catalog/remaining/consumers/battle/r19/native-control/startup-memory.bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	base := binary.LittleEndian.Uint32(mem[0x42188:])
+	indexed, err := os.ReadFile("/project/workplace/hd-prototype/catalog/decoded/MAP_WAKU.OZM.idx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i, value := range []uint32{0x1ec31, base + 0x3180, 0xa0005} {
+		binary.LittleEndian.PutUint32(mem[0x1000+i*4:], value)
+	}
+	beforeRAM := sha256.Sum256(mem)
+	s := nativeSnapshot{Image: image.NewNRGBA(image.Rect(0, 0, 640, 400)), Indexed: make([]byte, 640*400), MaxColor: 15}
+	palette := graphicsNativePalette(profile)
+	for i, c := range palette {
+		s.DAC[i], s.Palette[i] = byte(i), [3]byte{c.R, c.G, c.B}
+	}
+	for y := 0; y < 88; y++ {
+		for x := 0; x < 384; x++ {
+			value := indexed[y*384+x]
+			s.Indexed[y*640+40+x] = value
+			s.Image.SetNRGBA(40+x, y, palette[value])
+		}
+	}
+	snapshot := func() (nativeSnapshot, error) { return s, nil }
+	var state hdGraphicsState
+	state.observe(1, 0x1fff7, 0x1000, mem, snapshot)
+	if state.Pending == nil || len(state.Draws) != 0 {
+		t.Fatal("cached frame activated before fourth plane return")
+	}
+	state.observe(2, 0x1ec31, 0x1000, mem, snapshot)
+	if state.Pending == nil {
+		t.Fatal("wrong cached return stack accepted")
+	}
+	state.observe(3, 0x1ec31, 0x1004, mem, snapshot)
+	if len(state.Draws) != 1 || !state.Draws[0].Verified || state.Draws[0].Kind != "cached_frame" || beforeRAM != sha256.Sum256(mem) {
+		t.Fatal("actual cached source/natural return or read-only contract")
+	}
+	draw := state.Draws[0]
+	if draw.CacheBase != base || len(draw.RawHelperArgs) != 2 || draw.RawHelperArgs[0] != base+0x3180 || draw.RawHelperArgs[1] != 0xa0005 {
+		t.Fatal("raw cached helper arguments lost")
+	}
+	asset, err := previewPNG("/project/assets/hd-b/art/" + profile.Asset)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pair := newHDGraphicsPair(profile, indexed, asset, 2)
+	out := image.NewNRGBA(image.Rect(0, 0, 1280, 800))
+	underlay := color.NRGBA{21, 67, 102, 255}
+	for y := 0; y < 800; y++ {
+		for x := 0; x < 1280; x++ {
+			out.SetNRGBA(x, y, underlay)
+		}
+	}
+	original := append([]byte(nil), out.Pix...)
+	// 後畫的場景／文字在原始黑區改變索引，已存在的 host 畫布必須保留。
+	black, nonblack := -1, -1
+	for i, v := range indexed[:384*88] {
+		if v == 8 && black < 0 {
+			black = i
+		}
+		if v != 8 && nonblack < 0 {
+			nonblack = i
+		}
+	}
+	if black < 0 || nonblack < 0 {
+		t.Fatal("actual source mask")
+	}
+	s.Indexed[black/384*640+40+black%384] = 15
+	report := pair.apply(out, s, draw, true)
+	if report.Mode != "hd" || report.PaintedNative+report.PreservedNative != 384*88 {
+		t.Fatal("cached frame rendering", report)
+	}
+	for y := 0; y < 800; y++ {
+		for x := 0; x < 1280; x++ {
+			want := underlay
+			if x >= 80 && x < 848 && y < 176 && indexed[y/2*384+(x-80)/2] != 8 {
+				want = rgbaAt(pair.Asset, x-80, y)
+			}
+			if out.NRGBAAt(x, y) != want {
+				t.Fatal("cached frame/source-black underlay or outside pixels", x, y)
+			}
+		}
+	}
+	for _, failure := range []string{"disabled", "missing", "palette", "changed_border", "raw_args", "unknown_source"} {
+		copy(out.Pix, original)
+		p, d, native := pair, draw, s
+		if failure == "missing" {
+			p.Reason = "fallback_missing_asset"
+		}
+		if failure == "palette" {
+			native.Palette[0][0] ^= 1
+		}
+		if failure == "changed_border" {
+			native.Indexed = append([]byte(nil), s.Indexed...)
+			native.Indexed[nonblack/384*640+40+nonblack%384] ^= 1
+		}
+		if failure == "raw_args" {
+			d.RawHelperArgs = []uint32{base, 0xa0005}
+		}
+		if failure == "unknown_source" {
+			d.Name = "OTHER.OZM"
+		}
+		r := p.apply(out, native, d, failure != "disabled")
+		if r.Mode == "hd" || !bytes.Equal(out.Pix, original) {
+			t.Fatal("unsafe cached fallback", failure, r)
+		}
+	}
+	s.Indexed[black/384*640+40+black%384] = 8
+	control := graphicsTrace{Profiles: []graphicsSourceProfile{profile.Source}}
+	control.observe(4, 0x1fff7, 0x1000, mem, snapshot)
+	control.observe(5, 0x1ec31, 0x1004, mem, snapshot)
+	if len(control.Records) != 1 || !control.Records[0].Verified {
+		t.Fatal("negative cases require an independently valid native destination")
+	}
+	for _, failure := range []string{"source_changed", "base_changed", "destination_changed", "missing_profile", "destination_return_changed"} {
+		trace := graphicsTrace{Profiles: []graphicsSourceProfile{profile.Source}}
+		if failure == "missing_profile" {
+			trace.Profiles = nil
+		}
+		trace.observe(4, 0x1fff7, 0x1000, mem, snapshot)
+		if failure == "missing_profile" {
+			if trace.Pending != nil {
+				t.Fatal("missing source profile accepted")
+			}
+			continue
+		}
+		if trace.Pending == nil {
+			t.Fatal("valid cached source rejected")
+		}
+		if failure == "source_changed" {
+			mem[base] ^= 1
+		}
+		if failure == "base_changed" {
+			binary.LittleEndian.PutUint32(mem[0x42188:], base+1)
+		}
+		if failure == "destination_return_changed" {
+			s.Indexed[nonblack/384*640+40+nonblack%384] ^= 1
+		}
+		if failure == "destination_changed" {
+			binary.LittleEndian.PutUint32(mem[0x1008:], 0xa0006)
+			trace.Pending = nil
+			trace.observe(5, 0x1fff7, 0x1000, mem, snapshot)
+			if trace.Pending != nil {
+				t.Fatal("unknown destination accepted")
+			}
+			binary.LittleEndian.PutUint32(mem[0x1008:], 0xa0005)
+			continue
+		}
+		trace.observe(6, 0x1ec31, 0x1004, mem, snapshot)
+		if len(trace.Records) != 1 || trace.Records[0].Verified {
+			t.Fatal("corrupt cached return accepted", failure)
+		}
+		if failure == "source_changed" {
+			mem[base] ^= 1
+		}
+		if failure == "base_changed" {
+			binary.LittleEndian.PutUint32(mem[0x42188:], base)
+		}
+		if failure == "destination_return_changed" {
+			s.Indexed[nonblack/384*640+40+nonblack%384] ^= 1
+		}
+	}
+}
+
 func TestHDGraphicsCompositeActualSourcesAndVisibility(t *testing.T) {
 	root := "/project/workplace/hd-prototype/catalog/remaining/consumers/battle/r14/native-turn3/"
 	data, err := os.ReadFile(root + "receipt.json")
@@ -624,6 +792,45 @@ func TestHDGraphicsVisibleFragmentsAndSameIndexUnknownCopy(t *testing.T) {
 	state.observe(4, 0x1c1bc, 0x60000, mem, snapshot)
 	if len(state.Draws) != 0 {
 		t.Fatal("fragment bound not enforced")
+	}
+}
+
+func TestHDGraphicsCachedFrameOcclusionByNaturalTerrainReturn(t *testing.T) {
+	draw := graphicsDrawRecord{Name: "MAP_WAKU.OZM", Kind: "cached_frame", EndStep: 10, DestRect: image.Rect(40, 0, 424, 88)}
+	old := image.Rect(40, 0, 88, 32)
+	floor := image.Rect(64, 56, 112, 88)
+	sprite := image.Rect(40, 68, 88, 116)
+	terrain := hdTerrainState{History: []hdTerrainDraw{{Rect: old, EndStep: 9}, {Rect: floor, EndStep: 11}}, Sprites: []hdTerrainSpriteDraw{{Rect: sprite, EndStep: 12}}}
+	clipped := graphicsOcclude(draw, nil, nil, terrain)
+	for y := 0; y < 88; y++ {
+		for x := 40; x < 424; x++ {
+			point, visible := image.Pt(x, y), 0
+			for _, rect := range clipped.VisibleRects {
+				if point.In(rect) {
+					visible++
+				}
+			}
+			want := 1
+			if point.In(floor) || point.In(sprite) {
+				want = 0
+			}
+			if visible != want {
+				t.Fatal("later original rectangle or earlier return ordering", point, visible, want)
+			}
+		}
+	}
+	// 後畫來源即使碰巧保留相同索引，也不能讓舊框架覆蓋它。
+	if len(clipped.VisibleRects) == 0 || clipped.DestRect != draw.DestRect {
+		t.Fatal("occlusion discarded independent frame evidence")
+	}
+	unknown := hdTerrainState{History: []hdTerrainDraw{{Rect: image.Rect(-1, 0, 1, 1), EndStep: 11}}}
+	if graphicsOcclude(draw, nil, nil, unknown).VisibleRects == nil || len(graphicsOcclude(draw, nil, nil, unknown).VisibleRects) != 0 {
+		t.Fatal("invalid later rectangle kept cached frame")
+	}
+	draw.Kind = "opaque_rect"
+	unchanged := graphicsOcclude(draw, nil, nil, terrain)
+	if len(unchanged.VisibleRects) != 1 || unchanged.VisibleRects[0] != draw.DestRect {
+		t.Fatal("terrain changed an unrelated OZM contract")
 	}
 }
 

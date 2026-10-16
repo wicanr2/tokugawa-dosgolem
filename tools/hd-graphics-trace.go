@@ -31,6 +31,50 @@ type graphicsDrawRecord struct {
 	QualifiedSHA           string            `json:"known_source_sha256,omitempty"`
 	Error                  string            `json:"observation_error,omitempty"`
 	VisibleRects           []image.Rectangle `json:"visible_rectangles,omitempty"`
+	RawHelperArgs          []uint32          `json:"raw_helper_args,omitempty"`
+	CacheBase              uint32            `json:"raw_cache_base_linear,omitempty"`
+}
+
+func wakuFrameEntry(eip, esp uint32, mem []byte) bool {
+	return eip == 0x1fff7 && uint64(esp)+4 <= uint64(len(mem)) && binary.LittleEndian.Uint32(mem[esp:]) == 0x1ec31
+}
+
+// 原始 dword_42188 的四個 packed plane；指紋來自完整 MAP_WAKU 前 88 列。
+func wakuFrameSource(mem []byte, profiles []graphicsSourceProfile) (graphicsSourceProfile, []byte, uint32, bool) {
+	if len(mem) < 0x4218c {
+		return graphicsSourceProfile{}, nil, 0, false
+	}
+	base := binary.LittleEndian.Uint32(mem[0x42188:])
+	if base < 0xc0000 || uint64(base)+0x4200 > uint64(len(mem)) {
+		return graphicsSourceProfile{}, nil, 0, false
+	}
+	want := [4]string{
+		"a5a88414fb10c4e9a154d055c202b825b263a945706d0cdf897ea25f106ad746",
+		"0694dc10a24b46b0bff849fc469957072b5b45c21d68bc6afe845d491d01a2ed",
+		"7f772998f44526537b3bf799122a3faeb6ce249697e2fcc9400e7cfa301d153a",
+		"bf94d263064055bf14cb82191c973f5035224ac5faba6b6849d5c667365b3235",
+	}
+	var planes [4][]byte
+	for bit := range planes {
+		start := uint64(base) + uint64(bit)*0x1080
+		planes[bit] = mem[start : start+0x1080]
+		if fmt.Sprintf("%x", sha256.Sum256(planes[bit])) != want[bit] {
+			return graphicsSourceProfile{}, nil, 0, false
+		}
+	}
+	for _, profile := range profiles {
+		if profile.Name != "MAP_WAKU.OZM" || profile.Width != 384 || profile.Height != 120 || len(profile.Planes) != 4 {
+			continue
+		}
+		indices := make([]byte, 384*88)
+		for n := range indices {
+			for bit, plane := range planes {
+				indices[n] |= ((plane[n/8] >> uint(7-n%8)) & 1) << uint(bit)
+			}
+		}
+		return profile, indices, base, true
+	}
+	return graphicsSourceProfile{}, nil, 0, false
 }
 
 type graphicsPending struct {
@@ -148,6 +192,11 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 		r := p.Record
 		r.EndStep = step
 		profile, _, ok := graphicsSource(mem, t.Profiles)
+		if r.Kind == "cached_frame" {
+			var base uint32
+			profile, _, base, ok = wakuFrameSource(mem, t.Profiles)
+			ok = ok && base == r.CacheBase
+		}
 		if r.Kind == "opening_shift" {
 			ok = openingShiftReturn(p, mem)
 			profile.Name = r.Name
@@ -184,7 +233,8 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 		t.Records = append(t.Records, r)
 		t.Pending = nil
 	}
-	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 && !openingPartialEntry(eip) && !openingShiftEntry(eip) {
+	cached := wakuFrameEntry(eip, esp, mem)
+	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 && !openingPartialEntry(eip) && !openingShiftEntry(eip) && !cached {
 		return
 	}
 	if len(t.Records) >= 512 {
@@ -201,6 +251,9 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 	if openingPartialEntry(eip) {
 		stackBytes = 8
 	}
+	if cached {
+		stackBytes = 12
+	}
 	if uint64(esp)+stackBytes > uint64(len(mem)) {
 		r.Error = "stack outside RAM"
 		t.Records = append(t.Records, r)
@@ -208,6 +261,22 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 	}
 	r.Return = binary.LittleEndian.Uint32(mem[esp:])
 	if uint64(r.Return) >= uint64(len(mem)) {
+		return
+	}
+	if cached {
+		r.Kind, r.Name = "cached_frame", "MAP_WAKU.OZM"
+		r.RawHelperArgs = []uint32{binary.LittleEndian.Uint32(mem[esp+4:]), binary.LittleEndian.Uint32(mem[esp+8:])}
+		_, indices, base, ok := wakuFrameSource(mem, t.Profiles)
+		if !ok || uint64(r.RawHelperArgs[0]) != uint64(base)+0x3180 || r.RawHelperArgs[1] != 0xa0005 {
+			r.Error = "unmatched cached source or fourth-plane arguments"
+			t.Records = append(t.Records, r)
+			return
+		}
+		r.CacheBase = base
+		r.Args = [5]uint32{0, 48, 88, 80, 0xa0005}
+		r.SourceRect, r.DestRect = image.Rect(0, 0, 384, 88), image.Rect(40, 0, 424, 88)
+		r.ExpectedSHA = fmt.Sprintf("%x", sha256.Sum256(indices))
+		t.Pending = &graphicsPending{Record: r, Expected: indices}
 		return
 	}
 	if eip == 0x1c084 || eip == 0x11f14 {

@@ -385,6 +385,20 @@ def main():
         for case in known_rows['cases'].values():
             assert case['receipt_sha256'] == sha(known_rows_path.parent/case['artifact_root']/'receipt.json')
         proof_sources.append({'verification': str(known_rows_path.relative_to(PROJECT)), 'sha256': sha(known_rows_path)})
+    map_frame_path = ROOT/'remaining/consumers/battle/r22/verification-summary.json'
+    map_frame = json.loads(map_frame_path.read_text()) if map_frame_path.exists() else None
+    if map_frame:
+        assert map_frame['status'] == 'PASS' and map_frame['complete_original_ram_equal']
+        assert map_frame['existing_graphics_trace_equal'] and map_frame['added_cached_records'] > 0
+        assert map_frame['lower_cached_corners_verified'] is False
+        assert map_frame['frame_output_pixels'] > 0 and map_frame['retained_hd_output_pixels'] > 0
+        assert sum(c['actual_window_captures'] for c in map_frame['cases'].values()) == 6
+        assert sum(c['toggles'] for c in map_frame['cases'].values()) == 4
+        verifier_sources.append(recorded_verifier('verify-hd-map-frame.py', map_frame['verification_tool_sha256'],
+                                                  'remaining/consumers/battle/r22/verify-hd-map-frame.py'))
+        for name, case in map_frame['cases'].items():
+            assert case['receipt_sha256'] == sha(map_frame_path.parent/name/'receipt.json')
+        proof_sources.append({'verification': str(map_frame_path.relative_to(PROJECT)), 'sha256': sha(map_frame_path)})
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -612,6 +626,10 @@ def main():
                                                  'scope': 'default selection, MARK original/HD, native exit, DX5 first battle and window close',
                                                  'game_startup_integrated': True})
     for record in records:
+        if record['source'] == 'MAP_WAKU.OZM' and map_frame:
+            record.update(runtime_status='normal cached upper 88-row frame, later floor/sprite occlusion, HD underlay and individual missing frame verified; lower cache pieces pending',
+                          runtime_proof_sha256=sha(map_frame_path), normal_upper_frame_rows_verified=88,
+                          lower_cached_corners_verified=False)
         if record['source'] in combat_hd_sources:
             record.update(runtime_status='normal battle HD/original/restored and native state verified; composite masks, original text, individual missing ground and region restoration verified; top unit icons remain original',
                           runtime_proof_sha256=sha(combat_path))
@@ -654,7 +672,7 @@ def main():
               "remaining_animation_atlases_prepared":8 if pending_art_proof else 0,
               "remaining_animation_frames_prepared":48 if pending_art_proof else 0,
               "remaining_sources_runtime_registered":len(pending_runtime.get('registered_source_names',[])),
-              "remaining_sources_normal_verified":len(set(pending_runtime_proof['normal_new_sources'] if pending_runtime_proof else []) | set(partial_proof['normal_graphics_sources'] if partial_proof else []) | (combat_hd_sources & set(pending_profiles))),
+              "remaining_sources_normal_verified":len(set(pending_runtime_proof['normal_new_sources'] if pending_runtime_proof else []) | set(partial_proof['normal_graphics_sources'] if partial_proof else []) | (combat_hd_sources & set(pending_profiles)) | ({'MAP_WAKU.OZM'} if map_frame else set())),
               "generated_partial_source_art_resources":len(prefix_art),
               "prepared_partial_source_story_resources":len(prefix_story),
               "partial_source_story_resources_runtime_registered":len(prefix_runtime['registered_sources']) if prefix_runtime else 0,
@@ -673,6 +691,8 @@ def main():
               "normal_combat_unit_instances_verified": 2 if combat_units else 0,
               "combat_paper_margin_native_pixels_verified": 768 if known_rows else 0,
               "ending_399_row_full_copy_bindings_verified": 2 if known_rows else 0,
+              "normal_MAP_WAKU_upper_frame_rows_verified": 88 if map_frame else 0,
+              "normal_MAP_WAKU_lower_cache_pieces_verified": 0,
               "generated_MAP_CHIP_object_drafts": object_drafts,
               "generated_MAP_CHIP_object_art": generated_objects,
               "native_MAP_CHIP_sprite_source_profiles": 39 if foreground_summary else 0,

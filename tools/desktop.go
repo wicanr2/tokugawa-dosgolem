@@ -627,7 +627,7 @@ func (g *desktopGame) render() error {
 	}
 	g.graphicsReports = nil
 	for _, draw := range g.c.Live.Graphics.Draws {
-		draw = graphicsOcclude(draw, g.c.Live.Window.Draws, g.c.Live.Kao.Draws)
+		draw = graphicsOcclude(draw, g.c.Live.Window.Draws, g.c.Live.Kao.Draws, g.c.Live.Terrain)
 		report := g.graphics[draw.Name].apply(out, s, draw, g.enabled)
 		g.graphicsReports = append(g.graphicsReports, report)
 		if report.Mode == "hd" {

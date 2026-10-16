@@ -6,9 +6,10 @@ import (
 )
 
 type hdTerrainDraw struct {
-	Index int             `json:"index"`
-	Rect  image.Rectangle `json:"logical_rect"`
-	Order uint64          `json:"draw_order"`
+	Index   int             `json:"index"`
+	Rect    image.Rectangle `json:"logical_rect"`
+	Order   uint64          `json:"draw_order"`
+	EndStep int
 }
 
 type hdTerrainSpriteDraw struct {
@@ -133,6 +134,7 @@ func (h *hdTerrainState) observe(step int, eip, esp, esi, edi uint32, mem []byte
 		} else if hdTerrainSourceValid(mem) && len(h.Draws) < 256 && len(h.History) < 512 {
 			h.Sequence++
 			p.Draw.Order = h.Sequence
+			p.Draw.EndStep = step
 			h.Draws = append(h.Draws, p.Draw)
 			h.History = append(h.History, p.Draw)
 			h.Returns++

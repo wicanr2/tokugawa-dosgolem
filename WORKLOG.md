@@ -635,3 +635,16 @@ https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6205953190
 r20 的 ready/ 正常到 208.9M 關窗，獨立驗收通過。四模式十七張 X11、十一次切換、768 原生紙張邊緣像素、兩縮圖 alpha、個別缺單位及地面、文字／OR 混色、動畫遮擋及真正還原均通過。600M 完整 RAM／十七欄符合 r14，CD PCM 不變。END-11／11B 另列真實來源與合成共同消費端測試，正常結局未抽測；沒有把合成狀態列為正常結局證據。
 
 覆蓋清單重生通過，新增兩個 399 列綁定及 768 紙張邊緣像素，正常樣本數不擴張。純呈現總表、早期失敗及各版驗證器全文均保留；106 項來源與快照、Python 語法、Go 格式及完整根擁有權核對通過，正式 DX5.i64 雜湊不變。全部本批容器已移除，沒有新增圖片或重建 image。接續 END-2 及 MAP_WAKU 特殊消費端，全遊戲 HD、桌面音訊及三平台打包仍未完成。
+
+提交 250191c49ceb4a4867a7a65aaf67f1290256369a 已推送 main，git ls-remote 與遠端 tree 核對一致，repo 仍為 PRIVATE，圖片子樹與 1050 份檔案不變。Issue #5 的進度為：
+https://github.com/wicanr2/tokugawa-dosgolem/issues/5#issuecomment-6206615456
+
+### 2026-10-16：地圖快取主框架與後畫場景
+
+r21 四套件通過，正常讀檔的實際視窗辨識出 541 個被後畫地形／單位覆寫的非黑來源像素。r22 記錄地面真正返回步數，主框架依先後順序保留後畫矩形，其他 OZM 契約不變。四套件通過，研究入口 102.014 秒，106 項來源凍結。正常 600M 的完整 RAM、十五個原版欄位與原有合成 trace 相同；原有 67 筆 graphics trace 不變，新增 72 筆快取框架唯讀返回。
+
+兩個普通讀檔桌面案例共六張 X11、四次切換，68744 個框架呈現像素與 66424 個保留畫布像素逐點核對，兩案皆保持 67 處 HD 地面。個別缺圖的 68744 個底圖像素另核對固定 MAPGAMEN 索引及 HD 底圖；沒有撤銷其他已合格圖層。r21 漏建 engine、IDA 漏掛 /original，以及 r22 驗證器的 null 清單與底圖假設失敗均保留，分類為工具環境或驗證問題；最終只採完整的 r22 收據。
+
+覆蓋清單更新為正常剩餘來源抽樣八項，MAP_WAKU 限前 88 列。下方圖塊、END-2、未抽測結局、桌面音訊及三平台封包未完成。來源、實際視窗及驗證器全文保存於 consumers/battle/r22/；原始資料、正式 IDA、807 張生成圖及素材索引保持不變，原版截圖與收據留本機。Docker、擁有權及原始 ZIP／十二檔核對見 r22。
+
+本批提交標題為「Integrate cached map frame without covering later HD terrain」，推送與 Issue #5 保存收據為 workplace/github-setup/hd-map-frame-r22-sync.json。

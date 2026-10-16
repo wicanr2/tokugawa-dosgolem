@@ -11,7 +11,7 @@
 | 原生 C runtime | 啟動範圍通過 | 配置器、初始化與資料解碼照常執行；後續正式遊戲遇到的新平台缺口另開窄切片 |
 | DOS 檔案與光碟 | 進行中 | 真實光碟掛載與 MSCDEX TOC 子集通過；原版正常資料讀取與音軌仍待驗證 |
 | 顯示與滑鼠輸入 | 開場至戰場範圍通過 | 原生標題、角色建立、敘事、出陣確認、地形、人物單位及小地圖已目視核對；普通滑鼠可推進，戰場持續查詢按鍵，時間表與畫面雜湊可重播 |
-| 音訊 | 裝置、PCM 與首場流程通過 | 原版正常流程八筆 PLAY 及換曲通過，PCM 逐段核對 BIN；桌面、人耳、含 PREGAP 的播放及末軌異常長度待驗 |
+| 音訊 | 裝置、PCM 與首場流程通過 | 原版正常流程八筆 PLAY 及換曲通過，PCM 逐段核對 BIN；PREGAP 靜音及映像結尾停止亦通過；桌面輸出及人耳確認待驗 |
 | MARK 與啟動顯示選擇 | CONFORMED，完整鏈通過 | 預設先選模式，依序執行原版 MARK 與 DX5；MARK 的最後原版／HD 設定帶進遊戲，兩處功能列均可切換。兩次完整首戰與正常關窗、各自 RAM／原版欄位通過；收據見 startup-chain/verification-summary.json。原版執行環境及虛擬時間分開，不偽造 COMMAND.COM 或 EXEC 成功 |
 | 正常玩家路徑 | 部分通過 | 原版入口至首戰及 FILE 3 的正常存讀檔樣本通過，讀回完整畫面一致；武將表 HD 切換通過。接續回合及交鋒，不將單一存檔或首戰驗收當成全遊戲相容 |
 | private GitHub repository 與 Issues | 遠端核對完成 | 主機 gh 確認 private 與六筆 Issues；CD-TRACE 修正與首場流程通過，後續由 [CDDA #2](https://github.com/wicanr2/tokugawa-dosgolem/issues/2)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3) 接續，最新狀態查 GitHub |
@@ -73,6 +73,8 @@
 - 原版 EXE、DAT、BIN、音軌及擷取原圖仍只留本機；素材包記錄來源與權利。沒有新增公開發行或原版素材散布授權。
 
 ### HD 目前切片
+
+- 地圖快取主框架前 88 列已由正常讀檔、實際 X11、切換與缺圖驗收。下一閘門為下方八次 32×32 快取圖塊及平面來源差異，另有 END-2 位移消費端；完整 HD 與三平台封包未完成。入口為 tools/verify-hd-map-frame.py 與 RESEARCH-LOG。
 
 - 全遊戲美術完成後才進三平台打包。唯一覆蓋清單為 `workplace/hd-prototype/catalog/art-coverage.json`，由 `tools/hd-art-inventory.py` 重生；分開已製作、精確重複、已接入及正常路徑驗證，不用資源數估算圖集完成百分比。
 - 九張劇情／軍議圖與頭像 76..79 的真實視窗切換、缺圖及完整 750M 核對通過。81 張頭像已製作及接共同繪圖端；其餘 77 張未逐張在正常路徑抽測。

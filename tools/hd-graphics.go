@@ -288,7 +288,7 @@ func graphicsFragmentCount(draws []graphicsDrawRecord) int {
 }
 
 // 使用已核對的較晚自然返回；切割呈現副本，不改原始繪圖紀錄。
-func graphicsOcclude(draw graphicsDrawRecord, windows []hdWindowDraw, portraits []hdKaoDraw) graphicsDrawRecord {
+func graphicsOcclude(draw graphicsDrawRecord, windows []hdWindowDraw, portraits []hdKaoDraw, terrain ...hdTerrainState) graphicsDrawRecord {
 	visible := append([]image.Rectangle(nil), draw.VisibleRects...)
 	if draw.VisibleRects == nil {
 		visible = []image.Rectangle{draw.DestRect}
@@ -315,6 +315,14 @@ func graphicsOcclude(draw graphicsDrawRecord, windows []hdWindowDraw, portraits 
 	}
 	for _, portrait := range portraits {
 		cut(portrait.Rect, portrait.EndStep)
+	}
+	if draw.Kind == "cached_frame" && draw.Name == "MAP_WAKU.OZM" && len(terrain) == 1 {
+		for _, floor := range terrain[0].History {
+			cut(floor.Rect, floor.EndStep)
+		}
+		for _, sprite := range terrain[0].Sprites {
+			cut(sprite.Rect, sprite.EndStep)
+		}
 	}
 	draw.VisibleRects = visible
 	return draw
@@ -343,7 +351,8 @@ func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapsho
 		h.observeComposite(step, eip, esp, mem, snapshot)
 		return
 	}
-	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14 || openingPartialEntry(eip) || openingShiftEntry(eip)
+	cached := wakuFrameEntry(eip, esp, mem)
+	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14 || openingPartialEntry(eip) || openingShiftEntry(eip) || cached
 	returned := h.Pending != nil && eip == h.Pending.Record.Return && uint64(esp) == uint64(h.Pending.Record.Stack)+4
 	if !entry && !returned {
 		return
@@ -359,6 +368,9 @@ func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapsho
 			h.Shift = nil
 		} else {
 			r, ok := graphicsDestination(esp, mem)
+			if cached {
+				r, ok = image.Rect(40, 0, 424, 88), true
+			}
 			if openingPartialEntry(eip) {
 				r, ok = openingPartialDestination(eip), true
 			}
@@ -507,6 +519,12 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 	expected := graphicsCrop(p.Source, p.Profile.Source.Width, draw.SourceRect)
 	sourceCropSHA := draw.ExpectedSHA
 	composite := draw.Kind == "or_full" || draw.Kind == "masked_rect"
+	cachedFrame := draw.Kind == "cached_frame" && draw.Name == "MAP_WAKU.OZM"
+	if draw.Kind == "cached_frame" && (!cachedFrame || draw.Return != 0x1ec31 || draw.CacheBase < 0xc0000 || len(draw.RawHelperArgs) != 2 ||
+		uint64(draw.RawHelperArgs[0]) != uint64(draw.CacheBase)+0x3180 || draw.RawHelperArgs[1] != 0xa0005 ||
+		draw.SourceRect != image.Rect(0, 0, 384, 88) || draw.DestRect != image.Rect(40, 0, 424, 88)) {
+		return r
+	}
 	if composite {
 		entry := uint32(0x1c291)
 		if draw.Kind == "masked_rect" {
@@ -588,6 +606,12 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 					return r
 				}
 			}
+		} else if cachedFrame {
+			for i, value := range want {
+				if value != 8 && actual[i] != value {
+					return r
+				}
+			}
 		} else if fmt.Sprintf("%x", sha256.Sum256(actual)) != fmt.Sprintf("%x", sha256.Sum256(want)) {
 			return r
 		}
@@ -596,6 +620,10 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 		src := f.Add(draw.SourceRect.Min.Sub(draw.DestRect.Min))
 		for y := 0; y < f.Dy(); y++ {
 			for x := 0; x < f.Dx(); x++ {
+				if cachedFrame && p.Source[(src.Min.Y+y)*p.Profile.Source.Width+src.Min.X+x] == 8 {
+					r.PreservedNative++
+					continue
+				}
 				preserved := p.preserves(src.Min.X+x, src.Min.Y+y)
 				point := image.Pt(f.Min.X+x, f.Min.Y+y)
 				if composite && graphicsCompositeForeground(draw, point) && s.Indexed[point.Y*640+point.X] != p.Source[(src.Min.Y+y)*p.Profile.Source.Width+src.Min.X+x] {
