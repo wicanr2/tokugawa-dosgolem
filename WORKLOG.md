@@ -660,3 +660,14 @@ r23 四套件通過，研究入口 113.317 秒，106 項來源凍結。普通十
 原始 ZIP／十二檔、唯讀、擁有權及正式 IDA 雜湊核對通過，沿用既有 image，容器已清理。生成圖及提示詞未改，原版索引、RAM、畫面與音訊只留本機。END-2 位移消費端、未抽測正常結局、桌面音訊與三平台封包仍待完成；不宣稱全遊戲 HD 完成。
 
 本批提交標題為「Integrate eight cached lower map-frame tiles」，推送及 Issue #5 收據為 workplace/github-setup/hd-map-corners-r23-sync.json。
+
+
+## 2026-10-16：END-2 結局位移的條件式 HD 接入
+
+- 命中逆向／spec 閘門、IDA 9.4、正常玩家路徑與文件職責路由，沿用固定 GUI image、IDA image、dosgolem 副本與既有研究目錄。
+- 查證 END-2 的原版四平面左移與 400×150 顯示，新增有界原始指令來源探針。先發現 word RCL 缺口，依 Intel SDM 補 16-bit register count-one 形式；其他未授權形式仍拒絕。未修改外部 dosgolem、EXE、DAT 或正式 IDA 資料庫。
+- 初始完整來源與最多 240 次連續位移接入 host HD；來源、指標、caller、自然返回、原生目的及色盤皆須通過，缺圖回原版。既有美術及提示詞沒有新增或改寫。
+- 四套件通過，106 項來源凍結；原始指令 241 狀態、四組 CPU 平面與共同呈現／負向測試通過。600M 普通操作的完整 RAM 與十七欄等於 r23，三張實際讀檔視窗及兩次切換相同。詳見 [本輪驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r24/runtime/verification-summary.json)。
+- r24 根保留初次 CPU 缺口，ready/ 保存來源與透明 fixture 錯誤，runtime/ 保存修正後乾淨建置及回歸。準備工具的 git 缺件與反向 patch 操作失敗另在 RESEARCH-LOG 分類，不寫成遊戲缺陷。
+- 原始 ZIP／十二檔完整性及 UID/GID 1000:1000 通過，沒有 root-owned 或 .md 目錄。正式 DX5.i64 的 SHA 保持 8afa40d3eaeed4851b78ed2ddc80ccbc1c65e14cb2481a09316d42670efce02e。全部本批容器已移除，沿用既有 image，沒有建立重複工具鏈。
+- 正常結局 GUI、其餘動畫抽測、桌面音訊與三平台打包仍待完成，全遊戲 HD 維持未完成。此輪自製程式／測試／文件同步至既有 private repo；提交、遠端素材樹與 Issue 留言結果保存於 [同步收據](workplace/github-setup/hd-ending-r24-sync.json)，留言本文在 [本機草稿](workplace/github-setup/hd-ending-r24.md)。原版來源及研究收據只留本機。

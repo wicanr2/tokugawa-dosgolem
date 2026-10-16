@@ -353,7 +353,7 @@ func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapsho
 	}
 	cached := wakuFrameEntry(eip, esp, mem)
 	corner, cachedCorner := wakuCornerEntry(eip, esp, mem)
-	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14 || openingPartialEntry(eip) || openingShiftEntry(eip) || cached || cachedCorner
+	entry := eip == 0x1c1bc || eip == 0x1c084 || eip == 0x11f14 || openingPartialEntry(eip) || openingShiftEntry(eip) || endingShiftEntry(eip) || cached || cachedCorner
 	returned := h.Pending != nil && eip == h.Pending.Record.Return && uint64(esp) == uint64(h.Pending.Record.Stack)+4
 	if !entry && !returned {
 		return
@@ -380,6 +380,9 @@ func (h *hdGraphicsState) observe(step int, eip, esp uint32, mem []byte, snapsho
 			}
 			if spec, shift := openingShiftDefinition(eip); shift {
 				r, ok = spec.Dest, true
+			}
+			if endingShiftEntry(eip) {
+				r, ok = endingShiftDestination(), true
 			}
 			if !ok {
 				h.Draws = nil
@@ -511,6 +514,9 @@ func (p hdGraphicsPair) apply(out *image.NRGBA, s nativeSnapshot, draw graphicsD
 	}
 	if draw.Kind == "opening_shift" {
 		return p.applyOpeningShift(out, s, draw, r)
+	}
+	if draw.Kind == "ending_shift" {
+		return p.applyEndingShift(out, s, draw, r)
 	}
 	r.Mode = "fallback_geometry"
 	if out == nil || out.Bounds() != image.Rect(0, 0, 640*p.Scale, 400*p.Scale) || s.Image == nil || s.Image.Bounds() != image.Rect(0, 0, 640, 400) || len(s.Indexed) != 640*400 || !draw.DestRect.In(image.Rect(0, 0, 640, 400)) || draw.DestRect.Empty() || draw.DestRect.Size() != draw.SourceRect.Size() {

@@ -286,3 +286,208 @@ func (p hdGraphicsPair) applyOpeningShift(out *image.NRGBA, s nativeSnapshot, dr
 	r.Mode = "hd"
 	return r
 }
+
+// END-2 的獨立左移契約與原始指令探針見 RESEARCH-LOG；不是 OP2/OP8 的右移。
+func endingShiftEntry(eip uint32) bool        { return eip == 0x185a7 }
+func endingShiftDestination() image.Rectangle { return image.Rect(120, 0, 520, 150) }
+
+func endingShiftCurrent(mem []byte) ([4]uint32, []byte, string, bool) {
+	var bases [4]uint32
+	if len(mem) < 0x5b1bc || binary.LittleEndian.Uint32(mem[0x5b1b8:]) != 80 || binary.LittleEndian.Uint32(mem[0x5b1b4:]) != 400 {
+		return bases, nil, "", false
+	}
+	raw, indices := make([]byte, 128000), make([]byte, 256000)
+	for bit, global := range []int{0x38c00, 0x38bf8, 0x38c04, 0x38bfc} {
+		base := binary.LittleEndian.Uint32(mem[global:])
+		if base < 0xc0000 || uint64(base)+32000 > uint64(len(mem)) {
+			return bases, nil, "", false
+		}
+		bases[bit] = base
+		plane := mem[base : base+32000]
+		copy(raw[bit*32000:], plane)
+		for i, value := range plane {
+			for x := 0; x < 8; x++ {
+				indices[i*8+x] |= ((value >> uint(7-x)) & 1) << uint(bit)
+			}
+		}
+	}
+	return bases, indices, fmt.Sprintf("%x", sha256.Sum256(raw)), true
+}
+
+func endingShiftQualified(original []byte, count int) []byte {
+	if len(original) != 256000 || count < 0 || count > 240 {
+		return nil
+	}
+	out := make([]byte, 400*150)
+	for y := 0; y < 150; y++ {
+		copy(out[y*400:], original[y*640+count:y*640+count+400])
+	}
+	return out
+}
+
+func (t *graphicsTrace) endingShiftPrepare(step int, esp uint32, mem []byte) {
+	r := graphicsDrawRecord{Name: "END-2.OZM", Kind: "ending_shift", BeginStep: step, Stack: esp,
+		Args: [5]uint32{0, 50, 150, 80, 0xa000f}, SourceRect: image.Rect(0, 0, 400, 150), DestRect: endingShiftDestination()}
+	fail := func(reason string) {
+		r.Error = reason
+		t.Records = append(t.Records, r)
+		t.Pending = nil
+		t.Shift = nil
+	}
+	if uint64(esp)+4 > uint64(len(mem)) {
+		fail("ending stack outside RAM")
+		return
+	}
+	r.Return = binary.LittleEndian.Uint32(mem[esp:])
+	if r.Return != 0x187f2 && r.Return != 0x18822 {
+		fail("unmatched ending caller")
+		return
+	}
+	bases, current, digest, ok := endingShiftCurrent(mem)
+	if !ok {
+		fail("ending source geometry or bounds invalid")
+		return
+	}
+	state, count := t.Shift, 0
+	valid := state != nil && state.Name == r.Name && state.Bases == bases && len(state.Original) == 256000 && state.Count >= 0 && state.Count < 240 && r.Return == 0x18822
+	if valid {
+		count = state.Count + 1
+		for i, value := range current {
+			from := i
+			if i < 96000 {
+				from = min(i+count, 96000)
+			}
+			if value != state.Original[from] {
+				valid = false
+				break
+			}
+		}
+	}
+	if !valid {
+		if r.Return != 0x187f2 {
+			fail("unmatched consecutive ending source")
+			return
+		}
+		var profile graphicsSourceProfile
+		for _, p := range t.Profiles {
+			if p.Name == r.Name {
+				profile = p
+				break
+			}
+		}
+		_, original, matched := graphicsSource(mem, []graphicsSourceProfile{profile})
+		if !matched || len(original) != 256000 {
+			fail("unmatched exact ending source")
+			return
+		}
+		state = &openingShiftState{Name: r.Name, Bases: bases, Original: original}
+		count = 0
+	}
+	expected := endingShiftQualified(state.Original, count)
+	if expected == nil {
+		fail("ending shift outside evidence range")
+		return
+	}
+	r.SourceShift = count
+	r.ExpectedSHA = fmt.Sprintf("%x", sha256.Sum256(expected))
+	r.QualifiedSHA = r.ExpectedSHA
+	r.CompositeSourceSHA = fmt.Sprintf("%x", sha256.Sum256(state.Original))
+	state.Count = count
+	t.Shift = state
+	t.Pending = &graphicsPending{Record: r, Expected: expected, Shift: &openingShiftGuard{Bases: bases, RawSHA: digest}}
+}
+
+func endingShiftReturn(p *graphicsPending, mem []byte) bool {
+	if p.Shift == nil || p.Record.Name != "END-2.OZM" {
+		return false
+	}
+	bases, _, digest, valid := endingShiftCurrent(mem)
+	return valid && bases == p.Shift.Bases && digest == p.Shift.RawSHA
+}
+
+func (p hdGraphicsPair) applyEndingShift(out *image.NRGBA, s nativeSnapshot, draw graphicsDrawRecord, r hdGraphicsReport) hdGraphicsReport {
+	r.Mode = "fallback_geometry"
+	dest := endingShiftDestination()
+	if out == nil || out.Bounds() != image.Rect(0, 0, 640*p.Scale, 400*p.Scale) || s.Image == nil || s.Image.Bounds() != image.Rect(0, 0, 640, 400) || len(s.Indexed) != 256000 ||
+		p.Profile.Source.Name != "END-2.OZM" || p.Profile.Source.Width != 640 || p.Profile.Source.Height != 400 || draw.SourceRect != image.Rect(0, 0, 400, 150) || draw.DestRect != dest || draw.Args != ([5]uint32{0, 50, 150, 80, 0xa000f}) {
+		return r
+	}
+	r.Mode = "fallback_no_verified_draw"
+	if !draw.Verified || draw.Name != p.Profile.Source.Name || draw.ExpectedSHA != draw.ActualSHA || draw.CompositeSourceSHA != p.Profile.IndicesSHA ||
+		(draw.SourceShift == 0 && draw.Return != 0x187f2) || (draw.SourceShift > 0 && draw.Return != 0x18822) {
+		return r
+	}
+	expected := endingShiftQualified(p.Source, draw.SourceShift)
+	if expected == nil || fmt.Sprintf("%x", sha256.Sum256(expected)) != draw.QualifiedSHA || draw.QualifiedSHA != draw.ExpectedSHA {
+		return r
+	}
+	r.Mode = "fallback_palette"
+	effect := graphicsPaletteEffect(p.Profile, s)
+	if s.MaxColor != 15 || !effect.Valid {
+		return r
+	}
+	visible := draw.VisibleRects
+	if visible == nil {
+		visible = []image.Rectangle{dest}
+	}
+	r.Mode = "fallback_visibility"
+	if len(visible) > 256 {
+		return r
+	}
+	if len(visible) == 0 {
+		r.Mode = "fallback_no_visible_art"
+		return r
+	}
+	for i, rect := range visible {
+		if rect.Empty() || !rect.In(dest) {
+			return r
+		}
+		for _, old := range visible[:i] {
+			if rect.Overlaps(old) {
+				return r
+			}
+		}
+	}
+	r.Mode = "fallback_source_mismatch"
+	for _, rect := range visible {
+		for y := rect.Min.Y; y < rect.Max.Y; y++ {
+			for x := rect.Min.X; x < rect.Max.X; x++ {
+				if s.Indexed[y*640+x] != expected[y*400+x-dest.Min.X] {
+					return r
+				}
+			}
+		}
+	}
+	for _, rect := range visible {
+		for y := rect.Min.Y; y < rect.Max.Y; y++ {
+			for x := rect.Min.X; x < rect.Max.X; x++ {
+				sx, sy := x-dest.Min.X+draw.SourceShift, y
+				paint := p.Profile.PaintRect.Empty() || image.Pt(sx, sy).In(p.Profile.PaintRect)
+				if len(p.Profile.PaintRects) > 0 {
+					paint = false
+					for _, area := range p.Profile.PaintRects {
+						paint = paint || image.Pt(sx, sy).In(area)
+					}
+				}
+				preserve := !paint || p.preserves(sx, sy)
+				if preserve {
+					r.PreservedNative++
+				} else {
+					r.PaintedNative++
+				}
+				for dy := 0; dy < p.Scale; dy++ {
+					for dx := 0; dx < p.Scale; dx++ {
+						pixel := rgbaAt(s.Image, x, y)
+						if !preserve {
+							pixel = effect.colour(rgbaAt(p.Asset, sx*p.Scale+dx, sy*p.Scale+dy))
+						}
+						out.SetNRGBA(x*p.Scale+dx, y*p.Scale+dy, pixel)
+					}
+				}
+			}
+		}
+	}
+	r.VisibleRects = append([]image.Rectangle(nil), visible...)
+	r.Mode = "hd"
+	return r
+}

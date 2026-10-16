@@ -1,6 +1,64 @@
 --- a/internal/cpu386/cpu.go
 +++ b/internal/cpu386/cpu.go
-@@ -645,6 +645,20 @@
+@@ -46,12 +46,12 @@
+ 
+ type CPU struct {
+ 	LimitFault *LimitFault
+-	R       [8]uint32
+-	Seg     [6]uint16
+-	EIP     uint32
+-	EFlags  uint32
+-	Bus     Bus
+-	IntHook func(*CPU, uint8) bool
++	R          [8]uint32
++	Seg        [6]uint16
++	EIP        uint32
++	EFlags     uint32
++	Bus        Bus
++	IntHook    func(*CPU, uint8) bool
+ 	// PortOut 回 true 表示 byte 輸出已被平台層接受；未安裝或拒絕時失敗即關閉。
+ 	PortOut func(port uint16, value uint8) bool
+ 	// PortOut16 由平台決定 word I/O 的裝置語意，不默認拆到相鄰埠。
+@@ -78,9 +78,9 @@
+ }
+ 
+ type LimitFault struct {
+-	Selector uint16
++	Selector     uint16
+ 	Offset, Size uint32
+-	Write bool
++	Write        bool
+ }
+ 
+ type Descriptor struct {
+@@ -599,13 +599,21 @@
+ 	fail := func(reason string) error { return &Error{start, op, reason} }
+ 	if segmentOverride == SegCS && op == 0x3b && operand16 && !repe && !repne {
+ 		modrm, e := c.fetch8()
+-		if e != nil { return fail(e.Error()) }
+-		if modrm >> 6 == 3 { return fail("CS CMP requires memory") }
++		if e != nil {
++			return fail(e.Error())
++		}
++		if modrm>>6 == 3 {
++			return fail("CS CMP requires memory")
++		}
+ 		_, addr, e := c.decodeAddress32(modrm)
+-		if e != nil { return fail(e.Error()) }
++		if e != nil {
++			return fail(e.Error())
++		}
+ 		value, ok := c.readSegment16(c.Seg[SegCS], addr)
+-		if !ok { return fail("CS CMP word source unavailable") }
+-		c.sub16(uint16(c.R[(modrm >> 3) & 7]), value)
++		if !ok {
++			return fail("CS CMP word source unavailable")
++		}
++		c.sub16(uint16(c.R[(modrm>>3)&7]), value)
+ 		return nil
+ 	}
+ 	if segmentOverride == SegCS && op == 0x8d && !operand16 {
+@@ -637,6 +645,20 @@
  		return fail("segment override 只支援 8A／8B／8C／8E")
  	}
  	switch {
@@ -21,7 +79,28 @@
  	case op == 0xf8 || op == 0xf9 || op == 0xf5:
  		if operand16 || segmentOverride >= 0 || repe || repne {
  			return fail("CLC／STC前綴未支援")
-@@ -1326,12 +1340,17 @@
+@@ -749,12 +771,16 @@
+ 		}
+ 		if modrm>>6 != 3 {
+ 			seg, addr, e := c.decodeAddress32(modrm)
+-			if e != nil { return fail(e.Error()) }
++			if e != nil {
++				return fail(e.Error())
++			}
+ 			value, ok := c.readSegment8(c.Seg[seg], addr)
+-			if !ok { return fail("SUB byte source unavailable") }
++			if !ok {
++				return fail("SUB byte source unavailable")
++			}
+ 			previousFlags := c.EFlags
+-			result := c.sub8(value,c.reg8(int((modrm >> 3)&7)))
+-			if !c.writeSegment8(c.Seg[seg],addr,result) {
++			result := c.sub8(value, c.reg8(int((modrm>>3)&7)))
++			if !c.writeSegment8(c.Seg[seg], addr, result) {
+ 				c.EFlags = previousFlags
+ 				return fail("SUB byte destination unavailable")
+ 			}
+@@ -1314,12 +1340,17 @@
  			return fail(e.Error())
  		}
  		if modrm>>6 != 3 {
@@ -44,7 +123,42 @@
  			}
  			left, ok := c.readSegment32(c.Seg[seg], addr)
  			if !ok {
-@@ -2580,6 +2599,26 @@
+@@ -1430,17 +1461,27 @@
+ 			c.setLogicFlags8(v)
+ 		}
+ 	case op == 0x00:
+-		if operand16 || segmentOverride >= 0 || repe || repne { return fail("ADD byte memory prefixes unsupported") }
++		if operand16 || segmentOverride >= 0 || repe || repne {
++			return fail("ADD byte memory prefixes unsupported")
++		}
+ 		modrm, e := c.fetch8()
+-		if e != nil { return fail(e.Error()) }
+-		if modrm >> 6 == 3 { return fail("ADD byte register form unsupported") }
++		if e != nil {
++			return fail(e.Error())
++		}
++		if modrm>>6 == 3 {
++			return fail("ADD byte register form unsupported")
++		}
+ 		seg, addr, e := c.decodeAddress32(modrm)
+-		if e != nil { return fail(e.Error()) }
++		if e != nil {
++			return fail(e.Error())
++		}
+ 		value, ok := c.readSegment8(c.Seg[seg], addr)
+-		if !ok { return fail("ADD byte source unavailable") }
++		if !ok {
++			return fail("ADD byte source unavailable")
++		}
+ 		previousFlags := c.EFlags
+-		result := c.add8(value,c.reg8(int((modrm >> 3)&7)))
+-		if !c.writeSegment8(c.Seg[seg],addr,result) {
++		result := c.add8(value, c.reg8(int((modrm>>3)&7)))
++		if !c.writeSegment8(c.Seg[seg], addr, result) {
+ 			c.EFlags = previousFlags
+ 			return fail("ADD byte destination unavailable")
+ 		}
+@@ -2558,6 +2599,26 @@
  		}
  		group := (modrm >> 3) & 7
  		if operand16 {
@@ -71,7 +185,7 @@
  			if modrm>>6 != 3 || (group != 0 && group != 1 && group != 4 && group != 5 && group != 6) {
  				return fail("81 word形狀尚未支援")
  			}
-@@ -2733,16 +2772,21 @@
+@@ -2711,16 +2772,21 @@
  			return fail(e.Error())
  		}
  		group := (modrm >> 3) & 7
@@ -98,7 +212,7 @@
  			seg, addr, e := c.decodeAddress32(modrm)
  			if e != nil {
  				return fail(e.Error())
-@@ -2753,14 +2797,16 @@
+@@ -2731,14 +2797,16 @@
  			}
  			value, ok := c.readSegment32(c.Seg[seg], addr)
  			if !ok {
@@ -117,12 +231,19 @@
  			}
  			c.setLogicFlags(result)
  			break
-@@ -3470,6 +3516,19 @@
+@@ -3295,7 +3363,7 @@
+ 				c.EFlags |= uint32((value >> (count - 1)) & 1)
  			}
- 			c.setLogicFlags(result)
+ 			if count == 1 {
+-				if value & 0x80 != 0 {
++				if value&0x80 != 0 {
+ 					c.EFlags |= OF
+ 				}
+ 			} else {
+@@ -3450,6 +3518,19 @@
  			c.EFlags |= value & 1
-+			break
-+		}
+ 			break
+ 		}
 +		if modrm>>6 == 3 && group == 4 {
 +			rm := modrm & 7
 +			value := c.R[rm]
@@ -134,10 +255,41 @@
 +				c.EFlags |= OF
 +			}
 +			c.R[rm] = result
- 			break
- 		}
++			break
++		}
  		if modrm>>6 == 3 && group == 5 {
-@@ -3623,6 +3682,37 @@
+ 			rm := modrm & 7
+ 			value := c.R[rm]
+@@ -3513,7 +3594,7 @@
+ 				return fail(e.Error())
+ 			}
+ 			group := (modrm >> 3) & 7
+-			if modrm>>6 != 3 || (group != 0 && group != 4 && group != 5 && group != 7 && !(group == 3 && op == 0xd1)) {
++			if modrm>>6 != 3 || (group != 0 && group != 4 && group != 5 && group != 7 && !((group == 2 || group == 3) && op == 0xd1)) {
+ 				return fail("word shift形狀未支援")
+ 			}
+ 			count := byte(1)
+@@ -3524,6 +3605,19 @@
+ 				}
+ 			}
+ 			count &= 31
++			if group == 2 {
++				rm := modrm & 7
++				value := uint16(c.R[rm])
++				result := value<<1 | uint16(c.EFlags&CF)
++				carry := uint32(value >> 15)
++				c.EFlags &^= CF | OF
++				c.EFlags |= carry
++				if uint32(result>>15)^carry != 0 {
++					c.EFlags |= OF
++				}
++				c.R[rm] = c.R[rm]&0xffff0000 | uint32(result)
++				break
++			}
+ 			if group == 3 {
+ 				rm := modrm & 7
+ 				value := uint16(c.R[rm])
+@@ -3601,6 +3695,37 @@
  			return fail(e.Error())
  		}
  		group := (modrm >> 3) & 7
@@ -175,7 +327,7 @@
  		if modrm>>6 != 3 || (group != 4 && group != 5 && group != 7) {
  			if op == 0xc1 && modrm>>6 == 3 && (group == 0 || group == 1) && segmentOverride < 0 && !repe && !repne {
  				countByte, e := c.fetch8()
-@@ -3680,6 +3770,17 @@
+@@ -3658,6 +3783,17 @@
  			if carry != 0 {
  				c.EFlags |= CF
  			}
@@ -193,7 +345,7 @@
  			c.R[rm] = result
  		}
  	case op == 0xf6:
-@@ -4788,6 +4889,19 @@
+@@ -4766,6 +4902,19 @@
  		c.R[EAX] = c.R[EAX]&0xffffff00 | uint32(result)
  		c.setLogicFlags8(result)
  	case op == 0x25:
@@ -213,7 +365,7 @@
  		if operand16 || segmentOverride >= 0 || repe {
  			return fail("25 不接受目前的 prefix")
  		}
-@@ -4945,6 +5059,28 @@
+@@ -4923,6 +5072,28 @@
  		} else {
  			c.R[dst] = c.adc32(c.R[dst], c.R[modrm&7])
  		}
@@ -226,22 +378,39 @@
 +			return fail(err.Error())
 +		}
 +		left := uint8(c.R[EAX])
-+		sum := uint16(left) + uint16(right) + uint16(c.EFlags & CF)
++		sum := uint16(left) + uint16(right) + uint16(c.EFlags&CF)
 +		result := uint8(sum)
 +		c.setLogicFlags8(result)
 +		if sum > 0xff {
 +			c.EFlags |= CF
 +		}
-+		if (left ^ right ^ result) & 0x10 != 0 {
++		if (left^right^result)&0x10 != 0 {
 +			c.EFlags |= AF
 +		}
-+		if (^(left ^ right) & (left ^ result)) & 0x80 != 0 {
++		if (^(left^right)&(left^result))&0x80 != 0 {
 +			c.EFlags |= OF
 +		}
 +		c.setReg8(0, result)
  	case op == 0x15:
  		if operand16 || segmentOverride >= 0 || repe || repne {
  			return fail("ADC accumulator prefix 尚未支援")
+@@ -5283,12 +5454,14 @@
+ 			return fail("IRET supports only a flat 32-bit frame")
+ 		}
+ 		sp := c.R[ESP]
+-		if sp > ^uint32(0)-12 { return fail("IRET stack overflow") }
++		if sp > ^uint32(0)-12 {
++			return fail("IRET stack overflow")
++		}
+ 		ip, okIP := c.readSegment32(c.Seg[SegSS], sp)
+ 		cs, okCS := c.readSegment32(c.Seg[SegSS], sp+4)
+ 		flags, okFlags := c.readSegment32(c.Seg[SegSS], sp+8)
+ 		d, ok := c.Descriptors[uint16(cs)]
+-		if !okIP || !okCS || !okFlags || !ok || d.Base != 0 || ip > d.Limit || flags & ((1<<14)|(1<<17)) != 0 {
++		if !okIP || !okCS || !okFlags || !ok || d.Base != 0 || ip > d.Limit || flags&((1<<14)|(1<<17)) != 0 {
+ 			return fail("IRET invalid flat same-privilege frame")
+ 		}
+ 		c.R[ESP], c.EIP, c.Seg[SegCS], c.EFlags = sp+12, ip, uint16(cs), flags|2
 --- a/internal/cpu386/cpu_test.go
 +++ b/internal/cpu386/cpu_test.go
 @@ -800,7 +800,7 @@
@@ -249,7 +418,7 @@
  	}
  
 -	for _, code := range [][]byte{{0xd1, 0x10}, {0xd1, 0xe0}, {0x66, 0xd1, 0xd0}} {
-+	for _, code := range [][]byte{{0xd1, 0x10}, {0xd1, 0xc0}, {0x66, 0xd1, 0xd0}} {
++	for _, code := range [][]byte{{0xd1, 0x10}, {0xd1, 0xc0}, {0x66, 0xd1, 0x10}} {
  		c := New(testBus(code))
  		if err := c.Step(); err == nil {
  			t.Fatalf("未授權 D1 形狀 % X 被接受", code)

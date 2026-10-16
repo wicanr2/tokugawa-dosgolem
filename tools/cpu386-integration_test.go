@@ -162,6 +162,47 @@ func TestIntegrationSTDBackwardOverlap(t *testing.T) {
 	}
 }
 
+func TestIntegrationWordRCLByOne(t *testing.T) {
+	// Intel 的 17-bit ring 包含 CF；與實作的逐項旗標公式分開計算。
+	for reg := byte(0); reg < 8; reg++ {
+		limit := uint32(2048)
+		if reg == EBX {
+			limit = 65536
+		}
+		for sample := uint32(0); sample < limit; sample++ {
+			value := uint16(sample * 7919)
+			for _, carry := range []uint32{0, CF} {
+				c := New(testBus{0x66, 0xd1, 0xd0 | reg})
+				for i := range c.R {
+					c.R[i] = 0x11223344 + uint32(i)*0x10000
+				}
+				c.R[reg] = 0xa5a50000 | uint32(value)
+				unchanged := uint32(IF | DF | AF | SF | ZF | PF)
+				c.EFlags = unchanged | OF | carry
+				want := c.R
+				ring := carry<<16 | uint32(value)
+				ring = ((ring << 1) | (ring >> 16)) & 0x1ffff
+				want[reg] = want[reg]&0xffff0000 | ring&0xffff
+				flags := unchanged | ring>>16
+				if (ring>>15^ring>>16)&1 != 0 {
+					flags |= OF
+				}
+				if err := c.Step(); err != nil || c.R != want || c.EFlags != flags || c.EIP != 3 {
+					t.Fatal("RCL word 17-bit ring", reg, value, carry, c.R, c.EFlags, flags, err)
+				}
+			}
+		}
+	}
+	for _, code := range [][]byte{{0x66, 0xd1}, {0x66, 0xd1, 0x10}, {0x66, 0xc1, 0xd3, 1}, {0x26, 0x66, 0xd1, 0xd3}, {0xf3, 0x66, 0xd1, 0xd3}, {0xf2, 0x66, 0xd1, 0xd3}} {
+		c := New(testBus(code))
+		c.R[EBX], c.EFlags = 0xabcdef12, IF|CF|OF|AF
+		before := c.R
+		if c.Step() == nil || c.R != before || c.EFlags != IF|CF|OF|AF {
+			t.Fatal("rejected word RCL published state", code)
+		}
+	}
+}
+
 func TestIntegrationWordRCRByOne(t *testing.T) {
 	for reg := byte(0); reg < 8; reg++ {
 		for _, v := range []struct {

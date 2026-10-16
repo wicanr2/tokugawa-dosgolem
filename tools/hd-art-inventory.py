@@ -418,6 +418,22 @@ def main():
         for name, case in map_corners['cases'].items():
             assert case['receipt_sha256'] == sha(map_corners_path.parent/name/'receipt.json')
         proof_sources.append({'verification': str(map_corners_path.relative_to(PROJECT)), 'sha256': sha(map_corners_path)})
+    ending_shift_path = ROOT/'remaining/consumers/battle/r24/runtime/verification-summary.json'
+    ending_shift = json.loads(ending_shift_path.read_text()) if ending_shift_path.exists() else None
+    if ending_shift:
+        assert ending_shift['status'] == 'PASS' and ending_shift['ending_shift_consumer_registered']
+        assert ending_shift['original_instruction_states_verified'] == 241
+        assert ending_shift['actual_instruction_fixture_counts'] == [0,1,120,240]
+        assert ending_shift['normal_ending_GUI_verified'] is False and ending_shift['whole_game_HD_complete'] is False
+        assert ending_shift['full_original_ram_equal'] and ending_shift['saved_game_display_equals_r23']
+        verifier_sources.append(recorded_verifier('verify-hd-ending.py', ending_shift['tool_sha256'],
+                                                  'remaining/consumers/battle/r24/runtime/verify-hd-ending.py'))
+        verifier_sources.append(recorded_verifier('ending-source-probe.go', ending_shift['source_probe_tool_sha256'],
+                                                  'remaining/consumers/battle/r24/runtime/ending-source-probe.go'))
+        assert ending_shift['source_proof_sha256'] == sha(ending_shift_path.parent/'ending-source-verification.json')
+        assert ending_shift['normal_control_receipt_sha256'] == sha(ending_shift_path.parent/'native-control/receipt.json')
+        assert ending_shift['ordinary_GUI_receipt_sha256'] == sha(ending_shift_path.parent/'desktop-map/receipt.json')
+        proof_sources.append({'verification': str(ending_shift_path.relative_to(PROJECT)), 'sha256': sha(ending_shift_path)})
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -662,6 +678,10 @@ def main():
         if record['source'] in ['END-11.OZM', 'END-11B.OZM'] and known_rows:
             record.update(runtime_status='source-matched 399-row full-copy consumer tested; original unknown last row retained; normal ending not sampled',
                           runtime_proof_sha256=sha(known_rows_path), known_full_copy_rows=399, normal_ending_GUI_verified=False)
+        if record['source'] == 'END-2.OZM' and ending_shift:
+            record.update(runtime_status='exact initial and 240 consecutive left-shift source states conditionally integrated; original instruction and shared consumer tests passed; normal ending not sampled',
+                          runtime_proof_sha256=sha(ending_shift_path), ending_shift_states_verified=241,
+                          normal_ending_GUI_verified=False)
     records.append(pcx_record)
     runtime_tails = []
     tail_path = ROOT / 'remaining/source-boundary/OP-FULL-runtime/receipt.json'
@@ -714,6 +734,7 @@ def main():
               "normal_combat_unit_instances_verified": 2 if combat_units else 0,
               "combat_paper_margin_native_pixels_verified": 768 if known_rows else 0,
               "ending_399_row_full_copy_bindings_verified": 2 if known_rows else 0,
+              "ending_left_shift_consumer_states_verified": 241 if ending_shift else 0,
               "normal_MAP_WAKU_upper_frame_rows_verified": 88 if map_frame else 0,
               "normal_MAP_WAKU_lower_cache_pieces_verified": 8 if map_corners else 0,
               "generated_MAP_CHIP_object_drafts": object_drafts,

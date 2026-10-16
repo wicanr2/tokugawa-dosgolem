@@ -16,6 +16,8 @@ HD 採戰國手繪風。Linux 桌面試作已接入 75 個完整劇情來源及�
 
 標題、其餘開場、八個動畫圖集、結局及介面另有 20 項美術接入共同繪圖端，包含 48 格動畫及原版空格、鏡像與緩衝區保護。正常標題的 HD 切換、選單遮擋與缺圖備援已驗證；其餘來源仍待正常玩家路徑抽測，詳見 [素材來源](assets/hd-b/art/remaining/profiles.json) 與 CONTEXT。
 
+結局圖的 END-2 左移及 END-11／11B 已知列複製已接入受來源限制的 HD 呈現。來源與共同呈現測試通過，正常結局尚未抽測，詳見 [目前狀態](CONTEXT.md)。
+
 歷史簡介的完整畫面、未位移局部與 OP2／OP8 捲動繪圖已接入 HD，涵蓋 OP4 徽記、OP-FULL 家康開場圖、三格交鋒、武將／眼部裁切及五張歷史劇情。普通選單、原圖／HD／還原、個別缺圖與完整原版狀態已抽樣核對，實際畫格範圍見 CONTEXT。捲動的來源外像素保留原圖，其他動畫消費端仍待完成。
 
 桌面啟動流程已接入包內 MARK 出版商標誌。先選原版／HD，再由原版 MARK 自然漸入、停留及漸出，隨後進入遊戲。標誌支援 HD，下方版權文字保留原版像素；MARK 中最後選擇的模式會帶進遊戲，兩處頂端功能列都可隨時切換。完整啟動鏈、關窗及到首戰的原版狀態核對見 [目前狀態](CONTEXT.md)。獨立 MARK 驗證可加上 `-program mark -steps 75000000`，只驗證 DX5 可加 `-publisher-intro=false`。
@@ -31,4 +33,4 @@ HD 採戰國手繪風。Linux 桌面試作已接入 75 個完整劇情來源及�
 
 執行依賴 `/home/anr2/cht/dosgolem`。來源檔只存本機 `original/`，研究產物存 `workplace/`，兩者均排除版控。下載來源與逐檔雜湊保存在 `original/source.json`。
 
-使用固定 Go Docker image，依 AGENTS 的完整命令執行 `tools/run-probes.sh -steps 750000000 -mouse-file /project/tools/player-path.json`。腳本核對 dosgolem 基準、在研究副本依序套用 [平台修正](tools/dosgolem.patch)、[MARK 平台修正](tools/mark-cpu.patch)、[DOS/4GW 例外轉接](tools/dos4g-exception.patch)及 [戰場指令修正](tools/battle-cpu.patch)，跑回歸測試後讓原版 LE 自然執行。操作時間表、原生畫面與停止原因會寫入收據；完整驗證範圍見 CONTEXT。
+使用固定 Go Docker image，依 AGENTS 的完整命令執行 `tools/run-probes.sh -steps 750000000 -mouse-file /project/tools/player-path.json`。腳本核對 dosgolem 基準、在研究副本依序套用 [平台修正](tools/dosgolem.patch)、[MARK 平台修正](tools/mark-cpu.patch)、[DOS/4GW 例外轉接](tools/dos4g-exception.patch)及 [戰場與結局指令修正](tools/battle-cpu.patch)，跑回歸測試後讓原版 LE 自然執行。操作時間表、原生畫面與停止原因會寫入收據；完整驗證範圍見 CONTEXT。

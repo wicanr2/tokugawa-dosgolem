@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"image"
 	"os"
 	"testing"
@@ -228,5 +229,261 @@ func TestOpeningShiftSourceAndReturnGuards(t *testing.T) {
 	tx.observe(1, 0x11c83, 0xfffffff0, mem, nil)
 	if tx.Pending != nil || tx.Shift != nil {
 		t.Fatal("overflowing stack")
+	}
+}
+
+const endingProofRoot = "/project/workplace/hd-prototype/catalog/remaining/consumers/battle/r24/ready/"
+
+type endingProofState struct {
+	Count      int    `json:"count"`
+	IndicesSHA string `json:"indices_sha256"`
+	CropSHA    string `json:"display_crop_sha256"`
+	PlanesSHA  string `json:"planes_sha256"`
+	Path       string `json:"planes_path"`
+}
+
+func endingProofStates(t *testing.T) []endingProofState {
+	t.Helper()
+	data, err := os.ReadFile(endingProofRoot + "ending-source-verification.json")
+	var proof struct {
+		Verified bool
+		ProbeSHA string `json:"probe_source_sha256"`
+		CPU_SHA  string `json:"cpu_source_sha256"`
+		States   []endingProofState
+		Normal   bool `json:"normal_ending_verified"`
+	}
+	if err != nil || json.Unmarshal(data, &proof) != nil || !proof.Verified || proof.Normal || len(proof.States) != 241 {
+		t.Fatal("bounded original-instruction evidence", err)
+	}
+	for path, want := range map[string]string{"/project/tools/ending-source-probe.go": proof.ProbeSHA, "/output/engine/internal/cpu386/cpu.go": proof.CPU_SHA} {
+		data, err := os.ReadFile(path)
+		if err != nil || fmt.Sprintf("%x", sha256.Sum256(data)) != want {
+			t.Fatal("ending evidence source changed", path, err)
+		}
+	}
+	return proof.States
+}
+
+func endingFixtureMemory(t *testing.T, state endingProofState) ([]byte, nativeSnapshot, hdGraphicsProfile, []byte) {
+	t.Helper()
+	original, err := os.ReadFile("/project/workplace/hd-prototype/catalog/decoded/END-2.OZM.idx")
+	if err != nil || len(original) != 256000 {
+		t.Fatal("ending source", err)
+	}
+	var profile hdGraphicsProfile
+	for _, p := range hdGraphicsProfiles {
+		if p.Source.Name == "END-2.OZM" {
+			profile = p
+		}
+	}
+	if fmt.Sprintf("%x", sha256.Sum256(original)) != profile.IndicesSHA {
+		t.Fatal("ending source fingerprint")
+	}
+	packed, err := os.ReadFile(endingProofRoot + state.Path)
+	if err != nil || len(packed) != 128000 || fmt.Sprintf("%x", sha256.Sum256(packed)) != state.PlanesSHA {
+		t.Fatal("original CPU planes", err)
+	}
+	mem := make([]byte, 2<<20)
+	for bit, global := range []int{0x38c00, 0x38bf8, 0x38c04, 0x38bfc} {
+		base := 0x100000 + bit*0x10000
+		binary.LittleEndian.PutUint32(mem[global:], uint32(base))
+		copy(mem[base:], packed[bit*32000:(bit+1)*32000])
+	}
+	binary.LittleEndian.PutUint32(mem[0x5b1b8:], 80)
+	binary.LittleEndian.PutUint32(mem[0x5b1b4:], 400)
+	ret := uint32(0x187f2)
+	if state.Count > 0 {
+		ret = 0x18822
+	}
+	binary.LittleEndian.PutUint32(mem[0x60000:], ret)
+	_, current, _, ok := endingShiftCurrent(mem)
+	if !ok || fmt.Sprintf("%x", sha256.Sum256(current)) != state.IndicesSHA {
+		t.Fatal("actual CPU indices")
+	}
+	s := nativeSnapshot{Image: image.NewNRGBA(image.Rect(0, 0, 640, 400)), Indexed: make([]byte, 256000), MaxColor: 15}
+	for i := 3; i < len(s.Image.Pix); i += 4 {
+		s.Image.Pix[i] = 255
+	}
+	palette := graphicsNativePalette(profile)
+	for i, c := range palette {
+		s.DAC[i], s.Palette[i] = byte(i), [3]byte{c.R, c.G, c.B}
+	}
+	for y := 0; y < 150; y++ {
+		for x := 0; x < 400; x++ {
+			value := current[y*640+x]
+			s.Indexed[y*640+120+x] = value
+			s.Image.SetNRGBA(120+x, y, palette[value])
+		}
+	}
+	return mem, s, profile, original
+}
+
+func TestEndingShiftOriginalInstructionFixturesAndPaint(t *testing.T) {
+	for _, state := range endingProofStates(t) {
+		if state.Path == "" {
+			continue
+		}
+		mem, s, profile, original := endingFixtureMemory(t, state)
+		h := hdGraphicsState{}
+		if state.Count > 0 {
+			h.Shift = &openingShiftState{Name: "END-2.OZM", Bases: [4]uint32{0x100000, 0x110000, 0x120000, 0x130000}, Original: original, Count: state.Count - 1}
+		}
+		before := sha256.Sum256(mem)
+		snapshot := func() (nativeSnapshot, error) { return s, nil }
+		h.observe(1, 0x185a7, 0x60000, mem, snapshot)
+		if h.Pending == nil || len(h.Draws) != 0 || h.Pending.Record.ExpectedSHA != state.CropSHA {
+			t.Fatal("ending entry", state.Count)
+		}
+		ret := h.Pending.Record.Return
+		h.observe(2, ret, 0x60000, mem, snapshot)
+		if h.Pending == nil || len(h.Draws) != 0 {
+			t.Fatal("ending wrong stack")
+		}
+		h.observe(3, ret, 0x60004, mem, snapshot)
+		if len(h.Draws) != 1 || h.Draws[0].SourceShift != state.Count || sha256.Sum256(mem) != before {
+			t.Fatal("ending verified return", state.Count)
+		}
+		asset, err := previewPNG("/project/assets/hd-b/art/" + profile.Asset)
+		if err != nil {
+			t.Fatal(err)
+		}
+		pair := newHDGraphicsPair(profile, original, asset, 2)
+		base, reason := prepareHDImage(s.Image, 640, 400, 2)
+		if reason != "" {
+			t.Fatal("ending native fixture", reason)
+		}
+		out := base.(*image.NRGBA)
+		native := append([]byte(nil), out.Pix...)
+		draw := h.Draws[0]
+		report := pair.apply(out, s, draw, true)
+		if report.Mode != "hd" || report.PaintedNative != 60000 || report.PreservedNative != 0 {
+			t.Fatal("ending HD", state.Count, report)
+		}
+		for y := 0; y < 800; y++ {
+			for x := 0; x < 1280; x++ {
+				want := rgbaAt(s.Image, x/2, y/2)
+				if x >= 240 && x < 1040 && y < 300 {
+					want = rgbaAt(pair.Asset, x-240+state.Count*2, y)
+				}
+				if out.NRGBAAt(x, y) != want {
+					t.Fatal("ending independent HD crop", state.Count, x, y)
+				}
+			}
+		}
+		for _, reject := range []string{"original", "missing", "palette", "native", "count", "hash", "caller", "visibility"} {
+			copy(out.Pix, native)
+			candidate, bad, record, enabled := pair, s, draw, true
+			switch reject {
+			case "original":
+				enabled = false
+			case "missing":
+				candidate = newHDGraphicsPair(profile, original, nil, 2)
+			case "palette":
+				bad.Palette[bad.DAC[2]][0] ^= 1
+			case "native":
+				bad.Indexed = append([]byte(nil), s.Indexed...)
+				bad.Indexed[120] ^= 1
+			case "count":
+				record.SourceShift = 241
+			case "hash":
+				record.QualifiedSHA = "unknown"
+			case "caller":
+				record.Return = 0x12345
+			case "visibility":
+				record.VisibleRects = []image.Rectangle{image.Rect(0, 0, 640, 400)}
+			}
+			if candidate.apply(out, bad, record, enabled).Mode == "hd" || sha256.Sum256(out.Pix) != sha256.Sum256(native) {
+				t.Fatal("ending fallback wrote output", state.Count, reject)
+			}
+		}
+		copy(out.Pix, native)
+		clipped := graphicsOcclude(draw, []hdWindowDraw{{Rect: image.Rect(120, 0, 136, 16), EndStep: 4}}, nil)
+		s.Indexed = append([]byte(nil), s.Indexed...)
+		s.Indexed[120] ^= 1
+		if pair.apply(out, s, clipped, true).PaintedNative != 60000-256 || out.NRGBAAt(240, 0) != rgbaAt(s.Image, 120, 0) {
+			t.Fatal("ending later window visibility")
+		}
+	}
+}
+
+func TestEndingShiftAll241StatesAndSourceGuards(t *testing.T) {
+	states := endingProofStates(t)
+	mem, s, _, original := endingFixtureMemory(t, states[0])
+	h := hdGraphicsState{}
+	for count, state := range states {
+		current := append([]byte(nil), original...)
+		for i := 0; i < 96000; i++ {
+			current[i] = original[min(i+count, 96000)]
+		}
+		if fmt.Sprintf("%x", sha256.Sum256(current)) != state.IndicesSHA {
+			t.Fatal("all original CPU states", count)
+		}
+		for bit := 0; bit < 4; bit++ {
+			base := 0x100000 + bit*0x10000
+			clear(mem[base : base+32000])
+			for i, value := range current {
+				mem[base+i/8] |= ((value >> uint(bit)) & 1) << uint(7-i%8)
+			}
+		}
+		for y := 0; y < 150; y++ {
+			copy(s.Indexed[y*640+120:], current[y*640:y*640+400])
+		}
+		ret := uint32(0x187f2)
+		if count > 0 {
+			ret = 0x18822
+		}
+		binary.LittleEndian.PutUint32(mem[0x60000:], ret)
+		before := sha256.Sum256(mem)
+		h.observe(count*10+1, 0x185a7, 0x60000, mem, func() (nativeSnapshot, error) { return s, nil })
+		if h.Pending == nil || h.Pending.Record.ExpectedSHA != state.CropSHA {
+			t.Fatal("ending consecutive entry", count)
+		}
+		h.observe(count*10+2, ret, 0x60004, mem, func() (nativeSnapshot, error) { return s, nil })
+		if len(h.Draws) != 1 || h.Draws[0].SourceShift != count || sha256.Sum256(mem) != before {
+			t.Fatal("ending consecutive natural return", count)
+		}
+	}
+	h.observe(3000, 0x185a7, 0x60000, mem, nil)
+	if h.Pending != nil || h.Shift != nil || len(h.Draws) != 0 {
+		t.Fatal("ending exceeded 240")
+	}
+	for _, reject := range []string{"source_before", "dimensions", "pointer_before", "source_after", "pointer_after", "native_after", "no_snapshot", "skip_initial", "skip_shift"} {
+		mem, s, _, original = endingFixtureMemory(t, states[0])
+		h = hdGraphicsState{}
+		snapshot := func() (nativeSnapshot, error) { return s, nil }
+		switch reject {
+		case "source_before":
+			mem[0x100000] ^= 1
+		case "dimensions":
+			binary.LittleEndian.PutUint32(mem[0x5b1b4:], 399)
+		case "pointer_before":
+			binary.LittleEndian.PutUint32(mem[0x38c00:], 0xfffffff0)
+		case "skip_initial":
+			binary.LittleEndian.PutUint32(mem[0x60000:], 0x18822)
+		case "skip_shift":
+			mem, s, _, original = endingFixtureMemory(t, states[120])
+			h.Shift = &openingShiftState{Name: "END-2.OZM", Bases: [4]uint32{0x100000, 0x110000, 0x120000, 0x130000}, Original: original, Count: 0}
+		}
+		h.observe(1, 0x185a7, 0x60000, mem, snapshot)
+		if reject == "source_before" || reject == "dimensions" || reject == "pointer_before" || reject == "skip_initial" || reject == "skip_shift" {
+			if h.Pending != nil || h.Shift != nil {
+				t.Fatal("ending rejected unknown source", reject)
+			}
+			continue
+		}
+		switch reject {
+		case "source_after":
+			mem[0x100000+31000] ^= 1
+		case "pointer_after":
+			mem[0x38c00] ^= 1
+		case "native_after":
+			s.Indexed[120] ^= 1
+		case "no_snapshot":
+			snapshot = nil
+		}
+		h.observe(2, 0x187f2, 0x60004, mem, snapshot)
+		if h.Pending != nil || h.Shift != nil || len(h.Draws) != 0 {
+			t.Fatal("ending rejected bad return", reject)
+		}
 	}
 }

@@ -2274,3 +2274,34 @@ host 呈現沿核准的對應 32×32 美術裁切，實際 reader 或靜態素�
 - 四種真實來源、八個矩形、兩種黑區、後畫且索引碰巧相同、缺圖、錯誤參數／返回、來源與目前目的破壞、未知色盤、區域外保護及一般／快取獨立配額測試通過。測試中的合成 CPU／目的狀態不當正常執行證據；正常證據由上述自然返回及 X11 提供。
 
 此切片為 CONFORMED。16×16 字樣保留原版，END-2 位移消費端及未抽測正常結局仍未完成；三平台打包保持待辦。既有生成圖與提示詞沒有新增或改寫，原版資料、索引、RAM、音訊及視窗收據只留本機。
+
+
+### END-2 位移來源與平台缺口：RE → DRAFT → READY
+
+2026-10-16。輸入 DX5.EXE SHA-256 2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a，IDA Pro 9.4，位址為 LE loader linear EA；檔案偏移另見 consumers/ida/range-184d0-185a7.json、range-185a7-189c8.json、range-11b60-11ba6.json。正式 DX5.i64 SHA-256 8afa40d3eaeed4851b78ed2ddc80ccbc1c65e14cb2481a09316d42670efce02e 未改。這是來源與局部指令研究，正常結局尚未走到。
+
+已證實 caller 0x187E5 載入 executable ID 82，檔名 END-2.OZM 對應 DAT 89。0x187ED 初次呼叫 sub_185A7，之後以 0x184D0 位移、0x185A7 顯示，迴圈 240 次。wrapper 四次呼叫 sub_11B60，以 150 列、50 bytes、來源及目的 stride 80、目的 A000F 複製四平面，顯示矩形 (120,0)..(520,150)。0x184E6..0x185A2 的本體在四個 loader pointer 各執行 6000 次 word 讀寫，先 byte swap 再 SHL AX,1／RCL BX,1，寫回各前 12000 bytes；每平面另讀尾端後兩 byte。DRAFT 公式為前 96000 索引向左一位，後方不動；連續 n 次時 i<96000 取原來源 min(i+n,96000)。顯示裁切在 n≤240 時只用原版前 150 列內的已知像素。公式須由原始指令探針核對後才授予呈現資格。
+
+首次 r24 來源探針停在 0x18506、bytes 66 D1 D3，CPU 明確拒絕 word RCL；不是遊戲結局驗收失敗。保留 r24 原批次，修正後輸出另放 r24/ready/。平台 READY 僅補 66 D1 /2、mod=3 的 16-bit register RCL by one。依 Intel SDM Volume 2B 的 RCL/RCR 契約，結果為 word 左移一位並帶入舊 CF，CF 取舊 bit15，OF 取新 bit15 XOR 新 CF；SF/ZF/AF/PF 與其他 flags、暫存器高 16 位保留。記憶體、C1 immediate 及未授權 prefix 繼續拒絕。來源：https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-2b-manual.pdf 。差分以獨立 17-bit ring 與全暫存器／旗標驗證，不以遊戲美術推導 CPU 行為。
+
+### END-2 呈現契約：READY
+
+同日 `tools/ending-source-probe.go` 使用修正後 cpu386，核對三份 IDA 匯出的全部 loaded bytes，再在明示合成 RAM 中執行原始本體 57,606,720 條指令。241 個連續狀態皆符合上節獨立公式，11,520,000 次寫入全在四個前 12000-byte 範圍，後方保持不變。收據為 `consumers/battle/r24/ready/ending-source-verification.json`，四組實際 CPU 平面保存 count 0、1、120、240。這證實局部原始指令與來源公式，不證實正常結局或 GUI。
+
+呈現 READY 限固定 END-2 完整來源 SHA b2aa5040cba120939881b9c1ae7bafa1de492aece744bce745df66c3f83b7682、640×400、四個 loader pointer，wrapper 0x185A7 與 caller 返回 0x187F2／0x18822。初始只接受完整四平面指紋；後續須同一四個 base、全來源符合恰好下一次位移，最多 240 次。不搜尋可匹配位移、不因載入名稱而放寬來源。返回時 ESP+4、四平面完整 bytes 與指標不變，實際目的 (120,0)..(520,150) 必須符合當次 400×150 索引。host HD 從既有 END-2 v3 美術裁切 (count,0)..(count+400,150)，保留色盤資格、後畫遮擋、矩形外畫布與缺圖備援。來源、返回、目的、色盤或連續性未知時退回原版；不改 guest、VGA、EXE、DAT、遊戲規則或原版計數器。共同消費端測試與原版 600M 回歸完成後，只記為條件式接入；正常結局 X11 待驗收。
+
+
+### END-2 條件式接入驗收
+
+2026-10-16。核對入口為 tools/verify-hd-ending.py，結果位於 consumers/battle/r24/runtime/verification-summary.json。原版結局 GUI 尚未走到；本節的通過限原始指令、共同呈現與普通戰場回歸。
+
+- 三份 IDA 9.4 匯出共 447 rows 與 dosgolem loaded bytes 相符；原始函式名、線性 EA、檔案偏移及 operands 保留，沒有改名。
+- RCL 的獨立 17-bit ring、八個暫存器、BX 全 65536 值與兩種 CF、高 16 位、其他旗標、拒絕形式測試通過。四套件通過，研究入口 152.238 秒，106 項編譯輸入凍結。
+- 原始位移指令的 241 個狀態與共同消費端相符。count 0、1、120、240 的四組實際 CPU 平面，逐點驗證 400×150 HD 裁切；連續性、跳步、上限、來源、指標、幾何、返回 stack、目前目的、色盤、原圖、缺圖、矩形外與後畫視窗皆有測試。合成目的與返回測試不冒稱正常結局。
+- 普通十九筆讀檔／回合輸入自然 600M。完整 RAM SHA 28563d71227d03bbdd87f01eca9c10cf639bede783ddb2b0e6ef72f35533954d，十五個原版欄位與一般／合成兩組 trace 共十七欄完全等於 r23。715 筆 graphics 返回包含 72 主框架、576 下方快取及 67 一般繪圖，沒有加入結局繪圖的正常路徑假證據。
+- 九筆普通標題／FILE 3／確認輸入的實際視窗，在 140.3M 正常關閉。三張 X11 與各自呈現 PNG 完全相同，亦等於 r23 的同標籤完整畫面；兩次切換與三次擷取期間原版 proof 不變。
+- 唯一覆蓋清單新增 END-2 的 241 個條件式狀態，不增加正常結局數。原有 111 項 OZM 素材、五項靜態解碼未知與八項剩餘正常 HD 來源保持原分類。既有 807 張生成 PNG 與 163 份提示詞不變。
+
+首次來源探針的 word RCL 缺口保留在 r24/source-probe-failure.json。ready/ 保存來源證據與第一版測試失敗，原因是合成原生畫布的未繪區 alpha=0，prepareHDImage 正確拒絕；修正 fixture 為完整不透明並檢查錯誤後，另在 runtime/ 乾淨重建。工具準備另遇 Python image 缺 git 與對 gofmt 後來源反向套 patch 失敗，改沿既有 GUI image 與固定 dosgolem／前三份補丁重建基準；這些是環境與工具操作問題，沒有放寬產品條件或回寫舊證據。
+
+來源與共同消費端的條件式接入完成；正常結局仍未驗收，該正常 GUI 閘門不標 CONFORMED。不開始三平台打包，不把原版資料、平面、索引、畫面、RAM 或音訊加入 Git。

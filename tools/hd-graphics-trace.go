@@ -282,6 +282,13 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 			profile, _, base, ok = wakuCornerSource(mem, t.Profiles, spec)
 			ok = ok && matched && base == r.CacheBase
 		}
+		if r.Kind == "ending_shift" {
+			ok = endingShiftReturn(p, mem)
+			profile.Name = r.Name
+			if !ok {
+				t.Shift = nil
+			}
+		}
 		if r.Kind == "opening_shift" {
 			ok = openingShiftReturn(p, mem)
 			profile.Name = r.Name
@@ -312,7 +319,7 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 				}
 			}
 		}
-		if r.Kind == "opening_shift" && !r.Verified {
+		if (r.Kind == "opening_shift" || r.Kind == "ending_shift") && !r.Verified {
 			t.Shift = nil
 		}
 		t.Records = append(t.Records, r)
@@ -320,7 +327,7 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 	}
 	cached := wakuFrameEntry(eip, esp, mem)
 	corner, cachedCorner := wakuCornerEntry(eip, esp, mem)
-	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 && !openingPartialEntry(eip) && !openingShiftEntry(eip) && !cached && !cachedCorner {
+	if eip != 0x1c1bc && eip != 0x1c084 && eip != 0x11f14 && !openingPartialEntry(eip) && !openingShiftEntry(eip) && !endingShiftEntry(eip) && !cached && !cachedCorner {
 		return
 	}
 	used, limit := 0, 512
@@ -340,6 +347,10 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 	}
 	if openingShiftEntry(eip) {
 		t.openingShiftPrepare(step, eip, esp, mem)
+		return
+	}
+	if endingShiftEntry(eip) {
+		t.endingShiftPrepare(step, esp, mem)
 		return
 	}
 	r := graphicsDrawRecord{BeginStep: step, Stack: esp, Kind: "opaque_rect"}
