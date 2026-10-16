@@ -46,7 +46,7 @@ func compositeBlob(directory, prefix string, data []byte) (string, error) {
 	path := filepath.Join(directory, fmt.Sprintf("%s-%x.idx", prefix, sha256.Sum256(data)))
 	f, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
 	if os.IsExist(err) {
-		old, readErr := os.ReadFile(path)
+		old, readErr := readRuntimeFile(path)
 		if readErr != nil || !bytes.Equal(old, data) {
 			return "", fmt.Errorf("different existing diagnostic data: %s", path)
 		}

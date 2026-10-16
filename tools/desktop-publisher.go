@@ -40,12 +40,12 @@ func runPublisherPrelude() (map[string]any, bool, error) {
 	if err != nil {
 		return nil, false, err
 	}
-	out, err := os.CreateTemp("/output/startup-probe", "mark-prelude-*.json")
+	out, err := createRuntimeTemp("/output/startup-probe", "mark-prelude-*.json")
 	if err != nil {
 		return nil, false, err
 	}
 	defer out.Close()
-	stderr, err := os.CreateTemp("/output/startup-probe", "mark-stderr-*.log")
+	stderr, err := createRuntimeTemp("/output/startup-probe", "mark-stderr-*.log")
 	if err != nil {
 		return nil, false, err
 	}
@@ -55,6 +55,12 @@ func runPublisherPrelude() (map[string]any, bool, error) {
 	command := exec.CommandContext(ctx, executable, "-program", "mark", "-desktop", "-steps", "75000000",
 		"-desktop-speed", strconv.Itoa(speed), "-startup-display", *desktopStartupDisplay,
 		"-hd-publisher-asset", *desktopPublisherAsset)
+	if playMode {
+		command.Args = append(command.Args, "-play", "-resource-dir", hostPaths.Project, "-game-dir", hostPaths.Original, "-state-dir", hostPaths.Output)
+		if runtimeDiagnostics {
+			command.Args = append(command.Args, "-diagnostics")
+		}
+	}
 	command.Stdout, command.Stderr = out, stderr
 	command.WaitDelay = 5 * time.Second
 	commandErr := command.Run()
@@ -64,13 +70,13 @@ func runPublisherPrelude() (map[string]any, bool, error) {
 	if err := stderr.Close(); err != nil {
 		return nil, false, err
 	}
-	data, err := os.ReadFile(out.Name())
+	data, err := readRuntimeFile(out.Name())
 	if err != nil {
 		return nil, false, err
 	}
 	digest := fmt.Sprintf("%x", sha256.Sum256(data))
 	path := "/output/startup-probe/publisher-receipt-" + digest + ".json"
-	if err := os.Rename(out.Name(), path); err != nil {
+	if err := renameRuntimeFile(out.Name(), path); err != nil {
 		return nil, false, err
 	}
 	if commandErr != nil {
@@ -94,7 +100,7 @@ func runPublisherPrelude() (map[string]any, bool, error) {
 	}
 	report := map[string]any{"receipt_path": path, "receipt_sha256": digest, "stderr_path": stderr.Name(), "receipt": receipt,
 		"session_boundary": "independent LE memory and virtual time; no emulated DOS EXEC"}
-	if err := os.Rename("/output/desktop-status.json", "/output/mark-desktop-status.json"); err != nil {
+	if err := renameRuntimeFile("/output/desktop-status.json", "/output/mark-desktop-status.json"); err != nil && (!playMode || !os.IsNotExist(err)) {
 		return report, false, err
 	}
 	if receipt["stop"] == "desktop_closed" {

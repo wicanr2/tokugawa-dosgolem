@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"fmt"
-	"os"
 )
 
 const publisherIndexedSHA = "fb43b08b3202d43f0e502528683ea9ecc91a8b43778b680bd5c5c5a69228c5d4"
@@ -64,7 +63,7 @@ func (t *markProbeTrace) observe(step int, ip, sp uint32, mem []byte, video *ban
 		t.Source = append([]byte(nil), mem[words[5]:words[5]+640*480]...)
 		t.SourcePointer = words[5]
 		t.Events = append(t.Events, map[string]any{"kind": "draw_entry", "step": step, "eip": ip, "stack_words": words, "source_indexed_sha256": fmt.Sprintf("%x", sha256.Sum256(t.Source))})
-		if err := os.WriteFile("/output/mark-source.idx", t.Source, 0600); err != nil {
+		if err := writeRuntimeFile("/output/mark-source.idx", t.Source, 0600); err != nil {
 			return err
 		}
 	}
@@ -76,7 +75,7 @@ func (t *markProbeTrace) observe(step int, ip, sp uint32, mem []byte, video *ban
 		if string(indexed) != string(t.Source) {
 			return fmt.Errorf("MARK draw destination differs from decoded source")
 		}
-		if err := os.WriteFile("/output/mark-native.idx", indexed, 0600); err != nil {
+		if err := writeRuntimeFile("/output/mark-native.idx", indexed, 0600); err != nil {
 			return err
 		}
 		t.Events = append(t.Events, map[string]any{"kind": "draw_return", "step": step, "eip": ip, "source_matches_destination": true, "indexed_sha256": fmt.Sprintf("%x", sha256.Sum256(indexed))})

@@ -8,11 +8,82 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 
 	"github.com/wicanr2/dosgolem/internal/cpu386"
 	"github.com/wicanr2/dosgolem/internal/machine"
 )
+
+func TestPCMQueuePartialReadsAndOverflow(t *testing.T) {
+	q := newPCMQueue(1)
+	a, b, c := []byte{1, 2, 3, 4}, []byte{5, 6, 7, 8}, []byte{9, 10, 11, 12}
+	if n, err := q.Write(a); n != 4 || err != nil {
+		t.Fatal(n, err)
+	}
+	first := make([]byte, 1)
+	if _, err := q.Read(first); err != nil || first[0] != 1 {
+		t.Fatal(first, err)
+	}
+	if _, err := q.Write(append(b, c...)); err != nil {
+		t.Fatal(err)
+	}
+	rest := make([]byte, 7)
+	if _, err := q.Read(rest); err != nil || !bytes.Equal(rest, append(a[1:], c...)) {
+		t.Fatal(rest, err)
+	}
+	zero := make([]byte, 8)
+	if _, err := q.Read(zero); err != nil || !bytes.Equal(zero, make([]byte, 8)) {
+		t.Fatal(zero, err)
+	}
+	if _, err := q.Write([]byte{1, 2, 3}); err == nil {
+		t.Fatal("partial stereo write accepted")
+	}
+	r := q.report()
+	if r["dropped_oldest_frames"] != uint64(1) || r["consumed_source_frames"] != uint64(2) || r["underflow_silent_frames"] != uint64(2) {
+		t.Fatal(r)
+	}
+}
+
+func TestPCMQueueCloseAndConcurrentBound(t *testing.T) {
+	q := newPCMQueue(31)
+	var workers sync.WaitGroup
+	workers.Add(2)
+	go func() {
+		defer workers.Done()
+		for i := 0; i < 1000; i++ {
+			if _, err := q.Write([]byte{1, 2, 3, 4}); err != nil {
+				t.Error(err)
+				return
+			}
+		}
+	}()
+	go func() {
+		defer workers.Done()
+		buffer := make([]byte, 12)
+		for i := 0; i < 1000; i++ {
+			if _, err := q.Read(buffer); err != nil {
+				t.Error(err)
+				return
+			}
+		}
+	}()
+	workers.Wait()
+	r := q.report()
+	if r["received_frames"] != uint64(1000) || r["queued_frames"].(int) > 31 {
+		t.Fatal(r)
+	}
+	if r["consumed_source_frames"].(uint64)+r["dropped_oldest_frames"].(uint64)+uint64(r["queued_frames"].(int)) != 1000 {
+		t.Fatal(r)
+	}
+	q.Close()
+	if _, err := io.ReadAll(q); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := q.Write([]byte{1, 2, 3, 4}); err != io.ErrClosedPipe {
+		t.Fatal(err)
+	}
+}
 
 func syntheticAudio(t *testing.T) (*cueDisc, []byte, *bytes.Buffer) {
 	t.Helper()

@@ -6,7 +6,6 @@ import (
 	"image"
 	"image/color"
 	"image/png"
-	"os"
 )
 
 var a0Rect = image.Rect(160, 50, 480, 200)
@@ -127,7 +126,7 @@ func previewPortraitAt(frame, source, hd image.Image, destination image.Rectangl
 }
 
 func previewPNG(path string) (image.Image, error) {
-	f, err := os.Open(path)
+	f, err := openRuntimeFile(path)
 	if err != nil {
 		return nil, err
 	}

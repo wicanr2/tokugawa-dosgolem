@@ -55,7 +55,7 @@ func captureLoadedAsset(event map[string]any, mem []byte, palette [16]color.NRGB
 	}
 	key := fmt.Sprintf("%s-%x", name, sha256.Sum256(indices))
 	root := "/output/hd-assets"
-	if err := os.MkdirAll(root, 0755); err != nil {
+	if err := makeRuntimeDirectories(root, 0755); err != nil {
 		return err
 	}
 	metadata := map[string]any{"classification": "normal-path loader-return capture; local only; draw and palette-at-display not yet verified", "event": event, "palette_at_loader_return": palette, "indices_sha256": fmt.Sprintf("%x", sha256.Sum256(indices)), "png_sha256": fmt.Sprintf("%x", sha256.Sum256(encoded.Bytes())), "width": w * 8, "height": h}
@@ -65,7 +65,7 @@ func captureLoadedAsset(event map[string]any, mem []byte, palette [16]color.NRGB
 	}
 	for ext, data := range map[string][]byte{".idx": indices, ".png": encoded.Bytes(), ".json": append(j, '\n')} {
 		path := filepath.Join(root, key+ext)
-		if old, err := os.ReadFile(path); err == nil {
+		if old, err := readRuntimeFile(path); err == nil {
 			// 重載同圖時保留第一筆來源收據；索引／PNG 必須相同。
 			if ext != ".json" && !bytes.Equal(old, data) {
 				return fmt.Errorf("refusing changed capture: %s", path)
@@ -74,7 +74,7 @@ func captureLoadedAsset(event map[string]any, mem []byte, palette [16]color.NRGB
 		} else if !os.IsNotExist(err) {
 			return err
 		}
-		if err := os.WriteFile(path, data, 0644); err != nil {
+		if err := writeRuntimeFile(path, data, 0644); err != nil {
 			return err
 		}
 	}

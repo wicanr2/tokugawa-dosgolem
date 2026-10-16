@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"io"
 )
 
 type nativeSnapshot struct {
@@ -29,11 +30,20 @@ type desktopContext struct {
 	Scripted      bool
 	PendingScript func() bool
 	Composite     *compositeProbe
+	Audio         desktopPCMOutput
 	Report        map[string]any
 }
 
 var runDesktop func(*desktopContext) error
 var runDesktopPrelude func() (map[string]any, bool, error)
+
+type desktopPCMOutput interface {
+	io.WriteCloser
+	SetPaused(bool)
+	Report() map[string]any
+}
+
+var newDesktopPCMOutput func() (desktopPCMOutput, error)
 
 func snapshotNative(v *bankVideo, cursor mouseCursor, x, y int) (nativeSnapshot, error) {
 	s := nativeSnapshot{Cursor: cursor, X: x, Y: y, MaxColor: 15}

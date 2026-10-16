@@ -61,7 +61,7 @@ func (p *openingProbe) capture(id int, phase string, mem []byte, snapshot func()
 	result["candidate_bases"] = bases
 	name := fmt.Sprintf("sample-%03d-%s", id, phase)
 	planes := name + ".planes.bin"
-	if err := os.WriteFile(filepath.Join(p.Directory, planes), packed, 0600); err != nil {
+	if err := writeRuntimeFile(filepath.Join(p.Directory, planes), packed, 0600); err != nil {
 		return nil, err
 	}
 	result["candidate_planes"] = map[string]any{"path": planes, "sha256": fmt.Sprintf("%x", sha256.Sum256(packed)), "plane_bytes": 32000, "interpretation": "raw bytes from candidate array; source ownership unverified"}
@@ -79,7 +79,7 @@ func (p *openingProbe) capture(id int, phase string, mem []byte, snapshot func()
 		return result, nil
 	}
 	indexPath := name + ".idx"
-	if err := os.WriteFile(filepath.Join(p.Directory, indexPath), s.Indexed, 0600); err != nil {
+	if err := writeRuntimeFile(filepath.Join(p.Directory, indexPath), s.Indexed, 0600); err != nil {
 		return nil, err
 	}
 	imagePath := name + ".png"

@@ -11,7 +11,6 @@ import (
 	"image"
 	"image/color"
 	"image/png"
-	"os"
 )
 
 type mouseCursor struct {
@@ -129,8 +128,10 @@ func captureFrame(v *bankVideo, cursor *mouseCursor, x, y int) (map[string]any, 
 	}
 	digest := fmt.Sprintf("%x", sha256.Sum256(encoded.Bytes()))
 	name := "startup-probe/frame-" + digest + ".png"
-	if err := os.WriteFile("/output/"+name, encoded.Bytes(), 0600); err != nil {
-		return nil, err
+	if runtimeDiagnostics {
+		if err := writeRuntimeFile("/output/"+name, encoded.Bytes(), 0600); err != nil {
+			return nil, err
+		}
 	}
 	return map[string]any{"path": "workplace/" + name, "png_sha256": digest, "rgba_sha256": fmt.Sprintf("%x", sha256.Sum256(img.Pix)), "raw_indexed_sha256": rawHash, "cursor_overlay_pixels": cursorPixels, "cursor_overlay_classification": "display-layer approximation; no TSR VRAM writeback", "width": w, "height": h, "display": kind, "color_count": len(colors), "non_black_pixels": nonBlack, "source": "dosgolem native VRAM and DAC", "visually_verified": false}, nil
 }

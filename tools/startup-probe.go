@@ -34,6 +34,15 @@ type rawTrace struct {
 }
 
 func main() {
+	play := flag.Bool("play", buildVersion != "development", "run the standalone desktop with persistent user data")
+	diagnostics := flag.Bool("diagnostics", false, "write research RAM, PCM and status files in standalone mode")
+	resourceDir := flag.String("resource-dir", "", "standalone runtime resource directory")
+	gameDir := flag.String("game-dir", "", "read-only original game directory")
+	stateDir := flag.String("state-dir", "", "writable user data directory, separate from originals")
+	version := flag.Bool("version", false, "print the build version and exit")
+	assetAudit := flag.String("asset-audit", "", "validation only: record successfully opened runtime inputs")
+	cpuSourcePath := flag.String("cpu-source", "", "validation only: explicit compiled CPU source provenance")
+	desktopAudio := flag.Bool("desktop-audio", false, "play original CD PCM through the desktop audio device")
 	program := flag.String("program", "game", "fixed original program profile: game or mark")
 	budget := flag.Int("steps", 3000000, "successful-instruction budget")
 	mouseScript := flag.String("mouse", "[]", "JSON array of mouse states at successful-instruction boundaries")
@@ -51,9 +60,49 @@ func main() {
 	compositeDiagnostic := flag.Bool("hd-composite-trace", false, "DRAFT read-only OR/transparent primitive source and destination diagnostics")
 	scriptHandoff := flag.Bool("desktop-script-handoff", false, "validation only: ordinary X11 mouse continues after all scripted mouse events")
 	flag.Parse()
+	if *version {
+		fmt.Println(buildVersion, buildCommit)
+		return
+	}
+	setFlags := map[string]bool{}
+	flag.Visit(func(f *flag.Flag) { setFlags[f.Name] = true })
+	playMode, runtimeDiagnostics = *play, !*play || *diagnostics
+	if *play {
+		if !setFlags["desktop"] {
+			*desktop = true
+		}
+		if !setFlags["steps"] {
+			*budget = int(^uint(0) >> 1)
+		}
+		if !setFlags["desktop-audio"] {
+			*desktopAudio = *desktop
+		}
+	}
+	if *play || *resourceDir != "" || *gameDir != "" || *stateDir != "" {
+		if err := configureRuntimePaths(*resourceDir, *gameDir, *stateDir); err != nil {
+			panic(err)
+		}
+	}
+	runtimeAssetAuditPath = *assetAudit
+	defer saveRuntimeInputAudit()
 	profile, profileErr := selectProgram(*program)
 	if profileErr != nil {
 		panic(profileErr)
+	}
+	var receiptOutput io.Writer = os.Stdout
+	if *play && !profile.Publisher && !runtimeDiagnostics {
+		f, err := createRuntimeFile(resolveRuntimePath("/output/last-session.json"))
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+		receiptOutput = f
+		log, err := createRuntimeFile(resolveRuntimePath("/output/runtime.log"))
+		if err != nil {
+			panic(err)
+		}
+		defer log.Close()
+		os.Stderr = log
 	}
 	if profile.Publisher {
 		if *hdDiagnostic || *hdExport || *terrainDiagnostic || *backdropDiagnostic || *battleFrameDiagnostic || *graphicsDiagnostic || *openingDiagnostic || *compositeDiagnostic || *scriptHandoff {
@@ -66,7 +115,7 @@ func main() {
 	composite := compositeProbe{Profiles: hdGraphicsSources}
 	if *compositeDiagnostic {
 		composite.Directory = "/output/composite-samples"
-		if err := os.Mkdir(composite.Directory, 0700); err != nil {
+		if err := makeRuntimeDirectory(composite.Directory, 0700); err != nil {
 			panic(err)
 		}
 	}
@@ -80,7 +129,7 @@ func main() {
 	var graphics graphicsTrace
 	opening := openingProbe{Directory: "/output/opening-samples"}
 	if *openingDiagnostic {
-		if err := os.Mkdir(opening.Directory, 0700); err != nil {
+		if err := makeRuntimeDirectory(opening.Directory, 0700); err != nil {
 			panic(err)
 		}
 		*hdDiagnostic = true
@@ -96,7 +145,7 @@ func main() {
 	if *desktop && runDesktop == nil {
 		panic("desktop build tag is required")
 	}
-	if *budget < 1 || *budget > 2000000000 {
+	if *budget < 1 || !*play && *budget > 2000000000 {
 		panic("instruction budget out of range")
 	}
 	inputSource := "inline"
@@ -104,7 +153,7 @@ func main() {
 		if *mouseScript != "[]" {
 			panic("mouse and mouse-file are mutually exclusive")
 		}
-		b, err := os.ReadFile(*mouseFile)
+		b, err := readRuntimeFile(*mouseFile)
 		if err != nil {
 			panic(err)
 		}
@@ -118,7 +167,7 @@ func main() {
 	if *scriptHandoff && (!*desktop || len(mouseEvents) == 0 || mouseEvents[len(mouseEvents)-1].Buttons != 0) {
 		panic("desktop script handoff requires a desktop schedule ending with released buttons")
 	}
-	data, err := os.ReadFile("/original/" + profile.File)
+	data, err := readRuntimeFile("/original/" + profile.File)
 	if err != nil {
 		panic(err)
 	}
@@ -134,7 +183,7 @@ func main() {
 			panic(err)
 		}
 		if !proceed {
-			if err := json.NewEncoder(os.Stdout).Encode(map[string]any{"program": "launcher", "stop": "desktop_closed", "successful_steps": 0,
+			if err := json.NewEncoder(receiptOutput).Encode(map[string]any{"program": "launcher", "stop": "desktop_closed", "successful_steps": 0,
 				"game_started": false, "publisher_prelude": publisherPrelude}); err != nil {
 				panic(err)
 			}
@@ -159,15 +208,29 @@ func main() {
 	m.Mem[0x8080] = 0
 	m.Mem[0x8081] = 13
 	m.CPU.Seg[cpu386.SegES] = 0x28
-	fileState, err := os.MkdirTemp("/output/startup-probe", "state-")
+	fileState, err := runtimeWorkingData(*program)
 	if err != nil {
 		panic(err)
 	}
-	files, err := machine.OpenDirectoryOverlayFiles("/original", fileState)
+	files, err := machine.OpenDirectoryOverlayFiles(resolveRuntimePath("/original"), fileState)
 	if err != nil {
 		panic(err)
 	}
 	defer files.Close()
+	var initialDataSHA string
+	if !profile.Publisher {
+		f, e := files.OpenRead("DX5.DAT")
+		if e != nil {
+			panic(e)
+		}
+		h := sha256.New()
+		_, e = io.Copy(h, f)
+		closeErr := f.Close()
+		if e != nil || closeErr != nil {
+			panic(errors.Join(e, closeErr))
+		}
+		initialDataSHA = fmt.Sprintf("%x", h.Sum(nil))
+	}
 	services := machine.NewFD2StartupDOS(files)
 	services.AttachMachine(m)
 	defer services.Close()
@@ -179,14 +242,31 @@ func main() {
 		panic(err)
 	}
 	defer disc.File.Close()
-	audioFile, err := os.CreateTemp("/output/startup-probe", "cdda-*.pcm")
-	if err != nil {
-		panic(err)
+	var audioFile *os.File
+	var audioDestination io.Writer = io.Discard
+	if runtimeDiagnostics {
+		audioFile, err = createRuntimeTemp("/output/startup-probe", "cdda-*.pcm")
+		if err != nil {
+			panic(err)
+		}
+		defer audioFile.Close()
+		audioDestination = audioFile
 	}
-	defer audioFile.Close()
 	audioHash := sha256.New()
-	audioWriter := bufio.NewWriterSize(io.MultiWriter(audioFile, audioHash), 64*1024)
+	audioWriter := bufio.NewWriterSize(io.MultiWriter(audioDestination, audioHash), 64*1024)
 	disc.Audio.Sink = audioWriter
+	var audioOutput desktopPCMOutput
+	if *desktopAudio && *desktop && !profile.Publisher {
+		if newDesktopPCMOutput == nil {
+			panic("desktop audio requires desktop build")
+		}
+		audioOutput, err = newDesktopPCMOutput()
+		if err != nil {
+			panic(err)
+		}
+		defer audioOutput.Close()
+		disc.Audio.Sink = io.MultiWriter(audioWriter, audioOutput)
+	}
 	screen := newBankVideo()
 	m.CPU.Bus = videoBus{m, screen}
 	mouseMachine := machine.New()
@@ -454,6 +534,7 @@ func main() {
 	}
 	if *desktop {
 		ctx := &desktopContext{
+			Audio:   audioOutput,
 			Program: *program, Mark: &markTrace,
 			MarkQualified: func(s nativeSnapshot) bool {
 				return profile.Publisher && screen.Mode == 0x101 && markTrace.qualified(s, m.Mem)
@@ -499,13 +580,16 @@ func main() {
 	if err := audioWriter.Flush(); err != nil {
 		panic(err)
 	}
-	if err := audioFile.Close(); err != nil {
-		panic(err)
-	}
 	audioDigest := fmt.Sprintf("%x", audioHash.Sum(nil))
-	audioPath := "/output/startup-probe/audio-" + audioDigest + ".pcm"
-	if err := os.Rename(audioFile.Name(), audioPath); err != nil {
-		panic(err)
+	audioPath := ""
+	if audioFile != nil {
+		if err := audioFile.Close(); err != nil {
+			panic(err)
+		}
+		audioPath = resolveRuntimePath("/output/startup-probe/audio-" + audioDigest + ".pcm")
+		if err := renameRuntimeFile(audioFile.Name(), audioPath); err != nil {
+			panic(err)
+		}
 	}
 	trace := []map[string]any{}
 	first := traceCount - len(traceRing)
@@ -516,91 +600,104 @@ func main() {
 		r := traceRing[i%len(traceRing)]
 		trace = append(trace, map[string]any{"step": r.step, "linear_eip": fmt.Sprintf("0x%X", r.eip), "bytes": hex.EncodeToString(r.bytes[:r.size]), "registers": r.registers, "segments": r.segments, "flags": r.flags})
 	}
-	script, err := os.ReadFile("/project/tools/startup-probe.go")
+	script, err := readRuntimeFile("/project/tools/startup-probe.go")
 	if err != nil {
 		panic(err)
 	}
-	patch, err := os.ReadFile("/project/tools/dosgolem.patch")
+	patch, err := readRuntimeFile("/project/tools/dosgolem.patch")
 	if err != nil {
 		panic(err)
 	}
-	cpuSource, err := os.ReadFile("/output/engine/internal/cpu386/cpu.go")
+	if *cpuSourcePath == "" {
+		*cpuSourcePath = "/output/engine/internal/cpu386/cpu.go"
+		if *play {
+			*cpuSourcePath = "/project/engine/internal/cpu386/cpu.go"
+		}
+	}
+	cpuSource, err := readRuntimeFile(*cpuSourcePath)
 	if err != nil {
 		panic(err)
 	}
 	toolHashes := map[string]string{}
 	for _, name := range []string{"tools/program.go", "tools/mark-trace.go", "tools/hd-publisher.go", "tools/hd-publisher_test.go", "tools/desktop-publisher.go", "tools/hd-composite-probe.go", "tools/hd-composite-probe_test.go", "tools/battle-cpu.patch"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
 	for _, name := range []string{"tools/dos4g-exception.patch", "tools/dos4g-vector.go", "tools/dos4g-exception.go", "tools/dos4g-exception_test.go", "tools/vbe-timing.go"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
 	for _, name := range []string{"tools/mark-cpu.patch", "tools/startup-choice.go", "tools/desktop-startup.go"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
 	for _, name := range []string{"tools/hd-prefix-story.go", "tools/hd-prefix-story_test.go", "tools/hd-prefix-profiles.go", "tools/desktop-prefix.go"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
 	for _, name := range []string{"tools/hd-opening-partial.go", "tools/hd-opening-partial_test.go", "tools/hd-opening-shift.go", "tools/hd-opening-shift_test.go"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
 	for _, name := range []string{"tools/hd-opening-probe.go", "tools/hd-opening-probe_test.go", "tools/hd-graphics-opening-profiles.go", "tools/hd-opening-live_test.go", "tools/hd-graphics-effects.go", "tools/hd-graphics-effects_test.go"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
 	for _, name := range []string{"tools/hd-graphics-trace.go", "tools/hd-graphics-trace_test.go", "tools/hd-graphics.go", "tools/hd-graphics_test.go", "tools/hd-graphics-profiles.go", "tools/hd-graphics-static-profiles.go", "tools/hd-graphics-logo-profile.go", "tools/hd-graphics-palettes.go", "tools/hd-graphics-remaining-profiles.go", "tools/hd-graphics-remaining_test.go"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
 	for _, name := range []string{"tools/hd-battle-frame.go", "tools/hd-battle-frame_test.go", "tools/hd-battle-frame-render.go", "tools/hd-battle-frame-render_test.go", "tools/hd-battle-frame-profile.go"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
 	for _, name := range []string{"tools/hd-terrain-scene.go", "tools/hd-terrain-scene_test.go", "tools/hd-terrain-unit-profiles.go", "tools/hd-terrain-object-profiles.go"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
 	for _, name := range []string{"tools/startup-probe.go", "tools/cdrom.go", "tools/cdrom_test.go", "tools/cdda.go", "tools/cdda_test.go", "tools/hd-capture.go", "tools/hd-trace.go", "tools/hd-trace_test.go", "tools/hd-terrain-trace.go", "tools/hd-terrain-trace_test.go", "tools/hd-terrain.go", "tools/hd-terrain-profiles.go", "tools/hd-terrain_test.go", "tools/hd-story_test.go", "tools/hd-portraits.go", "tools/hd-kao.go", "tools/hd-kao_test.go", "tools/hd-kao-profiles.go", "tools/hd-live.go", "tools/hd-live_test.go", "tools/hd-layer.go", "tools/hd-scroll.go", "tools/hd-scroll_test.go", "tools/hd-frame.go", "tools/hd-frame_test.go", "tools/hd-preview_test.go", "tools/presentation.go", "tools/presentation_test.go", "tools/desktop.go", "tools/windowbar.go", "tools/windowbar_test.go", "tools/desktop-windowbar.go", "tools/toolbar-font.hex.gz", "tools/LICENSE-toolbar-font.txt", "tools/run-desktop.sh", "tools/desktop.mod", "tools/desktop.sum", "tools/video.go", "tools/video_test.go", "tools/vbe.go", "tools/vbe_test.go", "tools/keyboard.go", "tools/keyboard_test.go", "tools/dos_test.go", "tools/dosgolem.patch", "tools/dpmi-mcb.go", "tools/dpmi-mcb_test.go", "tools/cpu386-integration_test.go", "tools/run-probes.sh"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
 	for _, name := range []string{"tools/hd-window.go", "tools/hd-window_test.go", "tools/hd-story_test.go", "tools/hd-terrain-sprite-profiles.go", "tools/hd-terrain-sprites.go", "tools/hd-terrain-sprites_test.go", "tools/hd-terrain-tree-profile.go", "tools/hd-backdrop.go", "tools/hd-backdrop_test.go"} {
-		b, e := os.ReadFile("/project/" + name)
+		b, e := readRuntimeFile("/project/" + name)
+		if e != nil {
+			panic(e)
+		}
+		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
+	}
+	for _, name := range []string{"tools/runtime-paths.go", "tools/runtime-paths_test.go", "tools/desktop-audio.go"} {
+		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)
 		}
@@ -625,6 +722,8 @@ func main() {
 		}
 	}
 	receipt := map[string]any{
+		"build_version": buildVersion, "build_commit": buildCommit, "standalone_play": *play, "runtime_paths": hostPaths,
+		"initial_effective_DAT_sha256": initialDataSHA, "persistent_game_files": *play,
 		"composite_diagnostic_enabled": *compositeDiagnostic, "composite_draw_trace": composite, "desktop_script_handoff": *scriptHandoff,
 		"publisher_prelude": publisherPrelude, "game_started": !profile.Publisher,
 		"dosgolem_head": "a9714ebdab2ad6b529f81225472680f2b11f2842", "integration_input_sha256": toolHashes,
@@ -665,7 +764,7 @@ func main() {
 		"frame": frame, "vga_mode": mouseMachine.VideoMode(),
 		"keyboard_reads": m.Keyboard.Reads, "keyboard_enqueued": m.Keyboard.Enqueued, "keyboard_waiting": m.Keyboard.Waiting,
 	}
-	encoder := json.NewEncoder(os.Stdout)
+	encoder := json.NewEncoder(receiptOutput)
 	encoder.SetIndent("", "  ")
 	if err := encoder.Encode(receipt); err != nil {
 		panic(err)
@@ -674,8 +773,10 @@ func main() {
 	if profile.Publisher {
 		memoryPath = "/output/mark-startup-memory.bin"
 	}
-	if err := os.WriteFile(memoryPath, m.Mem, 0600); err != nil {
-		panic(err)
+	if runtimeDiagnostics {
+		if err := writeRuntimeFile(memoryPath, m.Mem, 0600); err != nil {
+			panic(err)
+		}
 	}
 }
 

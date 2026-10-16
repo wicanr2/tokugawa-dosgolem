@@ -3,7 +3,6 @@
 package main
 
 import (
-	"os"
 	"path/filepath"
 )
 
@@ -12,7 +11,7 @@ func (g *desktopGame) loadPrefixStories() {
 	info := map[string]any{}
 	for name, profile := range hdPrefixProfiles {
 		record := map[string]any{"source_scope": "47992 known pixels; eight native pixels preserved"}
-		source, err := os.ReadFile(profile.Source)
+		source, err := readRuntimeFile(profile.Source)
 		if err != nil {
 			record["source_error"] = err.Error()
 		} else {
@@ -20,7 +19,7 @@ func (g *desktopGame) loadPrefixStories() {
 		}
 		path := filepath.Join(*desktopPortraitDir, profile.Asset)
 		var asset desktopPortrait
-		if data, e := os.ReadFile(path); e != nil {
+		if data, e := readRuntimeFile(path); e != nil {
 			record["hd_error"] = e.Error()
 		} else {
 			record["hd_sha256"] = prefixStorySHA(data)

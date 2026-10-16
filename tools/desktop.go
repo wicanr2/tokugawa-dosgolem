@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"image"
 	"image/png"
-	"os"
 	"path/filepath"
 	"reflect"
 
@@ -120,7 +119,7 @@ func runDesktopWindow(c *desktopContext) error {
 	}
 	g.barFont = font
 	var publisherAsset image.Image
-	if data, e := os.ReadFile(*desktopPublisherAsset); e == nil {
+	if data, e := readRuntimeFile(*desktopPublisherAsset); e == nil {
 		sum := fmt.Sprintf("%x", sha256.Sum256(data))
 		g.assetInfo["publisher_sha256"] = sum
 		if sum == publisherAssetSHA {
@@ -129,7 +128,7 @@ func runDesktopWindow(c *desktopContext) error {
 	}
 	g.publisher = newHDPublisher(publisherAsset)
 	g.assetInfo["publisher_validation"] = g.publisher.Reason
-	if data, err := os.ReadFile(*desktopSource); err == nil {
+	if data, err := readRuntimeFile(*desktopSource); err == nil {
 		sum := fmt.Sprintf("%x", sha256.Sum256(data))
 		g.assetInfo["source_sha256"] = sum
 		if sum == "0b7a25670a568f2e8e61ecfdf4d7ea264dac13caf67dea7ddf9218b370f1239c" {
@@ -139,7 +138,7 @@ func runDesktopWindow(c *desktopContext) error {
 			}
 		}
 	}
-	if data, err := os.ReadFile(*desktopAsset); err == nil {
+	if data, err := readRuntimeFile(*desktopAsset); err == nil {
 		g.assetInfo["hd_sha256"] = fmt.Sprintf("%x", sha256.Sum256(data))
 		g.asset, err = previewPNG(*desktopAsset)
 		if err != nil {
@@ -162,7 +161,7 @@ func runDesktopWindow(c *desktopContext) error {
 		}
 		pair := desktopPortrait{}
 		info := map[string]any{}
-		if data, e := os.ReadFile(profile.Source); e == nil {
+		if data, e := readRuntimeFile(profile.Source); e == nil {
 			sum := fmt.Sprintf("%x", sha256.Sum256(data))
 			info["source_sha256"] = sum
 			if sum == profile.SourceSHA {
@@ -173,7 +172,7 @@ func runDesktopWindow(c *desktopContext) error {
 			}
 		}
 		path := filepath.Join(*desktopPortraitDir, profile.Asset)
-		if data, e := os.ReadFile(path); e == nil {
+		if data, e := readRuntimeFile(path); e == nil {
 			info["hd_sha256"] = fmt.Sprintf("%x", sha256.Sum256(data))
 			pair.Asset, e = previewPNG(path)
 			if e != nil {
@@ -196,7 +195,7 @@ func runDesktopWindow(c *desktopContext) error {
 		pair := desktopPortrait{}
 		info := map[string]any{}
 		sourcePath := filepath.Join(*desktopKaoSourceDir, fmt.Sprintf("kao-%02d-original.png", index))
-		if data, e := os.ReadFile(sourcePath); e == nil {
+		if data, e := readRuntimeFile(sourcePath); e == nil {
 			sum := fmt.Sprintf("%x", sha256.Sum256(data))
 			info["source_sha256"] = sum
 			if sum == profile.SourceSHA {
@@ -207,7 +206,7 @@ func runDesktopWindow(c *desktopContext) error {
 			}
 		}
 		path := filepath.Join(*desktopKaoDir, fmt.Sprintf("kao-%02d-hd-b-v1.png", index))
-		if data, e := os.ReadFile(path); e == nil {
+		if data, e := readRuntimeFile(path); e == nil {
 			info["hd_sha256"] = fmt.Sprintf("%x", sha256.Sum256(data))
 			pair.Asset, e = previewPNG(path)
 			if e != nil {
@@ -226,7 +225,7 @@ func runDesktopWindow(c *desktopContext) error {
 	g.assetInfo["kao"] = kaoInfo
 	var scrollSource, scrollAsset image.Image
 	scrollInfo := map[string]any{}
-	if data, err := os.ReadFile(*desktopScrollSource); err == nil {
+	if data, err := readRuntimeFile(*desktopScrollSource); err == nil {
 		sum := fmt.Sprintf("%x", sha256.Sum256(data))
 		scrollInfo["source_sha256"] = sum
 		if sum == "e8abcce3af8bc8bd4243ad27aecc0f8b07122813af23dd79d958650de04f6690" {
@@ -236,7 +235,7 @@ func runDesktopWindow(c *desktopContext) error {
 			}
 		}
 	}
-	if data, err := os.ReadFile(*desktopScrollAsset); err == nil {
+	if data, err := readRuntimeFile(*desktopScrollAsset); err == nil {
 		scrollInfo["hd_sha256"] = fmt.Sprintf("%x", sha256.Sum256(data))
 		scrollAsset, err = previewPNG(*desktopScrollAsset)
 		if err != nil {
@@ -249,7 +248,7 @@ func runDesktopWindow(c *desktopContext) error {
 	g.assetInfo["scroll"] = scrollInfo
 	var frameSource, frameAsset image.Image
 	frameInfo := map[string]any{}
-	if data, e := os.ReadFile(*desktopFrameSource); e == nil {
+	if data, e := readRuntimeFile(*desktopFrameSource); e == nil {
 		sum := fmt.Sprintf("%x", sha256.Sum256(data))
 		frameInfo["source_sha256"] = sum
 		if sum == "7686cb21cbf195893ac0f75e495fa304446fd6d1e4f41f1d78300890ffdb9116" {
@@ -259,7 +258,7 @@ func runDesktopWindow(c *desktopContext) error {
 			}
 		}
 	}
-	if data, e := os.ReadFile(*desktopFrameAsset); e == nil {
+	if data, e := readRuntimeFile(*desktopFrameAsset); e == nil {
 		frameInfo["hd_sha256"] = fmt.Sprintf("%x", sha256.Sum256(data))
 		frameAsset, e = previewPNG(*desktopFrameAsset)
 		if e != nil {
@@ -272,7 +271,7 @@ func runDesktopWindow(c *desktopContext) error {
 	g.assetInfo["frame"] = frameInfo
 	var windowSource, windowAsset image.Image
 	windowInfo := map[string]any{}
-	if data, e := os.ReadFile(*desktopWindowSource); e == nil {
+	if data, e := readRuntimeFile(*desktopWindowSource); e == nil {
 		sum := fmt.Sprintf("%x", sha256.Sum256(data))
 		windowInfo["source_sha256"] = sum
 		if sum == "8a4c3c581d76b131644f69733b61783fafde14541263cfde1d3dfe594d66978b" {
@@ -282,7 +281,7 @@ func runDesktopWindow(c *desktopContext) error {
 			}
 		}
 	}
-	if data, e := os.ReadFile(*desktopWindowAsset); e == nil {
+	if data, e := readRuntimeFile(*desktopWindowAsset); e == nil {
 		windowInfo["hd_sha256"] = fmt.Sprintf("%x", sha256.Sum256(data))
 		windowAsset, e = previewPNG(*desktopWindowAsset)
 		if e != nil {
@@ -299,7 +298,7 @@ func runDesktopWindow(c *desktopContext) error {
 		info := map[string]any{}
 		var source, asset image.Image
 		path := filepath.Join(*desktopTerrainSourceDir, fmt.Sprintf("floor-%03d-original.png", index))
-		if data, e := os.ReadFile(path); e == nil {
+		if data, e := readRuntimeFile(path); e == nil {
 			sum := fmt.Sprintf("%x", sha256.Sum256(data))
 			info["source_sha256"] = sum
 			if sum == profile.SourceSHA {
@@ -311,7 +310,7 @@ func runDesktopWindow(c *desktopContext) error {
 		}
 		if profile.Asset != "" {
 			path = filepath.Join(*desktopTerrainDir, profile.Asset)
-			if data, e := os.ReadFile(path); e == nil {
+			if data, e := readRuntimeFile(path); e == nil {
 				sum := fmt.Sprintf("%x", sha256.Sum256(data))
 				info["hd_sha256"] = sum
 				if sum == profile.AssetSHA {
@@ -336,7 +335,7 @@ func runDesktopWindow(c *desktopContext) error {
 		name := fmt.Sprintf("%s-%03d-original.png", profile.Group, profile.Index)
 		path := filepath.Join(*desktopTerrainSpriteSourceDir, name)
 		info := map[string]any{"validation": "fallback_missing_source"}
-		if data, e := os.ReadFile(path); e == nil {
+		if data, e := readRuntimeFile(path); e == nil {
 			sum := fmt.Sprintf("%x", sha256.Sum256(data))
 			info["source_sha256"] = sum
 			if sum == profile.SourceSHA {
@@ -356,7 +355,7 @@ func runDesktopWindow(c *desktopContext) error {
 	if source := g.terrainSprites[hdTerrainSpriteKey{"objects", 0}]; source != nil {
 		treeSource = source
 	}
-	if data, e := os.ReadFile(filepath.Join(*desktopTerrainSpriteSourceDir, "objects-000-original.png")); e == nil {
+	if data, e := readRuntimeFile(filepath.Join(*desktopTerrainSpriteSourceDir, "objects-000-original.png")); e == nil {
 		sum := fmt.Sprintf("%x", sha256.Sum256(data))
 		treeInfo["source_sha256"] = sum
 		if sum != hdTerrainTreeSourceSHA {
@@ -366,7 +365,7 @@ func runDesktopWindow(c *desktopContext) error {
 		treeSource = nil
 	}
 	var treeAsset image.Image
-	if data, e := os.ReadFile(*desktopTerrainTreeAsset); e == nil {
+	if data, e := readRuntimeFile(*desktopTerrainTreeAsset); e == nil {
 		sum := fmt.Sprintf("%x", sha256.Sum256(data))
 		treeInfo["hd_sha256"] = sum
 		if sum == hdTerrainTreeAssetSHA {
@@ -393,7 +392,7 @@ func runDesktopWindow(c *desktopContext) error {
 			source = im
 		}
 		path := filepath.Join(*desktopTerrainUnitDir, profile.Asset)
-		if data, e := os.ReadFile(path); e == nil {
+		if data, e := readRuntimeFile(path); e == nil {
 			sum := fmt.Sprintf("%x", sha256.Sum256(data))
 			info["hd_sha256"] = sum
 			if sum == profile.AssetSHA {
@@ -424,7 +423,7 @@ func runDesktopWindow(c *desktopContext) error {
 			source = im
 		}
 		path := filepath.Join(*desktopTerrainObjectDir, profile.Asset)
-		if data, e := os.ReadFile(path); e == nil {
+		if data, e := readRuntimeFile(path); e == nil {
 			sum := fmt.Sprintf("%x", sha256.Sum256(data))
 			info["hd_sha256"] = sum
 			if sum == profile.AssetSHA {
@@ -439,12 +438,12 @@ func runDesktopWindow(c *desktopContext) error {
 	}
 	g.assetInfo["terrain_objects"] = objectInfo
 	battleInfo := map[string]any{}
-	indices, err := os.ReadFile(*desktopBattleFrameIndices)
+	indices, err := readRuntimeFile(*desktopBattleFrameIndices)
 	if err == nil {
 		battleInfo["source_indices_sha256"] = fmt.Sprintf("%x", sha256.Sum256(indices))
 	}
 	var battleAsset image.Image
-	if data, e := os.ReadFile(*desktopBattleFrameAsset); e == nil {
+	if data, e := readRuntimeFile(*desktopBattleFrameAsset); e == nil {
 		sum := fmt.Sprintf("%x", sha256.Sum256(data))
 		battleInfo["hd_sha256"] = sum
 		if sum == battleFrameAssetSHA {
@@ -459,10 +458,10 @@ func runDesktopWindow(c *desktopContext) error {
 	g.graphics = map[string]hdGraphicsPair{}
 	graphicsInfo := map[string]any{}
 	for _, profile := range hdGraphicsProfiles {
-		indices, _ := os.ReadFile(filepath.Join("/project/workplace/hd-prototype/catalog/decoded", profile.Source.Name+".idx"))
+		indices, _ := readRuntimeFile(filepath.Join("/project/workplace/hd-prototype/catalog/decoded", profile.Source.Name+".idx"))
 		info := map[string]any{"source_indices_sha256": fmt.Sprintf("%x", sha256.Sum256(indices))}
 		var painting image.Image
-		if data, e := os.ReadFile(filepath.Join(*desktopGraphicsDir, profile.Asset)); e == nil {
+		if data, e := readRuntimeFile(filepath.Join(*desktopGraphicsDir, profile.Asset)); e == nil {
 			sum := fmt.Sprintf("%x", sha256.Sum256(data))
 			info["hd_sha256"] = sum
 			if sum == profile.AssetSHA {
@@ -499,6 +498,9 @@ func runDesktopWindow(c *desktopContext) error {
 	c.Report["combat_unit_modes"], c.Report["combat_unit_hd_count"] = g.combatUnitModes, g.combatUnitHD
 	c.Report["startup_selection"], c.Report["startup_selection_events"] = g.choice.Selection, g.choiceEvents
 	c.Report["program"] = c.Program
+	if c.Audio != nil {
+		c.Report["audio_output"] = c.Audio.Report()
+	}
 	if c.Program == "mark" {
 		c.Report["classification"] = "desktop publisher prototype; source-qualified logo and original copyright"
 	}
@@ -677,7 +679,11 @@ func (g *desktopGame) saveFrame(label string) (map[string]any, error) {
 		prefix = "desktop-mark"
 	}
 	path := fmt.Sprintf("/output/startup-probe/%s-%d-%s.png", prefix, g.c.Steps(), label)
-	f, err := os.Create(path)
+	if playMode {
+		path = fmt.Sprintf("/output/screenshots/%s-%d-%s.png", prefix, g.c.Steps(), label)
+	}
+	path = resolveRuntimePath(path)
+	f, err := createRuntimeFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -689,7 +695,7 @@ func (g *desktopGame) saveFrame(label string) (map[string]any, error) {
 	if closeErr != nil {
 		return nil, closeErr
 	}
-	b, err := os.ReadFile(path)
+	b, err := readRuntimeFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -701,7 +707,7 @@ func (g *desktopGame) saveFrame(label string) (map[string]any, error) {
 		}
 		sum := fmt.Sprintf("%x", sha256.Sum256(s.Indexed))
 		name := "native-indexed-" + sum + ".idx"
-		if e = os.WriteFile(filepath.Join("/output", name), s.Indexed, 0600); e != nil {
+		if e = writeRuntimeFile(filepath.Join("/output", name), s.Indexed, 0600); e != nil {
 			return nil, e
 		}
 		result["native_indices"] = map[string]any{"path": name, "sha256": sum, "palette": s.Palette, "dac": s.DAC}
@@ -713,7 +719,7 @@ func (g *desktopGame) saveFrame(label string) (map[string]any, error) {
 			if sum != d.BackgroundIndexedSHA {
 				return nil, fmt.Errorf("background index proof changed")
 			}
-			if e = os.WriteFile(filepath.Join("/output", "sprite-background-"+sum+".idx"), d.BackgroundIndexed, 0600); e != nil {
+			if e = writeRuntimeFile(filepath.Join("/output", "sprite-background-"+sum+".idx"), d.BackgroundIndexed, 0600); e != nil {
 				return nil, e
 			}
 		}
@@ -813,6 +819,9 @@ func (g *desktopGame) Update() error {
 		}
 	}
 	running := true
+	if g.c.Audio != nil {
+		g.c.Audio.SetPaused(g.paused || choosing || g.bar.Visible)
+	}
 	if !g.paused && !consumed && !mouseBlocked {
 		n := int((int64(g.updates)*1000000*int64(*desktopSpeed))/60 - (int64(g.updates-1)*1000000*int64(*desktopSpeed))/60)
 		running = g.c.Advance(n)
@@ -870,11 +879,13 @@ func (g *desktopGame) Update() error {
 	if err != nil {
 		return err
 	}
-	if err = os.WriteFile("/output/desktop-status.pending", b, 0600); err != nil {
-		return err
-	}
-	if err = os.Rename("/output/desktop-status.pending", "/output/desktop-status.json"); err != nil {
-		return err
+	if runtimeDiagnostics {
+		if err = writeRuntimeFile("/output/desktop-status.pending", b, 0600); err != nil {
+			return err
+		}
+		if err = renameRuntimeFile("/output/desktop-status.pending", "/output/desktop-status.json"); err != nil {
+			return err
+		}
 	}
 	if !running {
 		return ebiten.Termination

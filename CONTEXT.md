@@ -26,6 +26,7 @@
 | 普通歷史簡介與離開 | 普通點擊後自然 600M，經 OP2、OP2_P、OP4、劇情、OP8、OP9、OP-FULL 回到 OP5 主選單，沒有未支援指令。完整、未位移局部與 OP2／OP8 捲動皆已接 HD，抽樣範圍分別記錄。普通離開在 80017192 步正常 dos_exit，BDA 恢復模式 3／80 欄；不宣稱文字畫面驗收 | [歷史原版收據](workplace/hd-prototype/catalog/remaining/source-boundary/menu-history/rcr/receipt.json)、[捲動驗收](workplace/hd-prototype/catalog/remaining/history/scrolling/verification-summary.json)、[離開收據](workplace/hd-prototype/catalog/remaining/source-boundary/menu-exit/platform/ready/receipt.json) |
 | 啟動顯示選擇 | 預設在 MARK 前選原版／HD，只詢問一次。選擇及確認手勢期間原版保持 0 步、沒有按鈕轉送；MARK 內最後設定帶進遊戲。兩條流程均到首戰，MARK 與遊戲功能列的雙向切換及還原保持原版狀態；模式選擇畫面關窗結束整個啟動器 | [桌面啟動器](tools/desktop-publisher.go)、[完整驗收](workplace/desktop-prototype/startup-chain/verification-summary.json) |
 | MARK 恢復及 HD | CONFORMED。已接入預設桌面啟動鏈，原版 MARK 自然漸入、停留、漸出並在 15989208 步退出碼 0，隨後啟動 DX5 並沿用最後模式。兩份原版 RAM 與虛擬時間獨立保存；獨立模式的缺圖驗證仍有效 | [啟動器](tools/desktop-publisher.go)、[實際 HD 標誌](workplace/desktop-prototype/startup-chain/hd/mark-last.png)、[完整驗收](workplace/desktop-prototype/startup-chain/verification-summary.json) |
+| 獨立桌面與封包 | 主機端資源根目錄、持續存檔、無研究步數上限及 CD 播放佇列已實作。r4 四套件、中文路徑、重開工作副本、原版資料不變與 Wine 測試通過；20M 完整 RAM 等於 r27。三平台封包及裝置擷取進行中，不作完成聲明 | [執行路徑](tools/runtime-paths.go)、[音訊](tools/desktop-audio.go)、[封包工具](tools/package-desktop.py)、`workplace/desktop-prototype/package/r4/` |
 | remake | 排除 | 使用者明確指定原版與 dosgolem 整合 |
 | 後續功能範圍 | CDDA 裝置與 PCM 已實作；桌面播放、繁中／簡中／英文／日文與可切換 HD 素材包待後續切片 | 已確認範圍與驗收見 [WORKLIST.md](WORKLIST.md) |
 | 後續使用介面 | 桌面版；全遊戲 HD 後打包 Windows、Linux、macOS；瀏覽器排除 | 使用者已確認；目前只驗證 Linux 容器桌面 |

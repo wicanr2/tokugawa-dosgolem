@@ -14,6 +14,7 @@
 | 音訊 | 裝置、PCM 與首場流程通過 | 原版正常流程八筆 PLAY 及換曲通過，PCM 逐段核對 BIN；PREGAP 靜音及映像結尾停止亦通過；桌面輸出及人耳確認待驗 |
 | MARK 與啟動顯示選擇 | CONFORMED，完整鏈通過 | 預設先選模式，依序執行原版 MARK 與 DX5；MARK 的最後原版／HD 設定帶進遊戲，兩處功能列均可切換。兩次完整首戰與正常關窗、各自 RAM／原版欄位通過；收據見 startup-chain/verification-summary.json。原版執行環境及虛擬時間分開，不偽造 COMMAND.COM 或 EXEC 成功 |
 | 正常玩家路徑 | 部分通過 | 原版入口至首戰及 FILE 3 的正常存讀檔樣本通過，讀回完整畫面一致；武將表 HD 切換通過。接續回合及交鋒，不將單一存檔或首戰驗收當成全遊戲相容 |
+| 獨立桌面與三平台封包 | 進行中 | 路徑與持續存檔測試通過，裝置音訊與真正 ZIP 啟動核對中；正常通關不列門檻。入口 tools/package-desktop.py 與 tools/verify-desktop-package.py |
 | private GitHub repository 與 Issues | 遠端核對完成 | 主機 gh 確認 private 與六筆 Issues；CD-TRACE 修正與首場流程通過，後續由 [CDDA #2](https://github.com/wicanr2/tokugawa-dosgolem/issues/2)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3) 接續，最新狀態查 GitHub |
 
 平台每次修正依序核對 bytes 與資料流、記錄 READY 契約、實作、跑回歸、重跑自然啟動。上一份停止收據保存在 `workplace/startup-probe/receipts/`，不依指令步數單獨宣稱完成。

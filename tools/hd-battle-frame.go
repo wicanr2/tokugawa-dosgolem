@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"image"
 	"image/png"
-	"os"
 	"path/filepath"
 )
 
@@ -124,10 +123,10 @@ func (b *battleFrameState) export(root string) (map[string]any, error) {
 		Data []byte
 	}{{name, buffer.Bytes()}, {"battle-frame-" + battleFrameIndexedSHA + ".idx", b.Capture.Indexed}} {
 		path := filepath.Join(root, file.Name)
-		if old, err := os.ReadFile(path); err == nil && !bytes.Equal(old, file.Data) {
+		if old, err := readRuntimeFile(path); err == nil && !bytes.Equal(old, file.Data) {
 			return nil, fmt.Errorf("refuse changed frame export %s", file.Name)
 		}
-		if err := os.WriteFile(path, file.Data, 0640); err != nil {
+		if err := writeRuntimeFile(path, file.Data, 0640); err != nil {
 			return nil, err
 		}
 	}

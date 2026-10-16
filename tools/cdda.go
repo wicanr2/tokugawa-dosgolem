@@ -4,10 +4,84 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"sync"
 )
 
 const cdSampleRate = uint64(44100)
 const cdFramesPerSector = uint64(588)
+
+// 主機播放器的有界樣本框佇列。丟棄完整框，不改 DOS 的 PCM 來源或時間。
+type pcmQueue struct {
+	sync.Mutex
+	frames                              [][4]byte
+	head, count, offset                 int
+	current                             [4]byte
+	closed                              bool
+	received, consumed, silent, dropped uint64
+}
+
+func newPCMQueue(capacity int) *pcmQueue {
+	if capacity < 1 {
+		panic("invalid PCM capacity")
+	}
+	return &pcmQueue{frames: make([][4]byte, capacity), offset: 4}
+}
+
+func (q *pcmQueue) Write(data []byte) (int, error) {
+	q.Lock()
+	defer q.Unlock()
+	if q.closed {
+		return 0, io.ErrClosedPipe
+	}
+	if len(data)%4 != 0 {
+		return 0, fmt.Errorf("PCM write must contain complete stereo frames")
+	}
+	for i := 0; i < len(data); i += 4 {
+		if q.count == len(q.frames) {
+			q.head = (q.head + 1) % len(q.frames)
+			q.count--
+			q.dropped++
+		}
+		copy(q.frames[(q.head+q.count)%len(q.frames)][:], data[i:i+4])
+		q.count++
+		q.received++
+	}
+	return len(data), nil
+}
+
+func (q *pcmQueue) Read(data []byte) (int, error) {
+	q.Lock()
+	defer q.Unlock()
+	for i := 0; i < len(data); {
+		if q.offset == 4 {
+			if q.count > 0 {
+				q.current = q.frames[q.head]
+				q.head = (q.head + 1) % len(q.frames)
+				q.count--
+				q.consumed++
+			} else {
+				if q.closed {
+					return i, io.EOF
+				}
+				q.current = [4]byte{}
+				q.silent++
+			}
+			q.offset = 0
+		}
+		n := copy(data[i:], q.current[q.offset:])
+		i += n
+		q.offset += n
+	}
+	return len(data), nil
+}
+
+func (q *pcmQueue) Close() error { q.Lock(); q.closed = true; q.Unlock(); return nil }
+func (q *pcmQueue) report() map[string]any {
+	q.Lock()
+	defer q.Unlock()
+	return map[string]any{"frame_capacity": len(q.frames), "queued_frames": q.count, "received_frames": q.received,
+		"consumed_source_frames": q.consumed, "underflow_silent_frames": q.silent, "dropped_oldest_frames": q.dropped}
+}
 
 type cdAudio struct {
 	NowUS          uint64           `json:"virtual_us"`

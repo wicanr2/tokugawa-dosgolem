@@ -2,6 +2,8 @@
 
 使用者於 2026-10-16 明確取消正常通關驗收。正常通關不列為 HD 完成或三平台打包的門檻，也不因這項取消而登記為實測通過。接續驗收限剩餘素材的來源、實際繪圖、原版／HD 切換、缺圖及封包可啟動性；既有原版狀態保護與本機資料邊界保持。現況與有效決策以 CONTEXT.md 為準。
 
+獨立桌面的路徑入口為 [tools/runtime-paths.go](tools/runtime-paths.go) 與 [測試](tools/runtime-paths_test.go)，音訊入口為 [tools/desktop-audio.go](tools/desktop-audio.go) 及 tools/cdda.go 的有界 PCM 佇列。正式桌面以 `-play` 使用執行檔旁資源、固定使用者存檔及 CD 輸出；研究預設保持原路徑與預算。`-resource-dir`、`-game-dir`、`-state-dir` 可明示驗證根目錄，`-diagnostics` 才輸出大型診斷。封包準備沿 `workplace/desktop-prototype/package/`，版本及交付位置只依知識路由的 dist-all／version-date 契約。READY 契約見 RESEARCH-LOG。
+
 剩餘圖像的受控準備入口為 [tools/prepare-art-validation.py](tools/prepare-art-validation.py)，桌面入口為 [tools/verify-controlled-art.py](tools/verify-controlled-art.py)，獨立核對入口為 [tools/verify-controlled-art-summary.py](tools/verify-controlled-art-summary.py)。現行研究批次為 `workplace/hd-prototype/catalog/remaining/consumers/battle/r30/`；r28 保留淡入色盤缺漏，r29 保留滑鼠隔離與標題選單圖層的前置條件問題。固定 GUI image 內專案及原版唯讀、r30 可寫掛 `/output`。準備工具沿 r27 生產來源與 r29/control 的普通 80M 穩定標題建立副本，先由原版重畫 OP5 清除選單圖層，再選原版表格的動畫分支；OP6 只替換測試版 loader 參數。每筆 EIP、欄位及 stack 變更完整記錄。建置及執行覆掛該批次的 `source-snapshot/tools/` 至 `/project/tools`；GUI 各案另掛 `/output`，以 `--mode hd` 或 `--mode missing` 執行，空 mouse-file 隔離普通輸入。這些驗收入口不接入正式啟動器，結果不得列為正常玩家路徑。
 
 使用者於 2026-10-16 授權調整結局驗收。結局 HD 可用隔離測試入口直接執行原版結局，驗收名稱為「受控結局驗收」；不要求先通關，也不將受控入口列為正常通關證據。正式啟動、玩法、存檔與原始檔保持原契約。準備入口為 [tools/prepare-ending-validation.py](tools/prepare-ending-validation.py)，只在 `workplace/hd-prototype/catalog/remaining/consumers/battle/` 建立凍結測試副本，不修改正式 `tools/startup-probe.go`。實際控制轉移、測試狀態差異與來源雜湊逐項記入收據，規格見 RESEARCH-LOG。
@@ -35,6 +37,12 @@
 開場 OP2／OP8 手繪草稿及完整提示詞保存於 `workplace/hd-prototype/catalog/art/`，生成 metadata 為該目錄的 `opening-generation.json`，私人索引副本為 `assets/hd-b/art/opening-generation.json`。原始生成尺寸分別 2172×724、2171×724，尚須依原版 640×200 校準；OP2 未使用的藍底區另外保護。草稿不當作已接入或正常路徑驗收。
 
 ## 開工入口
+
+桌面本機封包入口為 [tools/package-desktop.py](tools/package-desktop.py)，只在固定 GUI image 內執行。專案／原版／固定 dosgolem 分別唯讀掛 `/project`、`/original`、`/dosgolem`，乾淨工作目錄可寫掛 `/output`，交付根目錄可寫掛 `/delivery`；參數為 `--version`、`--commit` 與經實際執行產生的 `--asset-audit`。子目錄遵守知識路由的 dist-all 契約，含原版的四個平台／架構 ZIP 只留 full-local。自製程式授權見 [LICENSE](LICENSE)，不涵蓋原版資料。
+
+桌面音訊入口為 [tools/verify-desktop-audio.py](tools/verify-desktop-audio.py)，沿 READY 指定的既有音訊 image，唯讀掛專案／原版，可寫工作目錄掛 `/output`，傳入 `--binary`、`--resource-dir`、`--game-dir`、`--cpu-source`。它重播既有正常輸入至首筆原版選曲後，核對開／關音訊的完整 RAM、原版欄位及 PulseAudio loopback，保留人耳未驗證分類。既有收據可用 `--verify-only` 重新核對，不冒稱新測次。
+
+實際封包驗證入口為 [tools/verify-desktop-package.py](tools/verify-desktop-package.py)，沿固定 GUI 或 Wine image，傳入 `--archive`、`--platform linux|windows`；封包唯讀、乾淨 smoke 目錄可寫掛 `/output`。解包核對 manifest 後執行真正封包，抽測模式選擇、MARK 自然退出、正常標題、功能列切換、原版狀態不變及關窗。macOS 編譯／格式核對與真機驗收分開，不以 Linux 或 Wine 代替。
 
 下方 MAP_WAKU 快取圖塊的來源核對入口為 [tools/verify-hd-map-cache-source.py](tools/verify-hd-map-cache-source.py)。固定 GUI image 中專案唯讀掛 `/project`、`consumers/battle/r23/` 可寫掛 `/output`，執行該工具，核對正常 RAM 的完整快取、IDA 已載入 bytes、八次四平面呼叫與原始平面偏移。相同掛載執行 `python3 /project/tools/verify-hd-map-frame.py --corners`，核對完整原版對照、九處框架、正常 X11、缺圖及後畫場景；總表為 r23/verification-summary.json。來源核對與正常 HD 視窗驗收分開保存，16×16 字樣保留原版。
 

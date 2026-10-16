@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"image"
-	"os"
 )
 
 type graphicsSourceProfile struct {
@@ -173,7 +172,7 @@ func newGraphicsTrace(path string) (graphicsTrace, error) {
 	var inventory struct {
 		Records []graphicsSourceProfile `json:"records"`
 	}
-	data, err := os.ReadFile(path)
+	data, err := readRuntimeFile(path)
 	if err != nil {
 		return graphicsTrace{}, err
 	}

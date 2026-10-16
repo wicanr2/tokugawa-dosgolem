@@ -58,7 +58,7 @@ func cueFrames(value string) (uint32, error) {
 
 // 本切片只支援單一 BINARY 檔、MODE1/2352 第一軌與後續 AUDIO 軌。
 func openCueDisc(path string) (*cueDisc, error) {
-	text, err := os.ReadFile(path)
+	text, err := readRuntimeFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +123,7 @@ func openCueDisc(path string) (*cueDisc, error) {
 	if len(d.Tracks) == 0 || d.Tracks[0].FileSector != 0 {
 		return nil, fmt.Errorf("invalid first data track")
 	}
-	entries, err := os.ReadDir(filepath.Dir(path))
+	entries, err := readRuntimeDirectory(filepath.Dir(path))
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +139,7 @@ func openCueDisc(path string) (*cueDisc, error) {
 	if resolved == "" {
 		return nil, fmt.Errorf("CUE BIN not found")
 	}
-	f, err := os.Open(resolved)
+	f, err := openRuntimeFile(resolved)
 	if err != nil {
 		return nil, err
 	}

@@ -2388,3 +2388,18 @@ r30 首次獨立像素核對已通過動畫與背景還原，但 OP6 全幅的�
 - 唯一覆蓋清單確認 111 個 OZM 美術來源、VISUAL 分層、81 頭像、104 地面、十個非空單位及 24 個非空物件已製作與接入；20 項動畫／介面由八項正常及十二項受控抽樣涵蓋。既定 HD 接入驗收完成，可進入三平台封包。
 
 完成範圍限已盤點美術、已知消費端及代表路徑抽樣。原版文字／字型、少量未知來源像素及未知顯示狀態沿原版備援；未逐張正常試玩的素材仍保留其證據等級。依使用者決定不做正常通關驗收，不把取消驗收登記為通關通過。原版資料、原生圖片、RAM、音訊及研究收據只留本機，生成素材維持私人 Git 保存。
+
+### 獨立桌面執行與本機封包：READY
+
+輸入為 85a16a421aaafc276e6b8759491181fe231255aa 的自製程式及固定雜湊原版；本節調整主機端路徑、輸出生命週期與音訊呈現，不修改 DOS 指令、資料、玩法或存檔格式。原有 Docker 探針的預設路徑與有界預算保持。
+
+| 項目 | 契約 |
+|---|---|
+| 資源與資料路徑 | 正常桌面從執行檔旁的 runtime 與 game 讀取，macOS 改從 Contents/Resources 讀取。來源保持唯讀；使用者資料另放 XDG data、Windows LOCALAPPDATA 或 macOS Application Support，可用明示旗標覆寫。MARK 子程序繼承同一路徑及設定 |
+| 存檔 | 重用 dosgolem OpenDirectoryOverlayFiles：讀取優先使用既有工作副本，寫入首次複製原始檔。正常桌面使用固定使用者 saved-data/game；研究預設仍使用一次性隔離目錄。原版 SAV／DAT bytes 不重新編碼 |
+| 執行生命週期 | 正常桌面不因研究用 2B 上限自動結束，明示 -steps 仍可作有界驗證。保留原版退出、關窗及 MARK → DX5 鏈；預設關閉 RAM／PCM 大型診斷檔，手動截圖可用 |
+| CD 桌面播放 | 沿既有 44.1 kHz／s16le／雙聲道 PCM，加入只接收輸出的有界音訊佇列；使用固定 Ebitengine 2.9.9 audio.Context.NewPlayer 的十六位元契約。音訊消費者不回寫 DOS 狀態、不阻塞原版步進；空佇列補靜音、超限丟最舊完整樣本框並記錄，暫停時停裝置消費。此為主機呈現近似，不宣稱硬體逐週期或人耳驗收 |
+| 封包 | Windows amd64、Linux amd64、macOS amd64／arm64；固定 Go 1.24.13 與既有離線模組。使用同一完整版本字串、來源與輸出 SHA、平台／架構、來源權利及存檔位置 manifest。原版與解碼來源只進 dist-all 的 full-local，不進 Git 或 Release |
+| 驗收 | 有意義的路徑／PCM 佇列測試、四套件、原版同輸入狀態控制、真正封包啟動及 HD／原圖切換。Linux 音訊用既有 eob-audio-capture:20261009-r3 的 PulseAudio 虛擬裝置擷取；Windows 沿既有 psgolem-wine-verify:noble-r1。macOS 編譯及格式核對與真機啟動分開記錄 |
+
+Ebitengine 十六位元播放器契約直接查固定工具 image 的 /go/pkg/mod/github.com/hajimehoshi/ebiten/v2@v2.9.9/audio/audio.go；它將十六位元 PCM 轉為內部浮點串流。持續存檔契約直接查固定 dosgolem 副本 internal/machine/overlay_files.go 的 OpenRead／OpenWrite，原版讀寫仍經既有 DOS 檔案服務。封包路由已讀 local/retro-remake-dist-all-output.md 與 local/retro-remake-release-versioning.md。

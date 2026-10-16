@@ -8,7 +8,6 @@ import (
 	"image"
 	"image/color"
 	"image/png"
-	"os"
 	"path/filepath"
 )
 
@@ -207,7 +206,7 @@ func (t *spriteBackdropTrace) observe(step int, eip, esp, esi, edi uint32, mem [
 
 func (t *spriteBackdropTrace) export(root string) ([]map[string]any, error) {
 	dir := filepath.Join(root, "sprite-backgrounds")
-	if err := os.MkdirAll(dir, 0750); err != nil {
+	if err := makeRuntimeDirectories(dir, 0750); err != nil {
 		return nil, err
 	}
 	var records []map[string]any
@@ -226,10 +225,10 @@ func (t *spriteBackdropTrace) export(root string) ([]map[string]any, error) {
 			}
 			name := fmt.Sprintf("record-%02d-%s.png", i, item.Name)
 			path := filepath.Join(dir, name)
-			if old, err := os.ReadFile(path); err == nil && !bytes.Equal(old, b.Bytes()) {
+			if old, err := readRuntimeFile(path); err == nil && !bytes.Equal(old, b.Bytes()) {
 				return nil, fmt.Errorf("refuse changed export %s", name)
 			}
-			if err := os.WriteFile(path, b.Bytes(), 0640); err != nil {
+			if err := writeRuntimeFile(path, b.Bytes(), 0640); err != nil {
 				return nil, err
 			}
 			row[item.Name] = map[string]any{"path": "sprite-backgrounds/" + name, "png_sha256": fmt.Sprintf("%x", sha256.Sum256(b.Bytes())), "rgba_sha256": fmt.Sprintf("%x", sha256.Sum256(item.Image.Pix))}

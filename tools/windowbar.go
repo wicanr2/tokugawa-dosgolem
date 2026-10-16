@@ -8,7 +8,6 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -121,7 +120,7 @@ type barGlyph struct {
 type barFont map[rune]barGlyph
 
 func loadBarFont(path string) (barFont, error) {
-	f, err := os.Open(path)
+	f, err := openRuntimeFile(path)
 	if err != nil {
 		return nil, err
 	}
