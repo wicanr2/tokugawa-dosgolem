@@ -15,7 +15,8 @@
 | MARK 與啟動顯示選擇 | CONFORMED，完整鏈通過 | 預設先選模式，依序執行原版 MARK 與 DX5；MARK 的最後原版／HD 設定帶進遊戲，兩處功能列均可切換。兩次完整首戰與正常關窗、各自 RAM／原版欄位通過；收據見 startup-chain/verification-summary.json。原版執行環境及虛擬時間分開，不偽造 COMMAND.COM 或 EXEC 成功 |
 | 正常玩家路徑 | 部分通過 | 原版入口至首戰及 FILE 3 的正常存讀檔樣本通過，讀回完整畫面一致；武將表 HD 切換通過。接續回合及交鋒，不將單一存檔或首戰驗收當成全遊戲相容 |
 | 獨立桌面與三平台封包 | 本機四包完成 | v.0.1.0-20261016；772／773 個檔案逐包核對，Linux 及 Windows／Wine 完整啟動與切換通過；macOS 編譯／格式通過，真機未驗證。正常通關不列門檻。入口 dist-all/v.0.1.0-20261016/smoke/verification-summary.json |
-| private GitHub repository 與 Issues | 遠端核對完成 | 主機 gh 確認 private 與六筆 Issues；CD-TRACE 修正與首場流程通過，後續由 [CDDA #2](https://github.com/wicanr2/tokugawa-dosgolem/issues/2)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3) 接續，最新狀態查 GitHub |
+| 推廣影片與 README 故事 | 完成，本機交付 | 正式 Linux 包正常入口、首戰與實際切換錄影，原版 CD 配樂；72 秒／1080p 的解碼、音訊、字幕、黑幀／停格與抽樣幀檢查通過。故事依原版章節與官方史實來源整理，影片與四包不進 Git。入口 dist-all/v.0.1.0-20261016/promo/verification-summary.json 及 README.md |
+| private GitHub repository 與 Issues | 遠端核對完成 | 主機 gh 確認 private 與六筆 Issues；#1／#2／#3／#5 已關閉，後續由[四語 #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)及[共同驗收 #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)接續，最新狀態查 GitHub |
 
 平台每次修正依序核對 bytes 與資料流、記錄 READY 契約、實作、跑回歸、重跑自然啟動。上一份停止收據保存在 `workplace/startup-probe/receipts/`，不依指令步數單獨宣稱完成。
 

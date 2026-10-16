@@ -2424,3 +2424,12 @@ Ebitengine 十六位元播放器契約直接查固定工具 image 的 /go/pkg/mo
 - 原始 ZIP／十二檔、唯讀與 UID/GID 1000:1000 核對通過，沒有 root-owned 或 .md 目錄。先前將原版控制的 engine 掛入可寫輸出子路徑時，dockerd 建立了一個 root-owned 空 mountpoint；只修復 package/r4/prior-control/engine 單一空目錄後核對，未遞迴變更專案。現行工具 image 保留，其他專案及既有 IDA image 不清除。
 
 完整 HD 與既定接入驗收沿 r30 的凍結來源維持；正常通關依使用者決定排除，不記作通關通過。原版資料、解碼參考、音訊與完整版只留本機。四語由 #4、共同驗收及真機限制由 #6 追蹤，不把這批桌面封包當成四語已完成。
+
+### 故事背景來源
+
+2026-10-16，README 的遊戲敘事使用原始 original/game/DX5.EXE，SHA-256 2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a。Python 標準庫以 CP950 直接解碼檔案 bytes，不使用 OCR、IDA 推測名稱或其他版本攻略。位址基準為原始檔案偏移，不是 LE 載入後線性位址。原版全文與逐塊 SHA 只保存在 workplace/promo/v.0.1.0-20261016/story-source.json，不加入 Git。
+
+- 已證實：十二個章節標頭位於 file offsets 0x2B144、0x2B2DB、0x2B418、0x2B553、0x2B6D6、0x2B857、0x2B9DA、0x2BB5B、0x2BC8C、0x2BDF3、0x2BF30、0x2C05E。首章題名麒麟兒奮起，標示元龜三年十二月；末章標示元和元年五月。第九章標題指向關原，第十章為真田六連錢相關篇章。這證明文本涵蓋範圍，不登記為十二章正常試玩或通關。
+- 已證實：首章說明文字在 file offset 0x2B196 起記載年代，0x2B21D 附近列武田信玄與武田先鋒及家康生存相關條件。README 僅概述劇情與限期壓力，不把說明文字當作所有勝負實作已對拍。
+- 歷史背景使用濱松市博物館 https://www.city.hamamatsu.shizuoka.jp/hamahaku/02tenji/theme/ieyasudennsyoutohamamatsu.html、國立公文書館 https://www.archives.go.jp/exhibition/digital/ieyasu/contents3_01/ 與岡崎市觀光協會 https://okazaki-kanko.jp/okazaki-park/feature/history/about。只概述三方原、信長同盟、秀吉死後的權力變化、關原、幕府與大阪之陣；不引用次級下載站的未證實發售年、版本系譜或開發名單。
+- 元龜三年冬採遊戲的年號敘述，不把日本舊曆月份當公曆日。歷史與遊戲章節分開；遊戲規則及分支由原版負責。

@@ -27,6 +27,7 @@
 | 啟動顯示選擇 | 預設在 MARK 前選原版／HD，只詢問一次。選擇及確認手勢期間原版保持 0 步、沒有按鈕轉送；MARK 內最後設定帶進遊戲。兩條流程均到首戰，MARK 與遊戲功能列的雙向切換及還原保持原版狀態；模式選擇畫面關窗結束整個啟動器 | [桌面啟動器](tools/desktop-publisher.go)、[完整驗收](workplace/desktop-prototype/startup-chain/verification-summary.json) |
 | MARK 恢復及 HD | CONFORMED。已接入預設桌面啟動鏈，原版 MARK 自然漸入、停留、漸出並在 15989208 步退出碼 0，隨後啟動 DX5 並沿用最後模式。兩份原版 RAM 與虛擬時間獨立保存；獨立模式的缺圖驗證仍有效 | [啟動器](tools/desktop-publisher.go)、[實際 HD 標誌](workplace/desktop-prototype/startup-chain/hd/mark-last.png)、[完整驗收](workplace/desktop-prototype/startup-chain/verification-summary.json) |
 | 獨立桌面與封包 | v.0.1.0-20261016 四包完成：Windows／Linux amd64、macOS amd64／arm64。Linux 及 Windows／Wine 真正 ZIP 經模式選擇、MARK 15989208 步自然退出、正常標題 82M、功能列切換與正常關窗通過；原版資料未改。macOS 編譯／格式通過，真機及簽章未完成。含原版只留本機 | [封包](dist-all/v.0.1.0-20261016/full-local/)、[SHA](dist-all/v.0.1.0-20261016/SHA256SUMS.json)、[驗收總表](dist-all/v.0.1.0-20261016/smoke/verification-summary.json) |
+| 推廣影片與故事背景 | 72 秒、1920×1080／30 fps 成片完成，錄自正式 Linux 包正常啟動至首戰、原版／HD 與功能列切換，原版 CD 第十軌配樂。完整解碼、音量、靜音、字幕邊界、黑幀／停格分類與實際抽樣幀檢視通過。四包重新核對及 109 項編譯輸入不變；README 已加入原版章節與官方史實來源。影片含原版素材，只留本機，人耳未驗證 | [影片](dist-all/v.0.1.0-20261016/promo/tokugawa-dosgolem-v.0.1.0-20261016-promo.mp4)、[總表](dist-all/v.0.1.0-20261016/promo/verification-summary.json)、[交付與來源核對](dist-all/v.0.1.0-20261016/promo/delivery-verification.json)、[重查四包](dist-all/v.0.1.0-20261016/smoke/archives-verification-promo.json)、[故事來源](RESEARCH-LOG.md#故事背景來源) |
 | remake | 排除 | 使用者明確指定原版與 dosgolem 整合 |
 | 後續功能範圍 | CDDA 與桌面播放、可切換 HD、持續存檔與三平台封包已接入；繁中／簡中／英文／日文切換尚未實作。人耳與 Windows／macOS 真機未驗證；正常通關不列門檻 | [WORKLIST](WORKLIST.md)、[Issue #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4) |
 | 後續使用介面 | 桌面版，瀏覽器排除。四包已建置，Linux X11 及 Windows／Wine 已驗證；macOS 真機待試 | [本機交付](dist-all/v.0.1.0-20261016/) |
@@ -60,14 +61,14 @@
 | 交鋒紙張邊緣 | CONFORMED。縮圖外側 768 原生像素回到已核對的 BATTLE HD 紙張，消除舊保留帶。r20 四套件、四模式十七張 X11、十一次切換、600M 完整 RAM／十七欄、缺圖及動畫還原通過；早期半繪視窗取樣留存，ready/ 等背景重新合格後驗證，生產程式未為取樣增加特例 | [最新驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r20/verification-summary.json)、[HD 畫面](workplace/hd-prototype/catalog/remaining/consumers/battle/r20/desktop-animation/ready/action-1.png) |
 | 399 列結局完整複製 | CONFORMED，受控結局。END-11／11B 接入來源專用原版色盤，只替換前 399 列，未知末列保留。實際 X11、核准素材逐點核對、原圖／HD／還原及完整原版狀態通過；正常通關未知 | [受控驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/verification-summary.json)、[原始定位及 READY](RESEARCH-LOG.md)、[觀測](tools/hd-graphics-trace.go) |
 | END-2 結局位移 | CONFORMED，受控結局。原版 241 個連續來源返回相符，實際視窗抽測左移 0／120／240；END-2B 八格天空皆逐點核對。個別缺 END-2 回原圖，其餘 HD 不變。呈現仍受完整來源、固定 caller、自然返回及色盤限制 | [來源證據](workplace/hd-prototype/catalog/remaining/consumers/battle/r24/runtime/ending-source-verification.json)、[受控驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/verification-summary.json)、[核對工具](tools/verify-controlled-ending-summary.py) |
-| 受控結局驗收 | 使用者授權的 CONFORMED 切片。十二項來源、兩案共 132 張真實 X11、88 次狀態不變切換與還原通過；七張 END-4..10 依原版左上方目的呈現，字樣保留。三案 27 個完整檢查點及最終 RAM 相同，均在 451009120 步退出碼 0；入口只改 EIP，RAM 零修改。正常通關維持未知，全遊戲 HD 未完成 | [完整總表](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/verification-summary.json)、[凍結入口契約](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/validation-manifest.json)、[獨立核對](tools/verify-controlled-ending-summary.py) |
+| 受控結局驗收 | 使用者授權的 CONFORMED 切片。十二項來源、兩案共 132 張真實 X11、88 次狀態不變切換與還原通過；七張 END-4..10 依原版左上方目的呈現，字樣保留。三案 27 個完整檢查點及最終 RAM 相同，均在 451009120 步退出碼 0；入口只改 EIP，RAM 零修改。正常通關維持未知，整體 HD 範圍以上方全遊戲 HD 覆蓋列為準 | [完整總表](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/verification-summary.json)、[凍結入口契約](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/validation-manifest.json)、[獨立核對](tools/verify-controlled-ending-summary.py) |
 | 地圖快取框架 | CONFORMED，前 88 列及八處下方 32×32 圖塊。6 張 X11、4 次切換、87296 個 HD 框架呈現像素、75 個後畫場景矩形與個別缺圖通過，框內地形及單位保持。原版非一致平面偏移及字樣保留，缺圖依獨立來源資格保留 MAPGAMEN HD 底圖 | [正常驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r23/verification-summary.json)、[HD 畫面](workplace/hd-prototype/catalog/remaining/consumers/battle/r23/desktop-map/action-1.png)、[來源核對](workplace/hd-prototype/catalog/remaining/consumers/battle/r23/map-cache-source-verification.json)、[工具](tools/verify-hd-map-frame.py) |
 | 第三回合原版存檔 | 正常存檔成功，僅 I003.SAV 的 4399 bytes 相對下載基準不同，其他 200 資源不變。九筆正常讀回自然 140M，完整原生索引相同；217383 個非黑像素的 RGB 亮度不同，原因保留未知，不稱完整 RGBA 相同。後續原圖／HD 對照以讀回後原版為基準 | [原版存檔 manifest](workplace/hd-prototype/catalog/remaining/consumers/battle/r11/save-turn3/ready-r2/save-import/manifest.json)、[讀回核對](workplace/hd-prototype/catalog/remaining/consumers/battle/r12/load-turn3/verification.json)、[保存工具](tools/import-original-save.py) |
 | 頂端隱藏功能列 | Linux 容器試作通過。參考 softworld_san：頂端滑鼠展開、移開收起，Esc 固定／收起，Shift+Esc 離開。提供原版／HD 圖像、繼續／暫停、截圖／離開。顯示與收起手勢期間隔離原版步進及輸入；視窗擴高而保持遊戲比例。HD、缺圖兩次 150,000,000 步的完整 RAM、原生畫面與 PCM 符合原基準；普通滑鼠未誤觸，縮放後仍可開始新遊戲 | [驗收總表](workplace/desktop-prototype/toolbar/verification-summary.json)、[功能列畫面](workplace/desktop-prototype/toolbar/windowbar-hd-hd.png)、[原圖選單](workplace/desktop-prototype/toolbar/windowbar-hd-display-menu.png)、[普通滑鼠驗證](workplace/desktop-prototype/toolbar/verification-windowbar-mouse.json)；四語及音訊開關待功能接妥 |
-| private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 已建立；#2 技術切片驗收後已關閉，HD 接續 #5，桌面與聽覺驗收留 #3 | [CDDA 完成記錄](https://github.com/wicanr2/tokugawa-dosgolem/issues/2#issuecomment-6121828738)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)、[HD #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5)；Issue 即時狀態直接查 GitHub |
+| private GitHub repository 與 Issues | 主機 gh 核對既有 private repo 與六筆 Issues；#1／#2／#3／#5 已關閉，四語 #4 與共同驗收 #6 保持開啟。桌面四包、推廣片與故事背景已登記，真機、人耳與四語限制保留 | [儲存庫](https://github.com/wicanr2/tokugawa-dosgolem)、[四語 #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)、[共同驗收 #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)；Issue 即時狀態直接查 GitHub |
 | Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試、文件及使用者授權的生成美術；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
-| Docker 收尾 | r30 受控原版／X11、來源快照及覆蓋盤點通過；沿用既有 image。原始 ZIP／十二檔、UID/GID 1000:1000 與正式 IDA 雜湊核對；本批容器已移除 | [驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r30/verification-summary.json)、[ZIP／十二檔](workplace/hd-prototype/catalog/remaining/consumers/battle/r30/intake-verification.json) |
+| Docker 收尾 | 三平台重查與推廣影片全部沿用既有 image，工作容器完成後移除。原始 ZIP／十二檔、唯讀與 UID/GID 1000:1000 核對，沒有 root-owned 或 .md 目錄；109 項編譯來源不變，原版及生成美術不改 | [ZIP／十二檔及衛生](workplace/promo/v.0.1.0-20261016/intake-verification.json)、[來源](workplace/promo/v.0.1.0-20261016/source-verification.json)、[交付](dist-all/v.0.1.0-20261016/promo/delivery-verification.json) |
 
 ## 固定來源與版本差異
 
@@ -103,11 +104,11 @@
 
 `cmd/leprobe` 的 `runtime_applied=false` 表示這份輸出是 relocation preview。不能用 `execution_support=partial` 宣稱本作可執行。`-execute-entry-prefix` 使用 FD2 專用 runtime 與位址，不適用本作。
 
-最近來源完整性與工具輸入雜湊見 [intake-verification.json](workplace/hd-prototype/catalog/remaining/consumers/battle/r30/intake-verification.json)。可重跑命令放在 AGENTS。
+最近來源完整性與工具輸入雜湊見 [來源完整性](workplace/promo/v.0.1.0-20261016/intake-verification.json)及[編譯／錄影工具來源](workplace/promo/v.0.1.0-20261016/source-verification.json)。可重跑命令放在 AGENTS。
 
 探針不自動判讀畫面。收據的 `visually_verified`、`game_screen_verified`、`normal_player_path_verified` 保持預設 false；特定步數與 PNG 雜湊的人工目視核對另記在 RESEARCH-LOG，完成度以本表的已驗證範圍為準。
 
-目前任務是完成全遊戲 HD。原版 LE 入口至新遊戲戰場的整合啟動已通過四套件及完整收據核對；全遊戲相容、桌面音訊與存讀檔仍按上表分項追蹤，不重新開啟已通過的啟動切片。
+已盤點 HD 接入、三平台本機封包、推廣影片與 README 故事背景完成。四語、全遊戲相容、人耳與真機試跑依上表及 WORKLIST 分項追蹤。正常通關依使用者決定排除驗收，不重新開啟已完成切片。
 
 主機 `/home/anr2/.local/bin/gh` 已登入 `wicanr2`；private repository、`main` 與六筆 Issues 已建立。Issue 現況直接查 GitHub，先前存取受阻與建立歷程留在 WORKLOG。原版資料仍不得入 Git。
 

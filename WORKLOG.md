@@ -718,3 +718,18 @@ r23 四套件通過，研究入口 113.317 秒，106 項來源凍結。普通十
 - 原始 ZIP／十二檔、UID/GID 與唯讀檢查通過。只修復原版控制輸出裡由 dockerd 建立的單一 root-owned 空 mountpoint，未遞迴 chown。807 張生成 PNG／163 份提示詞與私人素材子樹不變，程式、文件與工具鏈來源保存 GitHub。正常通關排除驗收；四語仍由 #4 接續，#6 保留共同與真機驗收限制。
 
 本批最終同步收據為 workplace/github-setup/desktop-package-v010-sync.json，Issue 本文與遠端狀態一同保存；版本總表為 dist-all/v.0.1.0-20261016/smoke/verification-summary.json。本輪收尾檢查專案容器並移除已完成的工作；保留現行專案工具 image 及其他專案既有 image。
+
+## 2026-10-16：三平台完整版重查、推廣影片與故事背景
+
+依使用者要求交付三平台完整版、錄製推廣影片並撰寫 README 故事背景。命中並載入推廣影片、原版素材來源、README、文件職責與 dist-all 路由，沿用既有 GUI image，沒有新增遊戲機制、生成配樂或重新開啟正常通關驗收。
+
+- 四個 v.0.1.0-20261016 ZIP 重新逐檔核對通過，收據在 smoke/archives-verification-promo.json。109 項編譯輸入與 r4 相同，原版來源及四包 SHA 不變；無須重建相同二進位。Linux 與 Wine 的既有實際啟動仍有效，macOS／Windows 真機、人耳與預設速度效能未驗證。
+- 從正式 Linux ZIP 的唯讀解包目錄錄製真正 X11。正常 MARK 自然退出後進入 DX5，沿 390 筆普通滑鼠輸入至首戰，F6 與頂端功能列切換的原版 proof 不變，最後完成 760M 預算。全部包內來源不變，錄影與收據保存在 workplace/promo/v.0.1.0-20261016/。
+- 首次錄影已正常封存 MKV，但工具誤要求 FFmpeg 接 SIGINT 後只能退出 0，實際為預期的 255。保留原工具及錄影，新增 --finalize-existing 獨立核對 ffprobe、時間表、完整遊戲收據、三次狀態 proof 與逐檔 SHA 後通過，未重錄或修改遊戲。後續錄製工具改用 stdin q 正常封存。
+- 影片配樂直接使用原版 CD 第十軌，CUE 對應 BIN file sectors 51365..58176、2352 bytes／sector、44.1 kHz／16-bit／雙聲道。PCM SHA d0aad76dbf41c674928428264e0ae932c84e0ff08c97540982b7c6f5caad74b2；只調音量與首尾淡入淡出。字幕使用 Noto Serif CJK TC，兩份字型 SHA 與授權保存；沒有使用主機 runtime。
+- 首版黑畫面判定抓到 MARK 原生半秒漸入。完整幀與來源確認後，只將該剪輯起點分類為原生效果，其他黑畫面仍拒絕；首版檢查與工具保存 edit/verify-attempt01/。首版成片的戰場中點仍在載入徽記，保留至 edit/film-v1/，改用同一錄影已完成的 HD 戰場暫停展示。其他十段沿用已核對 SHA 與參數的片段，最終成片重新完整驗證。
+- 最終成片為 72 秒、1920×1080、30 fps／2160 幀，H.264／AAC 雙聲道，大小 9205707 bytes。影片 SHA cc0b5fe0a28bc423d01f54365ecc20288caf997f27dbf7e1c6ac9376c5e7b0db。完整解碼、25 項字幕邊界、音量與靜音、實際內容區黑幀／停格分類通過；平均 -14.0 dB、峰值 -2.2 dB，無一秒以上靜音。Codex 檢視十一段總覽與完整 HD 戰場，另檢視 MARK、字幕及功能列，未宣稱人耳確認。交付入口 dist-all/v.0.1.0-20261016/promo/，內含影片、海報、SRT、總覽、來源權利、驗證及獨立 SHA256SUMS.json，不更動根目錄四包雜湊清單。
+- README 補上三方原到關原與大阪之陣的故事背景，章節依原版 DX5.EXE 的 CP950 文字，史實依濱松市博物館、日本國立公文書館及岡崎市觀光協會。原版全文只留本機，檔案偏移、工具與雜湊寫入 RESEARCH-LOG。修正 CONTEXT 中較早結局列及任務段落仍稱全遊戲 HD 未完成的過時描述，歷史研究紀錄保留。
+- 原始 ZIP／十二檔、唯讀及 UID/GID 1000:1000 再核對通過，沒有 root-owned 或 .md 目錄。所有本批 Docker 容器完成後移除，沒有重建 image，保留現行工具鏈與既有 IDA image。生成美術 1050 份檔案的素材樹 9de9713108cf662e0b2bb39e46b5ab7aec8c1561 不變。
+
+自製錄製／合成／驗證工具、README 與文件同步至既有 private repo，Issue #6 登記本機交付及驗證範圍，#4／#6 保持開啟。同步結果保存於 workplace/github-setup/promo-v010-sync.json，留言本文為 workplace/github-setup/promo-v010-issue.txt。原版來源、研究輸出、四包與影片均排除版控；未建立或移動 tag／Release。

@@ -38,6 +38,12 @@
 
 ## 開工入口
 
+推廣影片流程依序使用 [tools/record-promo.py](tools/record-promo.py)、[tools/compose-promo.py](tools/compose-promo.py) 與 [tools/verify-promo.py](tools/verify-promo.py)。固定 GUI image 內以正式 Linux 封包唯讀掛 `/bundle`、專案唯讀掛 `/project`、乾淨錄影目錄可寫掛 `/output` 執行 recorder，保存正常 MARK／DX5 入口、390 筆既有普通輸入至首戰及功能列切換，原版資料與機制不改。錄影與來源位於 `workplace/promo/v.0.1.0-20261016/`，`record-promo.py` 保存實際錄製工具；`--finalize-existing` 只核對同一收據與已封存影片，不重跑遊戲。
+
+合成時錄影目錄唯讀掛 `/input`、其 `edit/` 可寫掛 `/output`、版本的 `promo/` 可寫掛 `/delivery`，執行 composer。原版第十軌由 CUE 的 BIN file sectors 51365..58176 直接讀取，2352 bytes／sector、s16le／44100 Hz／雙聲道，來源 SHA 與原版普通 PLAY 記錄核對；只做音量與淡入／淡出，不另造配樂。Noto Serif CJK TC 字型以 index 3 讀取，來源 SHA 與授權保存於錄影目錄 `fonts/`。工具不使用無界 zoompan，FFmpeg 固定兩個 threads、veryfast 及 72 秒／2160 幀上限。
+
+相同素材掛載與固定 GUI image 執行 verifier，輸出 FFprobe、完整解碼、音量／靜音、實際遊戲區域的黑幀／停格、字幕矩形、抽樣幀與總覽。預期靜態標題卡／模式選擇／暫停展示和異常停格分開記錄，完成前實際檢視總覽與完整幀。MARK 剪輯起點的原生半秒漸入獨立記錄，其他黑幀仍拒絕。影片含原版畫面與音樂，只存本機 `dist-all/<版本>/promo/`；其名稱與職責依知識路由的 dist-all 契約，不進 Git 或 Release。調整剪輯前保留上一版成片與 metadata 於 edit/；composer 的 --reuse-manifest 只沿用來源、剪輯參數及 SHA 相同的中間片段，成片須重新完整驗證。原版章節與故事來源見 [RESEARCH-LOG.md](RESEARCH-LOG.md#故事背景來源)，原始章節全文只留本機。
+
 跨平台工具鏈補件入口為 [tools/Dockerfile.desktop-platforms](tools/Dockerfile.desktop-platforms)。它沿用既有 Go 1.24.13／SDK 15.5 image，新增已確認缺少的 Git、Wine、Xvfb、xdotool、FFmpeg 與系統 Python／Pillow，固定主要套件版本；建置前核對註記的 base image ID。現行名稱 tokugawa-desktop-platforms:go1.24.13-sdk15.5-noble-r1，ID 為 sha256:a4323fc8a122c4bd3e629801776e3cd3d85a69e63069ad3a4226b4a2e2bf42c5。macOS 封包用 image 內的 python3，Windows GUI 驗證用 /usr/bin/python3；套件清單保存在 image 的 /desktop-platform-packages.tsv。本機來源、套件與工具鏈收據見 workplace/desktop-prototype/package/build-v.0.1.0-20261016-r2/。
 
 四包離線驗證入口為 [tools/verify-desktop-archives.py](tools/verify-desktop-archives.py)。專案及版本根目錄唯讀掛載，smoke 可寫掛 /output；在固定 Python image 執行 --version-root /delivery --output /output/archives-verification.json。逐檔 SHA、原版資料、完整版本、PE／ELF／Mach-O 架構、macOS 12.0 目標、ZIP UTF-8 與 Windows README BOM 均須通過，這不替代真機啟動。
