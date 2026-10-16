@@ -451,6 +451,21 @@ def main():
         assert controlled_ending['manifest_sha256'] == sha(controlled_ending_path.parent/'validation-manifest.json')
         assert controlled_ending['native_receipt_sha256'] == sha(controlled_ending_path.parent/'native/receipt.json')
         proof_sources.append({'verification': str(controlled_ending_path.relative_to(PROJECT)), 'sha256': sha(controlled_ending_path)})
+    controlled_art_path = ROOT/'remaining/consumers/battle/r30/verification-summary.json'
+    controlled_art = json.loads(controlled_art_path.read_text()) if controlled_art_path.exists() else None
+    if controlled_art:
+        assert controlled_art['status'] == 'PASS' and controlled_art['validation_only']
+        assert not controlled_art['normal_playthrough_required'] and not controlled_art['normal_playthrough_verified']
+        assert controlled_art['same_state_checkpoints'] == 55 and controlled_art['original_animation_frames_verified'] == 45
+        assert controlled_art['original_background_restorations_verified'] == 8 and controlled_art['complete_ram_equal_across_cases']
+        assert controlled_art['new_controlled_sources'] == [f'ANIME{i:02d}.OZM' for i in range(1,8)]+['OP6.OZM']
+        assert all(c['captures']==54 and c['toggles']==36 for c in controlled_art['cases'].values())
+        for name, field in [('prepare-art-validation.py','prepare_tool_sha256'), ('verify-controlled-art.py','GUI_tool_sha256'),
+                            ('verify-controlled-art-summary.py','tool_sha256')]:
+            verifier_sources.append(recorded_verifier(name, controlled_art[field], 'remaining/consumers/battle/r30/'+name))
+        assert controlled_art['manifest_sha256'] == sha(controlled_art_path.parent/'validation-manifest.json')
+        assert controlled_art['native_receipt_sha256'] == sha(controlled_art_path.parent/'native/receipt.json')
+        proof_sources.append({'verification':str(controlled_art_path.relative_to(PROJECT)), 'sha256':sha(controlled_art_path)})
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -706,6 +721,13 @@ def main():
                 record.update(runtime_status='user-authorized controlled original ending GUI verified, including original/HD/restored, independent pixels and full native state; not a normal playthrough',
                               controlled_ending_GUI_verified=True, normal_playthrough_verified=False,
                               controlled_ending_proof_sha256=sha(controlled_ending_path))
+    if controlled_art:
+        for record in records:
+            if record['source'] in controlled_art['controlled_sources']:
+                record.update(controlled_art_GUI_verified=True, controlled_art_proof_sha256=sha(controlled_art_path),
+                              normal_playthrough_required=False)
+                if record['source'] in controlled_art['new_controlled_sources']:
+                    record.update(runtime_status='controlled original art GUI verified; exact source/frame, HD pixels, native foreground/cursor, original/HD/restored, individual missing art and original background restoration verified')
     runtime_tails = []
     tail_path = ROOT / 'remaining/source-boundary/OP-FULL-runtime/receipt.json'
     if tail_path.exists():
@@ -761,6 +783,9 @@ def main():
               "controlled_ending_HD_sources_verified": len(controlled_ending['controlled_sources']) if controlled_ending else 0,
               "controlled_ending_actual_window_captures": sum(case['captures'] for case in controlled_ending['cases'].values()) if controlled_ending else 0,
               "controlled_ending_state_unchanged_toggles": sum(case['toggles'] for case in controlled_ending['cases'].values()) if controlled_ending else 0,
+              "controlled_remaining_art_new_sources_verified": len(controlled_art['new_controlled_sources']) if controlled_art else 0,
+              "controlled_remaining_animation_frames_verified": controlled_art['original_animation_frames_verified'] if controlled_art else 0,
+              "controlled_remaining_actual_window_captures": sum(case['captures'] for case in controlled_art['cases'].values()) if controlled_art else 0,
               "normal_MAP_WAKU_upper_frame_rows_verified": 88 if map_frame else 0,
               "normal_MAP_WAKU_lower_cache_pieces_verified": 8 if map_corners else 0,
               "generated_MAP_CHIP_object_drafts": object_drafts,
@@ -769,8 +794,17 @@ def main():
               "approved_MAP_CHIP_object_art": len(reviewed_object_indices),
               "normal_MAP_CHIP_object_cases_verified": 1 if tree_summary else 0,
               "normal_MAP_CHIP_object_instances_verified": tree_summary['normal_HD_object_instances'] if tree_summary else 0}
+    integration_complete = bool(controlled_art and controlled_ending and map_corners and prefix_runtime and opening_proof and scene_summary
+                                and counts['OZM_sources_with_prepared_art_including_exact_reuse']==111
+                                and counts['OZM_partial_art']==1 and counts['prepared_KAO_portraits']==81
+                                and counts['reviewed_story_source_profiles']==79 and counts['remaining_sources_runtime_registered']==20
+                                and counts['approved_MAP_CHIP_floor_art']==104 and counts['approved_MAP_CHIP_unit_art']==10
+                                and counts['approved_MAP_CHIP_object_art']==24
+                                and all('not integrated' not in r['runtime_status'] and 'pending' not in r['runtime_status'] for r in records))
     result = {"classification": "local research coverage ledger; not a production asset-pack schema",
-              "whole_game_HD_complete": False,
+              "whole_game_HD_complete": integration_complete,
+              "completion_scope": "inventoried art and known consumers integrated; source tests plus representative normal/controlled GUI; native text/fonts, unknown source pixels and unverified states retain original fallback",
+              "normal_playthrough_required": False, "normal_playthrough_verified": False,
               "count_limit": "resource counts do not count atlas tiles, animation frames or UI pieces; no completion percentage",
               "dat_sha256": decoded["dat_sha256"], "tool_sha256": sha(Path(__file__)), "pillow_version": pillow_version,
               "counts": counts, "runtime_proof_sources": proof_sources, "verification_tool_sources": verifier_sources, "records": records}

@@ -1,5 +1,9 @@
 # 德川家康：DOS 原版與 dosgolem
 
+使用者於 2026-10-16 明確取消正常通關驗收。正常通關不列為 HD 完成或三平台打包的門檻，也不因這項取消而登記為實測通過。接續驗收限剩餘素材的來源、實際繪圖、原版／HD 切換、缺圖及封包可啟動性；既有原版狀態保護與本機資料邊界保持。現況與有效決策以 CONTEXT.md 為準。
+
+剩餘圖像的受控準備入口為 [tools/prepare-art-validation.py](tools/prepare-art-validation.py)，桌面入口為 [tools/verify-controlled-art.py](tools/verify-controlled-art.py)，獨立核對入口為 [tools/verify-controlled-art-summary.py](tools/verify-controlled-art-summary.py)。現行研究批次為 `workplace/hd-prototype/catalog/remaining/consumers/battle/r30/`；r28 保留淡入色盤缺漏，r29 保留滑鼠隔離與標題選單圖層的前置條件問題。固定 GUI image 內專案及原版唯讀、r30 可寫掛 `/output`。準備工具沿 r27 生產來源與 r29/control 的普通 80M 穩定標題建立副本，先由原版重畫 OP5 清除選單圖層，再選原版表格的動畫分支；OP6 只替換測試版 loader 參數。每筆 EIP、欄位及 stack 變更完整記錄。建置及執行覆掛該批次的 `source-snapshot/tools/` 至 `/project/tools`；GUI 各案另掛 `/output`，以 `--mode hd` 或 `--mode missing` 執行，空 mouse-file 隔離普通輸入。這些驗收入口不接入正式啟動器，結果不得列為正常玩家路徑。
+
 使用者於 2026-10-16 授權調整結局驗收。結局 HD 可用隔離測試入口直接執行原版結局，驗收名稱為「受控結局驗收」；不要求先通關，也不將受控入口列為正常通關證據。正式啟動、玩法、存檔與原始檔保持原契約。準備入口為 [tools/prepare-ending-validation.py](tools/prepare-ending-validation.py)，只在 `workplace/hd-prototype/catalog/remaining/consumers/battle/` 建立凍結測試副本，不修改正式 `tools/startup-probe.go`。實際控制轉移、測試狀態差異與來源雜湊逐項記入收據，規格見 RESEARCH-LOG。
 
 受控結局 X11 入口為 [tools/verify-controlled-ending.py](tools/verify-controlled-ending.py)。現行批次為 `r27/controlled/`。固定 GUI image 中，專案與原版唯讀，該批次的 `source-snapshot/tools/` 唯讀覆掛 `/project/tools`，個別模式的輸出目錄可寫掛 `/output`。執行 `/output/verify-controlled-ending.py --mode hd` 或 `--mode missing-end2`；只對測試版的 host 閘門寫入繼續檔，F6/F7/F9 操作原有桌面介面。保存完整受控來源、原版指令狀態與實際視窗，禁止作正常通關聲明。

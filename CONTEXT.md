@@ -32,7 +32,7 @@
 | HD 風格試作 | B 戰國手繪風。75 個完整劇情來源與四個部分來源的已知區已接入既有故事消費端，另有捲軸、紅金框架、共用視窗及 81 張頭像。正常劇情仍抽測十四張、頭像四張；四項部分來源未在正常場景抽測，不把條件式註冊稱為正常驗收 | [既有劇情驗收](workplace/hd-prototype/catalog/story-expanded/verification-summary.json)、[歷史段落](workplace/hd-prototype/catalog/remaining/history/partial/verification-summary.json)、[部分來源驗收](workplace/hd-prototype/catalog/remaining/partial-story/verification-summary.json) |
 | HD 素材定位 | DAT 201 筆、112 個 OZM。靜態解碼 107 筆，17 個正常路徑來源的平面與索引一致；五筆尾端少一 byte，保留未知。KAO.GRP 的 81 張頭像索引與繪圖端已確認 | [解碼器](tools/hd-ozm-probe.py)、[頭像擷取](tools/hd-kao-extract.py)、[覆蓋清單](workplace/hd-prototype/catalog/art-coverage.json) |
 | OP-FULL 來源尾端與美術 | 兩次普通歷史簡介的完整四平面與索引相同，第四平面尾端皆為 0xAA；保留 runtime_observed 分類，DAT 與靜態解碼器未改。第二版手繪圖校正原生色盤下的藍白雲帶，完整複製端已驗證正常原圖／HD／還原；第一版與提示詞亦保存 | [來源核對](workplace/hd-prototype/catalog/remaining/history/source-verification.json)、[第二版與提示詞](assets/hd-b/art/opening-full-generation-v2.json)、[正常開場 HD](workplace/hd-prototype/catalog/remaining/history/desktop/palette/verification-opening.json) |
-| 全遊戲 HD 覆蓋 | 製作中。112 個 OZM 中 111 項已有素材，一項 VISUAL 分層；四項部分故事來源每張八個未知像素保留原圖，靜態解碼仍五項未知。20 項動畫／介面來源中八項已有正常 HD 抽樣，四項結局來源通過受控驗收；ANIME01..07 與 OP6 的特殊消費端及實際視窗仍待查證。另八項完整故事結局來源通過受控驗收，共十二項；正常通關不列完成。MARK 完整啟動鏈、模式沿用及切換保持。打包未開始 | [覆蓋清單](workplace/hd-prototype/catalog/art-coverage.json)、[受控結局](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/verification-summary.json)、[部分來源驗收](workplace/hd-prototype/catalog/remaining/partial-story/verification-summary.json)、[圖片與提示詞](assets/hd-b/README.md) |
+| 全遊戲 HD 覆蓋 | 已盤點美術與已知繪圖端完成接入及既定驗收，可進三平台打包。112 個 OZM 中 111 項有素材，VISUAL 分層，81 張頭像、104 地面、十個非空單位及 24 個非空物件完成。20 項動畫／介面中八項正常、十二項受控；來源、共用呈現、切換、缺圖與代表路徑已核對。原版字型／文字及未知像素保留，未逐張正常試玩的項目是證據限制，正常通關不列門檻 | [唯一覆蓋清單](workplace/hd-prototype/catalog/art-coverage.json)、[剩餘圖像驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r30/verification-summary.json)、[結局驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/verification-summary.json) |
 | 戰場地面 HD | 完整 134 次地面返回順序已接入；原有 65 完整格與兩項 1440 像素可見碎片共同呈現，67 處共 102720 原生背景像素。正常六種來源與原有八項 HD 素材不變；全部 104 來源已接入並通過共同呈現、缺圖及遮擋測試，其他 98 個未逐項在正常路徑抽測。被後續地面蓋掉的物件不復活，四項已被未知介面覆寫的模型殘片備援。三模式各自然 750M／390 事件，完整 RAM、十五欄、原生圖與 PCM 符合基準 | [驗收總表](workplace/hd-prototype/catalog/terrain/scene/verification-summary.json)、[真實視窗](workplace/hd-prototype/catalog/terrain/scene/desktop/gui-scene-enabled.png) |
 | 全地面 HD 素材 | 全部 104 來源已準備並接入，共 101 張獨立圖。原有八張不改，新增 93 張覆蓋其餘 96 個來源。七頁原圖／HD 逐項檢視及四套件通過；新版本自然 750M／390 事件，完整 RAM、十五欄及原圖／HD 擷取與前次天氣版本相同。正常首戰仍為六種，其他來源不冒稱正常路徑已抽測 | [驗收總表](workplace/hd-prototype/catalog/terrain/materials/verification-summary.json)、[純 HD 總覽](assets/hd-b/terrain/materials/floor-material-gallery-v2.png)、[來源與素材](assets/hd-b/terrain/materials/profiles.json) |
 | 戰場前景 HD | 四樹叢與 units-001／003 在同一畫布合成，包含早畫仍可見人物的優先權。三模式各自然 750M／390 事件、三次狀態不變切換；完整 RAM、十五欄、原生圖及 PCM 符合基準。共同呈現 413696 像素與獨立公式相符，重疊區 82 個人物像素正確使用 HD；兩人物舊輪廓 1584／1574 呈現像素還原背景，1620 介面像素保留，全部缺圖零變動。游標公式核對排除 16×16，但真實 X11 與呈現 PNG 完整相符 | [驗收總表](workplace/hd-prototype/catalog/terrain/scene/verification-summary.json)、[真實視窗](workplace/hd-prototype/catalog/terrain/scene/desktop/gui-scene-enabled.png)、[來源及 alpha 契約](RESEARCH-LOG.md) |
@@ -53,7 +53,7 @@
 | OP2／OP8 捲動 HD | CONFORMED。十三筆原版來源與 682 個連續繪圖狀態測試通過；正常／個別缺圖各五組 X11 原圖／HD／還原。OP8 早期正常七個、缺圖六個來源外像素保留原生圖。兩次完整 600M 都有 700 次合格繪圖返回，新增 682 次；完整 RAM、十五欄與原版基準一致，首戰回歸通過。未逐格 X11 擷取的狀態只列來源／共同呈現測試 | [驗收總表](workplace/hd-prototype/catalog/remaining/history/scrolling/verification-summary.json)、[來源證據](workplace/hd-prototype/catalog/remaining/history/scrolling/source-verification.json)、[READY 與驗收](RESEARCH-LOG.md) |
 | 部分來源故事圖 | CONFORMED，限已知區及既有已證實消費端。四項來源已校準，三完整平面／第四前綴與自然返回完整 guard 通過；每張八像素保留原生圖。所有未知末 byte 測試值均為 synthetic input，不當原版證據。四項素材桌面載入通過，既有歷史／首戰回歸通過；這四個正常場景未逐項抽測 | [驗收總表](workplace/hd-prototype/catalog/remaining/partial-story/verification-summary.json)、[準備與幾何](workplace/hd-prototype/catalog/remaining/partial-story/profiles.json)、[選定素材](assets/hd-b/art/partial-story/) |
 | PCX 出版商標誌 | CONFORMED。原版 640×480／256 色的來源、目的索引與獨立 PCX 解碼相同，目標色盤及 RAM guard 已核對。獨立模式原圖／HD／還原及缺圖通過；預設完整鏈的雙向切換、模式沿用與首戰通過，下方 y=449..479 版權區保留原版 | [HD 呈現](tools/hd-publisher.go)、[完整鏈驗收](workplace/desktop-prototype/startup-chain/verification-summary.json)、[獨立模式驗收](workplace/desktop-prototype/publisher/verification-summary.json)、[素材及提示詞](assets/hd-b/art/RAINEND-generation-v1.json) |
-| 剩餘動畫與介面美術 | 20 項已註冊且通過來源及共同呈現測試；八個 ANIME 圖集含 48 格、16 個精確鏡像及一空格。八項已有正常 HD 抽樣，END-2／2B／11／11B 四項另通過受控結局。ANIME01..07 與 OP6 的特殊消費端及實際視窗待查證，不重開已通過項目 | [既有註冊驗收](workplace/hd-prototype/catalog/remaining/runtime-verification-summary.json)、[受控結局](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/verification-summary.json)、[選定來源](assets/hd-b/art/remaining/profiles.json) |
+| 剩餘動畫與介面美術 | CONFORMED，既定受控範圍。八張動畫的原版分支共播放 45 格，八次背景還原、OP6 全幅、55 個同狀態檢查點、108 張真實 X11 與 72 次切換通過。缺 ANIME03／OP6 只退回對應來源，原版前景及游標逐點核對；三案最終完整 RAM 相同。生產繪圖程式沿 r27，沒有新增遊戲機制 | [完整總表](workplace/hd-prototype/catalog/remaining/consumers/battle/r30/verification-summary.json)、[工具](tools/verify-controlled-art-summary.py)、[READY 與限制](RESEARCH-LOG.md) |
 | 戰鬥特殊繪圖接入 | CONFORMED，限已驗收切片。r17 的 BATTLE OR／JIMEN 透明、文字、混色及共用視窗還原通過；r19 再接頂端單位縮圖。四模式十七張實際 X11、十一次切換、600M 完整 RAM／十七欄通過。十八個 OR 混色、3012 個文字前景、個別缺 JIMEN_1 的 82300 呈現像素及其他 HD 不變；ANIME08 遮擋與還原保持。其他動畫只列已驗證的來源範圍 | [契約與驗收](RESEARCH-LOG.md)、[最新完整驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r19/verification-summary.json)、[HD 交鋒](workplace/hd-prototype/catalog/remaining/consumers/battle/r19/desktop-animation/action-1.png)、[核對工具](tools/verify-hd-combat.py) |
 | 交鋒單位縮圖 HD | CONFORMED。0x1F9BE wrapper 的兩個 48×48 目的矩形，沿用十個已核准單位及完整原版索引守衛；正常 sources 7／3 的 alpha、紙張背景、個別缺 7、動畫遮擋及結束後恢復通過。缺圖只退回左側 9216 呈現像素，其餘 HD 不變。其餘八來源列共同測試，不稱正常 GUI 已抽測；地圖單位樣本仍為 1／3 | [驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r19/verification-summary.json)、[來源與裁切](workplace/hd-prototype/catalog/terrain/units/profiles.json)、[呈現](tools/hd-terrain-sprites.go) |
 | 交鋒紙張邊緣 | CONFORMED。縮圖外側 768 原生像素回到已核對的 BATTLE HD 紙張，消除舊保留帶。r20 四套件、四模式十七張 X11、十一次切換、600M 完整 RAM／十七欄、缺圖及動畫還原通過；早期半繪視窗取樣留存，ready/ 等背景重新合格後驗證，生產程式未為取樣增加特例 | [最新驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r20/verification-summary.json)、[HD 畫面](workplace/hd-prototype/catalog/remaining/consumers/battle/r20/desktop-animation/ready/action-1.png) |
@@ -66,7 +66,7 @@
 | private GitHub repository 與 Issues | 主機 gh 已確認 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 為 private，六筆 Issues 已建立；#2 技術切片驗收後已關閉，HD 接續 #5，桌面與聽覺驗收留 #3 | [CDDA 完成記錄](https://github.com/wicanr2/tokugawa-dosgolem/issues/2#issuecomment-6121828738)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)、[HD #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5)；Issue 即時狀態直接查 GitHub |
 | Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試、文件及使用者授權的生成美術；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
-| Docker 收尾 | r27 來源快照、受控 X11、完整狀態與覆蓋盤點通過。沒有 root-owned 或 .md 目錄，正式 IDA 資料庫不變；本批工作使用既有 image，容器已移除 | [最終稽核](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/final-audit.json)、[ZIP／十二檔核對](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/intake-verification.json) |
+| Docker 收尾 | r30 受控原版／X11、來源快照及覆蓋盤點通過；沿用既有 image。原始 ZIP／十二檔、UID/GID 1000:1000 與正式 IDA 雜湊核對；本批容器已移除 | [驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r30/verification-summary.json)、[ZIP／十二檔](workplace/hd-prototype/catalog/remaining/consumers/battle/r30/intake-verification.json) |
 
 ## 固定來源與版本差異
 
@@ -102,7 +102,7 @@
 
 `cmd/leprobe` 的 `runtime_applied=false` 表示這份輸出是 relocation preview。不能用 `execution_support=partial` 宣稱本作可執行。`-execute-entry-prefix` 使用 FD2 專用 runtime 與位址，不適用本作。
 
-最近來源完整性與工具輸入雜湊見 [intake-verification.json](workplace/hd-prototype/catalog/remaining/consumers/battle/r27/controlled/intake-verification.json)。可重跑命令放在 AGENTS。
+最近來源完整性與工具輸入雜湊見 [intake-verification.json](workplace/hd-prototype/catalog/remaining/consumers/battle/r30/intake-verification.json)。可重跑命令放在 AGENTS。
 
 探針不自動判讀畫面。收據的 `visually_verified`、`game_screen_verified`、`normal_player_path_verified` 保持預設 false；特定步數與 PNG 雜湊的人工目視核對另記在 RESEARCH-LOG，完成度以本表的已驗證範圍為準。
 
@@ -111,6 +111,8 @@
 主機 `/home/anr2/.local/bin/gh` 已登入 `wicanr2`；private repository、`main` 與六筆 Issues 已建立。Issue 現況直接查 GitHub，先前存取受阻與建立歷程留在 WORKLOG。原版資料仍不得入 Git。
 
 ## 後續擴充的已確認決定
+
+- 2026-10-16 使用者明確取消正常通關驗收。HD 完成與三平台打包不再等待完整通關；接續剩餘素材的來源、繪圖、切換、缺圖與封包啟動驗證。這是驗收範圍調整，未執行的通關測試不登記為通過。
 
 - 2026-10-16 使用者授權修改正常結局驗收。本輪採用隔離測試入口執行原版結局，實際驗證畫面、動畫、HD 切換與缺圖備援，稱為「受控結局驗收」。正常通關仍列證據限制，受控驗收可解除結局 HD 的呈現驗收閘門；正式遊戲啟動、玩法、存檔及原始資料不受測試入口影響。
 
