@@ -12,10 +12,14 @@ import (
 var a0Rect = image.Rect(160, 50, 480, 200)
 
 func preservePortraitLabels(out *image.NRGBA, native image.Image, name string, scale int) {
+	preservePortraitLabelsAt(out, native, name, a0Rect, scale)
+}
+
+func preservePortraitLabelsAt(out *image.NRGBA, native image.Image, name string, destination image.Rectangle, scale int) {
 	for _, rect := range portraitLabelRects[name] {
 		for y := rect.Min.Y * scale; y < rect.Max.Y*scale; y++ {
 			for x := rect.Min.X * scale; x < rect.Max.X*scale; x++ {
-				out.SetNRGBA(160*scale+x, 50*scale+y, rgbaAt(native, 160+x/scale, 50+y/scale))
+				out.SetNRGBA(destination.Min.X*scale+x, destination.Min.Y*scale+y, rgbaAt(native, destination.Min.X+x/scale, destination.Min.Y+y/scale))
 			}
 		}
 	}
@@ -63,8 +67,15 @@ func prepareHDImage(asset image.Image, width, height, scale int) (image.Image, s
 
 // 僅讀輸入，輸出全新畫布。識別失敗只保留原圖。
 func previewA0(frame, source, hd image.Image, scale int, enabled bool) (*image.NRGBA, string, error) {
+	return previewPortraitAt(frame, source, hd, a0Rect, scale, enabled)
+}
+
+func previewPortraitAt(frame, source, hd image.Image, destination image.Rectangle, scale int, enabled bool) (*image.NRGBA, string, error) {
 	if frame == nil || frame.Bounds() != image.Rect(0, 0, 640, 400) || scale < 1 || scale > 4 {
 		return nil, "", fmt.Errorf("原生畫面或放大倍率不符")
+	}
+	if destination != a0Rect && destination != endingStoryRect {
+		return nil, "", fmt.Errorf("未驗證的劇情目的矩形")
 	}
 	out := image.NewNRGBA(image.Rect(0, 0, 640*scale, 400*scale))
 	for y := 0; y < 400*scale; y++ {
@@ -83,7 +94,7 @@ func previewA0(frame, source, hd image.Image, scale int, enabled bool) (*image.N
 	}
 	for y := 0; y < 150; y++ {
 		for x := 0; x < 320; x++ {
-			if rgbaAt(source, x, y) != rgbaAt(frame, 160+x, 50+y) {
+			if rgbaAt(source, x, y) != rgbaAt(frame, destination.Min.X+x, destination.Min.Y+y) {
 				return out, "fallback_source_mismatch", nil
 			}
 		}
@@ -109,7 +120,7 @@ func previewA0(frame, source, hd image.Image, scale int, enabled bool) (*image.N
 	}
 	for y := 0; y < 150*scale; y++ {
 		for x := 0; x < 320*scale; x++ {
-			out.SetNRGBA(160*scale+x, 50*scale+y, rgbaAt(hd, x*b.Dx()/(320*scale), y*b.Dy()/(150*scale)))
+			out.SetNRGBA(destination.Min.X*scale+x, destination.Min.Y*scale+y, rgbaAt(hd, x*b.Dx()/(320*scale), y*b.Dy()/(150*scale)))
 		}
 	}
 	return out, "hd", nil

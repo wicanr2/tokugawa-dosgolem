@@ -186,12 +186,108 @@ func (h *hdLive) observeWindowLayers(step int, eip, esp uint32, mem []byte, snap
 
 type hdDrawReturn struct {
 	Return, Stack, Entry uint32
-	SourceName           string    `json:"source_name,omitempty"`
-	SourceGuard          string    `json:"source_guard_sha256,omitempty"`
-	SourceBases          [4]uint32 `json:"source_bases,omitempty"`
+	Destination          image.Rectangle `json:"destination,omitempty"`
+	SourceName           string          `json:"source_name,omitempty"`
+	SourceGuard          string          `json:"source_guard_sha256,omitempty"`
+	SourceBases          [4]uint32       `json:"source_bases,omitempty"`
 }
 
 var hdScrollSourcePlanes = []string{"ea6c9f57424df636a60d144e1405fa2467429d14e87f2f854d47fe48b910acb5", "655790f2a54acccb050c4fbe0b29b3fb510976611807edbb1b4653656f4a29c6", "7fccd2bd1a06751fe2c043ac4693aa8cd088871bc742e12a861689fa360f4ab5", "b87ca90699e63248f74cac792f3f53b7576056af0c8427a8d0a6bcc1b1abd76a"}
+
+var endingStoryRect = image.Rect(16, 16, 336, 166)
+
+func endingStoryCaller(ret uint32) (string, uint32) {
+	switch ret {
+	case 0x18a07:
+		return "END-4.OZM", 0x1c1bc
+	case 0x18a6e:
+		return "END-5.OZM", 0x1c1bc
+	case 0x18ad5:
+		return "END-6.OZM", 0x1c1bc
+	case 0x18b3c:
+		return "END-7.OZM", 0x1c1bc
+	case 0x18ba3:
+		return "END-8.OZM", 0x1c1bc
+	case 0x18c19:
+		return "END-9.OZM", 0x1c10b
+	case 0x18c8f:
+		return "END-10.OZM", 0x1c10b
+	}
+	return "", 0
+}
+
+func endingStoryCall(eip, esp uint32, mem []byte, name string) bool {
+	if eip != 0x1c1bc && eip != 0x1c10b {
+		return false
+	}
+	length := uint64(24)
+	if eip == 0x1c10b {
+		length = 36
+	}
+	if uint64(esp)+length > uint64(len(mem)) {
+		return false
+	}
+	want, entry := endingStoryCaller(binary.LittleEndian.Uint32(mem[esp:]))
+	if want == "" || want != name || entry != eip {
+		return false
+	}
+	for i, value := range []uint32{0, 40, 150, 80, 0xa0502} {
+		if binary.LittleEndian.Uint32(mem[uint64(esp)+4+uint64(i*4):]) != value {
+			return false
+		}
+	}
+	if eip == 0x1c10b {
+		for i := 0; i < 4; i++ {
+			if binary.LittleEndian.Uint32(mem[uint64(esp)+20+uint64(i*4):]) != 0xa0502 {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func endingStoryCurrent(mem []byte, name string) ([4]uint32, string, bool) {
+	var bases [4]uint32
+	profile, known := hdPortraitProfiles[name]
+	if !known || profile.Columns != 40 || len(mem) < 0x5b1bc {
+		return bases, "", false
+	}
+	_, indices, ok := graphicsSource(mem, []graphicsSourceProfile{{Name: name, Width: 320, Height: 150, Planes: profile.Planes[:]}})
+	if !ok {
+		return bases, "", false
+	}
+	for i, global := range []int{0x38c00, 0x38bf8, 0x38c04, 0x38bfc} {
+		bases[i] = binary.LittleEndian.Uint32(mem[global:])
+		if bases[i] < 0xc0000 {
+			return bases, "", false
+		}
+	}
+	return bases, fmt.Sprintf("%x", sha256.Sum256(indices)), true
+}
+
+func endingStoryReturned(p *hdDrawReturn, name string, mem []byte, snapshot func() (nativeSnapshot, error)) bool {
+	want, entry := endingStoryCaller(p.Return)
+	if p.Destination != endingStoryRect || want != name || p.SourceName != name || p.Entry != entry || snapshot == nil {
+		return false
+	}
+	bases, digest, ok := endingStoryCurrent(mem, name)
+	if !ok || bases != p.SourceBases || digest != p.SourceGuard {
+		return false
+	}
+	s, err := snapshot()
+	if err != nil {
+		return false
+	}
+	actual := graphicsCrop(s.Indexed, 640, endingStoryRect)
+	return len(actual) == 48000 && fmt.Sprintf("%x", sha256.Sum256(actual)) == digest
+}
+
+func (h *hdLive) storyDestination() image.Rectangle {
+	if h.StoryRect.Empty() {
+		return a0Rect
+	}
+	return h.StoryRect
+}
 
 func openingScrollMatches(mem []byte, snapshot func() (nativeSnapshot, error)) bool {
 	if !openingPlaneAlias(mem) || snapshot == nil {
@@ -218,6 +314,7 @@ type hdLive struct {
 	LastName        string              `json:"last_resource"`
 	Validated       bool                `json:"source_validated"`
 	Active          bool                `json:"draw_completed"`
+	StoryRect       image.Rectangle     `json:"story_destination"`
 	Pending         *hdDrawReturn       `json:"pending_draw"`
 	Events          []map[string]any    `json:"draw_events"`
 	ScrollValidated bool                `json:"scroll_source_validated"`
@@ -248,11 +345,16 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 	if h.Pending != nil && eip == h.Pending.Return && uint64(esp) == uint64(h.Pending.Stack)+4 {
 		known := prefixStoryKnown(h.LastName)
 		h.Active = h.Validated && known
-		if h.Pending.SourceGuard != "" {
+		if h.Pending.Destination == endingStoryRect {
+			h.Active = h.Active && endingStoryReturned(h.Pending, h.LastName, mem, snapshot)
+		} else if h.Pending.SourceGuard != "" {
 			h.Active = h.Active && prefixStoryReturned(h.Pending, h.LastName, mem, snapshot)
 		}
 		if h.Pending.Entry == 0x11dcb {
 			h.Active = h.Active && openingStoryMatches(h.LastName, mem, snapshot)
+		}
+		if h.Active {
+			h.StoryRect = h.Pending.Destination
 		}
 		h.Pending = nil
 		if len(h.Events) < 128 {
@@ -260,6 +362,7 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 		}
 	}
 	if eip == 0x1bf44 {
+		h.StoryRect = image.Rectangle{}
 		h.Graphics.Shift = nil
 		h.ScrollValidated = false
 		h.ScrollPending = nil
@@ -322,7 +425,8 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 	if openingPartialEntry(eip) || openingShiftEntry(eip) {
 		h.Active, h.Pending = false, nil
 	}
-	if eip != 0x1c1bc && eip != 0x11dcb {
+	ending := endingStoryCall(eip, esp, mem, h.LastName)
+	if eip != 0x1c1bc && eip != 0x11dcb && !(eip == 0x1c10b && ending) {
 		return
 	}
 	h.Active = false
@@ -347,6 +451,9 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 		}
 	}
 	want := []uint32{0, 40, 150, 80, 0xa0fb4}
+	if ending {
+		want[4] = 0xa0502
+	}
 	for i := range args {
 		if args[i] != want[i] {
 			return
@@ -356,7 +463,16 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 	if uint64(ret) >= uint64(len(mem)) {
 		return
 	}
-	h.Pending = &hdDrawReturn{Return: ret, Stack: esp, Entry: eip}
+	h.Pending = &hdDrawReturn{Return: ret, Stack: esp, Entry: eip, Destination: a0Rect}
+	if ending {
+		bases, digest, valid := endingStoryCurrent(mem, h.LastName)
+		if !valid {
+			h.Pending = nil
+			return
+		}
+		h.Pending.Destination = endingStoryRect
+		h.Pending.SourceName, h.Pending.SourceGuard, h.Pending.SourceBases = h.LastName, digest, bases
+	}
 	if _, partial := hdPrefixProfiles[h.LastName]; partial {
 		current, valid := prefixStorySource(h.LastName, mem, eip == 0x11dcb)
 		if !valid {
@@ -368,6 +484,14 @@ func (h *hdLive) observe(step int, eip, esp uint32, mem []byte, snapshots ...fun
 		h.Pending.SourceBases = current.Bases
 	}
 	if len(h.Events) < 128 {
-		h.Events = append(h.Events, map[string]any{"kind": "draw_enter", "step": step, "linear_eip": eip, "return_linear": ret, "stack_linear": esp, "raw_args": args, "logical_rect": []int{160, 50, 320, 150}})
+		dest := h.Pending.Destination
+		event := map[string]any{"kind": "draw_enter", "step": step, "linear_eip": eip, "return_linear": ret, "stack_linear": esp, "raw_args": args, "logical_rect": []int{dest.Min.X, dest.Min.Y, dest.Dx(), dest.Dy()}}
+		if ending {
+			event["source_name"], event["source_indices_sha256"], event["source_plane_bases"] = h.LastName, h.Pending.SourceGuard, h.Pending.SourceBases
+			if eip == 0x1c10b {
+				event["raw_plane_destinations"] = []uint32{0xa0502, 0xa0502, 0xa0502, 0xa0502}
+			}
+		}
+		h.Events = append(h.Events, event)
 	}
 }

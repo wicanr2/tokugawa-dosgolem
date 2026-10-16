@@ -434,6 +434,23 @@ def main():
         assert ending_shift['normal_control_receipt_sha256'] == sha(ending_shift_path.parent/'native-control/receipt.json')
         assert ending_shift['ordinary_GUI_receipt_sha256'] == sha(ending_shift_path.parent/'desktop-map/receipt.json')
         proof_sources.append({'verification': str(ending_shift_path.relative_to(PROJECT)), 'sha256': sha(ending_shift_path)})
+    controlled_ending_path = ROOT/'remaining/consumers/battle/r27/controlled/verification-summary.json'
+    controlled_ending = json.loads(controlled_ending_path.read_text()) if controlled_ending_path.exists() else None
+    if controlled_ending:
+        assert controlled_ending['status'] == 'PASS' and controlled_ending['controlled_ending_GUI_verified']
+        assert controlled_ending['normal_playthrough_verified'] is False and controlled_ending['whole_game_HD_complete'] is False
+        assert controlled_ending['complete_ram_equal_across_cases'] and controlled_ending['original_exit_code'] == 0
+        assert controlled_ending['ending_shift_returns_verified'] == 241 and controlled_ending['sky_frames_verified'] == 8
+        assert len(controlled_ending['controlled_sources']) == 12
+        verifier_sources.append(recorded_verifier('verify-controlled-ending-summary.py', controlled_ending['tool_sha256'],
+                                                  'remaining/consumers/battle/r27/controlled/verify-controlled-ending-summary.py'))
+        verifier_sources.append(recorded_verifier('verify-controlled-ending.py', controlled_ending['GUI_tool_sha256'],
+                                                  'remaining/consumers/battle/r27/controlled/verify-controlled-ending.py'))
+        verifier_sources.append(recorded_verifier('prepare-ending-validation.py', controlled_ending['prepare_tool_sha256'],
+                                                  'remaining/consumers/battle/r27/controlled/prepare-ending-validation.py'))
+        assert controlled_ending['manifest_sha256'] == sha(controlled_ending_path.parent/'validation-manifest.json')
+        assert controlled_ending['native_receipt_sha256'] == sha(controlled_ending_path.parent/'native/receipt.json')
+        proof_sources.append({'verification': str(controlled_ending_path.relative_to(PROJECT)), 'sha256': sha(controlled_ending_path)})
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -683,6 +700,12 @@ def main():
                           runtime_proof_sha256=sha(ending_shift_path), ending_shift_states_verified=241,
                           normal_ending_GUI_verified=False)
     records.append(pcx_record)
+    if controlled_ending:
+        for record in records:
+            if record['source'] in controlled_ending['controlled_sources']:
+                record.update(runtime_status='user-authorized controlled original ending GUI verified, including original/HD/restored, independent pixels and full native state; not a normal playthrough',
+                              controlled_ending_GUI_verified=True, normal_playthrough_verified=False,
+                              controlled_ending_proof_sha256=sha(controlled_ending_path))
     runtime_tails = []
     tail_path = ROOT / 'remaining/source-boundary/OP-FULL-runtime/receipt.json'
     if tail_path.exists():
@@ -735,6 +758,9 @@ def main():
               "combat_paper_margin_native_pixels_verified": 768 if known_rows else 0,
               "ending_399_row_full_copy_bindings_verified": 2 if known_rows else 0,
               "ending_left_shift_consumer_states_verified": 241 if ending_shift else 0,
+              "controlled_ending_HD_sources_verified": len(controlled_ending['controlled_sources']) if controlled_ending else 0,
+              "controlled_ending_actual_window_captures": sum(case['captures'] for case in controlled_ending['cases'].values()) if controlled_ending else 0,
+              "controlled_ending_state_unchanged_toggles": sum(case['toggles'] for case in controlled_ending['cases'].values()) if controlled_ending else 0,
               "normal_MAP_WAKU_upper_frame_rows_verified": 88 if map_frame else 0,
               "normal_MAP_WAKU_lower_cache_pieces_verified": 8 if map_corners else 0,
               "generated_MAP_CHIP_object_drafts": object_drafts,

@@ -1,5 +1,15 @@
 # 德川家康：DOS 原版與 dosgolem
 
+使用者於 2026-10-16 授權調整結局驗收。結局 HD 可用隔離測試入口直接執行原版結局，驗收名稱為「受控結局驗收」；不要求先通關，也不將受控入口列為正常通關證據。正式啟動、玩法、存檔與原始檔保持原契約。準備入口為 [tools/prepare-ending-validation.py](tools/prepare-ending-validation.py)，只在 `workplace/hd-prototype/catalog/remaining/consumers/battle/` 建立凍結測試副本，不修改正式 `tools/startup-probe.go`。實際控制轉移、測試狀態差異與來源雜湊逐項記入收據，規格見 RESEARCH-LOG。
+
+受控結局 X11 入口為 [tools/verify-controlled-ending.py](tools/verify-controlled-ending.py)。現行批次為 `r27/controlled/`。固定 GUI image 中，專案與原版唯讀，該批次的 `source-snapshot/tools/` 唯讀覆掛 `/project/tools`，個別模式的輸出目錄可寫掛 `/output`。執行 `/output/verify-controlled-ending.py --mode hd` 或 `--mode missing-end2`；只對測試版的 host 閘門寫入繼續檔，F6/F7/F9 操作原有桌面介面。保存完整受控來源、原版指令狀態與實際視窗，禁止作正常通關聲明。
+
+受控結局總表入口為 [tools/verify-controlled-ending-summary.py](tools/verify-controlled-ending-summary.py)。固定 GUI image 中專案唯讀掛 `/project`、`r27/controlled/` 可寫掛 `/output`，執行該工具。核對唯一 EIP 轉移、原版自然退出、三案完整同狀態檢查點、真正 X11、HD 圖層逐點採樣、未知末列與個別缺圖，寫入 `verification-summary.json`；原版畫面及收據只留本機。
+
+準備工具傳入 `--base /project/workplace/hd-prototype/catalog/remaining/consumers/battle/r27/runtime --control /project/workplace/hd-prototype/catalog/remaining/consumers/battle/r27/control`，並將 `r27/controlled/` 可寫掛 `/output`。受控版本在最後複製返回後 1M 指令送入相同普通左鍵狀態，記錄為測試輸入，由原版等候函式自行返回並 exit(0)。正式啟動器沒有此入口或輸入。r25 根保留第一版內部等待檢查點達配額的 prototype；`r25/ready/` 保留末圖色盤、左上方敘事圖及普通手動左鍵的缺口證據；`r26/runtime/` 保存只修色盤的四套件建置，不與現行三案混用。
+
+左上方 END-4..10 的接入沿 [tools/hd-live.go](tools/hd-live.go)、[tools/hd-layer.go](tools/hd-layer.go) 與 [實際來源測試](tools/hd-live_test.go)，只接受七個固定 caller、完整 loader 來源及自然目的；END-9／10 的四個目的均須為同一 VGA 矩形，其他 sub_1C10B RAM 打包不接入。字樣保留區隨目的平移；原版來源、畫面及證據不進 Git。
+
 結局 END-2 位移來源入口為 [tools/ending-source-probe.go](tools/ending-source-probe.go)。研究輸出使用既有 `workplace/hd-prototype/catalog/remaining/consumers/battle/r24/`；原版資料及正式 IDA 資料庫唯讀，IDA 匯出沿用 `consumers/ida/`。探針在固定 GUI image 中將本檔覆掛 dosgolem 的 `cmd/leprobe/main.go`，只保留由 `tools/run-probes.sh` 與現行 `tools/battle-cpu.patch` 產生的 CPU overlay，執行原始 `0x184E6..0x185A2` 的有界合成狀態；執行命令為 `go run -overlay /output/ending-source-overlay.json ./cmd/leprobe -cpu-source /output/engine/internal/cpu386/cpu.go`，overlay 範本保存在 `r24/ready/`。輸出 `ending-source-verification.json` 與四組平面。r24 保留首次 word RCL 缺口；修正後來源使用 `r24/ready/`，不覆寫原批次。這是來源與指令證據，不作正常結局或 GUI 驗收。實作規格及後續驗收入口見 RESEARCH-LOG。
 
 條件式 END-2 接入的核對入口為 [tools/verify-hd-ending.py](tools/verify-hd-ending.py)。`r24/ready/` 保存來源證據與第一版測試的透明畫布 fixture 錯誤；修正後的凍結建置與回歸使用 `r24/runtime/`。固定 GUI image 中專案唯讀掛 `/project`、`r24/runtime/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-ending.py`。核對原始位移指令、241 個來源狀態、四套件、600M 普通讀檔／回合控制、三張讀檔 X11 與模式切換；輸出 `verification-summary.json`。`normal_ending_GUI_verified` 維持 false；不以來源測試或戰場視窗宣稱結局已正常驗收。

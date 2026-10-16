@@ -2,11 +2,22 @@ package main
 
 import "image/color"
 
+// r25/ready/ending-palette-source.json：四個原版狀態與三案完整同狀態核對。
+// 僅用於固定 END-11／11B 來源；其他色盤保持原版備援。
+var endingFinalPalette = [16]color.NRGBA{
+	{0, 0, 0, 255}, {56, 8, 8, 255}, {81, 20, 20, 255}, {190, 69, 44, 255},
+	{227, 190, 93, 255}, {239, 215, 190, 255}, {0, 0, 0, 255}, {0, 0, 0, 255},
+	{0, 0, 0, 255}, {0, 0, 0, 255}, {0, 0, 0, 255}, {0, 0, 0, 255},
+	{0, 0, 0, 255}, {0, 0, 0, 255}, {0, 0, 0, 255}, {251, 251, 251, 255},
+}
+
 // OP1 的 22M 與 26.333333M 正常開場擷取相同，淡入／淡出不套用此調色盤。
 // 證據：graphics/static/palette-probe/palette-captures.json
 // SHA-256 cbe61f72fc33ce5a3e2ed5873ac5d06fa9fdba96d9688c478ce579c1f1f73936。
 // 原版來源指紋仍由 hdGraphicsLogoProfile 獨立核對。
 var hdGraphicsSourcePalettes = map[string][16]color.NRGBA{
+	"END-11.OZM":  endingFinalPalette,
+	"END-11B.OZM": endingFinalPalette,
 	"OP-FULL.OZM": {
 		{0, 0, 0, 255}, {32, 32, 32, 255}, {190, 69, 44, 255}, {81, 20, 20, 255},
 		{251, 215, 215, 255}, {44, 81, 93, 255}, {20, 20, 227, 255}, {227, 227, 93, 255},

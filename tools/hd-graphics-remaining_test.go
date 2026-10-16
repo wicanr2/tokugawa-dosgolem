@@ -3,12 +3,94 @@ package main
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"image"
 	"image/color"
 	"os"
 	"testing"
 )
+
+func TestEndingFinalActualOriginalPalette(t *testing.T) {
+	root := "/project/workplace/hd-prototype/catalog/remaining/consumers/battle/r25/ready/"
+	data, err := os.ReadFile(root + "native/receipt.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var receipt struct {
+		Stages []struct {
+			Label       string             `json:"label"`
+			IndicesPath string             `json:"indices_path"`
+			Palette     [256][3]byte       `json:"palette"`
+			DAC         [16]byte           `json:"DAC"`
+			Draw        graphicsDrawRecord `json:"last_graphics_return"`
+		} `json:"ending_validation_stages"`
+	}
+	if json.Unmarshal(data, &receipt) != nil {
+		t.Fatal("original ending palette evidence")
+	}
+	seen := map[string]bool{}
+	for _, stage := range receipt.Stages {
+		name := stage.Draw.Name
+		if (name != "END-11.OZM" && name != "END-11B.OZM") || seen[name] {
+			continue
+		}
+		seen[name] = true
+		var profile hdGraphicsProfile
+		for _, p := range hdGraphicsProfiles {
+			if p.Source.Name == name {
+				profile = p
+			}
+		}
+		indices, err := os.ReadFile(root + "native/" + stage.IndicesPath)
+		if err != nil || len(indices) != 256000 {
+			t.Fatal("original native indices", err)
+		}
+		s := nativeSnapshot{Image: image.NewNRGBA(image.Rect(0, 0, 640, 400)), Indexed: indices, Palette: stage.Palette, DAC: stage.DAC, MaxColor: 15}
+		for i, index := range indices {
+			c := s.Palette[s.DAC[index]]
+			s.Image.SetNRGBA(i%640, i/640, color.NRGBA{c[0], c[1], c[2], 255})
+		}
+		source, err := os.ReadFile("/project/workplace/hd-prototype/catalog/decoded/" + name + ".idx")
+		if err != nil {
+			t.Fatal(err)
+		}
+		asset, err := previewPNG("/project/assets/hd-b/art/" + profile.Asset)
+		if err != nil {
+			t.Fatal(err)
+		}
+		pair := newHDGraphicsPair(profile, source, asset, 2)
+		base, reason := prepareHDImage(s.Image, 640, 400, 2)
+		if reason != "" {
+			t.Fatal(reason)
+		}
+		out := base.(*image.NRGBA)
+		before := append([]byte(nil), out.Pix...)
+		if !stage.Draw.Verified || pair.apply(out, s, stage.Draw, true).Mode != "hd" {
+			t.Fatal("actual ending palette rejected", name)
+		}
+		if !bytes.Equal(out.Pix[798*out.Stride:], before[798*out.Stride:]) {
+			t.Fatal("unknown ending row replaced")
+		}
+		for _, unknown := range []bool{false, true} {
+			bad := s
+			if unknown {
+				bad.Palette[bad.DAC[1]][0] ^= 1
+			} else {
+				for i, c := range battleFrameNativePalette {
+					bad.Palette[bad.DAC[i]] = [3]byte{c.R, c.G, c.B}
+				}
+			}
+			copy(out.Pix, before)
+			if pair.apply(out, bad, stage.Draw, true).Mode != "fallback_palette" || !bytes.Equal(out.Pix, before) {
+				t.Fatal("ending accepted unrelated or unknown palette", name)
+			}
+		}
+	}
+	if len(seen) != 2 {
+		t.Fatal("both actual ending sources required")
+	}
+}
 
 func remainingGraphicsSnapshot(profile hdGraphicsProfile, source []byte, rect image.Rectangle) (nativeSnapshot, graphicsDrawRecord) {
 	s := nativeSnapshot{Image: image.NewNRGBA(image.Rect(0, 0, 640, 400)), Indexed: make([]byte, 640*400), MaxColor: 15}
