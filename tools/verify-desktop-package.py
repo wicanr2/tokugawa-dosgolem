@@ -159,16 +159,15 @@ try:
     version = command(*prefix, '-version', stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.decode().strip()
     assert version == manifest['version'] + ' ' + manifest['commit'], version
     state_arg = 'Z:' + str(state).replace('/', '\\') if windows else str(state)
-    cmd = prefix + ['-diagnostics', '-state-dir', state_arg, '-desktop-audio=false', '-desktop-speed', '4',
-                    '-publisher-speed', '4', '-steps', '200000000']
+    cmd = prefix + ['-diagnostics', '-state-dir', state_arg, '-desktop-audio=false', '-desktop-speed', '60',
+                    '-publisher-speed', '60', '-steps', '200000000']
     with (root / 'receipt.json').open('wb') as out, (root / 'stderr.log').open('wb') as log:
         process = subprocess.Popen(cmd, env=env, stdout=out, stderr=log)
         children.append(process)
         initial = wait(lambda s: s.get('program') == 'mark' and s.get('startup_pending'))
         window = find_window()
         assert initial['step'] == initial['mouse_events'] == 0
-        key('Tab', lambda s: s.get('startup_pending'))
-        key('Return', lambda s: not s.get('startup_pending', True))
+        click(900, 416, lambda s: not s.get('startup_pending', True))
         wait(lambda s: s.get('program') == 'game' and s.get('step', 0) > 80000000)
         window = find_window()
         paused = key('F7', lambda s: s.get('paused'))

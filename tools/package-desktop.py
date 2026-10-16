@@ -14,6 +14,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--version', required=True)
 parser.add_argument('--commit', required=True)
 parser.add_argument('--asset-audit', type=Path, required=True)
+parser.add_argument('--platforms', choices=['linux-windows', 'macos'], required=True)
+parser.add_argument('--prepared-dir', type=Path, required=True)
 args = parser.parse_args()
 assert re.fullmatch(r'v\.[0-9]+\.[0-9]+\.[0-9]+-[0-9]{8}', args.version)
 assert re.fullmatch(r'[0-9a-f]{40}', args.commit)
@@ -23,7 +25,10 @@ assert all(p.stat().st_uid == 1000 for p in (work, delivery))
 assert subprocess.check_output(['git', '-C', str(project), 'rev-parse', 'HEAD'], text=True).strip() == args.commit
 subprocess.run(['git', '-C', str(project), 'diff', '--exit-code', 'HEAD'], check=True, stdout=subprocess.DEVNULL)
 version_dir = delivery / args.version
-assert not version_dir.exists(), '拒絕覆寫既有版本'
+if args.platforms == 'linux-windows':
+    assert not version_dir.exists(), '拒絕覆寫既有版本'
+else:
+    assert version_dir.is_dir(), '先在 GUI image 建立 Linux／Windows 封包'
 
 
 def sha(path):
@@ -45,8 +50,16 @@ def copy(source, target):
     target.chmod(0o644)
 
 
-env = dict(os.environ, TOKUGAWA_PREPARE_ONLY='1', GOMAXPROCS='2', GOFLAGS='-p=2')
-subprocess.run(['sh', str(project / 'tools/run-probes.sh')], env=env, check=True)
+env = dict(os.environ, GOMAXPROCS='2', GOFLAGS='-p=2')
+# Preparation and full tests are reused only when every recorded input matches.
+prepared = args.prepared_dir
+frozen = json.loads((prepared / 'build-sources.json').read_text())
+assert len(frozen) == 109 and all(sha(project / p) == digest for p, digest in frozen.items())
+if not (work / 'engine').exists():
+    shutil.copytree(prepared / 'engine', work / 'engine')
+    (work / 'startup-probe').mkdir()
+    copy(prepared / 'startup-probe/repro-overlay.json', work / 'startup-probe/repro-overlay.json')
+    copy(prepared / 'startup-probe/platform-test.log', work / 'startup-probe/inherited-platform-test.log')
 copy(project / 'tools/desktop.mod', work / 'desktop.mod')
 copy(project / 'tools/desktop.sum', work / 'desktop.sum')
 audit = json.loads(args.asset_audit.read_text())
@@ -71,12 +84,20 @@ modules = {'Ebitengine': 'github.com/hajimehoshi/ebiten/v2@v2.9.9',
            'XGB': 'github.com/jezek/xgb@v1.1.1',
            'x-sync': 'golang.org/x/sync@v0.17.0', 'x-sys': 'golang.org/x/sys@v0.36.0'}
 license_sources.update({k: Path('/go/pkg/mod') / v / 'LICENSE' for k, v in modules.items()})
-version_dir.mkdir()
+version_dir.mkdir(exist_ok=args.platforms == 'macos')
 full_local = version_dir / 'full-local'
-full_local.mkdir()
-(version_dir / 'smoke').mkdir()
+full_local.mkdir(exist_ok=args.platforms == 'macos')
+(version_dir / 'smoke').mkdir(exist_ok=args.platforms == 'macos')
 packages = []
-targets = [('linux', 'amd64', '1'), ('windows', 'amd64', '0'), ('darwin', 'amd64', '0'), ('darwin', 'arm64', '0')]
+if args.platforms == 'linux-windows':
+    targets = [('linux', 'amd64', '1'), ('windows', 'amd64', '0')]
+else:
+    recorded = json.loads((version_dir / 'SHA256SUMS.json').read_text())
+    assert recorded['version'] == args.version and recorded['commit'] == args.commit
+    packages = recorded['packages']
+    assert {(p['platform'], p['arch']) for p in packages} == {('linux', 'amd64'), ('windows', 'amd64')}
+    assert all(sha(version_dir / p['file']) == p['sha256'] for p in packages)
+    targets = [('darwin', 'amd64', '1'), ('darwin', 'arm64', '1')]
 for goos, arch, cgo in targets:
     platform = 'macos' if goos == 'darwin' else goos
     name = f'tokugawa-dosgolem-{args.version}-{platform}-{arch}'
@@ -108,7 +129,11 @@ for goos, arch, cgo in targets:
                '-tags', 'desktop', '-overlay', str(work / 'startup-probe/repro-overlay.json'),
                '-ldflags', ldflags, '-o', str(executable), './cmd/leprobe']
     with (work / (platform + '-' + arch + '-build.log')).open('wb') as log:
-        subprocess.run(command, cwd='/dosgolem', env=dict(env, GOOS=goos, GOARCH=arch, CGO_ENABLED=cgo),
+        build_env = dict(env, GOOS=goos, GOARCH=arch, CGO_ENABLED=cgo)
+        if goos == 'darwin':
+            build_env.update(CC='o64-clang' if arch == 'amd64' else 'oa64-clang',
+                             CXX='o64-clang++' if arch == 'amd64' else 'oa64-clang++', MACOSX_DEPLOYMENT_TARGET='12.0')
+        subprocess.run(command, cwd='/dosgolem', env=build_env,
                        stdout=log, stderr=subprocess.STDOUT, check=True, timeout=480)
     executable.chmod(0o755)
     for relative in resources:
@@ -155,6 +180,8 @@ macOS：~/Library/Application Support/tokugawa-dosgolem。
                 'base_dosgolem_commit': 'a9714ebdab2ad6b529f81225472680f2b11f2842',
                 'classification': 'full-local; contains original copyrighted data; do not distribute',
                 'runtime_resource_count': len(resources), 'runtime_audit_sha256': sha(args.asset_audit),
+                'CGO_ENABLED': cgo, 'compiler': build_env.get('CC', 'system gcc' if cgo == '1' else 'Go'),
+                'inherited_test_inputs': frozen, 'inherited_test_log_sha256': sha(prepared / 'startup-probe/platform-test.log'),
                 'build_sources': source_hashes, 'files': files,
                 'normal_playthrough_verified': False, 'normal_playthrough_required': False,
                 'macos_native_verified': False, 'listening_verified': False}
@@ -174,4 +201,4 @@ macOS：~/Library/Application Support/tokugawa-dosgolem。
     print('PACKAGED', name, flush=True)
 dump(version_dir / 'SHA256SUMS.json', {'version': args.version, 'commit': args.commit, 'packages': packages})
 assert source_hashes == {p: sha(project / p) for p in source_hashes}
-print('PASS: four local packages; platform smoke validation is separate', flush=True)
+print('PASS: requested local packages; platform smoke validation is separate', flush=True)

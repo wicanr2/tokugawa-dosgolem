@@ -38,7 +38,7 @@
 
 ## 開工入口
 
-桌面本機封包入口為 [tools/package-desktop.py](tools/package-desktop.py)，只在固定 GUI image 內執行。專案／原版／固定 dosgolem 分別唯讀掛 `/project`、`/original`、`/dosgolem`，乾淨工作目錄可寫掛 `/output`，交付根目錄可寫掛 `/delivery`；參數為 `--version`、`--commit` 與經實際執行產生的 `--asset-audit`。子目錄遵守知識路由的 dist-all 契約，含原版的四個平台／架構 ZIP 只留 full-local。自製程式授權見 [LICENSE](LICENSE)，不涵蓋原版資料。
+桌面本機封包入口為 [tools/package-desktop.py](tools/package-desktop.py)，只在固定 GUI image 內執行。專案／原版／固定 dosgolem 分別唯讀掛 `/project`、`/original`、`/dosgolem`，乾淨工作目錄可寫掛 `/output`，交付根目錄可寫掛 `/delivery`；參數為 `--version`、`--commit`、經實際執行產生的 `--asset-audit`、逐項相符的 `--prepared-dir` 及 `--platforms linux-windows|macos`。先在固定 GUI image 建前兩包，再在 READY 指定的既有 osxcross image 建兩個 macOS 包，兩批共用同一可寫工作目錄及 Go cache。子目錄遵守知識路由的 dist-all 契約，含原版的四個平台／架構 ZIP 只留 full-local。自製程式授權見 [LICENSE](LICENSE)，不涵蓋原版資料。
 
 桌面音訊入口為 [tools/verify-desktop-audio.py](tools/verify-desktop-audio.py)，沿 READY 指定的既有音訊 image，唯讀掛專案／原版，可寫工作目錄掛 `/output`，傳入 `--binary`、`--resource-dir`、`--game-dir`、`--cpu-source`。它重播既有正常輸入至首筆原版選曲後，核對開／關音訊的完整 RAM、原版欄位及 PulseAudio loopback，保留人耳未驗證分類。既有收據可用 `--verify-only` 重新核對，不冒稱新測次。
 

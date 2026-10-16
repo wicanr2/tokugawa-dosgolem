@@ -2403,3 +2403,11 @@ r30 首次獨立像素核對已通過動畫與背景還原，但 OP6 全幅的�
 | 驗收 | 有意義的路徑／PCM 佇列測試、四套件、原版同輸入狀態控制、真正封包啟動及 HD／原圖切換。Linux 音訊用既有 eob-audio-capture:20261009-r3 的 PulseAudio 虛擬裝置擷取；Windows 沿既有 psgolem-wine-verify:noble-r1。macOS 編譯及格式核對與真機啟動分開記錄 |
 
 Ebitengine 十六位元播放器契約直接查固定工具 image 的 /go/pkg/mod/github.com/hajimehoshi/ebiten/v2@v2.9.9/audio/audio.go；它將十六位元 PCM 轉為內部浮點串流。持續存檔契約直接查固定 dosgolem 副本 internal/machine/overlay_files.go 的 OpenRead／OpenWrite，原版讀寫仍經既有 DOS 檔案服務。封包路由已讀 local/retro-remake-dist-all-output.md 與 local/retro-remake-release-versioning.md。
+
+### macOS 工具鏈與封包流程修正：READY
+
+首次正式建置完成 Linux／Windows ZIP，但 Ebitengine 2.9.9 的 macOS GLFW 與 Metal display-link 綁定需要 CGO。無 CGO 的依賴預查不代表完整桌面可編譯；錯誤保存 package/build-v.0.1.0-20261016/macos-amd64-build.log。改用既有 wizardry7-osxcross:go1.24.13-python3.13.15-15.5-r1，image SHA 1aa0f82b2c880d33751bf26259a6453d8c0009fd7f13e593db92897710aa9370，Go 1.24.13、MacOSX15.5.sdk、o64-clang／oa64-clang，CGO=1，deployment target 12.0。此修正只改建置來源，不改原版或呈現機制。
+
+封包工具改為 linux-windows 與 macos 兩批，在相同乾淨提交、同版號、同 109 項輸入及同 runtime audit 下建置。只在逐項 SHA 完全相符時沿用 r4 已通過的四套件與平台準備，不重跑同一測試。第二批先核對前兩包 SHA 與提交才追加 macOS 兩包。未發布的失敗交付移入原工作批次保存，從乾淨輸入重建現行版本，不覆寫已發布 tag 或 Release。
+
+首次封包 GUI 工具用速度 4，進度仍在正常執行但超過軟體繪圖環境的驗證時限，主動停止並保留；新版沿已通過裝置驗證的速度 60 作有界驗證，正式遊戲預設速度不改。模式選擇以普通滑鼠按下／放開確認，避免工具 Tab 檢查條件立即成立而漏掉按鍵。
