@@ -256,8 +256,12 @@ func (t *graphicsTrace) observe(step int, eip, esp uint32, mem []byte, snapshot 
 	}
 	d := a[4] - 0xa0000
 	dy, dx := d/80, d%80
-	r.SourceRect = image.Rect(int(sx*8), int(sy), int((sx+a[1])*8), int(sy+a[2]))
-	r.DestRect = image.Rect(int(dx*8), int(dy), int((dx+a[1])*8), int(dy+a[2]))
+	knownRows := a[2]
+	if eip == 0x1c084 && p.Width == 640 && p.Height == 399 && (p.Name == "END-11.OZM" || p.Name == "END-11B.OZM") {
+		knownRows, r.Kind = 399, "opaque_full_known_rows"
+	}
+	r.SourceRect = image.Rect(int(sx*8), int(sy), int((sx+a[1])*8), int(sy+knownRows))
+	r.DestRect = image.Rect(int(dx*8), int(dy), int((dx+a[1])*8), int(dy+knownRows))
 	expected := graphicsCrop(idx, p.Width, r.SourceRect)
 	if expected == nil || !r.DestRect.In(image.Rect(0, 0, 640, 400)) {
 		r.Error = "source or destination rectangle outside bounds"

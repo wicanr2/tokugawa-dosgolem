@@ -91,6 +91,8 @@
 | [tools/verify-hd-combat.py](tools/verify-hd-combat.py) | 固定 GUI image，專案唯讀掛 /project、指定 battle 批次可寫掛 /output；核對 600M 完整 RAM／十七欄、實際 X11、原版／HD 切換、OR 混色、文字、個別缺地面及動畫還原。r17 用舊版工具全文重查；r19 加 --units 核對兩縮圖、索引、獨立 alpha、動畫遮擋／還原及個別缺單位。--source-root 可指定歷史快照；個案 ready/ 保存環境重跑。跨個案缺圖比較要求完整原生可見畫面相同，各次切換仍逐項核對完整 guest proof；輸出 verification-summary.json |
 | `workplace/hd-prototype/catalog/remaining/consumers/battle/r18/` | 頂端兩個 48×48 單位縮圖的 READY 接入、固定來源、四套件、原版控制與正常／缺圖／動畫 X11；重用既有單位素材，來源及原版畫面只留本機。consumers/ida/battle-unit-primitives.i64 為正式資料庫的隔離副本，原始 bytes 核對見 r17/unit-diagnostic/ |
 | `workplace/hd-prototype/catalog/remaining/consumers/battle/r19/` | 縮圖改用原生索引核對跨淡入來源與自然返回後的獨立建置及正常 GUI；r18 保存 RGB 跨時點資格拒絕及完整原版控制，舊來源和收據不覆寫 |
+| `workplace/hd-prototype/catalog/remaining/consumers/battle/r20/` | 已證實的 399 列結局完整複製資格與縮圖外側紙張呈現修正；原版最後一列保持。desktop-animation/ 保留新視窗只畫到一半的早期擷取，ready/ 用 wait_restore 的 steady_resource 等待已核准背景恢復後取樣，二進位與 106 項編譯來源不變。來源、共同消費端測試與正常交鋒 GUI 分開保存，不將共同測試稱為正常結局驗收 |
+| `workplace/hd-prototype/catalog/remaining/consumers/ida/remaining-consumer-audit.json` | 20 個來源與 23 個 EXE 名稱索引、DAT 目錄索引、正常 RAM 與 IDA 原始 bytes 核對；兩種索引以完整檔名配對，不互換。新匯出 range-18a80-18dc0、range-1c084-1c200、range-185a7-189c8、range-1e9e0-1ebc0 的用途與 READY 範圍見 RESEARCH-LOG |
 | [tools/hd-extract.go](tools/hd-extract.go) | 從正常路徑 RAM 擷取 A-0.OZM，核對四平面雜湊與原生畫面矩形，輸出本機 PNG 及收據；不是正式素材包格式 |
 | [tools/hd-capture.go](tools/hd-capture.go) | `-hd-export` 在原版載入返回時輸出已核對平面的索引圖、當時 DAC 與收據；沒有 guest 寫入，不代表繪圖或遮擋已驗收 |
 | [tools/hd-ozm-probe.py](tools/hd-ozm-probe.py) | 依 IDA 9.4 原始指令做離線資源盤點，只接受獨立解碼命令；遇到 VGA 來源命令明確拒絕。以正常路徑四平面與索引雜湊交叉核對 |

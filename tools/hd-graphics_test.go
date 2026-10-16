@@ -34,6 +34,91 @@ func graphicsCompositeRAM(t *testing.T, profile graphicsSourceProfile, indexed [
 	return mem
 }
 
+func TestEnding399KnownRowsFromOriginalFullCopy(t *testing.T) {
+	for _, name := range []string{"END-11.OZM", "END-11B.OZM"} {
+		profile := openingEffectProfile(t, name)
+		indexed, err := os.ReadFile("/project/workplace/hd-prototype/catalog/decoded/" + name + ".idx")
+		if err != nil || profile.Source.Width != 640 || profile.Source.Height != 399 {
+			t.Fatal("actual ending source unavailable", name, err)
+		}
+		asset, err := previewPNG("/project/assets/hd-b/art/" + profile.Asset)
+		if err != nil {
+			t.Fatal(err)
+		}
+		pair := newHDGraphicsPair(profile, indexed, asset, 2)
+		mem := graphicsCompositeRAM(t, profile.Source, indexed)
+		ret := uint32(0x18d55)
+		if name == "END-11B.OZM" {
+			ret = 0x18daf
+		}
+		binary.LittleEndian.PutUint32(mem[0x1000:], ret)
+		beforeRAM := sha256.Sum256(mem)
+		s := nativeSnapshot{Image: image.NewNRGBA(image.Rect(0, 0, 640, 400)), Indexed: make([]byte, 640*400), MaxColor: 15}
+		copy(s.Indexed, indexed)
+		palette := graphicsNativePalette(profile)
+		for i, c := range palette {
+			s.DAC[i], s.Palette[i] = byte(i), [3]byte{c.R, c.G, c.B}
+		}
+		for x := 0; x < 640; x++ {
+			s.Indexed[399*640+x] = byte(x % 16)
+		}
+		for i, value := range s.Indexed {
+			s.Image.SetNRGBA(i%640, i/640, palette[value])
+		}
+		snapshot := func() (nativeSnapshot, error) { return s, nil }
+		var state hdGraphicsState
+		state.observe(1, 0x1c084, 0x1000, mem, snapshot)
+		if state.Pending == nil || len(state.Draws) != 0 || state.Pending.Record.Args[2] != 400 || state.Pending.Record.SourceRect != image.Rect(0, 0, 640, 399) {
+			t.Fatal("original arguments or known source range", name)
+		}
+		state.observe(2, ret, 0x1000, mem, snapshot)
+		if state.Pending == nil {
+			t.Fatal("wrong return stack accepted")
+		}
+		state.observe(3, ret, 0x1004, mem, snapshot)
+		if len(state.Draws) != 1 || !state.Draws[0].Verified || state.Draws[0].Kind != "opaque_full_known_rows" || beforeRAM != sha256.Sum256(mem) {
+			t.Fatal("known full-copy return or guest mutation", name)
+		}
+		out, _, _ := previewA0(s.Image, nil, nil, 2, false)
+		original := append([]byte(nil), out.Pix...)
+		if report := pair.apply(out, s, state.Draws[0], true); report.Mode != "hd" || report.Rect != image.Rect(0, 0, 640, 399) {
+			t.Fatal("ending known rows not rendered", name, report)
+		}
+		if !bytes.Equal(out.Pix[798*out.Stride:], original[798*out.Stride:]) {
+			t.Fatal("unknown last row changed", name)
+		}
+		// 未知原版末列可變，資格只涵蓋已核對的前 399 列。
+		s.Indexed[399*640] ^= 15
+		s.Image.SetNRGBA(0, 399, palette[s.Indexed[399*640]])
+		var trace graphicsTrace
+		trace.Profiles = []graphicsSourceProfile{profile.Source}
+		trace.observe(4, 0x1c084, 0x1000, mem, snapshot)
+		trace.observe(5, ret, 0x1004, mem, snapshot)
+		if len(trace.Records) != 1 || !trace.Records[0].Verified {
+			t.Fatal("unknown row blocked known prefix", name)
+		}
+		missing := newHDGraphicsPair(profile, indexed, nil, 2)
+		copy(out.Pix, original)
+		if missing.apply(out, s, state.Draws[0], true).Mode != "fallback_missing_asset" || !bytes.Equal(out.Pix, original) {
+			t.Fatal("missing ending art changed pixels")
+		}
+		s.Indexed[398*640] ^= 1
+		trace.Pending, trace.Records = nil, nil
+		trace.observe(6, 0x1c084, 0x1000, mem, snapshot)
+		trace.observe(7, ret, 0x1004, mem, snapshot)
+		if len(trace.Records) != 1 || trace.Records[0].Verified {
+			t.Fatal("changed known destination accepted", name)
+		}
+		unsupported := profile.Source
+		unsupported.Name = "UNKNOWN-399.OZM"
+		trace = graphicsTrace{Profiles: []graphicsSourceProfile{unsupported}}
+		trace.observe(8, 0x1c084, 0x1000, mem, snapshot)
+		if trace.Pending != nil {
+			t.Fatal("unapproved short full-copy source accepted")
+		}
+	}
+}
+
 func TestHDGraphicsCompositeActualSourcesAndVisibility(t *testing.T) {
 	root := "/project/workplace/hd-prototype/catalog/remaining/consumers/battle/r14/native-turn3/"
 	data, err := os.ReadFile(root + "receipt.json")

@@ -13,6 +13,7 @@ assert root.stat().st_uid == 1000
 parser = argparse.ArgumentParser()
 parser.add_argument('--source-root', type=Path, default=project)
 parser.add_argument('--units', action='store_true')
+parser.add_argument('--paper-margins', action='store_true')
 args = parser.parse_args()
 read = lambda p: json.loads(p.read_text())
 sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
@@ -35,8 +36,9 @@ assert sha(native / 'startup-memory.bin') == sha(reference / 'startup-memory.bin
 cases = {}
 for name in ['desktop', 'desktop-animation', 'desktop-missing'] + (['desktop-unit-missing'] if args.units else []):
     case = root / name
-    if (case / 'ready/exploration-status.json').is_file():
+    if (case / 'ready').is_dir():
         case = case / 'ready'
+        assert (case / 'exploration-status.json').is_file(), ('await complete retry before verification', name)
     e, r = read(case / 'exploration-status.json'), read(case / 'receipt.json')
     assert e['phase'] == 'finished' and not e['harness_only'] and r['stop'] == 'desktop_closed'
     assert r['integration_input_sha256'] == sources and r['mouse_input_schedule'] == n['mouse_input_schedule']
@@ -128,6 +130,10 @@ if args.units:
                 expected = tuple((front[i]*alpha + back[i]*(255-alpha) + 127)//255 for i in range(3)) + (255,)
                 assert hd['image'].getpixel((x*2+dx, 120+y)) == expected, ('unit alpha', unit['index'], dx, y)
         unit_checks.append(dict(index=unit['index'], native_rect=[x, 60, x+48, 108], prepared_sha256=sha(prepared_path)))
+        if args.paper_margins:
+            for y in list(range(112, 120)) + list(range(216, 224)):
+                for dx in range(x*2, (x+48)*2):
+                    assert hd['image'].getpixel((dx, y)) == paper.getpixel((dx, y)), ('paper margin', unit['index'], dx, y)
 else:
     for bounds in unit_regions:
         area = tuple(v*2 for v in bounds)
@@ -211,5 +217,27 @@ if args.units:
                   combat_unit_checks=unit_checks, missing_unit_changed_output_pixels=unit_missing_changed,
                   missing_unit_comparison=dict(classification='identical full original visible frame and source draws; per-case toggles preserve complete guest proof',
                                                normal_step=original['status']['step'], missing_step=missing_unit_original['status']['step']))
+if args.paper_margins:
+    assert args.units
+    report['combat_paper_margin_native_pixels'] = 768
+    suite = root / 'startup-probe/platform-test.log'
+    suite_text = suite.read_text()
+    assert sum(line.startswith('ok  ') for line in suite_text.splitlines()) == 4 and 'FAIL' not in suite_text
+    test_path = args.source_root / 'tools/hd-graphics_test.go'
+    assert sha(test_path) == sources['tools/hd-graphics_test.go']
+    assert 'func TestEnding399KnownRowsFromOriginalFullCopy' in test_path.read_text()
+    profiles_path = project / 'workplace/hd-prototype/catalog/remaining/profiles.json'
+    selected = {r['name']: r for r in read(profiles_path)['records']}
+    ending = []
+    for name in ['END-11.OZM', 'END-11B.OZM']:
+        profile = selected[name]['source']
+        indices = project / ('workplace/hd-prototype/catalog/decoded/' + name + '.idx')
+        assert [profile['width'], profile['height']] == [640, 399]
+        assert sha(indices) == profile['indices_sha256'] and indices.stat().st_size == 640*399
+        ending.append(dict(resource=name, source_indices_sha256=sha(indices), known_source_rows=399,
+                           original_copy_rows=400, original_last_row_preserved=True))
+    report['ending_known_rows_binding'] = dict(classification='real original sources and synthetic shared-consumer tests; normal ending not sampled',
+                                              normal_ending_GUI_verified=False, records=ending,
+                                              test_source_sha256=sha(test_path), four_package_log_sha256=sha(suite))
 (root / 'verification-summary.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
 print(json.dumps({k: report[k] for k in ['result', 'source_count', 'mixed_OR_native_pixels_preserved', 'original_black_foreground_pixels_preserved', 'missing_ground_native_output_pixels']}))

@@ -203,6 +203,9 @@ try:
                 assert status()['enabled'] and isinstance(resource, str) and resource.endswith('.OZM') and len(resource) <= 64
             else:
                 assert len(target) == 4 and all(isinstance(v, int) for v in target)
+                resource = command.get('steady_resource')
+                if resource is not None:
+                    assert status()['enabled'] and isinstance(resource, str) and resource.endswith('.OZM') and len(resource) <= 64
             def reached(s):
                 if s.get('step', 0) > begin + n:
                     raise TimeoutError('ordinary graphics wait exceeded instruction limit')
@@ -212,7 +215,7 @@ try:
                     rect = event['logical_rect']
                     bounds = [rect['Min']['X'], rect['Min']['Y'], rect['Max']['X'], rect['Max']['Y']]
                     if event['kind'] == 'restore_return' and event['verified'] and event['step'] >= begin and bounds == target:
-                        return True
+                        return resource is None or any(report.get('resource') == resource and report.get('mode') == 'hd' for report in s.get('graphics') or [])
                 return False
             paused(False)
             wait(reached)

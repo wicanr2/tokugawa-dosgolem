@@ -147,7 +147,7 @@ func graphicsCompositeSource(entry uint32, name string) bool {
 }
 
 func graphicsBattleUnit(point image.Point) bool {
-	return point.In(image.Rect(240, 56, 288, 112)) || point.In(image.Rect(400, 56, 448, 112))
+	return point.In(image.Rect(240, 60, 288, 108)) || point.In(image.Rect(400, 60, 448, 108))
 }
 
 // 正常交鋒的數值及姓名區；單位縮圖另保留整區，不能靠背景差分猜輪廓。

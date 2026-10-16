@@ -372,6 +372,19 @@ def main():
         for case in combat_units['cases'].values():
             assert case['receipt_sha256'] == sha(combat_units_path.parent/case['artifact_root']/'receipt.json')
         proof_sources.append({'verification': str(combat_units_path.relative_to(PROJECT)), 'sha256': sha(combat_units_path)})
+    known_rows_path = ROOT/'remaining/consumers/battle/r20/verification-summary.json'
+    known_rows = json.loads(known_rows_path.read_text()) if known_rows_path.exists() else None
+    if known_rows:
+        assert known_rows['result'] == 'PASS' and known_rows['combat_paper_margin_native_pixels'] == 768
+        endings = known_rows['ending_known_rows_binding']
+        assert endings['normal_ending_GUI_verified'] is False
+        assert [r['resource'] for r in endings['records']] == ['END-11.OZM', 'END-11B.OZM']
+        assert all(r['known_source_rows'] == 399 and r['original_copy_rows'] == 400 and r['original_last_row_preserved'] for r in endings['records'])
+        verifier_sources.append(recorded_verifier('verify-hd-combat.py', known_rows['tool_sha256'],
+                                                  'remaining/consumers/battle/r20/verify-hd-combat.py'))
+        for case in known_rows['cases'].values():
+            assert case['receipt_sha256'] == sha(known_rows_path.parent/case['artifact_root']/'receipt.json')
+        proof_sources.append({'verification': str(known_rows_path.relative_to(PROJECT)), 'sha256': sha(known_rows_path)})
     records = []
     for source in decoded["records"]:
         name = source["name"]
@@ -605,6 +618,9 @@ def main():
         if record['source'] == 'MAP_CHIP.OZM' and combat_units:
             record['combat_unit_runtime_check'] = {'indices': [3, 7], 'summary_sha256': sha(combat_units_path),
                                                     'scope': 'two normal top combat icons, independent alpha, missing unit, animation occlusion and restore; not world-map cases'}
+        if record['source'] in ['END-11.OZM', 'END-11B.OZM'] and known_rows:
+            record.update(runtime_status='source-matched 399-row full-copy consumer tested; original unknown last row retained; normal ending not sampled',
+                          runtime_proof_sha256=sha(known_rows_path), known_full_copy_rows=399, normal_ending_GUI_verified=False)
     records.append(pcx_record)
     runtime_tails = []
     tail_path = ROOT / 'remaining/source-boundary/OP-FULL-runtime/receipt.json'
@@ -655,6 +671,8 @@ def main():
               "normal_MAP_CHIP_unit_instances_verified": 2 if scene_summary else 0,
               "normal_combat_unit_source_cases_verified": 2 if combat_units else 0,
               "normal_combat_unit_instances_verified": 2 if combat_units else 0,
+              "combat_paper_margin_native_pixels_verified": 768 if known_rows else 0,
+              "ending_399_row_full_copy_bindings_verified": 2 if known_rows else 0,
               "generated_MAP_CHIP_object_drafts": object_drafts,
               "generated_MAP_CHIP_object_art": generated_objects,
               "native_MAP_CHIP_sprite_source_profiles": 39 if foreground_summary else 0,
