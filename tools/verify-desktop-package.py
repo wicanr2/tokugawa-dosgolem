@@ -182,7 +182,10 @@ try:
         window = find_window()
         assert initial['step'] == initial['mouse_events'] == 0
         click(900, 416, lambda s: not s.get('startup_pending', True))
-        wait(lambda s: s.get('program') == 'game' and s.get('step', 0) > 80000000)
+        # This bound covers MARK, loading the full HD pack and reaching the
+        # same 80M title checkpoint. Wine's cold startup is slower than Linux.
+        wait(lambda s: s.get('program') == 'game' and s.get('step', 0) > 80000000,
+             seconds=360 if windows else 180)
         window = find_window()
         paused = key('F7', lambda s: s.get('paused'))
         assert paused['enabled'] and not paused['startup_pending']
