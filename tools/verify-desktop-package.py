@@ -80,10 +80,21 @@ def key(name, test):
 
 
 def find_window():
-    ids = command('xdotool', 'search', '--onlyvisible', '--name', '德川家康', stdout=subprocess.PIPE).stdout.decode().splitlines()
-    assert len(ids) == 1, ids
-    command('xdotool', 'windowfocus', '--sync', ids[0])
-    return ids[0]
+    # Status can be written before Wine maps the corresponding X11 window.
+    # Wait for an unambiguous visible window before sending any input.
+    end = time.monotonic() + 30
+    ids = []
+    while time.monotonic() < end:
+        found = subprocess.run(['xdotool', 'search', '--onlyvisible', '--name', '德川家康'],
+                               env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=20)
+        assert found.returncode in (0, 1), found.stderr.decode(errors='replace')
+        ids = found.stdout.decode().splitlines()
+        if len(ids) == 1:
+            command('xdotool', 'windowfocus', '--sync', ids[0])
+            return ids[0]
+        assert process.poll() is None, process.returncode
+        time.sleep(.1)
+    raise TimeoutError('visible game window not ready: ' + str(ids))
 
 
 def capture(label):
