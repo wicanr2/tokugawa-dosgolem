@@ -48,7 +48,7 @@ process = None
 
 
 def command(*values, **kw):
-    return subprocess.run(values, env=env, check=True, timeout=20, **kw)
+    return subprocess.run(values, env=env, check=True, timeout=kw.pop('timeout', 20), **kw)
 
 
 def status():
@@ -156,7 +156,10 @@ try:
         time.sleep(.05)
     executable = package / ('tokugawa-dosgolem.exe' if windows else 'tokugawa-dosgolem')
     prefix = ['wine', str(executable)] if windows else [str(executable)]
-    version = command(*prefix, '-version', stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.decode().strip()
+    # The first Wine invocation also initializes a fresh prefix. Give that
+    # environment setup its own bound; ordinary X11 commands still use 20s.
+    version = command(*prefix, '-version', timeout=90 if windows else 20,
+                      stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.decode().strip()
     assert version == manifest['version'] + ' ' + manifest['commit'], version
     state_arg = 'Z:' + str(state).replace('/', '\\') if windows else str(state)
     cmd = prefix + ['-diagnostics', '-state-dir', state_arg, '-desktop-audio=false', '-desktop-speed', '60',

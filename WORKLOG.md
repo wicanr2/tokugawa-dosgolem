@@ -769,3 +769,5 @@ r23 四套件通過，研究入口 113.317 秒，106 項來源凍結。普通十
 - 新增 tools/clean-workspace.py，預設只列清單，--apply 僅刪除可重建編譯快取、不含遊戲存檔的 Wine 環境，以及完整 manifest／ZIP 與全部內容相同的封包副本。原版、HD、研究來源、IDA、收據、存檔、截圖、錄影與 ZIP 都保留。來源凍結後先完成建置與驗證，再執行清理。
 
 本節記錄建置前的凍結來源；正式包驗收、清理大小與 tag／Release 結果在後續完成紀錄追加。公開 Release 本文沿用 workplace/github-setup/v100-release-notes.md，最終同步收據為 workplace/github-setup/v100-release-sync.json，兩者在交付時建立。
+
+Linux 正式 ZIP 的 772 檔、MARK 15989208 步自然退出、正常標題 81M、功能列切換、三張 X11 與正常關窗通過。Windows 首次驗證在 Wine 冷啟動的 -version 超過工具 20 秒限制，尚未到遊戲測試；保留 smoke/windows-attempt01/。驗證工具只將第一次 Windows 版本查詢放寬到有界 90 秒，其他 X11 命令仍為 20 秒，再於同一 image／同一 ZIP 的乾淨輸出重跑。原版程式、109 項編譯輸入及封包沒有變更。
