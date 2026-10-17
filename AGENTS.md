@@ -1,6 +1,6 @@
 # 德川家康：DOS 原版與 dosgolem
 
-正式版目標為 `v.1.0.0-20261017`，由使用者指定 1.0.0 里程碑。程式以既有 package-desktop.py 的 ldflags 設定完整版本，四包由乾淨輸入重建至 `dist-all/<版本>/full-local/`；驗證入口沿本檔既有封包工具。公開 tag／Release 只發布自製內容與說明，不上傳本機完整版。最終 HD 已由 `tools/archive-hd-art.py --verify-only` 與 GitHub 完整素材樹核對，收據為 `workplace/github-setup/final-hd-v100-verification.json`。
+現行正式版為 `v.1.0.0-20261017`，由使用者指定 1.0.0 里程碑。程式以既有 package-desktop.py 的 ldflags 設定完整版本，四包由乾淨輸入重建至 `dist-all/<版本>/full-local/`；驗證入口沿本檔既有封包工具。公開 tag／Release 只發布自製內容與說明，不上傳本機完整版。最終 HD 已由 `tools/archive-hd-art.py --verify-only` 與 GitHub 完整素材樹核對，收據為 `workplace/github-setup/final-hd-v100-verification.json`。程式來源提交為 `32d546912721daf4ad6d7ae24923756108bd219b`，與正式 tag 的 109 項既有來源輸入相同；四包現況及清理收據由 CONTEXT.md 路由。
 
 使用者於 2026-10-17 另指定 README 顯示原版與 HD 遊戲截圖。公開例外限 [assets/screenshots/battle-original.png](assets/screenshots/battle-original.png) 與 [assets/screenshots/battle-hd.png](assets/screenshots/battle-hd.png) 這兩張介紹圖；來源為同狀態正常首戰，只裁去非遊戲區，原始完整收據保存在 `workplace/github-setup/readme-v100-screenshots.json`。原版檔案、其他擷取圖、音訊與錄影仍依原有規則排除，截圖不改變原版權利歸屬。
 

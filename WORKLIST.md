@@ -14,7 +14,8 @@
 | 音訊 | 裝置、PCM 與桌面技術播放通過 | 原版十五軌及首場流程保持；150M 普通輸入實際 loopback 非靜音，開／關輸出完整 RAM 與十四欄相同，人耳聆聽未驗證 |
 | MARK 與啟動顯示選擇 | CONFORMED，完整鏈通過 | 預設先選模式，依序執行原版 MARK 與 DX5；MARK 的最後原版／HD 設定帶進遊戲，兩處功能列均可切換。兩次完整首戰與正常關窗、各自 RAM／原版欄位通過；收據見 startup-chain/verification-summary.json。原版執行環境及虛擬時間分開，不偽造 COMMAND.COM 或 EXEC 成功 |
 | 正常玩家路徑 | 部分通過 | 原版入口至首戰及 FILE 3 的正常存讀檔樣本通過，讀回完整畫面一致；武將表 HD 切換通過。接續回合及交鋒，不將單一存檔或首戰驗收當成全遊戲相容 |
-| 獨立桌面與三平台封包 | 本機四包完成 | v.0.1.0-20261016；772／773 個檔案逐包核對，Linux 及 Windows／Wine 完整啟動與切換通過；macOS 編譯／格式通過，真機未驗證。正常通關不列門檻。入口 dist-all/v.0.1.0-20261016/smoke/verification-summary.json |
+| 獨立桌面與三平台封包 | 正式版，本機四包完成 | v.1.0.0-20261017；772／773 個檔案逐包核對，Linux 及 Windows／Wine 完整啟動與切換通過；macOS 編譯／格式通過，真機未驗證。正常通關不列門檻。入口 dist-all/v.1.0.0-20261017/smoke/verification-summary.json |
+| 正式版、README 截圖與清理 | 完成 | 最終 HD 的 1050 檔與 GitHub 完整相符，原版／HD 紹介截圖已保存。正式 tag／Release 採 v.1.0.0-20261017，可重建暫存與已封存副本清理完成，來源、素材與交付保留；入口 CONTEXT.md 與 workplace/github-setup/v100-release-sync.json |
 | 推廣影片與 README 故事 | 完成，本機交付 | 正式 Linux 包正常入口、首戰與實際切換錄影，原版 CD 配樂；72 秒／1080p 的解碼、音訊、字幕、黑幀／停格與抽樣幀檢查通過。故事依原版章節與官方史實來源整理，影片與四包不進 Git。入口 dist-all/v.0.1.0-20261016/promo/verification-summary.json 及 README.md |
 | GitHub 公開儲存庫與 Issues | 已公開，六筆皆已關閉 | 使用者於 2026-10-17 授權將既有儲存庫改為 public，並指示關閉剩餘[四語 #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)及[共同驗收 #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)。原版資料不入 Git，未完成與未驗證限制仍依 CONTEXT 記錄 |
 
@@ -69,7 +70,7 @@
 
 - 2026-10-14 使用者授權把目前生成圖保存於 private repo。固定入口為 `assets/hd-b/README.md` 與 `index.json`，由 `tools/archive-hd-art.py` 保存並核對。新素材完成後持續同步；這項授權不改變正式打包時機。
 
-- 使用者確認全遊戲美術 HD 完成後打包 Windows、Linux、macOS。交付沿用 `dist-all/<版本>/`，本機含原版資料包只進 `full-local/`，不建立公開 Release。完整 HD 覆蓋須由實際素材盤點與玩家路徑驗收決定，不能以兩張試作代表完成。
+- 使用者確認全遊戲美術 HD 完成後打包 Windows、Linux、macOS。交付沿用 `dist-all/<版本>/`，本機含原版資料包只進 `full-local/`，公開 Release 只提供自製內容與版本說明。完整 HD 覆蓋須由實際素材盤點與玩家路徑驗收決定，不能以兩張試作代表完成。
 - 先交付可重播的 CD 播放收據，再交付 HD 的同場景試作，接續擴充 HD 素材覆蓋與四語呈現。素材數量與完整文字量盤點完成後，才估算整包製作時間。
 - 文件沿用 CONTEXT、WORKLIST、WORKLOG 與 RESEARCH-LOG，不新增平行計畫台帳。通用平台補丁、桌面呈現與本作資料對照分清責任；確定程式檔案前先查現有結構。
 - 原版 EXE、DAT、BIN、音軌及擷取原圖仍只留本機；素材包記錄來源與權利。公開儲存庫涵蓋自製程式、文件與生成美術，含原版的公開資料包未授權。

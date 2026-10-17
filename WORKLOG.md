@@ -775,3 +775,25 @@ Linux 正式 ZIP 的 772 檔、MARK 15989208 步自然退出、正常標題 81M�
 Windows 第二次已通過版本查詢，停在 MARK 模式選擇狀態檔寫出後、X11 可見視窗尚未就緒的查詢。重查正常玩家路徑路由，保留 smoke/windows-attempt02/。find_window 改為最多 30 秒觀測唯一可見遊戲視窗，就緒前不送輸入；零個或多個視窗都不猜選。正式程式與封包仍不改，沿同一 Wine image 與 ZIP 乾淨重跑。
 
 Windows 第三次已完成模式選擇、MARK 自然退出與 HD 設定沿用，原版 OP5 正常繪圖後執行到 69M 步，未發現遊戲例外；完整鏈的 180 秒主機等待先到期。保留 smoke/windows-attempt03/，並依正常路徑與硬體時間停止線核對，分類為驗證工具的主機期限。只將 Windows 的 MARK、完整 HD 載入至相同 80M 標題檢查點改為有界 360 秒，原版虛擬時間、指令門檻與所有畫面／狀態驗收不變，外層仍有 600 秒上限。同一 image 與 ZIP 於乾淨輸出重跑，不把本次逾時登記成產品缺陷。
+
+## 2026-10-17：正式版四包驗證與工作區收尾
+
+沿已載入的版號、dist-all 與文件職責契約完成 v.1.0.0-20261017。建置來源固定為 32d546912721daf4ad6d7ae24923756108bd219b，正式 tag 同時收錄建置後的驗證工具及文件。r4 的 109 項既有來源輸入、實際封包快照的 106 項輸入及其中 105 項共同來源逐項核對通過，HD 樹 cd330c4194005578692a461752a927e61c7c2679 不變；收據為 workplace/github-setup/source-freeze-v100-verification.json。
+
+- 四包從乾淨工作目錄重建，逐檔 SHA、ZIP CRC、原版來源、完整版本、PE／ELF／Mach-O 架構、macOS 12.0 目標及授權文件通過。Linux／Windows 各 772 檔，macOS 各 773 檔；入口 dist-all/v.1.0.0-20261017/SHA256SUMS.json 與 smoke/archives-verification.json。
+- Linux 實際 ZIP 在 81,000,000 步、Windows／Wine 在 82,000,000 步完成正常標題、功能列及原版／HD／還原三張 X11 對照。啟動選擇原版保持 0 步，MARK 在 15,989,208 步自然退出 0，HD 沿用、完整原版 proof 不變、原始資料不變與正常關窗均通過。Windows 第四次通過；前三次工具環境限制保留於 smoke/windows-attempt01..03/，沒有換封包或遊戲來源。驗收總表為 smoke/verification-summary.json，實際 Linux／Wine 畫面已檢視。
+- README 的兩張首戰介紹截圖已匿名回讀並核對 SHA，載明來源 v.0.1.0-20261016 並保留同狀態裁切證據。最終 HD 1050 檔、807 PNG 與 163 提示詞在清理前已逐檔確認 GitHub；兩份入口為 workplace/github-setup/readme-v100-remote-screenshots.json 與 final-hd-v100-verification.json。
+- tools/clean-workspace.py --apply 在乾淨 Git 工作樹及全部建置／GUI 程序結束後，清除 17,304,768,861 bytes、37,664 檔可重建快取與已核對封存的封包副本。原版、HD、研究來源快照、IDA、收據、存檔、截圖、錄影、兩版 ZIP 及其 manifest 保留。完整刪除與跳過清單見 workplace/github-setup/workspace-cleanup-v100.json；不符合完整回復條件的副本不刪。
+- 清理後原始 ZIP CRC、十二檔 SHA、唯讀與 UID/GID 1000:1000 通過，沒有 root-owned 或 .md 目錄。新收據在 workplace/desktop-prototype/package/build-v.1.0.0-20261017/intake-verification.json；兩版八個 ZIP 重新核對 SHA、舊版 SHA 清單不變、26 個刪除路徑皆不存在；收據為 workplace/github-setup/cleanup-integrity-v100.json。既有 72 秒影片仍為 v.0.1.0-20261016，不複製或重新標版。
+- 四語、Windows／macOS 真機、簽章、人耳確認及預設速度真機效能仍未驗證或未實作；正常通關依使用者決定排除，不登記為通過。遊戲玩法沿用原版。
+
+四包 SHA-256：
+
+| 平台／架構 | SHA-256 |
+|---|---|
+| linux／amd64 | 0086d6a7a7eeac485f6cddccf8408eec651c0c3f5ce49cd0cb74520d771a55e4 |
+| windows／amd64 | b5bcbbf6f26dfecb6f6a857fcdff11208b685e936332cbc1cc1de67dcb672391 |
+| macos／amd64 | 314d138dc7e885418b3974340a0f402d3640937b3ad44ec8245c0bfcac07c1ed |
+| macos／arm64 | c7c6fbdf79695548b897b5de107aa9d9d5bda0ab094b60986f6c37fbdfd13022 |
+
+四包與原版影片只留本機。正式 tag／Release 採相同完整版本，不覆寫既有版本；公開本文為 workplace/github-setup/v100-release-notes.md，遠端提交、tag、Release 與匿名截圖核對保存於 workplace/github-setup/v100-release-sync.json。本批 Docker 容器完成即移除，沒有新建或替換工具 image；Git 版控內容、最終素材及交付完整保留。
