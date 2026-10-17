@@ -745,3 +745,16 @@ r23 四套件通過，研究入口 113.317 秒，106 項來源凍結。普通十
 - 檔案與輸出 UID/GID 1000:1000，沒有 root-owned 或 .md 目錄。全部本批 Docker 容器完成後移除，沒有新建 image。生成美術樹 9de9713108cf662e0b2bb39e46b5ab7aec8c1561 不變，來源快照與研究輸出只留本機。
 
 本輪五份文件同步至既有私人 GitHub，提交與遠端核對保存 workplace/github-setup/readme-history-sync.json。四個封包、推廣影片、原版來源與生成美術保持既有版本；未建立或修改 tag／Release。
+
+## 2026-10-17：依使用者授權公開 GitHub 儲存庫
+
+使用者指示「github repo 改成 public 囉」。主機 gh 確認變更前仍為 PRIVATE，依既有授權執行公開；命中並載入 RRSAL 授權邊界與文件職責入口，沿用既有條款，沒有另改授權。
+
+- 公開前在既有 GUI Docker image 核對全部 Git 歷史。1754 個 blob、561346067 bytes 沒有 original/、workplace/、dist-all/ 或原版二進位／音訊等路徑，沒有匹配原始 ZIP／十二個來源檔的完整 SHA-256，也沒有憑證模式或內嵌媒體模式命中。當前 1281 個版控檔案符合原版排除範圍；收據在 workplace/github-setup/public-history-audit.json。這是實際路徑、來源雜湊與模式檢查，不宣稱能證明所有未知敏感資料不存在。
+- 主機 gh 核對沒有 GitHub Actions artifacts，也沒有既有 Release。含原版的四包及推廣影片維持本機，不隨可見度修改上傳。
+- README、CONTEXT、WORKLIST 與 AGENTS 改用公開儲存庫的現況。HD 素材 README、索引的 classification／rights 與保存工具的對應文案同步更新；原始保存授權日期維持 2026-10-14，rights 記錄 2026-10-17 的公開授權。圖片、完整提示詞、逐檔來源及裁切紀錄不變，索引格式不變。
+- tools/archive-hd-art.py --verify-only 通過，807 張 PNG、163 份提示詞及所有素材記錄完全相同，資料總量 596522181 bytes。保存工具 SHA 為 cac72c3489df492161eab94e2d37e2d9e0b72c8c2e7334f0cf141328ef2171d2，索引已同步。收據為 workplace/github-setup/public-art-verification.json；素材樹只因 README 與索引 metadata 改變。
+- 先將說明同步至 main，再以主機 gh repo edit 的 public 可見度設定公開，最後重查 GitHub。六筆 Issues 保持關閉，未重開或新建追蹤單；原版、封包、遊戲機制、版本、tag 及 Release 不改。
+- 原始資料與研究輸入唯讀，寫入限定素材索引及同步輸出，UID/GID 1000:1000。沒有 root-owned 或 .md 目錄；全部本批 Docker 容器完成後移除，沒有建立新 image。
+
+可見度、提交、遠端與匿名讀取核對保存於 workplace/github-setup/public-repository-sync.json。公開網址為 https://github.com/wicanr2/tokugawa-dosgolem；自製內容依 LICENSE，原版資料仍不在儲存庫中。

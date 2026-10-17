@@ -16,13 +16,13 @@
 | 正常玩家路徑 | 部分通過 | 原版入口至首戰及 FILE 3 的正常存讀檔樣本通過，讀回完整畫面一致；武將表 HD 切換通過。接續回合及交鋒，不將單一存檔或首戰驗收當成全遊戲相容 |
 | 獨立桌面與三平台封包 | 本機四包完成 | v.0.1.0-20261016；772／773 個檔案逐包核對，Linux 及 Windows／Wine 完整啟動與切換通過；macOS 編譯／格式通過，真機未驗證。正常通關不列門檻。入口 dist-all/v.0.1.0-20261016/smoke/verification-summary.json |
 | 推廣影片與 README 故事 | 完成，本機交付 | 正式 Linux 包正常入口、首戰與實際切換錄影，原版 CD 配樂；72 秒／1080p 的解碼、音訊、字幕、黑幀／停格與抽樣幀檢查通過。故事依原版章節與官方史實來源整理，影片與四包不進 Git。入口 dist-all/v.0.1.0-20261016/promo/verification-summary.json 及 README.md |
-| private GitHub repository 與 Issues | 六筆皆已關閉 | 使用者於 2026-10-17 指示關閉剩餘[四語 #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)及[共同驗收 #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)。遠端保留未完成與未驗證留言，功能限制仍依 CONTEXT 記錄，不把關閉當作完成 |
+| GitHub 公開儲存庫與 Issues | 已公開，六筆皆已關閉 | 使用者於 2026-10-17 授權將既有儲存庫改為 public，並指示關閉剩餘[四語 #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)及[共同驗收 #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)。原版資料不入 Git，未完成與未驗證限制仍依 CONTEXT 記錄 |
 
 平台每次修正依序核對 bytes 與資料流、記錄 READY 契約、實作、跑回歸、重跑自然啟動。上一份停止收據保存在 `workplace/startup-probe/receipts/`，不依指令步數單獨宣稱完成。
 
 ## CD 音樂、四語與 HD 素材包規劃
 
-使用者已確認桌面版、四種語言與可切換 HD 素材包，並授權建立 private repo、登記 Issues 後開工。MCB 與 CDDA 裝置已有 READY 契約及實作，其餘切片仍須審查。瀏覽器排除，現有啟動驗收保持有效。
+使用者已確認桌面版、四種語言與可切換 HD 素材包，最初授權建立 private repo、登記 Issues 後開工，後於 2026-10-17 授權公開既有儲存庫。MCB 與 CDDA 裝置已有 READY 契約及實作，其餘切片仍須審查。瀏覽器排除，現有啟動驗收保持有效。
 
 ### 建議分層
 
@@ -72,7 +72,7 @@
 - 使用者確認全遊戲美術 HD 完成後打包 Windows、Linux、macOS。交付沿用 `dist-all/<版本>/`，本機含原版資料包只進 `full-local/`，不建立公開 Release。完整 HD 覆蓋須由實際素材盤點與玩家路徑驗收決定，不能以兩張試作代表完成。
 - 先交付可重播的 CD 播放收據，再交付 HD 的同場景試作，接續擴充 HD 素材覆蓋與四語呈現。素材數量與完整文字量盤點完成後，才估算整包製作時間。
 - 文件沿用 CONTEXT、WORKLIST、WORKLOG 與 RESEARCH-LOG，不新增平行計畫台帳。通用平台補丁、桌面呈現與本作資料對照分清責任；確定程式檔案前先查現有結構。
-- 原版 EXE、DAT、BIN、音軌及擷取原圖仍只留本機；素材包記錄來源與權利。沒有新增公開發行或原版素材散布授權。
+- 原版 EXE、DAT、BIN、音軌及擷取原圖仍只留本機；素材包記錄來源與權利。公開儲存庫涵蓋自製程式、文件與生成美術，含原版的公開資料包未授權。
 
 ### HD 目前切片
 
@@ -114,7 +114,7 @@
 
 ## GitHub 建立設定與待送出 Issue
 
-以下保留建立工具使用的標題與本文範本。主機 gh 已核對 private repository 與六筆 Issues，無須重建。本節不作遠端狀態鏡像；重跑建立工具前仍須讀取遠端現況。
+以下保留最初建立 private repository 使用的設定與 Issue 範本。現行儲存庫已改為 public，六筆 Issues 已關閉，不對現行專案重跑 tools/setup-github.sh。即時狀態以 GitHub 與 CONTEXT 為準。
 
 工作入口：[CD-TRACE #1](https://github.com/wicanr2/tokugawa-dosgolem/issues/1)、[CDDA #2](https://github.com/wicanr2/tokugawa-dosgolem/issues/2)、[DESKTOP #3](https://github.com/wicanr2/tokugawa-dosgolem/issues/3)、[I18N #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)、[HD #5](https://github.com/wicanr2/tokugawa-dosgolem/issues/5)、[ACCEPTANCE #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)。
 

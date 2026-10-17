@@ -84,7 +84,7 @@
 - [HD 圖像與完整提示詞](assets/hd-b/README.md)
 - [工作歷程](WORKLOG.md)
 
-程式與生成素材保存於私人儲存庫 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem)。原始下載只存本機 original/，研究與錄製素材存 workplace/，交付存 dist-all/；三者均排除版控。開發與研究使用 dosgolem 固定副本，桌面封包可獨立執行。
+程式、文件與生成素材公開於儲存庫 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem)，適用條款見下方授權。原始下載只存本機 original/，研究與錄製素材存 workplace/，交付存 dist-all/；三者均排除版控。完整版與影片連結指向本機檔案，GitHub 不提供含原版資料的下載。開發與研究使用 dosgolem 固定副本，桌面封包可獨立執行。
 
 ## 授權
 

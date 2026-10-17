@@ -1,15 +1,15 @@
 {
-  "classification": "private repository HD art archive; not a production asset-pack schema",
+  "classification": "public repository HD art archive; not a production asset-pack schema",
   "authorization_date": "2026-10-14",
   "authorization": "目前這些圖片都很棒 記得保存在 github repo 當中喔",
   "generator": "built-in image_gen.imagegen",
-  "rights": "private project archive; no public release authorization",
+  "rights": "public project archive authorized on 2026-10-17; original game assets excluded; see LICENSE for applicable terms",
   "counts": {
     "png": 807,
     "prompts": 163,
     "bytes": 596522181
   },
-  "archive_tool_sha256": "bd08103f92f3495bc3faff1419f136548b562d05751c6069acaa69a45df55a28",
+  "archive_tool_sha256": "cac72c3489df492161eab94e2d37e2d9e0b72c8c2e7334f0cf141328ef2171d2",
   "files": [
     {
       "path": "A-0-hd-b-v1.png",

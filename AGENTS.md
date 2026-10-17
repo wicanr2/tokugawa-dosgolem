@@ -1,5 +1,7 @@
 # 德川家康：DOS 原版與 dosgolem
 
+使用者於 2026-10-17 授權將既有 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 改為 public。現行可見度以主機 gh 與 CONTEXT 核對；較早 private 保存決定保留為歷史。公開範圍是已受版控的自製程式、文件與生成美術，適用條款見 LICENSE。原版來源、擷取圖、音樂、研究收據、本機完整版與影片維持排除。
+
 使用者於 2026-10-16 明確取消正常通關驗收。正常通關不列為 HD 完成或三平台打包的門檻，也不因這項取消而登記為實測通過。接續驗收限剩餘素材的來源、實際繪圖、原版／HD 切換、缺圖及封包可啟動性；既有原版狀態保護與本機資料邊界保持。現況與有效決策以 CONTEXT.md 為準。
 
 獨立桌面的路徑入口為 [tools/runtime-paths.go](tools/runtime-paths.go) 與 [測試](tools/runtime-paths_test.go)，音訊入口為 [tools/desktop-audio.go](tools/desktop-audio.go) 及 tools/cdda.go 的有界 PCM 佇列。正式桌面以 `-play` 使用執行檔旁資源、固定使用者存檔及 CD 輸出；研究預設保持原路徑與預算。`-resource-dir`、`-game-dir`、`-state-dir` 可明示驗證根目錄，`-diagnostics` 才輸出大型診斷。封包準備沿 `workplace/desktop-prototype/package/`，版本及交付位置只依知識路由的 dist-all／version-date 契約。READY 契約見 RESEARCH-LOG。
@@ -200,7 +202,7 @@ MAP_WAKU 主框架快取驗證入口為 [tools/verify-hd-map-frame.py](tools/ver
 | [tools/hd-window.go](tools/hd-window.go)、[tools/hd-window_test.go](tools/hd-window_test.go) | 共用視窗繪製及保存／還原的唯讀觀測、九圖塊 HD 呈現與原版前景保留；READY 契約及驗收見 RESEARCH-LOG |
 | [tools/verify-hd-window.py](tools/verify-hd-window.py) | 核對五次共用視窗 GUI 收據、完整 RAM、原版狀態及建置來源；固定 Python Docker 中專案唯讀掛 `/project`、`workplace/hd-prototype/catalog/window/` 可寫掛 `/output`，執行 `python3 /project/tools/verify-hd-window.py` |
 | [tools/archive-hd-art.py](tools/archive-hd-art.py) | 依 2026-10-14 使用者授權保存生成的 HD 圖與提示詞；固定 GUI Docker 內以專案掛 `/project` 可寫執行，`--verify-only` 核對索引與檔案 |
-| [assets/hd-b/README.md](assets/hd-b/README.md)、[圖片索引](assets/hd-b/index.json) | 私人儲存庫內的生成圖、生成圖裁切素材與提示詞。使用者已明確授權保存；不是正式發行包或公開散布授權 |
+| [assets/hd-b/README.md](assets/hd-b/README.md)、[圖片索引](assets/hd-b/index.json) | 使用者授權公開儲存庫內的生成圖、生成圖裁切素材與提示詞。適用條款見 LICENSE；原版資料、本機完整版與影片不在此目錄 |
 | [tools/hd-kao-profiles.go](tools/hd-kao-profiles.go) | KAO.GRP 原版 0..80 索引的逐張指紋，不以推測武將姓名命名 |
 | [tools/hd-object-prepare.py](tools/hd-object-prepare.py)、[tools/hd-terrain-object-profiles.go](tools/hd-terrain-object-profiles.go) | 26 項物件來源的 alpha、裁切及審查；只有 review 的 approved_indices 進入共同呈現，兩個空白格保留 |
 | [tools/verify-hd-objects.py](tools/verify-hd-objects.py) | 固定 GUI Docker 內逐項核對物件來源索引、alpha、載入 profile、完整 RAM、切換及前版真實視窗；專案唯讀掛 /project、objects/expanded 可寫掛 /output |
@@ -356,11 +358,11 @@ MAP_WAKU 主框架快取驗證入口為 [tools/verify-hd-map-frame.py](tools/ver
 
 完整 GUI 驗證使用 `tools/verify-desktop.py --mode portraits` 或 `--mode portraits-missing`；加 `--include-council` 抽測軍議圖，必須先用 `tools/run-desktop.sh` 建置，保留輸出中的 engine、startup-probe 與執行檔。長流程依本檔既有 detached Docker 方法執行，容器內維持期限。已驗證範圍及最近收據見 CONTEXT。
 
-## 生成 HD 素材的私人儲存庫保存
+## 生成 HD 素材的儲存庫保存
 
-2026-10-14 使用者明確指定「目前這些圖片都很棒 記得保存在 github repo 當中喔」。生成的 HD 圖、生成圖的裁切素材、總覽與完整提示詞可保存於本 private repository 的 `assets/hd-b/`。這項新授權取代先前對這些生成圖的僅限本機規則；原版 EXE、DAT、光碟、音軌、擷取原圖與執行收據維持原有邊界。
+2026-10-14 使用者明確指定「目前這些圖片都很棒 記得保存在 github repo 當中喔」，2026-10-17 再授權公開儲存庫。生成的 HD 圖、生成圖的裁切素材、總覽與完整提示詞保存於 `assets/hd-b/`，適用條款見 LICENSE。原版 EXE、DAT、光碟、音軌、擷取原圖、執行收據、本機完整版與影片維持原有邊界。
 
-每批生成圖或裁切素材完成後，更新 [保存工具](tools/archive-hd-art.py) 的來源清單，在 Docker 執行保存與 `--verify-only`，再提交至已確認仍為 private 的儲存庫。圖片與提示詞保持可回查的檔名、SHA-256 及裁切依據。這是素材來源保存，正式素材包格式及公開發行另列。
+每批生成圖或裁切素材完成後，更新 [保存工具](tools/archive-hd-art.py) 的來源清單，在 Docker 執行保存與 `--verify-only`，核對來源與原版排除範圍後提交既有儲存庫。圖片與提示詞保持可回查的檔名、SHA-256 及裁切依據。這是素材來源保存，正式封包與 Release 另列。
 
 ```sh
 test -d workplace/hd-prototype && test -f tools/archive-hd-art.py
@@ -613,8 +615,8 @@ timeout 240s docker run --rm --name tokugawa-download --network bridge \
 
 ## 範圍與資料權利
 
-目前授權範圍是下載 jsdos、建立 private GitHub repository 與 Issues，並將原版遊戲整合到 dosgolem 執行。使用者指定先建立 repo、登記 Issues，再開工。使用者明確表示不是 remake。可自主補齊本作所需的平台能力與測試；玩法修改、版本切換、公開發行或授權變更需另有明確任務。
+目前授權範圍是下載 jsdos、將原版遊戲整合到 dosgolem、保存生成美術及公開既有 GitHub 儲存庫。六筆 Issues 已依使用者指示關閉。使用者明確表示不是 remake。可自主補齊本作所需的平台能力與測試；玩法修改、版本切換、含原版資料的公開發行或授權條款變更需另有明確任務。
 
 後續規劃已確認桌面版、繁中／簡中／英文／日文，以及可切換的 HD 素材包。瀏覽器排除。現行決定見 [CONTEXT.md](CONTEXT.md)，階段與驗收草案見 [WORKLIST.md](WORKLIST.md)。原版繼續負責玩法與存檔，譯文與 HD 圖層在桌面呈現。美術風格已選 B 戰國手繪風，首張肖像、劇情捲軸及參考 `/home/anr2/cht/softworld_san` 的頂端隱藏列已接入 Linux 桌面試作；完整擷取介面與素材包格式仍待定案。
 
-原版 ZIP、EXE、DAT、光碟映像、音軌與原包附帶的補丁只留本機，不加入 Git、GitHub Release 或公開雲端。`.gitignore` 已排除 `original/` 與 `workplace/`。自製的平台修正、測試與文件可加入已授權的 private repository，包含 `tools/dosgolem.patch`。未確認散布權前不製作公開資料包。
+原版 ZIP、EXE、DAT、光碟映像、音軌與原包附帶的補丁只留本機，不加入 Git、GitHub Release 或公開雲端。`.gitignore` 已排除 `original/`、`workplace/` 與 `dist-all/`。自製的平台修正、測試、文件與生成美術可加入已授權的公開儲存庫，包含 `tools/dosgolem.patch`；適用條款見 LICENSE。未確認散布權前不製作公開原版資料包。

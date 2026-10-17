@@ -1,4 +1,4 @@
-"""依使用者授權，保存生成的 HD 圖與提示詞至 private repo。"""
+"""依使用者授權，保存生成的 HD 圖與提示詞至公開儲存庫。"""
 import argparse
 import hashlib
 import json
@@ -10,7 +10,7 @@ from PIL import Image, __version__ as pillow_version
 
 README = """# 戰國手繪 HD 素材
 
-使用者於 2026-10-14 授權將目前生成的圖片保存於本私人儲存庫。這裡保存生成圖、由生成圖裁切的素材與完整提示詞，作為開發來源。公開發行與素材散布權另行確認。
+使用者於 2026-10-14 授權保存生成圖片，並於 2026-10-17 授權公開本儲存庫。這裡保存生成圖、由生成圖裁切的素材與完整提示詞，作為開發來源。適用條款見 [LICENSE](../../LICENSE)；原版資料、擷取原圖與音樂仍只留本機。
 
 - [圖片與提示詞索引](index.json) 記錄 SHA-256、尺寸、來源位置、提示詞與裁切依據。
 - [劇情圖](art/) 及 [家康肖像](A-0-hd-b-v1.png)。
@@ -688,9 +688,9 @@ def main():
     counts = {"png": sum(r["kind"] == "png" for r in files.values()),
               "prompts": sum(r["kind"] == "prompt" for r in files.values()),
               "bytes": sum(r["bytes"] for r in files.values())}
-    index = {"classification": "private repository HD art archive; not a production asset-pack schema",
+    index = {"classification": "public repository HD art archive; not a production asset-pack schema",
              "authorization_date": "2026-10-14", "authorization": "目前這些圖片都很棒 記得保存在 github repo 當中喔",
-             "generator": "built-in image_gen.imagegen", "rights": "private project archive; no public release authorization",
+             "generator": "built-in image_gen.imagegen", "rights": "public project archive authorized on 2026-10-17; original game assets excluded; see LICENSE for applicable terms",
              "counts": counts, "archive_tool_sha256": sha(Path(__file__)), "files": sorted(files.values(), key=lambda r:r["path"])}
     (output/"README.md").write_text(README)
     (output/"index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2)+"\n")
