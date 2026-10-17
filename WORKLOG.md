@@ -733,3 +733,15 @@ r23 四套件通過，研究入口 113.317 秒，106 項來源凍結。普通十
 - 原始 ZIP／十二檔、唯讀及 UID/GID 1000:1000 再核對通過，沒有 root-owned 或 .md 目錄。所有本批 Docker 容器完成後移除，沒有重建 image，保留現行工具鏈與既有 IDA image。生成美術 1050 份檔案的素材樹 9de9713108cf662e0b2bb39e46b5ab7aec8c1561 不變。
 
 自製錄製／合成／驗證工具、README 與文件同步至既有 private repo，Issue #6 登記本機交付及驗證範圍，#4／#6 保持開啟。同步結果保存於 workplace/github-setup/promo-v010-sync.json，留言本文為 workplace/github-setup/promo-v010-issue.txt。原版來源、研究輸出、四包與影片均排除版控；未建立或移動 tag／Release。
+
+## 2026-10-17：README 遊戲沿革、家康歷史與故事推廣背景
+
+依使用者要求擴充 README，分為遊戲沿革、德川家康與日本戰國、遊戲故事背景。命中並載入 README 標準及文件職責入口，沿用既有原版章節證據與 GUI Docker image；沒有新增文件目錄、遊戲機制或美術。
+
+- 遊戲沿革補入 MAME PC-98 目錄的日本版記錄：Family Soft、1992 年 12 月 10 日、五張磁片。目錄固定至 commit eb947cba9b909d29d4f9fb2851e2ee69789d0be0，全文 SHA 與擷取欄位保存 workplace/promo/v.0.1.0-20261016/readme-history-catalog.json。繁中光碟版的 1997 年明示為民間《遊戲總表》的記載，沒有用 MARK 版權年份推算發售日。舊 Family Soft 官方頁 DNS 失敗，保留存取結果，改用已讀取的 MAME 目錄並載明來源限制。
+- 家康歷史從三河與人質時代、桶狹間後的獨立、織田同盟與濱松，推進到三方原、長篠、秀吉與關東轉封、關原、江戶幕府、大阪冬夏之陣。各段連結岡崎市觀光協會、濱松市及日本國立公文書館。遊戲故事依原版十二章整理為五組年代，保留原版章名，史實背景與遊戲條件分開表述。來源與推論界限追加於 RESEARCH-LOG 的遊戲沿革與歷史背景來源補充，不重寫先前研究紀錄。
+- Docker 內檢查 README 標題、十七個本機連結與錨點，十二個章節標頭仍存在原始 EXE，八個代表篇名與章節表相符。MAME 原始 XML、固定 commit 與 metadata 相同，109 項編譯輸入不變；來源、連結與衛生驗證通過，收據保存 workplace/promo/v.0.1.0-20261016/readme-history-verification.json。純文件修改不重建四包、不重跑遊戲驗收。
+- 同步先前使用者指示關閉 Issues 的現況。主機 gh 重新確認六筆皆為 CLOSED，修正 CONTEXT 與 WORKLIST 仍稱 #4／#6 開啟的過時欄位；未重開、留言或新建 Issue。四語、真機與人耳限制仍保持未完成或未驗證。
+- 檔案與輸出 UID/GID 1000:1000，沒有 root-owned 或 .md 目錄。全部本批 Docker 容器完成後移除，沒有新建 image。生成美術樹 9de9713108cf662e0b2bb39e46b5ab7aec8c1561 不變，來源快照與研究輸出只留本機。
+
+本輪五份文件同步至既有私人 GitHub，提交與遠端核對保存 workplace/github-setup/readme-history-sync.json。四個封包、推廣影片、原版來源與生成美術保持既有版本；未建立或修改 tag／Release。

@@ -1,6 +1,6 @@
 # 德川家康目前狀態
 
-更新日期：2026-10-16。規則入口：[AGENTS.md](AGENTS.md)。歷程：[WORKLOG.md](WORKLOG.md)。待辦：[WORKLIST.md](WORKLIST.md)。證據：[RESEARCH-LOG.md](RESEARCH-LOG.md)。
+更新日期：2026-10-17。規則入口：[AGENTS.md](AGENTS.md)。歷程：[WORKLOG.md](WORKLOG.md)。待辦：[WORKLIST.md](WORKLIST.md)。證據：[RESEARCH-LOG.md](RESEARCH-LOG.md)。
 
 ## 唯一目前狀態表
 
@@ -28,6 +28,7 @@
 | MARK 恢復及 HD | CONFORMED。已接入預設桌面啟動鏈，原版 MARK 自然漸入、停留、漸出並在 15989208 步退出碼 0，隨後啟動 DX5 並沿用最後模式。兩份原版 RAM 與虛擬時間獨立保存；獨立模式的缺圖驗證仍有效 | [啟動器](tools/desktop-publisher.go)、[實際 HD 標誌](workplace/desktop-prototype/startup-chain/hd/mark-last.png)、[完整驗收](workplace/desktop-prototype/startup-chain/verification-summary.json) |
 | 獨立桌面與封包 | v.0.1.0-20261016 四包完成：Windows／Linux amd64、macOS amd64／arm64。Linux 及 Windows／Wine 真正 ZIP 經模式選擇、MARK 15989208 步自然退出、正常標題 82M、功能列切換與正常關窗通過；原版資料未改。macOS 編譯／格式通過，真機及簽章未完成。含原版只留本機 | [封包](dist-all/v.0.1.0-20261016/full-local/)、[SHA](dist-all/v.0.1.0-20261016/SHA256SUMS.json)、[驗收總表](dist-all/v.0.1.0-20261016/smoke/verification-summary.json) |
 | 推廣影片與故事背景 | 72 秒、1920×1080／30 fps 成片完成，錄自正式 Linux 包正常啟動至首戰、原版／HD 與功能列切換，原版 CD 第十軌配樂。完整解碼、音量、靜音、字幕邊界、黑幀／停格分類與實際抽樣幀檢視通過。四包重新核對及 109 項編譯輸入不變；README 已加入原版章節與官方史實來源。影片含原版素材，只留本機，人耳未驗證 | [影片](dist-all/v.0.1.0-20261016/promo/tokugawa-dosgolem-v.0.1.0-20261016-promo.mp4)、[總表](dist-all/v.0.1.0-20261016/promo/verification-summary.json)、[交付與來源核對](dist-all/v.0.1.0-20261016/promo/delivery-verification.json)、[重查四包](dist-all/v.0.1.0-20261016/smoke/archives-verification-promo.json)、[故事來源](RESEARCH-LOG.md#故事背景來源) |
+| README 遊戲沿革與歷史背景 | 已擴充日本 PC-98 版與繁中 DOS 光碟版的目錄沿革、家康從三河到江戶幕府的生平，以及十二章的五組故事背景。日本版年份依固定 MAME 目錄，繁中 1997 年明示民間目錄記載；史實附官方來源，遊戲文本與史實分開說明 | [README](README.md#遊戲沿革)、[來源與限制](RESEARCH-LOG.md#遊戲沿革與歷史背景來源補充) |
 | remake | 排除 | 使用者明確指定原版與 dosgolem 整合 |
 | 後續功能範圍 | CDDA 與桌面播放、可切換 HD、持續存檔與三平台封包已接入；繁中／簡中／英文／日文切換尚未實作。人耳與 Windows／macOS 真機未驗證；正常通關不列門檻 | [WORKLIST](WORKLIST.md)、[Issue #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4) |
 | 後續使用介面 | 桌面版，瀏覽器排除。四包已建置，Linux X11 及 Windows／Wine 已驗證；macOS 真機待試 | [本機交付](dist-all/v.0.1.0-20261016/) |
@@ -65,7 +66,7 @@
 | 地圖快取框架 | CONFORMED，前 88 列及八處下方 32×32 圖塊。6 張 X11、4 次切換、87296 個 HD 框架呈現像素、75 個後畫場景矩形與個別缺圖通過，框內地形及單位保持。原版非一致平面偏移及字樣保留，缺圖依獨立來源資格保留 MAPGAMEN HD 底圖 | [正常驗收](workplace/hd-prototype/catalog/remaining/consumers/battle/r23/verification-summary.json)、[HD 畫面](workplace/hd-prototype/catalog/remaining/consumers/battle/r23/desktop-map/action-1.png)、[來源核對](workplace/hd-prototype/catalog/remaining/consumers/battle/r23/map-cache-source-verification.json)、[工具](tools/verify-hd-map-frame.py) |
 | 第三回合原版存檔 | 正常存檔成功，僅 I003.SAV 的 4399 bytes 相對下載基準不同，其他 200 資源不變。九筆正常讀回自然 140M，完整原生索引相同；217383 個非黑像素的 RGB 亮度不同，原因保留未知，不稱完整 RGBA 相同。後續原圖／HD 對照以讀回後原版為基準 | [原版存檔 manifest](workplace/hd-prototype/catalog/remaining/consumers/battle/r11/save-turn3/ready-r2/save-import/manifest.json)、[讀回核對](workplace/hd-prototype/catalog/remaining/consumers/battle/r12/load-turn3/verification.json)、[保存工具](tools/import-original-save.py) |
 | 頂端隱藏功能列 | Linux 容器試作通過。參考 softworld_san：頂端滑鼠展開、移開收起，Esc 固定／收起，Shift+Esc 離開。提供原版／HD 圖像、繼續／暫停、截圖／離開。顯示與收起手勢期間隔離原版步進及輸入；視窗擴高而保持遊戲比例。HD、缺圖兩次 150,000,000 步的完整 RAM、原生畫面與 PCM 符合原基準；普通滑鼠未誤觸，縮放後仍可開始新遊戲 | [驗收總表](workplace/desktop-prototype/toolbar/verification-summary.json)、[功能列畫面](workplace/desktop-prototype/toolbar/windowbar-hd-hd.png)、[原圖選單](workplace/desktop-prototype/toolbar/windowbar-hd-display-menu.png)、[普通滑鼠驗證](workplace/desktop-prototype/toolbar/verification-windowbar-mouse.json)；四語及音訊開關待功能接妥 |
-| private GitHub repository 與 Issues | 主機 gh 核對既有 private repo 與六筆 Issues；#1／#2／#3／#5 已關閉，四語 #4 與共同驗收 #6 保持開啟。桌面四包、推廣片與故事背景已登記，真機、人耳與四語限制保留 | [儲存庫](https://github.com/wicanr2/tokugawa-dosgolem)、[四語 #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)、[共同驗收 #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)；Issue 即時狀態直接查 GitHub |
+| private GitHub repository 與 Issues | 六筆 Issues 皆已關閉。使用者於 2026-10-17 指示關閉剩餘 #4／#6，遠端以 not planned 關閉並留言保留未完成／未驗證事項；四語、真機與人耳限制未因此變成通過。此輪僅同步文件，不重開追蹤單 | [儲存庫](https://github.com/wicanr2/tokugawa-dosgolem)、[四語 #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)、[共同驗收 #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)；Issue 即時狀態直接查 GitHub |
 | Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試、文件及使用者授權的生成美術；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
 | Docker 收尾 | 三平台重查與推廣影片全部沿用既有 image，工作容器完成後移除。原始 ZIP／十二檔、唯讀與 UID/GID 1000:1000 核對，沒有 root-owned 或 .md 目錄；109 項編譯來源不變，原版及生成美術不改 | [ZIP／十二檔及衛生](workplace/promo/v.0.1.0-20261016/intake-verification.json)、[來源](workplace/promo/v.0.1.0-20261016/source-verification.json)、[交付](dist-all/v.0.1.0-20261016/promo/delivery-verification.json) |

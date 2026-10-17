@@ -2433,3 +2433,14 @@ Ebitengine 十六位元播放器契約直接查固定工具 image 的 /go/pkg/mo
 - 已證實：首章說明文字在 file offset 0x2B196 起記載年代，0x2B21D 附近列武田信玄與武田先鋒及家康生存相關條件。README 僅概述劇情與限期壓力，不把說明文字當作所有勝負實作已對拍。
 - 歷史背景使用濱松市博物館 https://www.city.hamamatsu.shizuoka.jp/hamahaku/02tenji/theme/ieyasudennsyoutohamamatsu.html、國立公文書館 https://www.archives.go.jp/exhibition/digital/ieyasu/contents3_01/ 與岡崎市觀光協會 https://okazaki-kanko.jp/okazaki-park/feature/history/about。只概述三方原、信長同盟、秀吉死後的權力變化、關原、幕府與大阪之陣；不引用次級下載站的未證實發售年、版本系譜或開發名單。
 - 元龜三年冬採遊戲的年號敘述，不把日本舊曆月份當公曆日。歷史與遊戲章節分開；遊戲規則及分支由原版負責。
+
+### 遊戲沿革與歷史背景來源補充
+
+2026-10-17，擴充 README 的遊戲沿革、家康生平與遊戲故事。承接前節的固定 DX5.EXE 及十二章文字，沒有重新推定遊戲機制、版本 bytes 或完整通關。命中並讀取 README 標準及文件職責路由。網站查證使用瀏覽工具，目錄下載與比對使用既有 GUI Docker image 的 Python 3.11.2 標準庫、urllib 與 ElementTree；網路只在下載批次開啟。
+
+- 已證實目錄記載：MAME 官方儲存庫的 hash/pc98.xml，在 commit eb947cba9b909d29d4f9fb2851e2ee69789d0be0 的第 40741 行起，software name 為 ranse2ti，日文名為乱世英傑シリーズ第二弾 徳川家康，publisher 為 Family Soft，year 為 1992，release 為 19921210，含五個磁片 part。全文 SHA-256 為 deb161c6f4c2b2ec7cfe73d2d869353a2422b274d8c8fcd2b43a50d560b53b3f。README 以「依 MAME 目錄」表述，不把 publisher 欄另解為完整開發團隊。可回查[固定 commit 目錄](https://github.com/mamedev/mame/blob/eb947cba9b909d29d4f9fb2851e2ee69789d0be0/hash/pc98.xml#L40741)及[原始 XML](https://raw.githubusercontent.com/mamedev/mame/eb947cba9b909d29d4f9fb2851e2ee69789d0be0/hash/pc98.xml)。本機 metadata 為 workplace/promo/v.0.1.0-20261016/readme-history-catalog.json，下載全文為同目錄 readme-history-source-2.txt，兩次下載 bytes 相同。
+- 已證實民間目錄記載：[《遊戲總表》](https://chiuinan.github.io/game/game/list-1.htm)的德川家康條目列 1997、Family（彩虹）、1CD、SCD0266。這證明該目錄的版本記錄，不是原廠精確發售日或授權系譜已證實。README 明示民間來源，不由 MARK 的 1997 版權文字反推發售年。日本原作與本機繁中 DOS 版本分開描述，不把 PC-98 的五磁片數量套到現有 CD 映像。
+- 已證實本機版本：DX5.EXE SHA-256 仍為 2af4ad61eaf6126bc2b09b7df6024b8e710dafc5085ea0558daea744d794079a；繁中章節依前節 CP950 bytes，Rainbow 標誌依已驗收的 MARK／RAINEND.PCX 原生畫面，十五條 CD AUDIO 依原始 DX5.cue 與既有音軌驗收。這些來源只留本機，未新增原圖、音訊或全文至 Git。
+- 未知與限制：Family Soft 舊官方作品頁 https://www.familysoft.co.jp/his/1992/ieyasu.html 在瀏覽工具與 Docker 內均無法存取，容器回報 DNS 解析失敗；存取結果記於同目錄 readme-history-source-fetch.json。未以未讀取的官方頁支持年份，也沒有取用未證實的開發名單、監修者、精確繁中發售日或移植實作差異。前節的年份限制由本節補充目錄證據，原始紀錄保留。
+- 歷史背景依[岡崎市觀光協會年表](https://okazaki-kanko.jp/okazaki-park/feature/history/about)、[濱松市家康年表](https://www.city.hamamatsu.shizuoka.jp/ieyasu/study/chronology.html)、日本國立公文書館的[生涯年表](https://www.archives.go.jp/exhibition/digital/ieyasu/history.html)、[三方原](https://www.archives.go.jp/exhibition/digital/ieyasu/contents1_05/)、[長篠](https://www.archives.go.jp/exhibition/digital/ieyasu/contents1_06/)、[小牧與長久手](https://www.archives.go.jp/exhibition/digital/ieyasu/contents2_01/)、[關原](https://www.archives.go.jp/exhibition/digital/ieyasu/contents3_01/)、[大阪冬夏之陣](https://www.archives.go.jp/exhibition/digital/ieyasu/contents5_04/)。只概述人質經歷、岡崎與信長同盟、濱松與武田交戰、秀吉與關東轉封、幕府及大阪之陣，不加入軍力數字、三段擊等爭議細節。
+- README 的五組章節依原版標頭分為 1、2、3～6、7～9、10～12，背景欄為史實對照與故事概要，不聲稱所有章節依此線性必經或已正常試玩。第九章原文的西曆字形異常保留於原始證據；README 年代依慶長五年對應 1600 年，不改 bytes。遊戲標示的元和元年五月沿原文保留，不將其月份當作公曆，也不改正原版年代用字。
