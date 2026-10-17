@@ -758,3 +758,14 @@ r23 四套件通過，研究入口 113.317 秒，106 項來源凍結。普通十
 - 原始資料與研究輸入唯讀，寫入限定素材索引及同步輸出，UID/GID 1000:1000。沒有 root-owned 或 .md 目錄；全部本批 Docker 容器完成後移除，沒有建立新 image。
 
 可見度、提交、遠端與匿名讀取核對保存於 workplace/github-setup/public-repository-sync.json。公開網址為 https://github.com/wicanr2/tokugawa-dosgolem；自製內容依 LICENSE，原版資料仍不在儲存庫中。
+
+## 2026-10-17：正式版 1.0.0 的來源凍結與 README 截圖
+
+使用者指定正式版 1.0.0、清理工作區，並要求先確認最終 HD 已保存 GitHub，後續追加 README 原版／HD 截圖。沿版號、dist-all、文件職責與收尾路由，正式版採 v.1.0.0-20261017，保留既有測試範圍與原版資料邊界。正常通關維持排除，不新增四語或真機已完成聲明。
+
+- 清理前先執行 archive-hd-art.py --verify-only，並以 GitHub 完整 HD 素材樹逐檔核對 Git blob。1050 份檔案、807 張 PNG、163 份提示詞及所有最終修正版完全相同，遠端樹為 cd330c4194005578692a461752a927e61c7c2679。收據為 workplace/github-setup/final-hd-v100-verification.json。
+- 使用正常 Linux v.0.1.0 錄影的 731M 首戰，原版／HD／還原三張圖的完整原版 proof 相同。只裁去畫布下方非遊戲區，兩張 1280×800 PNG 像素不改，保存 assets/screenshots/，README 並列展示並載明來源版本。使用者授權的公開例外只限這兩張介紹截圖，完整錄影、其他原圖、音訊及原版檔不入 Git。證據保存在 workplace/github-setup/readme-v100-screenshots.json。
+- README 改用正式版號與四包連結；實際封包由 package-desktop.py 的 ldflags 寫入相同完整版本，沿 r4 已通過且逐項相同的 109 項輸入，採乾淨 build-v.1.0.0-20261017 工作目錄重建。預定交付與驗證入口 dist-all/v.1.0.0-20261017/，沿用 GUI 與既有 macOS／Wine 工具鏈。
+- 新增 tools/clean-workspace.py，預設只列清單，--apply 僅刪除可重建編譯快取、不含遊戲存檔的 Wine 環境，以及完整 manifest／ZIP 與全部內容相同的封包副本。原版、HD、研究來源、IDA、收據、存檔、截圖、錄影與 ZIP 都保留。來源凍結後先完成建置與驗證，再執行清理。
+
+本節記錄建置前的凍結來源；正式包驗收、清理大小與 tag／Release 結果在後續完成紀錄追加。公開 Release 本文沿用 workplace/github-setup/v100-release-notes.md，最終同步收據為 workplace/github-setup/v100-release-sync.json，兩者在交付時建立。

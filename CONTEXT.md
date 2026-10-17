@@ -9,6 +9,7 @@
 | jsdos 下載 | 完成，214,665,581 bytes | `original/德川家康.jsdos.zip`、[source.json](original/source.json) |
 | ZIP 與解包 | CRC 通過；14 筆 ZIP entries，12 個檔案；解包檔共 235,521,461 bytes | `original/source.json` 的逐檔大小與 SHA-256 |
 | 原始檔保護 | ZIP 與解包檔設為唯讀；擁有者 UID/GID 1000:1000 | `original/`；最近驗證結果見下方入口 |
+| 正式版 1.0.0 | 使用者指定正式里程碑 v.1.0.0-20261017；沿用已驗收的 109 項編譯輸入與 HD 美術，重新建置四個平台／架構封包並驗證。README 已加入同狀態原版／HD 截圖；公開 Release 只提供版本說明與原始碼，含原版的完整版留本機 | [README](README.md)、[最終 HD 遠端核對](workplace/github-setup/final-hd-v100-verification.json)、[截圖證據](workplace/github-setup/readme-v100-screenshots.json)；本輪建置與驗證結果於完成後更新 |
 | 網站啟動契約 | 掛載 C: 工作目錄、D: CUE 光碟，再由 `PLAY.BAT` 呼叫 `DX5.EXE` | `original/game/.jsdos/dosbox.conf`、`PLAY.BAT` |
 | 執行檔格式 | 已證實為 MZ 內嵌 LE；LE header 檔案偏移 `0x2C90` | 原始 bytes；[LE 探針](workplace/leprobe/stdout.log) |
 | dosgolem 格式解析 | 完成；40 pages、2 objects、4,831 fixup records；relocation preview 成功 | `workplace/leprobe/stdout.log`，stderr 為空，exit 0 |

@@ -1,5 +1,11 @@
 # 德川家康：DOS 原版與 dosgolem
 
+正式版目標為 `v.1.0.0-20261017`，由使用者指定 1.0.0 里程碑。程式以既有 package-desktop.py 的 ldflags 設定完整版本，四包由乾淨輸入重建至 `dist-all/<版本>/full-local/`；驗證入口沿本檔既有封包工具。公開 tag／Release 只發布自製內容與說明，不上傳本機完整版。最終 HD 已由 `tools/archive-hd-art.py --verify-only` 與 GitHub 完整素材樹核對，收據為 `workplace/github-setup/final-hd-v100-verification.json`。
+
+使用者於 2026-10-17 另指定 README 顯示原版與 HD 遊戲截圖。公開例外限 [assets/screenshots/battle-original.png](assets/screenshots/battle-original.png) 與 [assets/screenshots/battle-hd.png](assets/screenshots/battle-hd.png) 這兩張介紹圖；來源為同狀態正常首戰，只裁去非遊戲區，原始完整收據保存在 `workplace/github-setup/readme-v100-screenshots.json`。原版檔案、其他擷取圖、音訊與錄影仍依原有規則排除，截圖不改變原版權利歸屬。
+
+工作區清理入口為 [tools/clean-workspace.py](tools/clean-workspace.py)。在固定 GUI image 內專案掛 `/project`、`workplace/github-setup/` 掛 `/output`，預設只列清單；封包驗證完成後加 `--apply`，清除已核對的編譯快取、無遊戲存檔的 Wine 暫存環境，以及有完整 ZIP／manifest 可回復的封包展開目錄。原版、HD 素材、來源快照、IDA 資料庫、收據、存檔、截圖及 ZIP 保留；刪除清單與大小保存於輸出 JSON。
+
 使用者於 2026-10-17 授權將既有 [wicanr2/tokugawa-dosgolem](https://github.com/wicanr2/tokugawa-dosgolem) 改為 public。現行可見度以主機 gh 與 CONTEXT 核對；較早 private 保存決定保留為歷史。公開範圍是已受版控的自製程式、文件與生成美術，適用條款見 LICENSE。原版來源、擷取圖、音樂、研究收據、本機完整版與影片維持排除。
 
 使用者於 2026-10-16 明確取消正常通關驗收。正常通關不列為 HD 完成或三平台打包的門檻，也不因這項取消而登記為實測通過。接續驗收限剩餘素材的來源、實際繪圖、原版／HD 切換、缺圖及封包可啟動性；既有原版狀態保護與本機資料邊界保持。現況與有效決策以 CONTEXT.md 為準。
