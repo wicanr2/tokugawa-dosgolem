@@ -1,26 +1,26 @@
 # 德川家康目前狀態
 
-更新日期：2026-10-17。規則入口：[AGENTS.md](AGENTS.md)。歷程：[WORKLOG.md](WORKLOG.md)。待辦：[WORKLIST.md](WORKLIST.md)。證據：[RESEARCH-LOG.md](RESEARCH-LOG.md)。
+更新日期：2026-10-21。規則入口：[AGENTS.md](AGENTS.md)。歷程：[WORKLOG.md](WORKLOG.md)。待辦：[WORKLIST.md](WORKLIST.md)。證據：[RESEARCH-LOG.md](RESEARCH-LOG.md)。
 
 ## 唯一目前狀態表
 
 | 項目 | 現況 | 證據 |
 |---|---|---|
-| 2026-10-21 效能修正 | 使用者回報 Windows 交鋒約一分鐘、多次交鋒回合更慢及音樂異常，指定用 Linux 驗證，並授權提高執行速度、音樂獨立於 CPU 週期播放。目前量測桌面排程、繪圖成本與音訊來源，尚未登記修正通過；已發布 1.0.0 保持 | `workplace/desktop-prototype/performance/20261021/`、WORKLOG.md |
+| 2026-10-21 效能修正 | CONFORMED。預設 4×，功能列可選 1／2／4／8×。HD 有序圖層與放大優化，Linux 首戰步進樣本約快 6.32 倍；普通 FILE 3 交鋒顯示至還原 20.98 秒，動畫段 8.70 秒。完整 HD 像素、scene report 及同狀態 RAM 相同，音樂獨立於 CPU 週期 | [效能與驗收](workplace/desktop-prototype/performance/20261021/performance-verification.json)、[交鋒](workplace/desktop-prototype/performance/20261021/normal-combat-r3/verification-summary.json) |
 | jsdos 下載 | 完成，214,665,581 bytes | `original/德川家康.jsdos.zip`、[source.json](original/source.json) |
 | ZIP 與解包 | CRC 通過；14 筆 ZIP entries，12 個檔案；解包檔共 235,521,461 bytes | `original/source.json` 的逐檔大小與 SHA-256 |
 | 原始檔保護 | ZIP 與解包檔設為唯讀；擁有者 UID/GID 1000:1000 | `original/`；最近驗證結果見下方入口 |
-| 正式版 1.0.0 | v.1.0.0-20261017 四包完成並驗證；程式來源固定 32d546912721daf4ad6d7ae24923756108bd219b，109 項既有來源輸入不變。正式 tag 收錄後續驗證工具與收尾文件；公開 Release 只提供版本說明與原始碼。README 已加入同狀態原版／HD 截圖 | [正式 Release](https://github.com/wicanr2/tokugawa-dosgolem/releases/tag/v.1.0.0-20261017)、[四包驗證](dist-all/v.1.0.0-20261017/smoke/verification-summary.json)、[來源核對](workplace/github-setup/source-freeze-v100-verification.json)、[同步收據](workplace/github-setup/v100-release-sync.json) |
-| 工作區清理 | 已清除 17,304,768,861 bytes、37,664 個檔案，涵蓋可重建快取與已封存封包副本。原版、最終 HD、來源快照、IDA、收據、存檔、錄影及 ZIP 保留；原始 ZIP／十二檔、唯讀與 UID/GID 重查通過 | [清理收據](workplace/github-setup/workspace-cleanup-v100.json)、[來源與衛生](workplace/desktop-prototype/package/build-v.1.0.0-20261017/intake-verification.json) |
+| 正式版 1.0.1 | v.1.0.1-20261021 為速度與音樂修正版，四包完成；112 項已測來源相同，程式來源 f28f0a3029a7b41b0060e3fd6ebcf24001a3abac。正式 tag 同時收錄後續驗證工具及文件；v.1.0.0-20261017 保留。公開 Release 只提供自製內容與說明 | [Release](https://github.com/wicanr2/tokugawa-dosgolem/releases/tag/v.1.0.1-20261021)、[驗收](dist-all/v.1.0.1-20261021/smoke/verification-summary.json)、[同步](workplace/github-setup/speed-v101-release-sync.json) |
+| 工作區清理 | 2026-10-17 的 17.3 GB 清理保留紀錄，本次另清除 4,785,751,642 bytes 可重建快取與逐檔證實可回復的封包副本。原版、HD、來源快照、存檔、收據、錄影及所有 ZIP 保留；新原始來源與 UID/GID 核對通過 | [本次清理](workplace/desktop-prototype/performance/20261021/cleanup.json)、[來源與衛生](workplace/desktop-prototype/performance/20261021/intake-verification.json) |
 | 網站啟動契約 | 掛載 C: 工作目錄、D: CUE 光碟，再由 `PLAY.BAT` 呼叫 `DX5.EXE` | `original/game/.jsdos/dosbox.conf`、`PLAY.BAT` |
 | 執行檔格式 | 已證實為 MZ 內嵌 LE；LE header 檔案偏移 `0x2C90` | 原始 bytes；[LE 探針](workplace/leprobe/stdout.log) |
 | dosgolem 格式解析 | 完成；40 pages、2 objects、4,831 fixup records；relocation preview 成功 | `workplace/leprobe/stdout.log`，stderr 為空，exit 0 |
 | dosgolem 執行本作 | 桌面步進重構後通過原版入口至首場戰場；750,000,000 步、390 筆普通滑鼠事件，只因預算結束。全部 RAM、trace、原生畫面、輸入與 CD PCM 和先前完整驗收一致 | [最近完整收據](workplace/desktop-prototype/headless/startup-probe/latest.json)，SHA-256 `1eb3fe503bac5ecfb0261e0f94cf762a765895d5d4fb9b4a0e1e712ee210ac7c`；[原生戰場畫面](workplace/startup-probe/frame-b6b7a0c895e4057887515967f6512abc567549fb212073b6b20db17d74c6d846.png) |
 | 通用平台修正 | 在隔離副本實作 CPU 指令形式、DPMI 主機服務轉接與明確啟用的 MCB 配置池；支援標頭、重用、合併與縮放，保留外部預設配置器 | [dosgolem.patch](tools/dosgolem.patch)、[MCB](tools/dpmi-mcb.go)、[回歸](tools/dpmi-mcb_test.go) |
-| 平台回歸 | r4 四套件通過，研究入口 217.619 秒，109 項來源；正式封包沿用逐項相同輸入與測試收據。20M 完整 RAM 等於 r27，150M 音訊開／關原版狀態相同。Linux 與 Wine 路徑／持續工作副本測試通過，PCM 競態測試通過；歷史結局與戰場驗收保留其凍結版本範圍 | [測試](workplace/desktop-prototype/package/r4/startup-probe/platform-test.log)、[來源](workplace/desktop-prototype/package/r4/build-sources.json)、[原版控制](workplace/desktop-prototype/package/r4/prior-version-control.json) |
+| 平台回歸 | 112 項新來源的四套件通過，cmd/leprobe 101.297 秒；CDStream 競態、連續樣本、停止／續播及 PREGAP 通過。752150000 步的完整原版 proof 與 1.0.0 相同，150M 音訊開／關的完整 RAM 及十四欄相同。歷史切片保持其凍結來源範圍 | [來源](workplace/desktop-prototype/performance/20261021/prepared/build-sources.json)、[測試](workplace/desktop-prototype/performance/20261021/platform-test.log)、[同狀態](workplace/desktop-prototype/performance/20261021/candidate/same-state.json) |
 | 原版時間等待 | DOS 時間與 VGA 回掃共用一微秒／成功指令的虛擬時間；原版自行校準等待迴圈 | 最新收據 `virtual_clock`；[回掃契約](RESEARCH-LOG.md)；未略過指令 |
 | 光碟 | AUDIO PREGAP 依 CUE 輸出靜音；有效起點的超長請求在 lead-out 停止，保存原始長度與實際終點。原版末軌表格重疊仍保留，沒有改 EXE 或表格 | [cdrom.go](tools/cdrom.go)、[cdda.go](tools/cdda.go)、[因果與契約](RESEARCH-LOG.md) |
-| CDDA 技術驗證 | 原有裝置與十五軌全段核對保持有效。桌面輸出新增有界佇列及 Ebitengine 2.9.9／Oto 3.4.0 播放，150M 正常輸入的開／關裝置完整 RAM 及十四欄相同；583115 原版樣本框、實際 loopback 非靜音。速度 60 加速驗證會記錄溢出／補靜音，這是主機播放近似，人耳尚未驗證 | [裝置核對](workplace/desktop-prototype/package/r4/audio-device/verification-summary.json)、[播放](tools/desktop-audio.go)、[佇列測試](tools/cdda_test.go) |
+| CDDA 技術驗證 | 原版十五軌裝置與虛擬時間保持；主機改依音效裝置 44100 Hz 直接讀 BIN，增加執行速度不丟音或改音調。150M 普通輸入的開／關裝置完整 RAM 與十四欄相同，連續兩秒 loopback 與原版 PCM 完全一致，丟棄框為零。這是技術驗證，人耳未確認 | [裝置核對](workplace/desktop-prototype/performance/20261021/audio-device/verification-summary.json)、[主機串流](tools/cd-stream.go)、[播放器](tools/desktop-audio.go)、[READY](RESEARCH-LOG.md#2026-10-21桌面速度與主機-cd-播放時鐘) |
 | CD 只讀診斷 | 開關對照通過；同一 3,000,000 步的完整記憶體、畫面、停止位置、中斷計數與原始 trace 一致；未修改原版或 DPMI 回傳契約 | [startup-probe.go](tools/startup-probe.go) 的 `-cd-trace`；`workplace/cd-trace/trace-on.json`、`trace-off.json` |
 | 滑鼠與 BIOS | 普通滑鼠已推進選單、角色建立與敘事；已接原版遮罩與畫面游標層，未實作 TSR 的 VRAM 背景讀回 | [video.go](tools/video.go)；`latest.json` 的輸入與邊界畫面 |
 | VGA／VESA 顯示 | 原版模式 12h 與 CRTC 自行設定 640×400，開場、標題與主選單已目視確認；VBE 分頁子集另有測試 | [原生標題與選單](workplace/startup-probe/frame-7df7211c989bca30c3e82077011a96e7ef7142c9029c515aeb5dda5e461697e7.png)、[video.go](tools/video.go) |
@@ -29,12 +29,12 @@
 | 普通歷史簡介與離開 | 普通點擊後自然 600M，經 OP2、OP2_P、OP4、劇情、OP8、OP9、OP-FULL 回到 OP5 主選單，沒有未支援指令。完整、未位移局部與 OP2／OP8 捲動皆已接 HD，抽樣範圍分別記錄。普通離開在 80017192 步正常 dos_exit，BDA 恢復模式 3／80 欄；不宣稱文字畫面驗收 | [歷史原版收據](workplace/hd-prototype/catalog/remaining/source-boundary/menu-history/rcr/receipt.json)、[捲動驗收](workplace/hd-prototype/catalog/remaining/history/scrolling/verification-summary.json)、[離開收據](workplace/hd-prototype/catalog/remaining/source-boundary/menu-exit/platform/ready/receipt.json) |
 | 啟動顯示選擇 | 預設在 MARK 前選原版／HD，只詢問一次。選擇及確認手勢期間原版保持 0 步、沒有按鈕轉送；MARK 內最後設定帶進遊戲。兩條流程均到首戰，MARK 與遊戲功能列的雙向切換及還原保持原版狀態；模式選擇畫面關窗結束整個啟動器 | [桌面啟動器](tools/desktop-publisher.go)、[完整驗收](workplace/desktop-prototype/startup-chain/verification-summary.json) |
 | MARK 恢復及 HD | CONFORMED。已接入預設桌面啟動鏈，原版 MARK 自然漸入、停留、漸出並在 15989208 步退出碼 0，隨後啟動 DX5 並沿用最後模式。兩份原版 RAM 與虛擬時間獨立保存；獨立模式的缺圖驗證仍有效 | [啟動器](tools/desktop-publisher.go)、[實際 HD 標誌](workplace/desktop-prototype/startup-chain/hd/mark-last.png)、[完整驗收](workplace/desktop-prototype/startup-chain/verification-summary.json) |
-| 獨立桌面與封包 | v.1.0.0-20261017 四包完成：Windows／Linux amd64、macOS amd64／arm64。772／773 檔與全部 SHA 通過，Linux 81000000 步、Windows／Wine 82000000 步的正常標題、MARK 自然退出、功能列切換、狀態不變及關窗通過。macOS 編譯／格式通過，真機及簽章未完成；含原版只留本機 | [封包](dist-all/v.1.0.0-20261017/full-local/)、[SHA](dist-all/v.1.0.0-20261017/SHA256SUMS.json)、[驗收總表](dist-all/v.1.0.0-20261017/smoke/verification-summary.json) |
+| 獨立桌面與封包 | v.1.0.1-20261021 四包完成：Windows／Linux amd64、macOS amd64／arm64。776／777 檔、版本、SHA 及格式通過；Linux X11 與 Windows／Wine 的實際 ZIP 啟動、MARK、標題、顯示切換及關窗通過。macOS 真機與簽章未驗證；含原版只留本機 | [封包](dist-all/v.1.0.1-20261021/full-local/)、[SHA](dist-all/v.1.0.1-20261021/SHA256SUMS.json)、[驗收](dist-all/v.1.0.1-20261021/smoke/verification-summary.json) |
 | 推廣影片與故事背景 | 72 秒、1920×1080／30 fps 成片完成，錄自正式 Linux 包正常啟動至首戰、原版／HD 與功能列切換，原版 CD 第十軌配樂。完整解碼、音量、靜音、字幕邊界、黑幀／停格分類與實際抽樣幀檢視通過。四包重新核對及 109 項編譯輸入不變；README 已加入原版章節與官方史實來源。影片含原版素材，只留本機，人耳未驗證 | [影片](dist-all/v.0.1.0-20261016/promo/tokugawa-dosgolem-v.0.1.0-20261016-promo.mp4)、[總表](dist-all/v.0.1.0-20261016/promo/verification-summary.json)、[交付與來源核對](dist-all/v.0.1.0-20261016/promo/delivery-verification.json)、[重查四包](dist-all/v.0.1.0-20261016/smoke/archives-verification-promo.json)、[故事來源](RESEARCH-LOG.md#故事背景來源) |
 | README 遊戲沿革與歷史背景 | 已擴充日本 PC-98 版與繁中 DOS 光碟版的目錄沿革、家康從三河到江戶幕府的生平，以及十二章的五組故事背景。日本版年份依固定 MAME 目錄，繁中 1997 年明示民間目錄記載；史實附官方來源，遊戲文本與史實分開說明 | [README](README.md#遊戲沿革)、[來源與限制](RESEARCH-LOG.md#遊戲沿革與歷史背景來源補充) |
 | remake | 排除 | 使用者明確指定原版與 dosgolem 整合 |
 | 後續功能範圍 | CDDA 與桌面播放、可切換 HD、持續存檔與三平台封包已接入；繁中／簡中／英文／日文切換尚未實作。人耳與 Windows／macOS 真機未驗證；正常通關不列門檻 | [WORKLIST](WORKLIST.md)、[Issue #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4) |
-| 後續使用介面 | 桌面版，瀏覽器排除。正式版四包已建置，Linux X11 及 Windows／Wine 已驗證；macOS 真機待試 | [本機交付](dist-all/v.1.0.0-20261017/) |
+| 後續使用介面 | 桌面版，瀏覽器排除。執行預設 4×，可動態切換；Linux X11 及 Windows／Wine 已驗證，macOS 真機待試 | [本機交付](dist-all/v.1.0.1-20261021/) |
 | HD 風格試作 | B 戰國手繪風。75 個完整劇情來源與四個部分來源的已知區已接入既有故事消費端，另有捲軸、紅金框架、共用視窗及 81 張頭像。正常劇情仍抽測十四張、頭像四張；四項部分來源未在正常場景抽測，不把條件式註冊稱為正常驗收 | [既有劇情驗收](workplace/hd-prototype/catalog/story-expanded/verification-summary.json)、[歷史段落](workplace/hd-prototype/catalog/remaining/history/partial/verification-summary.json)、[部分來源驗收](workplace/hd-prototype/catalog/remaining/partial-story/verification-summary.json) |
 | HD 素材定位 | DAT 201 筆、112 個 OZM。靜態解碼 107 筆，17 個正常路徑來源的平面與索引一致；五筆尾端少一 byte，保留未知。KAO.GRP 的 81 張頭像索引與繪圖端已確認 | [解碼器](tools/hd-ozm-probe.py)、[頭像擷取](tools/hd-kao-extract.py)、[覆蓋清單](workplace/hd-prototype/catalog/art-coverage.json) |
 | OP-FULL 來源尾端與美術 | 兩次普通歷史簡介的完整四平面與索引相同，第四平面尾端皆為 0xAA；保留 runtime_observed 分類，DAT 與靜態解碼器未改。第二版手繪圖校正原生色盤下的藍白雲帶，完整複製端已驗證正常原圖／HD／還原；第一版與提示詞亦保存 | [來源核對](workplace/hd-prototype/catalog/remaining/history/source-verification.json)、[第二版與提示詞](assets/hd-b/art/opening-full-generation-v2.json)、[正常開場 HD](workplace/hd-prototype/catalog/remaining/history/desktop/palette/verification-opening.json) |
@@ -72,7 +72,7 @@
 | GitHub 公開儲存庫與 Issues | 依使用者 2026-10-17 指示改為 public，公開自製程式、文件與生成美術，適用條款見 LICENSE。原版來源、本機完整版與影片仍排除。六筆 Issues 皆已關閉，#4／#6 以 not planned 關閉並保留未完成／未驗證留言；四語、真機與人耳限制未因此變成通過 | [儲存庫](https://github.com/wicanr2/tokugawa-dosgolem)、[公開前歷史核對](workplace/github-setup/public-history-audit.json)、[四語 #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)、[共同驗收 #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)；即時狀態直接查 GitHub |
 | Git 提交範圍 | 已建立本機 `main` 並推送自製工具、測試、文件及使用者授權的生成美術；原版與執行產物排除 | `.gitignore` 與 Git 實際檔案清單；遠端提交以 GitHub 為準 |
 | GitHub 建立工具驗證 | shell 語法、六筆本文擷取與隔離假 API 測試通過；遠端未實測 | `--prepare` 不呼叫 GitHub；查重、相依 URL、登入／列舉失敗、公有同名 repo 與重複 Issues 的停止行為已測。歷程見 WORKLOG |
-| Docker 收尾 | 三平台重查與推廣影片全部沿用既有 image，工作容器完成後移除。原始 ZIP／十二檔、唯讀與 UID/GID 1000:1000 核對，沒有 root-owned 或 .md 目錄；109 項編譯來源不變，原版及生成美術不改 | [ZIP／十二檔及衛生](workplace/promo/v.0.1.0-20261016/intake-verification.json)、[來源](workplace/promo/v.0.1.0-20261016/source-verification.json)、[交付](dist-all/v.0.1.0-20261016/promo/delivery-verification.json) |
+| Docker 收尾 | 本次沿用既有 GUI、音訊與跨平台 image，未新建 image；工作完成後移除容器。巢狀 Go cache 掛載留下的單一 root-owned 空目錄，確認為空後僅修復該目錄，來源／衛生重跑通過 | [來源與衛生](workplace/desktop-prototype/performance/20261021/intake-verification.json)、WORKLOG.md |
 
 ## 固定來源與版本差異
 

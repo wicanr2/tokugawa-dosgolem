@@ -809,3 +809,15 @@ Linux 實際 PulseAudio loopback 在 150M 普通輸入、4× 下通過，開／�
 普通 FILE 3 交鋒驗證第一版因 /output/player-path.json 在正式路徑解析後變成 state/player-path.json 而於啟動前停止，分類為工具路徑問題；保存 normal-combat/，修正成實際 state 內的路徑後於 normal-combat-r2/ 重跑。固定版號與 dist-all 路由已讀，修正版採 v.1.0.1-20261021，從新乾淨工作目錄建置，保留已發布 v.1.0.0-20261017。
 
 normal-combat-r2 已完成讀檔、ANIME08 自然播放與還原、原版／HD／還原的實際視窗及相同 proof，接著在重複擷取第二張 speed-menu-4.png 時因 FFmpeg 拒絕覆寫而停止。分類為驗證檔名碰撞，並非遊戲問題；r2 畫面與錯誤保留。驗證工具改用序號保存重複標籤，並在動畫自然結束時先寫 combat-timing.json，於 normal-combat-r3/ 乾淨重跑至正常關窗。四包固定程式來源 f28f0a3029a7b41b0060e3fd6ebcf24001a3abac；後續修改僅涉及驗證工具與收尾文件，112 項已測輸入保持相同。
+
+## 2026-10-21：速度修正版交付
+
+v.1.0.1-20261021 四包從乾淨工作目錄完成，來源提交 f28f0a3029a7b41b0060e3fd6ebcf24001a3abac。正式 tag 另收錄後續驗證工具及文件，112 項已測輸入完全相同。四包完整 CRC／逐檔 SHA、版本、架構、macOS 12.0、授權與 Windows BOM 通過，Linux／Windows 各 776 檔、macOS 各 777 檔。原驗證器固定 109 項來源的舊門檻改為逐項檢查所有編譯輸入都包含在已測輸入且 SHA 相同，四包重跑通過；工具初次停止不當產品缺陷。
+
+Linux 與 Windows／Wine 的實際 ZIP 均通過啟動選擇 0 步、MARK 15989208 步自然退出、82M 正常標題、動態原版／HD 及還原、原版狀態不變與正常關窗。Linux 普通 FILE 3 交鋒、四種速度及真正 X11 完成，交鋒呈現至還原 20.982 秒，動畫段 8.700 秒。逐項視覺檢視速度選單、交鋒、恢復與標題，字樣與選項無裁切。
+
+整合收據為 dist-all/v.1.0.1-20261021/smoke/verification-summary.json；效能／樣本／同狀態／音訊為 workplace/desktop-prototype/performance/20261021/performance-verification.json。原始 ZIP／十二檔 CRC／SHA／唯讀與 UID/GID 通過。共用 cache 的巢狀 bind target 曾由 Docker 建立 root-owned 空目錄，確認為空後只刪除並以 UID1000 重建該目錄，沒有遞迴 chown；衛生重跑通過。往後若另掛共用 Go cache，先在對應 build 工作目錄以 UID1000 建立 go-cache 目標。
+
+本次清理 4,785,751,642 bytes、11,080 檔可重建 cache 與有完整 ZIP／manifest 可回復的副本，收據為 performance/20261021/cleanup.json。全部原始來源、HD、研究來源與收據、原版存檔、畫面、音訊錄製及所有版本 ZIP 保留。生成美術樹 cd330c4194005578692a461752a927e61c7c2679 不變；使用者未追蹤的 Remastered.txt 保留原樣。
+
+公開 Release 本文為 workplace/github-setup/speed-v101-release-notes.md；遠端、正式 tag、Release、README 圖片與交付核對保存 workplace/github-setup/speed-v101-release-sync.json。含原版的完整版仍只留本機，不更新使用者提供的外部雲端連結。四語、Windows／macOS 真機、人耳與正常通關的原有限制保持；正常通關不重開。Docker 工作容器完成後移除，沒有建立新工具鏈 image。

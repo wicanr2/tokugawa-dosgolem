@@ -1,6 +1,6 @@
 # 德川家康：DOS 原版與 dosgolem
 
-現行正式版為 `v.1.0.0-20261017`，由使用者指定 1.0.0 里程碑。程式以既有 package-desktop.py 的 ldflags 設定完整版本，四包由乾淨輸入重建至 `dist-all/<版本>/full-local/`；驗證入口沿本檔既有封包工具。公開 tag／Release 只發布自製內容與說明，不上傳本機完整版。最終 HD 已由 `tools/archive-hd-art.py --verify-only` 與 GitHub 完整素材樹核對，收據為 `workplace/github-setup/final-hd-v100-verification.json`。程式來源提交為 `32d546912721daf4ad6d7ae24923756108bd219b`，與正式 tag 的 109 項既有來源輸入相同；四包現況及清理收據由 CONTEXT.md 路由。
+現行正式版為 `v.1.0.1-20261021`，修正 1.0.0 的 HD 戰場效能與音樂時鐘。程式來源提交為 `f28f0a3029a7b41b0060e3fd6ebcf24001a3abac`，112 項已測輸入與正式 tag 相同；tag 另含後續驗證工具及文件。四包來源、實測範圍與交付路徑由 CONTEXT.md 路由。已發布 v.1.0.0-20261017 保留，公開範圍及本機原版邊界保持。最終 HD 素材樹 cd330c4194005578692a461752a927e61c7c2679 未改。
 
 使用者於 2026-10-17 另指定 README 顯示原版與 HD 遊戲截圖。公開例外限 [assets/screenshots/battle-original.png](assets/screenshots/battle-original.png) 與 [assets/screenshots/battle-hd.png](assets/screenshots/battle-hd.png) 這兩張介紹圖；來源為同狀態正常首戰，只裁去非遊戲區，原始完整收據保存在 `workplace/github-setup/readme-v100-screenshots.json`。原版檔案、其他擷取圖、音訊與錄影仍依原有規則排除，截圖不改變原版權利歸屬。
 
@@ -10,7 +10,7 @@
 
 使用者於 2026-10-16 明確取消正常通關驗收。正常通關不列為 HD 完成或三平台打包的門檻，也不因這項取消而登記為實測通過。接續驗收限剩餘素材的來源、實際繪圖、原版／HD 切換、缺圖及封包可啟動性；既有原版狀態保護與本機資料邊界保持。現況與有效決策以 CONTEXT.md 為準。
 
-獨立桌面的路徑入口為 [tools/runtime-paths.go](tools/runtime-paths.go) 與 [測試](tools/runtime-paths_test.go)，音訊入口為 [tools/desktop-audio.go](tools/desktop-audio.go) 及 tools/cdda.go 的有界 PCM 佇列。正式桌面以 `-play` 使用執行檔旁資源、固定使用者存檔及 CD 輸出；研究預設保持原路徑與預算。`-resource-dir`、`-game-dir`、`-state-dir` 可明示驗證根目錄，`-diagnostics` 才輸出大型診斷。封包準備沿 `workplace/desktop-prototype/package/`，版本及交付位置只依知識路由的 dist-all／version-date 契約。READY 契約見 RESEARCH-LOG。
+獨立桌面的路徑入口為 [tools/runtime-paths.go](tools/runtime-paths.go) 與 [測試](tools/runtime-paths_test.go)，音訊入口為 [tools/desktop-audio.go](tools/desktop-audio.go) 與 [tools/cd-stream.go](tools/cd-stream.go) 的主機樣本串流；tools/cdda.go 保留原版虛擬光碟裝置。正式桌面以 `-play` 使用執行檔旁資源、固定使用者存檔及 CD 輸出；研究預設保持原路徑與預算。`-resource-dir`、`-game-dir`、`-state-dir` 可明示驗證根目錄，`-diagnostics` 才輸出大型診斷。封包準備沿 `workplace/desktop-prototype/package/`，版本及交付位置只依知識路由的 dist-all／version-date 契約。READY 契約見 RESEARCH-LOG。
 
 剩餘圖像的受控準備入口為 [tools/prepare-art-validation.py](tools/prepare-art-validation.py)，桌面入口為 [tools/verify-controlled-art.py](tools/verify-controlled-art.py)，獨立核對入口為 [tools/verify-controlled-art-summary.py](tools/verify-controlled-art-summary.py)。現行研究批次為 `workplace/hd-prototype/catalog/remaining/consumers/battle/r30/`；r28 保留淡入色盤缺漏，r29 保留滑鼠隔離與標題選單圖層的前置條件問題。固定 GUI image 內專案及原版唯讀、r30 可寫掛 `/output`。準備工具沿 r27 生產來源與 r29/control 的普通 80M 穩定標題建立副本，先由原版重畫 OP5 清除選單圖層，再選原版表格的動畫分支；OP6 只替換測試版 loader 參數。每筆 EIP、欄位及 stack 變更完整記錄。建置及執行覆掛該批次的 `source-snapshot/tools/` 至 `/project/tools`；GUI 各案另掛 `/output`，以 `--mode hd` 或 `--mode missing` 執行，空 mouse-file 隔離普通輸入。這些驗收入口不接入正式啟動器，結果不得列為正常玩家路徑。
 

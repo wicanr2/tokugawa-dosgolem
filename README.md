@@ -2,7 +2,7 @@
 
 讓 DOS 原版《德川家康》在現代桌面執行，沿用原版程式、玩法與資料，加入戰國手繪 HD、CD 音樂播放及可隨時切換的顯示介面。
 
-正式版：[1.0.0（v.1.0.0-20261017）](https://github.com/wicanr2/tokugawa-dosgolem/releases/tag/v.1.0.0-20261017)。
+正式版：[1.0.1（v.1.0.1-20261021）](https://github.com/wicanr2/tokugawa-dosgolem/releases/tag/v.1.0.1-20261021)。
 
 ## 遊戲沿革
 
@@ -50,13 +50,14 @@
 |---|---|
 | ![三方原戰場的原版畫面](assets/screenshots/battle-original.png) | ![同一三方原戰場的 HD 畫面](assets/screenshots/battle-hd.png) |
 
-截圖來自 Linux 桌面 v.0.1.0-20261016 的正常首戰，裁去視窗底部的非遊戲區域。1.0.0 沿用相同的遊戲呈現與 HD 素材。原版畫面中的美術與文字權利歸原權利人，截圖僅作本專案介紹。
+截圖來自 Linux 桌面 v.0.1.0-20261016 的正常首戰，裁去視窗底部的非遊戲區域。目前版本沿用相同的遊戲呈現與 HD 素材。原版畫面中的美術與文字權利歸原權利人，截圖僅作本專案介紹。
 
 ## 桌面版內容
 
 - 啟動時選擇原版或 HD，出版商 MARK 標誌也支援 HD，最後設定沿用到遊戲。
 - 戰國手繪 HD 涵蓋已盤點的人物、場景、戰場、捲軸與介面；缺圖或未知顯示狀態回原版。
-- 播放原版光碟音樂，存檔寫入獨立使用者目錄，保留原版資料。
+- 播放原版光碟音樂，使用音效裝置時鐘，遊戲加速時維持原曲速度與音調。存檔寫入獨立使用者目錄。
+- 執行速度預設 4×，可在功能列「執行」切換 1×、2×、4×、8×；實際速度受主機效能影響。
 - 滑鼠移到視窗頂端可展開功能列，隨時切換原版／HD、暫停與截圖。
 
 遊戲操作以滑鼠為主。啟動選擇也可使用 Tab／Enter。
@@ -68,20 +69,20 @@
 | F7 | 暫停／繼續 |
 | F9 | 截圖 |
 
-目前原版入口、選單、劇情、首戰、代表性交鋒及存讀檔已有抽樣驗證；HD 另有來源、繪圖、切換與缺圖驗證。CD 桌面輸出已做技術擷取，人耳及實體桌面的預設速度效能尚未確認。四語切換尚未實作。完整範圍與限制以 [CONTEXT.md](CONTEXT.md) 為準，正常通關不列本次驗收門檻。
+目前原版入口、選單、劇情、首戰、代表性交鋒及存讀檔已有抽樣驗證；HD 另有來源、繪圖、切換與缺圖驗證。Linux 已做速度量測、普通交鋒及實際音樂錄音比對；人耳與實體桌面的速度效能尚未確認。四語切換尚未實作。完整範圍與限制以 [CONTEXT.md](CONTEXT.md) 為準，正常通關不列本次驗收門檻。
 
 ## 三平台完整版
 
-目前正式版本為 `v.1.0.0-20261017`。解壓後啟動 Windows／Linux 執行檔，或開啟 macOS 的 `Tokugawa.app`；詳細操作與存檔位置見包內 README.txt。
+目前正式版本為 `v.1.0.1-20261021`。解壓後啟動 Windows／Linux 執行檔，或開啟 macOS 的 `Tokugawa.app`；詳細操作與存檔位置見包內 README.txt。
 
 | 平台 | 架構 | 完整版 | 已驗證範圍 |
 |---|---|---|---|
-| Windows | amd64 | [ZIP](dist-all/v.1.0.0-20261017/full-local/tokugawa-dosgolem-v.1.0.0-20261017-windows-amd64.zip) | Wine 啟動、MARK、正常標題、功能列切換與關窗 |
-| Linux | amd64 | [ZIP](dist-all/v.1.0.0-20261017/full-local/tokugawa-dosgolem-v.1.0.0-20261017-linux-amd64.zip) | X11 啟動、MARK、正常標題、功能列切換與關窗 |
-| macOS | Intel | [ZIP](dist-all/v.1.0.0-20261017/full-local/tokugawa-dosgolem-v.1.0.0-20261017-macos-amd64.zip) | 編譯與格式核對，待真機試跑 |
-| macOS | Apple Silicon | [ZIP](dist-all/v.1.0.0-20261017/full-local/tokugawa-dosgolem-v.1.0.0-20261017-macos-arm64.zip) | 編譯與格式核對，待真機試跑 |
+| Windows | amd64 | [ZIP](dist-all/v.1.0.1-20261021/full-local/tokugawa-dosgolem-v.1.0.1-20261021-windows-amd64.zip) | Wine 啟動、MARK、正常標題、功能列切換與關窗 |
+| Linux | amd64 | [ZIP](dist-all/v.1.0.1-20261021/full-local/tokugawa-dosgolem-v.1.0.1-20261021-linux-amd64.zip) | X11 啟動、MARK、正常標題、功能列切換與關窗 |
+| macOS | Intel | [ZIP](dist-all/v.1.0.1-20261021/full-local/tokugawa-dosgolem-v.1.0.1-20261021-macos-amd64.zip) | 編譯與格式核對，待真機試跑 |
+| macOS | Apple Silicon | [ZIP](dist-all/v.1.0.1-20261021/full-local/tokugawa-dosgolem-v.1.0.1-20261021-macos-arm64.zip) | 編譯與格式核對，待真機試跑 |
 
-[封包 SHA-256](dist-all/v.1.0.0-20261017/SHA256SUMS.json)與[驗證收據](dist-all/v.1.0.0-20261017/smoke/verification-summary.json)保存在同一版本目錄。完整版含原版遊戲與解碼參考，只留本機，不加入 Git 或 GitHub Release。公開 Release 提供版本說明與原始碼入口。
+[封包 SHA-256](dist-all/v.1.0.1-20261021/SHA256SUMS.json)與[驗證收據](dist-all/v.1.0.1-20261021/smoke/verification-summary.json)保存在同一版本目錄。完整版含原版遊戲與解碼參考，只留本機，不加入 Git 或 GitHub Release。公開 Release 提供版本說明與原始碼入口。
 
 ## 推廣影片
 

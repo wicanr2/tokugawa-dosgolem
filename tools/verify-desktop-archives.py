@@ -47,7 +47,10 @@ for entry in index['packages']:
         assert m['version'] == index['version'] and m['commit'] == index['commit']
         assert m['platform'] == entry['platform'] and m['arch'] == entry['arch']
         assert m['normal_playthrough_required'] is False and m['normal_playthrough_verified'] is False
-        assert len(m['inherited_test_inputs']) == 109
+        tested = m['inherited_test_inputs']
+        compiled = {name: value for name, value in m['build_sources'].items() if name != 'tools/package-desktop.py'}
+        assert compiled and set(compiled) <= set(tested)
+        assert all(tested[name] == value for name, value in compiled.items())
         assert set(i.filename[len(prefix):] for i in infos) == set(m['files']) | {'manifest.json'}
         for path, expected in m['files'].items():
             info = z.getinfo(prefix + path)
@@ -97,7 +100,8 @@ for entry in index['packages']:
             assert z.getinfo(prefix + executable).external_attr >> 16 & 0o111
         rows.append({'platform': entry['platform'], 'arch': entry['arch'], 'format': binary_format,
                      'archive_sha256': entry['sha256'], 'size': entry['size'], 'verified_files': len(m['files']),
-                     'original_data_hashes_match': True, 'licenses_present': True, 'version_consistent': True})
+                     'original_data_hashes_match': True, 'licenses_present': True, 'version_consistent': True,
+                     'verified_test_inputs': len(tested)})
 summary = {'result': 'PASS', 'version': index['version'], 'commit': index['commit'], 'packages': rows,
            'classification': 'archive and binary format verification; no native macOS execution',
            'native_macOS_verified': False, 'normal_playthrough_required': False}
