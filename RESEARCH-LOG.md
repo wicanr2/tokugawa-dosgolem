@@ -2498,3 +2498,5 @@ Ebitengine 十六位元播放器契約直接查固定工具 image 的 /go/pkg/mo
 - 執行選單擴充至 1／2／4／8／16／32×，預設維持 4×。選單紋理依實際列數產生，八列的原生矩形為 168×192，下緣 y=224，仍在 640×400 畫布內。
 - 既有 render-speed_test.go 擴大至每個倍率的繼續／暫停標頭、箭頭保留區、實際字型與每列命中。verify-desktop-package.py 使用真正 ZIP 與 X11，逐一切換六種倍率，比對完整原版 proof 與 HD 像素，並讓 16×、32× 實際步進後再暫停。
 - 凍結來源、四套件與實際封包驗證保存於 workplace/desktop-prototype/performance/20261021/speed-options/；驗收前不標示 CONFORMED。原有 4× 交鋒與音訊錄音證據限其既定版本，不當作本次倍率的戰鬥時間量測。
+
+16×／32× 驗收狀態：CONFORMED。112 項凍結輸入與四套件通過，程式來源 7312bbe974eb87737ed917d20ae829a077fe5fa3；相較 1.0.1 僅改兩個選單／參數來源與既有呈現測試。Linux X11 與 Windows／Wine 從實際 ZIP 自然經 MARK 到正常標題，六種速度切換的完整 guest proof 與 HD 像素相同，16×／32× 各實際步進超過 1M 指令後正常暫停，WM_DELETE 正常退出。這是倍率可操作與步進驗證，不宣稱 16×／32× 的交鋒耗時或固定實際倍率。實際選單、完整文字及 32× 標頭已檢視；四包 776／777 檔、原版來源、112 項已測輸入及平台格式通過。收據：[本次總表](workplace/desktop-prototype/performance/20261021/speed-options/verification-summary.json)。音訊沿 1.0.1 的裝置驗證，不稱為新的人耳驗收；正常通關仍排除。

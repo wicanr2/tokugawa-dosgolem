@@ -2,7 +2,7 @@
 
 讓 DOS 原版《德川家康》在現代桌面執行，沿用原版程式、玩法與資料，加入戰國手繪 HD、CD 音樂播放及可隨時切換的顯示介面。
 
-正式版：[1.0.1（v.1.0.1-20261021）](https://github.com/wicanr2/tokugawa-dosgolem/releases/tag/v.1.0.1-20261021)。
+正式版：[1.0.2（v.1.0.2-20261021）](https://github.com/wicanr2/tokugawa-dosgolem/releases/tag/v.1.0.2-20261021)。
 
 ## 遊戲沿革
 
@@ -73,16 +73,16 @@
 
 ## 三平台完整版
 
-目前正式版本為 `v.1.0.1-20261021`。解壓後啟動 Windows／Linux 執行檔，或開啟 macOS 的 `Tokugawa.app`；詳細操作與存檔位置見包內 README.txt。
+目前正式版本為 `v.1.0.2-20261021`。解壓後啟動 Windows／Linux 執行檔，或開啟 macOS 的 `Tokugawa.app`；詳細操作與存檔位置見包內 README.txt。
 
 | 平台 | 架構 | 完整版 | 已驗證範圍 |
 |---|---|---|---|
-| Windows | amd64 | [ZIP](dist-all/v.1.0.1-20261021/full-local/tokugawa-dosgolem-v.1.0.1-20261021-windows-amd64.zip) | Wine 啟動、MARK、正常標題、功能列切換與關窗 |
-| Linux | amd64 | [ZIP](dist-all/v.1.0.1-20261021/full-local/tokugawa-dosgolem-v.1.0.1-20261021-linux-amd64.zip) | X11 啟動、MARK、正常標題、功能列切換與關窗 |
-| macOS | Intel | [ZIP](dist-all/v.1.0.1-20261021/full-local/tokugawa-dosgolem-v.1.0.1-20261021-macos-amd64.zip) | 編譯與格式核對，待真機試跑 |
-| macOS | Apple Silicon | [ZIP](dist-all/v.1.0.1-20261021/full-local/tokugawa-dosgolem-v.1.0.1-20261021-macos-arm64.zip) | 編譯與格式核對，待真機試跑 |
+| Windows | amd64 | [ZIP](dist-all/v.1.0.2-20261021/full-local/tokugawa-dosgolem-v.1.0.2-20261021-windows-amd64.zip) | Wine 啟動、MARK、正常標題、六種速度、16×／32× 步進、HD 切換與關窗 |
+| Linux | amd64 | [ZIP](dist-all/v.1.0.2-20261021/full-local/tokugawa-dosgolem-v.1.0.2-20261021-linux-amd64.zip) | X11 啟動、MARK、正常標題、六種速度、16×／32× 步進、HD 切換與關窗 |
+| macOS | Intel | [ZIP](dist-all/v.1.0.2-20261021/full-local/tokugawa-dosgolem-v.1.0.2-20261021-macos-amd64.zip) | 編譯與格式核對，待真機試跑 |
+| macOS | Apple Silicon | [ZIP](dist-all/v.1.0.2-20261021/full-local/tokugawa-dosgolem-v.1.0.2-20261021-macos-arm64.zip) | 編譯與格式核對，待真機試跑 |
 
-[封包 SHA-256](dist-all/v.1.0.1-20261021/SHA256SUMS.json)與[驗證收據](dist-all/v.1.0.1-20261021/smoke/verification-summary.json)保存在同一版本目錄。完整版含原版遊戲與解碼參考，只留本機，不加入 Git 或 GitHub Release。公開 Release 提供版本說明與原始碼入口。
+[封包 SHA-256](dist-all/v.1.0.2-20261021/SHA256SUMS.json)與[驗證收據](dist-all/v.1.0.2-20261021/smoke/verification-summary.json)保存在同一版本目錄。完整版含原版遊戲與解碼參考，只留本機，不加入 Git 或 GitHub Release。公開 Release 提供版本說明與原始碼入口。
 
 ## 推廣影片
 

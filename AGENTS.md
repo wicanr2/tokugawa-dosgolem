@@ -1,6 +1,6 @@
 # 德川家康：DOS 原版與 dosgolem
 
-現行正式版為 `v.1.0.1-20261021`，修正 1.0.0 的 HD 戰場效能與音樂時鐘。程式來源提交為 `f28f0a3029a7b41b0060e3fd6ebcf24001a3abac`，112 項已測輸入與正式 tag 相同；tag 另含後續驗證工具及文件。四包來源、實測範圍與交付路徑由 CONTEXT.md 路由。已發布 v.1.0.0-20261017 保留，公開範圍及本機原版邊界保持。最終 HD 素材樹 cd330c4194005578692a461752a927e61c7c2679 未改。
+現行正式版為 `v.1.0.2-20261021`，新增功能列 16×／32×，預設維持 4×，沿用 1.0.1 的 HD 效能與獨立音樂修正。程式來源提交為 `7312bbe974eb87737ed917d20ae829a077fe5fa3`，112 項已測輸入與正式 tag 相同；tag 另含後續驗證文件。四包來源、實測範圍與交付路徑由 CONTEXT.md 路由。已發布 v.1.0.0-20261017、v.1.0.1-20261021 保留，公開範圍及本機原版邊界保持。最終 HD 素材樹 cd330c4194005578692a461752a927e61c7c2679 未改。
 
 使用者於 2026-10-17 另指定 README 顯示原版與 HD 遊戲截圖。公開例外限 [assets/screenshots/battle-original.png](assets/screenshots/battle-original.png) 與 [assets/screenshots/battle-hd.png](assets/screenshots/battle-hd.png) 這兩張介紹圖；來源為同狀態正常首戰，只裁去非遊戲區，原始完整收據保存在 `workplace/github-setup/readme-v100-screenshots.json`。原版檔案、其他擷取圖、音訊與錄影仍依原有規則排除，截圖不改變原版權利歸屬。
 

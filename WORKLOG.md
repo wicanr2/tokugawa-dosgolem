@@ -825,3 +825,8 @@ Linux 與 Windows／Wine 的實際 ZIP 均通過啟動選擇 0 步、MARK 159892
 ## 2026-10-21：提供 16×、32×
 
 使用者要求新增兩種執行倍率。沿用既有速度參數與動態選單，增加 16×／32×；預設維持 4×，原版與音樂來源不改。測試、凍結來源及封包工作保存於 workplace/desktop-prototype/performance/20261021/speed-options/。本次實際 ZIP 驗證擴大至六種速度、切換狀態不變及 16×／32× 實際步進，結果待本節續記。
+
+- 四套件通過：cpu386 0.883 秒、machine 0.733 秒、dosfile 0.003 秒、leprobe 48.436 秒。凍結 112 項來源，編譯提交 7312bbe974eb87737ed917d20ae829a077fe5fa3。
+- v.1.0.2-20261021 的 Windows／Linux amd64 與 macOS amd64／arm64 四包重建；Linux X11 與 Windows／Wine 實際 ZIP 驗證六種速度、16×／32× 步進、原版狀態及 HD 像素不變、MARK 自然退出與正常關窗。四包內容、原版 SHA、格式、版本與 112 項來源核對通過。macOS 真機、人耳及正常通關不新增聲明。
+- 已實際檢視 Linux／Windows 選單與 Linux 32× 標頭。HD 素材樹未變，使用者未追蹤文字的 SHA c5e264e137587a6eb129be04f8d87319238593f3ef3d104a23909349948845c7 保持。UID/GID 與 `.md` 目錄檢查通過；批次 Docker 容器完成後自動刪除，沒有新增 image。封包、快取與研究收據保留。
+- 本次驗證總表在 workplace/desktop-prototype/performance/20261021/speed-options/verification-summary.json，公開 Release 本文與遠端同步收據分別為 workplace/github-setup/speed-v102-release-notes.md、workplace/github-setup/speed-v102-release-sync.json。含原版四包維持本機，舊版 tag／Release 不動。

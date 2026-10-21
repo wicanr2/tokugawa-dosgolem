@@ -4,7 +4,7 @@
 
 | 項目 | 狀態 | 完成條件與下一個驗證入口 |
 |---|---|---|
-| 16×／32× 選單 | 實作完成，驗收中 | 預設維持 4×；四套件、實際 Linux／Wine 六種速度切換、16×／32× 步進與三平台打包。入口 CONTEXT.md |
+| 16×／32× 選單 | CONFORMED，四包完成 | v.1.0.2-20261021；預設維持 4×。四套件、實際 Linux／Wine 六種速度切換、16×／32× 步進與四包核對通過。入口 CONTEXT.md |
 | 2026-10-21 速度與獨立音樂 | CONFORMED，修正版交付 | v.1.0.1-20261021；預設 4×、1／2／4／8× 選單、獨立 44100 Hz CD 串流及 HD 效能修正完成。四套件、同狀態、實際錄音、普通交鋒、Linux／Wine ZIP 與四包核對通過，入口 CONTEXT.md |
 | jsdos 來源與版本固定 | 完成 | ZIP CRC、逐檔 SHA-256、唯讀與 UID/GID 驗證通過 |
 | 原版 LE 載入 | 完成 | 兩個 objects 與 relocation 載入；自然進入 `0x18DB4` |
@@ -16,7 +16,7 @@
 | 音訊 | 裝置、PCM 與獨立桌面播放技術通過 | 原版十五軌裝置保持；150M 原版狀態相同，44100 Hz 實際 loopback 連續兩秒等於來源，CPU 加速不丟棄主機樣本。人耳未驗證 |
 | MARK 與啟動顯示選擇 | CONFORMED，完整鏈通過 | 預設先選模式，依序執行原版 MARK 與 DX5；MARK 的最後原版／HD 設定帶進遊戲，兩處功能列均可切換。兩次完整首戰與正常關窗、各自 RAM／原版欄位通過；收據見 startup-chain/verification-summary.json。原版執行環境及虛擬時間分開，不偽造 COMMAND.COM 或 EXEC 成功 |
 | 正常玩家路徑 | 部分通過 | 原版入口至首戰及 FILE 3 的正常存讀檔樣本通過，讀回完整畫面一致；武將表 HD 切換通過。接續回合及交鋒，不將單一存檔或首戰驗收當成全遊戲相容 |
-| 獨立桌面與三平台封包 | 修正版四包完成 | v.1.0.1-20261021，776／777 檔逐包核對，Linux／Wine 啟動與切換通過；macOS 編譯／格式通過。真機限制及正常通關排除保持。入口 dist-all/v.1.0.1-20261021/smoke/verification-summary.json |
+| 獨立桌面與三平台封包 | 修正版四包完成 | v.1.0.2-20261021，776／777 檔逐包核對，Linux／Wine 啟動與切換通過；macOS 編譯／格式通過。真機限制及正常通關排除保持。入口 dist-all/v.1.0.2-20261021/smoke/verification-summary.json |
 | 正式版、README 截圖與清理 | 完成 | 最終 HD 的 1050 檔與 GitHub 完整相符，原版／HD 紹介截圖已保存。正式 tag／Release 採 v.1.0.0-20261017，可重建暫存與已封存副本清理完成，來源、素材與交付保留；入口 CONTEXT.md 與 workplace/github-setup/v100-release-sync.json |
 | 推廣影片與 README 故事 | 完成，本機交付 | 正式 Linux 包正常入口、首戰與實際切換錄影，原版 CD 配樂；72 秒／1080p 的解碼、音訊、字幕、黑幀／停格與抽樣幀檢查通過。故事依原版章節與官方史實來源整理，影片與四包不進 Git。入口 dist-all/v.0.1.0-20261016/promo/verification-summary.json 及 README.md |
 | GitHub 公開儲存庫與 Issues | 已公開，六筆皆已關閉 | 使用者於 2026-10-17 授權將既有儲存庫改為 public，並指示關閉剩餘[四語 #4](https://github.com/wicanr2/tokugawa-dosgolem/issues/4)及[共同驗收 #6](https://github.com/wicanr2/tokugawa-dosgolem/issues/6)。原版資料不入 Git，未完成與未驗證限制仍依 CONTEXT 記錄 |
