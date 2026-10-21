@@ -6,6 +6,7 @@
 
 | 項目 | 現況 | 證據 |
 |---|---|---|
+| 2026-10-21 效能修正 | 使用者回報 Windows 交鋒約一分鐘、多次交鋒回合更慢及音樂異常，指定用 Linux 驗證，並授權提高執行速度、音樂獨立於 CPU 週期播放。目前量測桌面排程、繪圖成本與音訊來源，尚未登記修正通過；已發布 1.0.0 保持 | `workplace/desktop-prototype/performance/20261021/`、WORKLOG.md |
 | jsdos 下載 | 完成，214,665,581 bytes | `original/德川家康.jsdos.zip`、[source.json](original/source.json) |
 | ZIP 與解包 | CRC 通過；14 筆 ZIP entries，12 個檔案；解包檔共 235,521,461 bytes | `original/source.json` 的逐檔大小與 SHA-256 |
 | 原始檔保護 | ZIP 與解包檔設為唯讀；擁有者 UID/GID 1000:1000 | `original/`；最近驗證結果見下方入口 |

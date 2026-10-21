@@ -25,7 +25,35 @@ func preservePortraitLabelsAt(out *image.NRGBA, native image.Image, name string,
 }
 
 func rgbaAt(im image.Image, x, y int) color.NRGBA {
+	if native, ok := im.(*image.NRGBA); ok {
+		return native.NRGBAAt(x, y)
+	}
 	return color.NRGBAModel.Convert(im.At(x, y)).(color.NRGBA)
+}
+
+func scaleNativeFrame(frame image.Image, scale int) *image.NRGBA {
+	out := image.NewNRGBA(image.Rect(0, 0, 640*scale, 400*scale))
+	if native, ok := frame.(*image.NRGBA); ok {
+		for y := 0; y < 400; y++ {
+			row := out.Pix[y*scale*out.Stride:][:out.Stride]
+			for x := 0; x < 640; x++ {
+				source := native.Pix[y*native.Stride+x*4:][:4]
+				for dx := 0; dx < scale; dx++ {
+					copy(row[(x*scale+dx)*4:], source)
+				}
+			}
+			for dy := 1; dy < scale; dy++ {
+				copy(out.Pix[(y*scale+dy)*out.Stride:], row)
+			}
+		}
+		return out
+	}
+	for y := 0; y < 400*scale; y++ {
+		for x := 0; x < 640*scale; x++ {
+			out.SetNRGBA(x, y, rgbaAt(frame, x/scale, y/scale))
+		}
+	}
+	return out
 }
 
 // 啟動時驗證並縮到呈現尺寸，不在每幀掃描大圖。
@@ -76,12 +104,7 @@ func previewPortraitAt(frame, source, hd image.Image, destination image.Rectangl
 	if destination != a0Rect && destination != endingStoryRect {
 		return nil, "", fmt.Errorf("未驗證的劇情目的矩形")
 	}
-	out := image.NewNRGBA(image.Rect(0, 0, 640*scale, 400*scale))
-	for y := 0; y < 400*scale; y++ {
-		for x := 0; x < 640*scale; x++ {
-			out.SetNRGBA(x, y, rgbaAt(frame, x/scale, y/scale))
-		}
-	}
+	out := scaleNativeFrame(frame, scale)
 	if !enabled {
 		return out, "original", nil
 	}

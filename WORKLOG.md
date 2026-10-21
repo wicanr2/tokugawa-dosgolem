@@ -797,3 +797,13 @@ Windows 第三次已完成模式選擇、MARK 自然退出與 HD 設定沿用，
 | macos／arm64 | c7c6fbdf79695548b897b5de107aa9d9d5bda0ab094b60986f6c37fbdfd13022 |
 
 四包與原版影片只留本機。正式 tag／Release 採相同完整版本，不覆寫既有版本；公開本文為 workplace/github-setup/v100-release-notes.md，遠端提交、tag、Release 與匿名截圖核對保存於 workplace/github-setup/v100-release-sync.json。本批 Docker 容器完成即移除，沒有新建或替換工具 image；Git 版控內容、最終素材及交付完整保留。
+
+## 2026-10-21：桌面速度與獨立音樂播放
+
+使用者回報 Windows 戰鬥緩慢與音樂不連續，指定以 Linux 驗證，並授權增加執行預算及讓音樂獨立於 CPU 週期。命中復古驗收技能、平台規格與文件職責路由，沿用固定 GUI 與既有音訊 image。量測工作區為 workplace/desktop-prototype/performance/20261021/；先保存 1.0.0 來源與普通玩家輸入的基準，再調整主機排程與播放器。已發布 tag／Release、原版機制及既有素材保持。未追蹤的 Remastered.txt 是使用者檔案，保留原樣。
+
+已完成主機 CD 裝置時鐘串流、有序 sprite 索引與最近鄰列複製，預設改 4×，功能列可選 1／2／4／8×。四套件回歸全數通過，cmd/leprobe 101.297 秒；CDStream 競態及 PCM／CDDA 測試通過。750M 首戰量測前先以原有 60× 跑完 390 筆正常輸入，再量測 1×／4×。新 4× 在 30.193 秒推進 13.533M，對照舊版預設 30.312 秒／2.15M 約 6.32 倍；這是本次 Linux 軟體繪圖容器的實測，不外推為所有硬體的固定倍數。candidate/same-state.json 的 752150000 指令完整原版 proof 等於舊版，RAM SHA 4e873135fd0c22e2e8bb8330438fcb6320ecb28fc13a8f9551c984c7724ed5c9；同一狀態舊／新完整 HD 像素、scene report 與模式相同。基準最後的 metadata 路徑錯誤保留，不當正常退出證據。
+
+Linux 實際 PulseAudio loopback 在 150M 普通輸入、4× 下通過，開／關輸出完整 RAM、十四欄及原版 PCM 雜湊相同，連續 352800 bytes 音樂與原版 44100 Hz s16le 雙聲道完全一致，主機丟棄框為零。完整收據位於 performance/20261021/audio-device/verification-summary.json，人耳聆聽仍未驗證。新 asset-inputs.json 記錄 761 個實際開啟路徑，新封包沿 112 項已測輸入重新準備；不沿用 r4 的 109 項輸入假稱測過新程式。
+
+普通 FILE 3 交鋒驗證第一版因 /output/player-path.json 在正式路徑解析後變成 state/player-path.json 而於啟動前停止，分類為工具路徑問題；保存 normal-combat/，修正成實際 state 內的路徑後於 normal-combat-r2/ 重跑。固定版號與 dist-all 路由已讀，修正版採 v.1.0.1-20261021，從新乾淨工作目錄建置，保留已發布 v.1.0.0-20261017。

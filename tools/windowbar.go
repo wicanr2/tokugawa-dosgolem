@@ -19,8 +19,17 @@ var barFields = [4]image.Rectangle{
 	image.Rect(376, 4, 592, 28), image.Rect(600, 4, 632, 28),
 }
 var barLabels = [3]string{"顯示", "執行", "工具"}
-var barLists = [3][]string{{"原版", "HD 圖像"}, {"繼續", "暫停"}, {"擷取畫面 F9", "離開程式"}}
-var barText = "顯示執行工具原版肖像繼續暫停擷取畫面離開程式缺圖設定×▾✓德川家康選擇遊戲中可從頂端功能列切換滑鼠"
+var barLists = [3][]string{{"原版", "HD 圖像"}, {"繼續", "暫停", "速度 1x", "速度 2x", "速度 4x", "速度 8x"}, {"擷取畫面 F9", "離開程式"}}
+var barSpeeds = [4]int{1, 2, 4, 8}
+var barText = "顯示執行工具原版肖像繼續暫停擷取畫面離開程式缺圖設定速度×▾✓德川家康選擇遊戲中可從頂端功能列切換滑鼠"
+
+func barTextureHeight() int {
+	rows := 0
+	for _, list := range barLists {
+		rows = max(rows, len(list))
+	}
+	return barHeight + rows*barRowHeight
+}
 
 type windowBar struct {
 	Visible, Pinned    bool
@@ -179,8 +188,12 @@ func (font barFont) text(dst *image.NRGBA, x, y int, text string, c color.NRGBA)
 	}
 }
 
-func (b *windowBar) paint(font barFont, selected [3]int, available bool) *image.NRGBA {
-	out := image.NewNRGBA(image.Rect(0, 0, 640, barHeight+2*barRowHeight))
+func (b *windowBar) paint(font barFont, selected [3]int, available bool, speeds ...int) *image.NRGBA {
+	speed := 1
+	if len(speeds) > 0 {
+		speed = speeds[0]
+	}
+	out := image.NewNRGBA(image.Rect(0, 0, 640, barTextureHeight()))
 	bg, fg := color.NRGBA{24, 29, 38, 255}, color.NRGBA{230, 234, 241, 255}
 	button, active, muted := color.NRGBA{44, 52, 65, 255}, color.NRGBA{44, 92, 112, 255}, color.NRGBA{133, 143, 158, 255}
 	fill := func(r image.Rectangle, c color.NRGBA) {
@@ -198,6 +211,9 @@ func (b *windowBar) paint(font barFont, selected [3]int, available bool) *image.
 			continue
 		}
 		value := barLists[i][selected[i]]
+		if i == 1 {
+			value += fmt.Sprintf(" %dx", speed)
+		}
 		if i == 2 {
 			value = ""
 		}
@@ -219,6 +235,9 @@ func (b *windowBar) paint(font barFont, selected [3]int, available bool) *image.
 			}
 			mark := " "
 			if b.Menu < 2 && i == selected[b.Menu] {
+				mark = "✓"
+			}
+			if b.Menu == 1 && i >= 2 && barSpeeds[i-2] == speed {
 				mark = "✓"
 			}
 			font.text(out, r.Min.X+8, y+4, mark+" "+label, c)

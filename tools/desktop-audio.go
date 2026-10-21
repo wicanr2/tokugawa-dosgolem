@@ -9,28 +9,28 @@ import (
 )
 
 type desktopPCMPlayer struct {
-	queue  *pcmQueue
+	stream *cdStream
 	player *audio.Player
 	paused bool
 }
 
 func init() {
-	newDesktopPCMOutput = func() (desktopPCMOutput, error) {
-		queue := newPCMQueue(int(cdSampleRate) / 2)
+	newDesktopPCMOutput = func(disc *cueDisc) (desktopPCMOutput, error) {
+		stream := newCDStream(disc)
 		ctx := audio.NewContext(int(cdSampleRate))
-		player, err := ctx.NewPlayer(queue)
+		player, err := ctx.NewPlayer(stream)
 		if err != nil {
-			queue.Close()
+			stream.Close()
 			return nil, err
 		}
 		player.SetBufferSize(100 * time.Millisecond)
 		player.Play()
-		return &desktopPCMPlayer{queue: queue, player: player}, nil
+		disc.Audio.HostEvent = stream.command
+		return &desktopPCMPlayer{stream: stream, player: player}, nil
 	}
 }
 
-func (p *desktopPCMPlayer) Write(data []byte) (int, error) { return p.queue.Write(data) }
-func (p *desktopPCMPlayer) Close() error                   { err := p.player.Close(); p.queue.Close(); return err }
+func (p *desktopPCMPlayer) Close() error { err := p.player.Close(); p.stream.Close(); return err }
 func (p *desktopPCMPlayer) SetPaused(paused bool) {
 	if p.paused == paused {
 		return
@@ -43,12 +43,12 @@ func (p *desktopPCMPlayer) SetPaused(paused bool) {
 	}
 }
 func (p *desktopPCMPlayer) Report() map[string]any {
-	r := p.queue.report()
+	r := p.stream.report()
 	r["enabled"] = true
 	r["sample_rate"] = 44100
 	r["format"] = "s16le stereo"
 	r["paused"], r["playing"], r["device_position_ns"] = p.paused, p.player.IsPlaying(), p.player.Position().Nanoseconds()
-	r["classification"] = "host playback approximation; original virtual clock and PCM unchanged"
+	r["classification"] = "device-clock playback; original guest virtual clock and PCM unchanged"
 	r["listening_verified"] = false
 	return r
 }

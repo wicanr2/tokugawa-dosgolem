@@ -95,7 +95,11 @@ func (g *desktopGame) chooseBar(field, row int) error {
 			return err
 		}
 	case 1:
-		g.paused = row == 1
+		if row < 2 {
+			g.paused = row == 1
+		} else {
+			*desktopSpeed = barSpeeds[row-2]
+		}
 	case 2:
 		if row == 1 {
 			return ebiten.Termination
@@ -107,7 +111,7 @@ func (g *desktopGame) chooseBar(field, row int) error {
 	after := g.c.Proof()
 	same := reflect.DeepEqual(before, after)
 	if len(g.barEvents) < 128 {
-		g.barEvents = append(g.barEvents, map[string]any{"kind": "option", "field": field, "row": row, "before": before, "after": after, "guest_unchanged": same})
+		g.barEvents = append(g.barEvents, map[string]any{"kind": "option", "field": field, "row": row, "speed": *desktopSpeed, "before": before, "after": after, "guest_unchanged": same})
 	}
 	if !same {
 		return fmt.Errorf("window bar changed original state")

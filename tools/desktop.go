@@ -17,7 +17,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-var desktopSpeed = flag.Int("desktop-speed", 1, "desktop virtual-time speed, 1–60; validation acceleration only")
+var desktopSpeed = flag.Int("desktop-speed", 4, "desktop execution speed, 1–8 for play; up to 60 for validation")
 var desktopSource = flag.String("hd-source", "/project/workplace/hd-prototype/asset-capture/A-0-original.png", "verified local original A-0 PNG")
 var desktopAsset = flag.String("hd-asset", "/project/assets/hd-b/A-0-hd-b-v1.png", "local single-asset HD PNG; missing asset falls back")
 var desktopPortraitDir = flag.String("hd-portrait-dir", "/project/assets/hd-b/art", "reviewed source-specific story portraits from the private art archive")
@@ -485,7 +485,7 @@ func runDesktopWindow(c *desktopContext) error {
 	}
 	ebiten.SetRunnableOnUnfocused(true)
 	g.texture = ebiten.NewImage(1280, 800)
-	g.barTexture = ebiten.NewImage(640, barHeight+2*barRowHeight)
+	g.barTexture = ebiten.NewImage(640, barTextureHeight())
 	err = ebiten.RunGame(g)
 	c.Report = map[string]any{"classification": "desktop prototype; source-matched story portraits, scroll, upper frame and KAO portraits", "updates": g.updates, "draws": g.draws, "events": g.events, "windowbar_events": g.barEvents, "hd_observation": c.Live, "physical_mouse_events": g.mouseEvents, "scripted_mouse": c.Scripted, "hd_enabled": g.enabled, "last_mode": g.mode, "portrait_mode": g.portraitMode, "scroll_mode": g.scrollMode, "frame_mode": g.frameMode, "scroll_foreground_pixels": g.scrollForeground, "kao_modes": g.kaoModes, "kao_hd_count": g.kaoHD, "assets": g.assetInfo, "virtual_speed": *desktopSpeed, "audio_output": "PCM receipt only; desktop playback not enabled", "listening_verified": false}
 	c.Report["window_modes"], c.Report["window_hd_count"], c.Report["window_foreground_pixels"] = g.windowModes, g.windowHD, g.windowForeground
@@ -847,7 +847,7 @@ func (g *desktopGame) Update() error {
 	}
 	g.texture.WritePixels(g.pixels.Pix)
 	if g.bar.Visible {
-		g.barTexture.WritePixels(g.bar.paint(g.barFont, g.selectedBar(), g.hdAvailable()).Pix)
+		g.barTexture.WritePixels(g.bar.paint(g.barFont, g.selectedBar(), g.hdAvailable(), *desktopSpeed).Pix)
 	}
 	title := "原版"
 	if g.mode == "hd" {

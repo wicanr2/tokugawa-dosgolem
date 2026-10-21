@@ -15,8 +15,10 @@ p.add_argument('--binary', type=Path, required=True)
 p.add_argument('--resource-dir', required=True)
 p.add_argument('--game-dir', required=True)
 p.add_argument('--cpu-source', required=True)
+p.add_argument('--speed', type=int, default=4)
 p.add_argument('--verify-only', action='store_true', help='核對已保存的同一執行收據，不重新播放')
 args = p.parse_args()
+assert 1 <= args.speed <= 60
 root = Path('/output')
 assert root.stat().st_uid == 1000
 result = root / 'audio-device'
@@ -69,8 +71,9 @@ try:
                 inputs = json.loads(Path('/project/tools/player-path.json').read_text())
                 state_mouse.write_text(json.dumps([event for event in inputs if event['step'] < 150000000]))
                 command = [str(args.binary), '-play', '-desktop=' + str(enabled).lower(), '-desktop-audio=' + str(enabled).lower(),
-                           '-publisher-intro=false', '-startup-display', 'hd', '-steps', '150000000', '-desktop-speed', '60', '-diagnostics',
+                           '-publisher-intro=false', '-startup-display', 'hd', '-steps', '150000000', '-desktop-speed', str(args.speed), '-diagnostics',
                            '-resource-dir', args.resource_dir, '-game-dir', args.game_dir, '-state-dir', str(state),
+                           '-asset-audit', str(state / 'asset-inputs.json'),
                            '-cpu-source', args.cpu_source, '-mouse-file', str(state_mouse)]
                 with (result / (label + '.json')).open('wb') as receipt:
                     process = launch(command, label, receipt)
@@ -97,10 +100,29 @@ try:
     assert peak > 100, peak
     device = b['desktop']['audio_output']
     assert device['enabled'] and device['device_position_ns'] > 0
+    assert device['clock'] == 'audio device; independent of guest instructions'
+    assert device['source_frames'] > 0 and device['dropped_oldest_frames'] == 0
+    reference = Path(b['cd_pcm']['path']).read_bytes()
+    source_start = None
+    for offset in range(0, min(len(reference), 4 * 44100 * 4) - 128, 4410 * 4):
+        pattern = reference[offset:offset + 128]
+        if len(set(pattern)) < 12:
+            continue
+        at = data.find(pattern)
+        if at >= offset:
+            source_start = at - offset
+            break
+    assert source_start is not None, 'loopback cannot be aligned with the original PCM'
+    compared = min(2 * 44100 * 4, len(reference), len(data) - source_start)
+    compared -= compared % 4
+    assert compared >= 44100 * 4, 'less than one second of actual music'
+    assert data[source_start:source_start + compared] == reference[:compared], 'music skipped or changed samples'
     summary = {'result': 'PASS', 'scope': 'PulseAudio null-sink loopback; technical playback only',
-               'steps': 150000000, 'desktop_speed': 60, 'equal_original_fields': state_fields, 'complete_RAM_equal': True,
+               'steps': 150000000, 'desktop_speed': args.speed, 'equal_original_fields': state_fields, 'complete_RAM_equal': True,
                'RAM_sha256': sha(ram_paths[0]), 'monitor_bytes': len(data), 'monitor_peak_s16': peak,
-               'monitor_sha256': sha(result / 'monitor.pcm'), 'device': device, 'listening_verified': False}
+               'monitor_sha256': sha(result / 'monitor.pcm'), 'device': device, 'listening_verified': False,
+               'original_contiguous_PCM_bytes_verified': compared, 'sample_rate': 44100,
+               'loopback_source_start_byte': source_start, 'host_playback_clock_independent': True}
     (result / 'verification-summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2) + '\n')
     print(json.dumps(summary, ensure_ascii=False), flush=True)
 finally:

@@ -84,27 +84,31 @@ func (q *pcmQueue) report() map[string]any {
 }
 
 type cdAudio struct {
-	NowUS          uint64           `json:"virtual_us"`
-	Position       uint64           `json:"disc_sample_frame"`
-	End            uint64           `json:"end_sample_frame"`
-	LastStart      uint64           `json:"last_start_sample_frame"`
-	RequestMode    byte             `json:"request_address_mode"`
-	RequestStart   uint32           `json:"request_raw_start"`
-	RequestSectors uint32           `json:"request_sectors"`
-	RequestedEnd   uint64           `json:"requested_end_sample_frame"`
-	ClippedAtEnd   bool             `json:"clipped_at_lead_out"`
-	Playing        bool             `json:"playing"`
-	Paused         bool             `json:"paused"`
-	Fraction       uint64           `json:"fractional_sample_millionths"`
-	Sink           io.Writer        `json:"-"`
-	Frames         uint64           `json:"output_stereo_frames"`
-	NonzeroSamples uint64           `json:"nonzero_channel_samples"`
-	Peak           uint32           `json:"absolute_sample_peak"`
-	Events         []map[string]any `json:"events"`
-	DroppedEvents  uint64           `json:"dropped_events"`
+	NowUS          uint64                       `json:"virtual_us"`
+	Position       uint64                       `json:"disc_sample_frame"`
+	End            uint64                       `json:"end_sample_frame"`
+	LastStart      uint64                       `json:"last_start_sample_frame"`
+	RequestMode    byte                         `json:"request_address_mode"`
+	RequestStart   uint32                       `json:"request_raw_start"`
+	RequestSectors uint32                       `json:"request_sectors"`
+	RequestedEnd   uint64                       `json:"requested_end_sample_frame"`
+	ClippedAtEnd   bool                         `json:"clipped_at_lead_out"`
+	Playing        bool                         `json:"playing"`
+	Paused         bool                         `json:"paused"`
+	Fraction       uint64                       `json:"fractional_sample_millionths"`
+	Sink           io.Writer                    `json:"-"`
+	HostEvent      func(string, uint64, uint64) `json:"-"`
+	Frames         uint64                       `json:"output_stereo_frames"`
+	NonzeroSamples uint64                       `json:"nonzero_channel_samples"`
+	Peak           uint32                       `json:"absolute_sample_peak"`
+	Events         []map[string]any             `json:"events"`
+	DroppedEvents  uint64                       `json:"dropped_events"`
 }
 
 func (a *cdAudio) event(kind string) {
+	if a.HostEvent != nil {
+		a.HostEvent(kind, a.Position, a.End)
+	}
 	if len(a.Events) >= 256 {
 		a.DroppedEvents++
 		return

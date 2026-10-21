@@ -46,6 +46,12 @@
 
 ## 開工入口
 
+2026-10-21 速度與獨立音樂切片沿 `workplace/desktop-prototype/performance/20261021/` 量測，來源與 READY 契約見 RESEARCH-LOG。主機光碟串流入口為 [tools/cd-stream.go](tools/cd-stream.go) 與 [測試](tools/cd-stream_test.go)，以播放器樣本時鐘讀取原版 BIN；DOS CD 裝置的虛擬時間與回傳狀態保持原契約。尚未完成的速度與播放驗證以 CONTEXT 目前狀態表為準。
+
+HD 效能沿 [tools/hd-terrain-scene.go](tools/hd-terrain-scene.go) 的有序像素圖層索引與 [tools/hd-layer.go](tools/hd-layer.go) 的等值最近鄰複製；[tools/render-speed_test.go](tools/render-speed_test.go) 核對像素、stride、速度選單字型、矩形與點擊。桌面速度參數及動態選單分別在 tools/desktop.go、tools/desktop-windowbar.go，遊戲指令與原版時間公式不改。
+
+實際 Linux 交鋒入口為 [tools/verify-desktop-speed.py](tools/verify-desktop-speed.py)。在既有音訊 image 內，專案唯讀掛 /project、workplace/hd-prototype/catalog/remaining/consumers/battle/r11/save-turn3/ready-r2/save-import/game 唯讀掛 /original，乾淨驗收目錄可寫掛 /output，傳入 --binary。使用原版 FILE 3 普通讀檔及十九筆普通輸入，190M 前加速準備，之後由真實頂端功能列選 4×；驗證 ANIME08 自然播放／還原、實際 X11、四種速度與原版／HD 切換、原版狀態不變及正常離開。這是原版存檔樣本，不當下載基準 DAT 或正常通關證據。
+
 推廣影片流程依序使用 [tools/record-promo.py](tools/record-promo.py)、[tools/compose-promo.py](tools/compose-promo.py) 與 [tools/verify-promo.py](tools/verify-promo.py)。固定 GUI image 內以正式 Linux 封包唯讀掛 `/bundle`、專案唯讀掛 `/project`、乾淨錄影目錄可寫掛 `/output` 執行 recorder，保存正常 MARK／DX5 入口、390 筆既有普通輸入至首戰及功能列切換，原版資料與機制不改。錄影與來源位於 `workplace/promo/v.0.1.0-20261016/`，`record-promo.py` 保存實際錄製工具；`--finalize-existing` 只核對同一收據與已封存影片，不重跑遊戲。
 
 合成時錄影目錄唯讀掛 `/input`、其 `edit/` 可寫掛 `/output`、版本的 `promo/` 可寫掛 `/delivery`，執行 composer。原版第十軌由 CUE 的 BIN file sectors 51365..58176 直接讀取，2352 bytes／sector、s16le／44100 Hz／雙聲道，來源 SHA 與原版普通 PLAY 記錄核對；只做音量與淡入／淡出，不另造配樂。Noto Serif CJK TC 字型以 index 3 讀取，來源 SHA 與授權保存於錄影目錄 `fonts/`。工具不使用無界 zoompan，FFmpeg 固定兩個 threads、veryfast 及 72 秒／2160 幀上限。

@@ -34,6 +34,15 @@ type hdTerrainSceneReport struct {
 type hdTerrainScene struct {
 	Pixels     []terrainScenePixel
 	ModelValid bool
+	Heads      []int
+	Links      []terrainSceneLink
+}
+
+type terrainSceneLink struct{ Sprite, Next int }
+type terrainSceneLayer struct {
+	Order         uint64
+	Rect          image.Rectangle
+	Source, Asset *image.NRGBA
 }
 
 type sceneBackground func(x, y, dx, dy int, index byte) (color.NRGBA, bool)
@@ -260,17 +269,47 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 		r.Reason = "fallback_no_qualified_layers"
 		return r
 	}
+	// 依原 slice 次序建立相交圖層，避免每個輸出像素掃描全部 sprite。
+	if len(h.Heads) != 640*400 {
+		h.Heads = make([]int, 640*400)
+	} else {
+		clear(h.Heads)
+	}
+	h.Links = h.Links[:0]
+	layers := make([]terrainSceneLayer, len(state.Sprites))
+	for i := len(state.Sprites) - 1; i >= 0; i-- {
+		s := &state.Sprites[i]
+		key := hdTerrainSpriteKey{s.Group, s.Index}
+		layers[i] = terrainSceneLayer{s.Order, s.Rect, sources[key], pairs[key].Asset}
+		for y := s.Rect.Min.Y; y < s.Rect.Max.Y; y++ {
+			for x := s.Rect.Min.X; x < s.Rect.Max.X; x++ {
+				n := y*640 + x
+				if s.Order <= h.Pixels[n].Order {
+					continue
+				}
+				h.Links = append(h.Links, terrainSceneLink{i, h.Heads[n]})
+				h.Heads[n] = len(h.Links)
+			}
+		}
+	}
+	for _, i := range approved {
+		rect := state.Sprites[i].Rect
+		for y := rect.Min.Y; y < rect.Max.Y; y++ {
+			for x := rect.Min.X; x < rect.Max.X; x++ {
+				n := y*640 + x
+				h.Pixels[n].Affected = h.Pixels[n].Known
+			}
+		}
+	}
+	floorPairs := make([]hdTerrainPair, len(state.History))
+	for i, d := range state.History {
+		floorPairs[i] = floors[d.Index]
+	}
 	for y := 0; y < 400; y++ {
 		for x := 0; x < 640; x++ {
 			p := h.Pixels[y*640+x]
 			floorHD := p.Floor >= 0 && r.FloorModes[p.Floor] == "hd"
-			affected := floorHD
-			for _, i := range approved {
-				if image.Pt(x, y).In(state.Sprites[i].Rect) {
-					affected = true
-					break
-				}
-			}
+			affected := floorHD || p.Affected
 			if !affected || !p.Known {
 				continue
 			}
@@ -287,7 +326,7 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 					hasHDBackground := false
 					if p.Floor >= 0 {
 						d := state.History[p.Floor]
-						pair := floors[d.Index]
+						pair := &floorPairs[p.Floor]
 						c = pair.Source.NRGBAAt(x-d.Rect.Min.X, y-d.Rect.Min.Y)
 						if floorHD {
 							c = pair.Asset.NRGBAAt((x-d.Rect.Min.X)*scale+dx, (y-d.Rect.Min.Y)*scale+dy)
@@ -303,12 +342,10 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 							}
 						}
 					}
-					for i, s := range state.Sprites {
-						if s.Order <= p.Order || !image.Pt(x, y).In(s.Rect) {
-							continue
-						}
-						key := hdTerrainSpriteKey{s.Group, s.Index}
-						source := sources[key].NRGBAAt(x-s.Rect.Min.X, y-s.Rect.Min.Y)
+					for node := h.Heads[y*640+x]; node != 0; node = h.Links[node-1].Next {
+						i := h.Links[node-1].Sprite
+						s := &layers[i]
+						source := s.Source.NRGBAAt(x-s.Rect.Min.X, y-s.Rect.Min.Y)
 						if r.SpriteModes[i] == "hd" {
 							if ownerHD && i == ownerIndex {
 								continue
@@ -316,15 +353,14 @@ func (h *hdTerrainScene) apply(out *image.NRGBA, native image.Image, state hdTer
 							if p.Floor < 0 && source.A == 0 {
 								continue
 							}
-							c = blendTerrainAlpha(c, pairs[key].Asset.NRGBAAt((x-s.Rect.Min.X)*scale+dx, (y-s.Rect.Min.Y)*scale+dy))
+							c = blendTerrainAlpha(c, s.Asset.NRGBAAt((x-s.Rect.Min.X)*scale+dx, (y-s.Rect.Min.Y)*scale+dy))
 						} else if source.A == 255 {
 							c = source
 						}
 					}
 					if ownerHD {
-						s := state.Sprites[ownerIndex]
-						key := hdTerrainSpriteKey{s.Group, s.Index}
-						c = blendTerrainAlpha(c, pairs[key].Asset.NRGBAAt((x-s.Rect.Min.X)*scale+dx, (y-s.Rect.Min.Y)*scale+dy))
+						s := &layers[ownerIndex]
+						c = blendTerrainAlpha(c, s.Asset.NRGBAAt((x-s.Rect.Min.X)*scale+dx, (y-s.Rect.Min.Y)*scale+dy))
 					} else if foreground {
 						c = p.Color
 					}

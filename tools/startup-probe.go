@@ -260,12 +260,11 @@ func main() {
 		if newDesktopPCMOutput == nil {
 			panic("desktop audio requires desktop build")
 		}
-		audioOutput, err = newDesktopPCMOutput()
+		audioOutput, err = newDesktopPCMOutput(disc)
 		if err != nil {
 			panic(err)
 		}
 		defer audioOutput.Close()
-		disc.Audio.Sink = io.MultiWriter(audioWriter, audioOutput)
 	}
 	screen := newBankVideo()
 	m.CPU.Bus = videoBus{m, screen}
@@ -696,7 +695,7 @@ func main() {
 		}
 		toolHashes[name] = fmt.Sprintf("%x", sha256.Sum256(b))
 	}
-	for _, name := range []string{"tools/runtime-paths.go", "tools/runtime-paths_test.go", "tools/desktop-audio.go"} {
+	for _, name := range []string{"tools/runtime-paths.go", "tools/runtime-paths_test.go", "tools/desktop-audio.go", "tools/cd-stream.go", "tools/cd-stream_test.go", "tools/render-speed_test.go"} {
 		b, e := readRuntimeFile("/project/" + name)
 		if e != nil {
 			panic(e)

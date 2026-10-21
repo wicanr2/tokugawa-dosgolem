@@ -2444,3 +2444,40 @@ Ebitengine 十六位元播放器契約直接查固定工具 image 的 /go/pkg/mo
 - 未知與限制：Family Soft 舊官方作品頁 https://www.familysoft.co.jp/his/1992/ieyasu.html 在瀏覽工具與 Docker 內均無法存取，容器回報 DNS 解析失敗；存取結果記於同目錄 readme-history-source-fetch.json。未以未讀取的官方頁支持年份，也沒有取用未證實的開發名單、監修者、精確繁中發售日或移植實作差異。前節的年份限制由本節補充目錄證據，原始紀錄保留。
 - 歷史背景依[岡崎市觀光協會年表](https://okazaki-kanko.jp/okazaki-park/feature/history/about)、[濱松市家康年表](https://www.city.hamamatsu.shizuoka.jp/ieyasu/study/chronology.html)、日本國立公文書館的[生涯年表](https://www.archives.go.jp/exhibition/digital/ieyasu/history.html)、[三方原](https://www.archives.go.jp/exhibition/digital/ieyasu/contents1_05/)、[長篠](https://www.archives.go.jp/exhibition/digital/ieyasu/contents1_06/)、[小牧與長久手](https://www.archives.go.jp/exhibition/digital/ieyasu/contents2_01/)、[關原](https://www.archives.go.jp/exhibition/digital/ieyasu/contents3_01/)、[大阪冬夏之陣](https://www.archives.go.jp/exhibition/digital/ieyasu/contents5_04/)。只概述人質經歷、岡崎與信長同盟、濱松與武田交戰、秀吉與關東轉封、幕府及大阪之陣，不加入軍力數字、三段擊等爭議細節。
 - README 的五組章節依原版標頭分為 1、2、3～6、7～9、10～12，背景欄為史實對照與故事概要，不聲稱所有章節依此線性必經或已正常試玩。第九章原文的西曆字形異常保留於原始證據；README 年代依慶長五年對應 1600 年，不改 bytes。遊戲標示的元和元年五月沿原文保留，不將其月份當作公曆，也不改正原版年代用字。
+
+## 2026-10-21：桌面速度與主機 CD 播放時鐘
+
+使用者回報 Windows 交鋒緩慢與音樂異常，指定 Linux 驗證，並明確授權音樂獨立於 CPU 週期。路由為 local/retro-platform-spec-first.md；原版來源與 DOS 虛擬時間沿既有契約。以下只調整主機呈現與播放，不反組譯遊戲硬體驅動。
+
+### 已證實來源與待量測部分
+
+1. tools/desktop.go 的 Update 每次只推進 desktop-speed × 1,000,000／60 條指令，且每次完整重建 HD 畫面。預設 speed=1；主機每秒少於 60 次 Update 時，DOS 虛擬時間也落後。實際戰場的 CPU／繪圖比例由 performance/20261021/baseline/ 的普通玩家輸入與 CPU profile 量測，不由公式推定已達即時速度。
+2. tools/startup-probe.go 把依成功指令推進的原版 PCM 同時寫入主機 pcmQueue；queue 空時補零、滿時丟最舊樣本。提高 desktop-speed 會提高生產速率，無法讓原曲在主機上固定 44,100 Hz 連續播放。這是資料流證據，尚未宣稱人耳驗證。
+3. 平台契約引用固定 Ebitengine v2.9.9 的 /go/pkg/mod/github.com/hajimehoshi/ebiten/v2@v2.9.9/audio/audio.go：Context.NewPlayer 讀取無檔頭 s16le／stereo 串流，取樣率等於 Context。44100 樣本框為一秒；主機播放器消費來源，與 guest 指令數分開。使用現行 Go 1.24.13 及既有音訊 image，不改 runtime 或 library 版本。
+
+### 獨立音樂播放契約
+
+狀態：DRAFT → 證據審查 → READY。使用者已指定音樂不必跟隨 CPU cycle。
+
+- DOS CD 裝置的原版 PLAY／STOP／RESUME、虛擬位置、完成、事件與 PCM 雜湊保持既有行為。新主機事件通知不寫 guest RAM，事件收據達上限仍須交付主機命令。
+- 主機另持有位置，依播放器讀取的樣本框推進，直接唯讀擷取同一 BIN。資料映射沿 cueDisc.audioSpan，包含跨軌與顯式 PREGAP 靜音；不改速、不升降音調、不靠少量 FIFO 丟音追趕。
+- PLAY 重設到原版請求的合法起點與終點；pause／idle_stop 暫停或停止主機；resume 延續主機自己的位置。新的 PLAY 取代前曲。原版虛擬 complete 只保存為裝置事件，主機依實際消費到末端自然停止，避免加速 CPU 提早截斷原曲。
+- 視窗暫停與功能列沿用既有主機暫停。播放器、唯讀檔案生命週期與鎖定有界，關窗先關播放器，再關 BIN。
+- 驗證包括部分 stereo 框讀取、跨邊界、PREGAP、替換、停止／續播、CPU 大幅前進而主機不跳樣本、事件上限後命令、競態檢查，以及 Linux 實際 loopback 與原版完整狀態對照。人耳未實測時保持未驗證分類。
+
+來源 SHA-256：
+
+- tools/desktop.go: 42cd01a72d84d5c10497edb134e4cc0ac76a586e801958ab1fd6ea66dd089591
+- tools/desktop-audio.go: a0408bd10529418e089df260cb729cb87735d8a073dd277e6e800733182b400a
+- tools/cdda.go: a7e8971f72e069699e65cba57568fd06e0482892d909848ce3b9ae36ba54bab9
+- tools/startup-probe.go: 2a8f3e907748d1e6e230b7e63e64f5453554b58cefd6b583b5864ee199f6e348
+
+### HD 繪圖效能與速度設定契約
+
+狀態：DRAFT → 證據審查 → READY。baseline/measurement.json 與 cpu.pprof 保存正常 390 筆輸入至首戰的量測。750M 起切回既有 speed=1，30.312 秒僅推進 2.15M 指令，129 次 Update；Advance 0.987 秒、render 22.854 秒。CPU profile 的 hdTerrainScene.apply 累計 59.51%，previewPortraitAt 累計 22.38%。基準完成量測後因 -cpu-source 被正式路徑解析轉到不存在的 state/engine 而無法輸出最後收據，分類為量測工具路徑問題，保留原始錯誤；不將它作為正常關窗驗收。後續使用唯讀 /project/workplace/.../r4/engine 的實際來源路徑。
+
+- scene.apply 原本對每個輸出像素重複掃描全部 sprite；改成先按 48×48 矩形建立每像素有序候選索引，僅處理相交且 Order 大於底圖的 sprite。索引保持原 slice 順序、相同 alpha、owner、遮擋與背景公式，未知與缺圖資格不放寬。
+- 地面與 sprite 的圖片指標在外層查表，每像素不再複製整筆 map value。已核准 sprite 的影響範圍先標記原有 Known 像素，等價替代每像素掃描 approved map。
+- rgbaAt 對 *image.NRGBA 使用 NRGBAAt，其他 image.Image 保留原轉換。原生放大沿既有最近鄰規則，以複製完整 RGBA 像素及重複掃描列取代逐點 interface 轉換；支援原有 1..4 倍、stride 及非 NRGBA 備援。
+- 桌面預設目標從 1× 調為 4×，執行選單提供 1／2／4／8×，原有命令列 1..60 範圍保持。只增加主機每次推進預算，不跳 guest 指令、不改原版等待或戰鬥規則；實際速度以量測為準，音樂使用獨立裝置時鐘。
+- 驗證採舊／新來源同一真實原生畫面與圖層的完整像素對照、所有地面／單位／前景／缺圖測試、正常首戰與交鋒、原版完整狀態及實際 X11。速度選項驗證手勢隔離、字型與完整矩形；不以只改參數或單元測試宣稱玩家路徑完成。

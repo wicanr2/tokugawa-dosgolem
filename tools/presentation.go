@@ -38,12 +38,12 @@ var runDesktop func(*desktopContext) error
 var runDesktopPrelude func() (map[string]any, bool, error)
 
 type desktopPCMOutput interface {
-	io.WriteCloser
+	io.Closer
 	SetPaused(bool)
 	Report() map[string]any
 }
 
-var newDesktopPCMOutput func() (desktopPCMOutput, error)
+var newDesktopPCMOutput func(*cueDisc) (desktopPCMOutput, error)
 
 func snapshotNative(v *bankVideo, cursor mouseCursor, x, y int) (nativeSnapshot, error) {
 	s := nativeSnapshot{Cursor: cursor, X: x, Y: y, MaxColor: 15}

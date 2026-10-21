@@ -54,7 +54,13 @@ env = dict(os.environ, GOMAXPROCS='2', GOFLAGS='-p=2')
 # Preparation and full tests are reused only when every recorded input matches.
 prepared = args.prepared_dir
 frozen = json.loads((prepared / 'build-sources.json').read_text())
-assert len(frozen) == 109 and all(sha(project / p) == digest for p, digest in frozen.items())
+prepared_overlay = json.loads((prepared / 'startup-probe/repro-overlay.json').read_text())['Replace']
+required_inputs = {str(Path(p).relative_to(project)) for p in prepared_overlay.values() if p.startswith('/project/')}
+required_inputs.update('tools/' + name for name in ('dosgolem.patch', 'mark-cpu.patch', 'dos4g-exception.patch',
+                      'battle-cpu.patch', 'run-probes.sh', 'run-desktop.sh', 'desktop.mod', 'desktop.sum',
+                      'cpu386-integration_test.go', 'toolbar-font.hex.gz', 'LICENSE-toolbar-font.txt'))
+assert required_inputs <= set(frozen), sorted(required_inputs - set(frozen))
+assert all(sha(project / p) == digest for p, digest in frozen.items())
 if not (work / 'engine').exists():
     shutil.copytree(prepared / 'engine', work / 'engine')
     (work / 'startup-probe').mkdir()
@@ -157,6 +163,8 @@ macOS：開啟 Tokugawa.app。此包未簽章；尚未以 macOS 真機驗收。
 啟動時先選原版或 HD，依序播放出版商標誌與進入遊戲。
 滑鼠移到最上方或按 Esc 可展開功能列，切換原版／HD。
 F6 切換 HD，F7 暫停，F9 截圖。音樂沿用原版 CD。
+預設執行速度為 4×；功能列「執行」可選 1×、2×、4×、8×。
+音樂依音效裝置固定速度播放，不隨遊戲加速改變音調或丟棄樣本。
 遊戲內正常儲存進度即可，資料寫入使用者目錄，重新啟動可讀回。
 Linux：$XDG_DATA_HOME/tokugawa-dosgolem，未設定時 ~/.local/share/tokugawa-dosgolem。
 Windows：%LOCALAPPDATA%\\tokugawa-dosgolem。
