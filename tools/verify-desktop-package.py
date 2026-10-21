@@ -1,4 +1,4 @@
-"""從實際 ZIP 解包後，用 X11 驗證啟動選擇、MARK、標題與動態 HD 切換。"""
+"""從實際 ZIP 解包後，用 X11 驗證啟動、MARK、標題、HD 與六段速度切換。"""
 import argparse
 import ctypes
 import hashlib
@@ -97,6 +97,15 @@ def find_window():
     raise TimeoutError('visible game window not ready: ' + str(ids))
 
 
+def screen(label):
+    geometry = command('xdotool', 'getwindowgeometry', '--shell', window, stdout=subprocess.PIPE).stdout.decode()
+    g = dict(line.split('=', 1) for line in geometry.splitlines())
+    actual_path = root / (label + '.png')
+    command('ffmpeg', '-v', 'error', '-threads', '1', '-filter_threads', '1', '-f', 'x11grab', '-draw_mouse', '0',
+            '-video_size', g['WIDTH'] + 'x' + g['HEIGHT'], '-i', ':94+' + g['X'] + ',' + g['Y'], '-frames:v', '1', str(actual_path))
+    return actual_path
+
+
 def capture(label):
     count = len(status().get('events') or [])
     value = key('F9', lambda s: len(s.get('events') or []) > count)
@@ -107,11 +116,7 @@ def capture(label):
         assert path.startswith('Z:') or path.startswith('z:'), path
         path = path[2:].replace('\\', '/')
     presented = Path(path)
-    geometry = command('xdotool', 'getwindowgeometry', '--shell', window, stdout=subprocess.PIPE).stdout.decode()
-    g = dict(line.split('=', 1) for line in geometry.splitlines())
-    actual_path = root / (label + '.png')
-    command('ffmpeg', '-v', 'error', '-threads', '1', '-filter_threads', '1', '-f', 'x11grab', '-draw_mouse', '0',
-            '-video_size', g['WIDTH'] + 'x' + g['HEIGHT'], '-i', ':94+' + g['X'] + ',' + g['Y'], '-frames:v', '1', str(actual_path))
+    actual_path = screen(label)
     actual = Image.open(actual_path).convert('RGBA')
     if value['bar_visible']:
         actual = actual.crop((0, 64, 1280, value['canvas_height'] + 64))
@@ -199,8 +204,41 @@ try:
         restored = capture('restored-hd-title')
         assert hd['proof'] == original['proof'] == restored['proof']
         assert hd['pixels'] == restored['pixels'] and hd['pixels'] != original['pixels']
+        speed_frames = []
+        for speed in [1, 2, 4, 8, 16, 32, 4]:
+            click(550, 32, lambda s: s.get('bar_menu') == 1)
+            if speed == 32:
+                screen('all-speed-options')
+            row = [1, 2, 4, 8, 16, 32].index(speed) + 2
+            selected = click(550, (32 + row * 24 + 12) * 2,
+                             lambda s: s.get('bar_menu') == -1 and
+                             (s.get('bar_events') or [{}])[-1].get('speed') == speed)
+            assert selected['paused']
+            frame = capture('speed-' + str(speed) + '-' + str(len(speed_frames)))
+            assert frame['proof'] == restored['proof'] and frame['pixels'] == restored['pixels'], speed
+            speed_frames.append({'speed': speed, **frame})
+        running_samples = []
+        for speed, row in [(16, 6), (32, 7)]:
+            click(550, 32, lambda s: s.get('bar_menu') == 1)
+            selected = click(550, (32 + row * 24 + 12) * 2,
+                             lambda s: s.get('bar_menu') == -1 and
+                             (s.get('bar_events') or [{}])[-1].get('speed') == speed)
+            before = selected['step']
+            key('Escape', lambda s: not s.get('bar_visible', True))
+            command('xdotool', 'mousemove', '1590', '1190')
+            started = time.monotonic()
+            key('F7', lambda s: not s.get('paused', True))
+            wait(lambda s: s.get('step', 0) >= before + 1000000, seconds=30)
+            stopped = key('F7', lambda s: s.get('paused'))
+            running_samples.append({'speed': speed, 'start_step': before, 'end_step': stopped['step'],
+                                    'wall_seconds': time.monotonic() - started})
+            key('Escape', lambda s: s.get('bar_visible'))
+        click(550, 32, lambda s: s.get('bar_menu') == 1)
+        click(550, (32 + 4 * 24 + 12) * 2,
+              lambda s: s.get('bar_menu') == -1 and (s.get('bar_events') or [{}])[-1].get('speed') == 4)
         final_status = status()
         assert all(e['guest_unchanged'] for e in final_status['events'] if e['kind'] == 'toggle')
+        assert all(e['guest_unchanged'] for e in final_status['bar_events'] if e['kind'] == 'option')
         close_window()
         assert process.wait(timeout=45) == 0
     receipt = json.loads((root / 'receipt.json').read_text())
@@ -218,9 +256,12 @@ try:
                'ordinary_title_steps': receipt['successful_steps'], 'bar_toggles_guest_unchanged': True,
                'actual_X11_equals_presented': True, 'HD_original_differ': True, 'HD_restore_equal': True,
                'original_data_unchanged': True, 'close_normal': True, 'frames': [hd, original, restored],
+               'speed_settings': [1, 2, 4, 8, 16, 32], 'speed_switches_guest_unchanged': True,
+               'speed_switches_HD_pixels_unchanged': True, 'speed_frames': speed_frames,
+               'running_speed_samples': running_samples,
                'native_Windows_verified': False, 'native_macOS_verified': False, 'normal_playthrough_required': False}
     (root / 'verification-summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2) + '\n')
-    print(json.dumps({k: v for k, v in summary.items() if k != 'frames'}, ensure_ascii=False), flush=True)
+    print(json.dumps({k: v for k, v in summary.items() if k not in ('frames', 'speed_frames')}, ensure_ascii=False), flush=True)
 finally:
     for child in reversed(children):
         if child.poll() is None:

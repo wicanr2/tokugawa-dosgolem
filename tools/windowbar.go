@@ -19,8 +19,8 @@ var barFields = [4]image.Rectangle{
 	image.Rect(376, 4, 592, 28), image.Rect(600, 4, 632, 28),
 }
 var barLabels = [3]string{"顯示", "執行", "工具"}
-var barLists = [3][]string{{"原版", "HD 圖像"}, {"繼續", "暫停", "速度 1x", "速度 2x", "速度 4x", "速度 8x"}, {"擷取畫面 F9", "離開程式"}}
-var barSpeeds = [4]int{1, 2, 4, 8}
+var barLists = [3][]string{{"原版", "HD 圖像"}, {"繼續", "暫停", "速度 1x", "速度 2x", "速度 4x", "速度 8x", "速度 16x", "速度 32x"}, {"擷取畫面 F9", "離開程式"}}
+var barSpeeds = [6]int{1, 2, 4, 8, 16, 32}
 var barText = "顯示執行工具原版肖像繼續暫停擷取畫面離開程式缺圖設定速度×▾✓德川家康選擇遊戲中可從頂端功能列切換滑鼠"
 
 func barTextureHeight() int {

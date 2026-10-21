@@ -6,6 +6,7 @@
 
 | 項目 | 現況 | 證據 |
 |---|---|---|
+| 16×／32× 選項 | 實作完成，驗收中。上方執行選單提供六種速度，預設維持 4×；音樂裝置時鐘保持。正執行四套件與實際 ZIP 的六種倍率切換、16×／32× 步進及三平台打包 | [本次來源與驗收](workplace/desktop-prototype/performance/20261021/speed-options/)、[READY](RESEARCH-LOG.md#2026-10-211632-速度選項) |
 | 2026-10-21 效能修正 | CONFORMED。預設 4×，功能列可選 1／2／4／8×。HD 有序圖層與放大優化，Linux 首戰步進樣本約快 6.32 倍；普通 FILE 3 交鋒顯示至還原 20.98 秒，動畫段 8.70 秒。完整 HD 像素、scene report 及同狀態 RAM 相同，音樂獨立於 CPU 週期 | [效能與驗收](workplace/desktop-prototype/performance/20261021/performance-verification.json)、[交鋒](workplace/desktop-prototype/performance/20261021/normal-combat-r3/verification-summary.json) |
 | jsdos 下載 | 完成，214,665,581 bytes | `original/德川家康.jsdos.zip`、[source.json](original/source.json) |
 | ZIP 與解包 | CRC 通過；14 筆 ZIP entries，12 個檔案；解包檔共 235,521,461 bytes | `original/source.json` 的逐檔大小與 SHA-256 |

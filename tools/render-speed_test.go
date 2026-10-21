@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"image"
 	"image/color"
 	"testing"
@@ -45,20 +46,32 @@ func TestSpeedMenuBoundsFontAndEveryHitRow(t *testing.T) {
 	bar := newWindowBar()
 	bar.Visible = true
 	bar.Menu = 1
-	paint := bar.paint(font, [3]int{}, true, 4)
 	menu := barMenuRect(1)
-	if !menu.In(paint.Bounds()) || menu.Max.Y > 400 {
-		t.Fatal(menu, paint.Bounds())
+	textWidth := func(text string) int {
+		width := 0
+		for _, r := range text {
+			width += font[r].Width
+		}
+		return width
+	}
+	for _, speed := range barSpeeds {
+		for paused := 0; paused <= 1; paused++ {
+			paint := bar.paint(font, [3]int{0, paused, 0}, true, speed)
+			if !menu.In(paint.Bounds()) || menu.Max.Y > 400 {
+				t.Fatal(menu, paint.Bounds())
+			}
+			header := fmt.Sprintf("%s %s %dx", barLabels[1], barLists[1][paused], speed)
+			if barFields[1].Min.X+8+textWidth(header) > barFields[1].Max.X-16 {
+				t.Fatal("speed header overlaps arrow", header)
+			}
+		}
 	}
 	for row, label := range barLists[1] {
 		field, hit := bar.hit(image.Pt(menu.Min.X+5, barHeight+row*barRowHeight+12))
 		if field != 1 || hit != row {
 			t.Fatal(field, hit, row)
 		}
-		width := font['✓'].Width + font[' '].Width
-		for _, r := range label {
-			width += font[r].Width
-		}
+		width := textWidth("✓ " + label)
 		if menu.Min.X+8+width > menu.Max.X || barHeight+row*barRowHeight+4+16 > menu.Max.Y {
 			t.Fatal("speed label clipped", row, label)
 		}

@@ -17,7 +17,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-var desktopSpeed = flag.Int("desktop-speed", 4, "desktop execution speed, 1–8 for play; up to 60 for validation")
+var desktopSpeed = flag.Int("desktop-speed", 4, "desktop execution speed, 1–32 for play; up to 60 for validation")
 var desktopSource = flag.String("hd-source", "/project/workplace/hd-prototype/asset-capture/A-0-original.png", "verified local original A-0 PNG")
 var desktopAsset = flag.String("hd-asset", "/project/assets/hd-b/A-0-hd-b-v1.png", "local single-asset HD PNG; missing asset falls back")
 var desktopPortraitDir = flag.String("hd-portrait-dir", "/project/assets/hd-b/art", "reviewed source-specific story portraits from the private art archive")

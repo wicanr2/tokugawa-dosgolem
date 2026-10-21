@@ -46,11 +46,13 @@
 
 ## 開工入口
 
+16×／32× 選單擴充的隔離來源與驗收入口為 `workplace/desktop-prototype/performance/20261021/speed-options/`；實際 ZIP 的六種倍率切換與 16×／32× 步進沿 [tools/verify-desktop-package.py](tools/verify-desktop-package.py)，READY 契約見 RESEARCH-LOG。預設維持 4×，音樂裝置時鐘不變。
+
 2026-10-21 速度與獨立音樂切片沿 `workplace/desktop-prototype/performance/20261021/` 量測，來源與 READY 契約見 RESEARCH-LOG。主機光碟串流入口為 [tools/cd-stream.go](tools/cd-stream.go) 與 [測試](tools/cd-stream_test.go)，以播放器樣本時鐘讀取原版 BIN；DOS CD 裝置的虛擬時間與回傳狀態保持原契約。尚未完成的速度與播放驗證以 CONTEXT 目前狀態表為準。
 
 HD 效能沿 [tools/hd-terrain-scene.go](tools/hd-terrain-scene.go) 的有序像素圖層索引與 [tools/hd-layer.go](tools/hd-layer.go) 的等值最近鄰複製；[tools/render-speed_test.go](tools/render-speed_test.go) 核對像素、stride、速度選單字型、矩形與點擊。桌面速度參數及動態選單分別在 tools/desktop.go、tools/desktop-windowbar.go，遊戲指令與原版時間公式不改。
 
-實際 Linux 交鋒入口為 [tools/verify-desktop-speed.py](tools/verify-desktop-speed.py)。在既有音訊 image 內，專案唯讀掛 /project、workplace/hd-prototype/catalog/remaining/consumers/battle/r11/save-turn3/ready-r2/save-import/game 唯讀掛 /original，乾淨驗收目錄可寫掛 /output，傳入 --binary。使用原版 FILE 3 普通讀檔及十九筆普通輸入，190M 前加速準備，之後由真實頂端功能列選 4×；驗證 ANIME08 自然播放／還原、實際 X11、四種速度與原版／HD 切換、原版狀態不變及正常離開。這是原版存檔樣本，不當下載基準 DAT 或正常通關證據。
+實際 Linux 交鋒入口為 [tools/verify-desktop-speed.py](tools/verify-desktop-speed.py)。在既有音訊 image 內，專案唯讀掛 /project、workplace/hd-prototype/catalog/remaining/consumers/battle/r11/save-turn3/ready-r2/save-import/game 唯讀掛 /original，乾淨驗收目錄可寫掛 /output，傳入 --binary。使用原版 FILE 3 普通讀檔及十九筆普通輸入，190M 前加速準備，之後由真實頂端功能列選 4×；驗證 ANIME08 自然播放／還原、實際 X11、六種速度與原版／HD 切換、原版狀態不變及正常離開。這是原版存檔樣本，不當下載基準 DAT 或正常通關證據。
 
 推廣影片流程依序使用 [tools/record-promo.py](tools/record-promo.py)、[tools/compose-promo.py](tools/compose-promo.py) 與 [tools/verify-promo.py](tools/verify-promo.py)。固定 GUI image 內以正式 Linux 封包唯讀掛 `/bundle`、專案唯讀掛 `/project`、乾淨錄影目錄可寫掛 `/output` 執行 recorder，保存正常 MARK／DX5 入口、390 筆既有普通輸入至首戰及功能列切換，原版資料與機制不改。錄影與來源位於 `workplace/promo/v.0.1.0-20261016/`，`record-promo.py` 保存實際錄製工具；`--finalize-existing` 只核對同一收據與已封存影片，不重跑遊戲。
 

@@ -113,7 +113,7 @@ def capture(label):
 
 
 def choose_speed(speed):
-    row = [1, 2, 4, 8].index(speed) + 2
+    row = [1, 2, 4, 8, 16, 32].index(speed) + 2
     key('Escape', lambda s: s.get('bar_visible'))
     click(550, 32, lambda s: s.get('bar_menu') == 1)
     grab('speed-menu-' + str(speed))
@@ -180,7 +180,7 @@ try:
         key('F6', lambda s: s.get('enabled'))
         returned = capture('after-combat-restored')
         assert hd['proof'] == original['proof'] == returned['proof']
-        for speed in [1, 2, 8, 4]:
+        for speed in [1, 2, 8, 16, 32, 4]:
             choose_speed(speed)
         final = status()
         assert all(e['guest_unchanged'] for e in final['bar_events'] if e['kind'] == 'option')
@@ -199,7 +199,7 @@ try:
               'ordinary_battle_begin_step': battle['step'], 'animation_step': animation['step'],
               'restored_step': restored_state['step'], 'battle_to_restore_seconds': restored_time - battle_time,
               'animation_to_restore_seconds': restored_time - animation_time, 'actual_X11_verified': True,
-              'HD_original_restore_same_guest_state': True, 'all_four_speed_settings_guest_unchanged': True,
+              'HD_original_restore_same_guest_state': True, 'all_six_speed_settings_guest_unchanged': True,
               'audio': receipt['desktop']['audio_output'], 'original_files_unchanged': True, 'close_normal': True}
     (root / 'verification-summary.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
     print(json.dumps(result, ensure_ascii=False), flush=True)

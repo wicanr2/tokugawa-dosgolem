@@ -821,3 +821,7 @@ Linux 與 Windows／Wine 的實際 ZIP 均通過啟動選擇 0 步、MARK 159892
 本次清理 4,785,751,642 bytes、11,080 檔可重建 cache 與有完整 ZIP／manifest 可回復的副本，收據為 performance/20261021/cleanup.json。全部原始來源、HD、研究來源與收據、原版存檔、畫面、音訊錄製及所有版本 ZIP 保留。生成美術樹 cd330c4194005578692a461752a927e61c7c2679 不變；使用者未追蹤的 Remastered.txt 保留原樣。
 
 公開 Release 本文為 workplace/github-setup/speed-v101-release-notes.md；遠端、正式 tag、Release、README 圖片與交付核對保存 workplace/github-setup/speed-v101-release-sync.json。含原版的完整版仍只留本機，不更新使用者提供的外部雲端連結。四語、Windows／macOS 真機、人耳與正常通關的原有限制保持；正常通關不重開。Docker 工作容器完成後移除，沒有建立新工具鏈 image。
+
+## 2026-10-21：提供 16×、32×
+
+使用者要求新增兩種執行倍率。沿用既有速度參數與動態選單，增加 16×／32×；預設維持 4×，原版與音樂來源不改。測試、凍結來源及封包工作保存於 workplace/desktop-prototype/performance/20261021/speed-options/。本次實際 ZIP 驗證擴大至六種速度、切換狀態不變及 16×／32× 實際步進，結果待本節續記。
