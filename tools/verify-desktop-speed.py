@@ -89,6 +89,10 @@ def grab(label):
     geometry = command('xdotool', 'getwindowgeometry', '--shell', window, stdout=subprocess.PIPE).stdout.decode()
     g = dict(line.split('=', 1) for line in geometry.splitlines())
     path = root / (label + '.png')
+    serial = 2
+    while path.exists():
+        path = root / (label + '-' + str(serial) + '.png')
+        serial += 1
     command('ffmpeg', '-v', 'error', '-threads', '1', '-filter_threads', '1', '-f', 'x11grab', '-draw_mouse', '0',
             '-video_size', g['WIDTH'] + 'x' + g['HEIGHT'], '-i', ':96+' + g['X'] + ',' + g['Y'], '-frames:v', '1', str(path))
     return path
@@ -164,6 +168,11 @@ try:
             return False
         restored_state = wait(restored)
         restored_time = time.monotonic()
+        (root / 'combat-timing.json').write_text(json.dumps({
+            'battle_begin_step': battle['step'], 'animation_step': animation['step'],
+            'restored_step': restored_state['step'], 'speed': 4,
+            'battle_to_restore_seconds': restored_time - battle_time,
+            'animation_to_restore_seconds': restored_time - animation_time}, indent=2) + '\n')
         key('F7', lambda s: s.get('paused'))
         hd = capture('after-combat-hd')
         key('F6', lambda s: not s.get('enabled', True))

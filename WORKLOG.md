@@ -807,3 +807,5 @@ Windows 第三次已完成模式選擇、MARK 自然退出與 HD 設定沿用，
 Linux 實際 PulseAudio loopback 在 150M 普通輸入、4× 下通過，開／關輸出完整 RAM、十四欄及原版 PCM 雜湊相同，連續 352800 bytes 音樂與原版 44100 Hz s16le 雙聲道完全一致，主機丟棄框為零。完整收據位於 performance/20261021/audio-device/verification-summary.json，人耳聆聽仍未驗證。新 asset-inputs.json 記錄 761 個實際開啟路徑，新封包沿 112 項已測輸入重新準備；不沿用 r4 的 109 項輸入假稱測過新程式。
 
 普通 FILE 3 交鋒驗證第一版因 /output/player-path.json 在正式路徑解析後變成 state/player-path.json 而於啟動前停止，分類為工具路徑問題；保存 normal-combat/，修正成實際 state 內的路徑後於 normal-combat-r2/ 重跑。固定版號與 dist-all 路由已讀，修正版採 v.1.0.1-20261021，從新乾淨工作目錄建置，保留已發布 v.1.0.0-20261017。
+
+normal-combat-r2 已完成讀檔、ANIME08 自然播放與還原、原版／HD／還原的實際視窗及相同 proof，接著在重複擷取第二張 speed-menu-4.png 時因 FFmpeg 拒絕覆寫而停止。分類為驗證檔名碰撞，並非遊戲問題；r2 畫面與錯誤保留。驗證工具改用序號保存重複標籤，並在動畫自然結束時先寫 combat-timing.json，於 normal-combat-r3/ 乾淨重跑至正常關窗。四包固定程式來源 f28f0a3029a7b41b0060e3fd6ebcf24001a3abac；後續修改僅涉及驗證工具與收尾文件，112 項已測輸入保持相同。
